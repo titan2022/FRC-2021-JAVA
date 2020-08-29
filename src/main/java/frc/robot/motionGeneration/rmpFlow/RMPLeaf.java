@@ -1,25 +1,30 @@
-package frc.robot.motionGeneration.rmpFlow;
+package frc.robot.motiongeneration.rmpflow;
 
 import org.ejml.simple.SimpleMatrix;
 
+/**
+ * A leaf node with no children that contains an RMP.
+ */
 public abstract class RMPLeaf extends RMPNode{
-	private RMPFunction<SimpleMatrix> RMPf, RMPm;
+	//private RMPFunction<SimpleMatrix> RMPf, RMPm;
 	
-	public RMPLeaf(String name, RMPNode parent
-			, EvaluatableFunction<SimpleMatrix> psi
-			, EvaluatableFunction<SimpleMatrix> j
-			, BiEvaluatableFunction<SimpleMatrix> j_dot)
+	/**
+	 * RMP leaf node containing an RMP.
+	 * @param name of leaf node
+	 * @param parent of leaf node
+	 */
+	public RMPLeaf(String name, RMPNode parent)
 	{
-		super(name, parent, psi, j, j_dot);
+		super(name, parent);
 	}
 	
+	/**
+	 * Solves for the M and F of the RMP.
+	 */
 	public final void evaluate()
 	{	
-		solveM();
-		solveF();
-		//f = RMPf.of(x, x_dot);
-		//m = RMPm.of(x, x_dot);
-		//self.f, self.M = self.RMP_func(self.x, self.x_dot)//This function returns f and m
+		m = solveM();
+		f = solveF();
 	}
 	
 	@Override
@@ -28,11 +33,16 @@ public abstract class RMPLeaf extends RMPNode{
 		evaluate();
 	}
 	
-	public final void update()
-	{
-		super.pushforward();
-	}
+	// private final void update()
+	// {
+	// 	super.pushforward();
+	// }
 	
+	/**
+	 * Creates a square matrix with diagonals of 1s from top left to bottom right.
+	 * @param size the numbers of rows for a square matrix
+	 * @return A diagonal matrix of 1s.
+	 */
 	public static SimpleMatrix eye(int size)
 	{
 		SimpleMatrix eye = new SimpleMatrix(size, size);
@@ -42,7 +52,18 @@ public abstract class RMPLeaf extends RMPNode{
 		}
 		return eye;
 	}
-	protected abstract void solveF();
+
+	/**
+	 * Solves for F
+	 * , where F is the motion policy that describes the dynamical system as a second-order differential equation that uses position and velocity.
+	 * @return F 
+	 */
+	protected abstract SimpleMatrix solveF();
 	
-	protected abstract void solveM();
+	/**
+	 * Solves for M
+	 * , where M is the canonical version of the Riemannian metric A
+	 * @return M
+	 */
+	protected abstract SimpleMatrix solveM();
 }

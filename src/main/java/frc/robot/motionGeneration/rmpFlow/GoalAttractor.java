@@ -1,15 +1,16 @@
-package frc.robot.motionGeneration.rmpFlow;
+package frc.robot.motiongeneration.rmpflow;
 
 import org.ejml.simple.SimpleMatrix;
 
 public class GoalAttractor extends RMPLeaf {
 	private double w_u, w_l, sigma, alpha, eta, gain , tolerance;
-	private SimpleMatrix goal;
+	private SimpleMatrix goal, jeye;
+	private int goalSize;
 	
 	public GoalAttractor(String name, RMPNode parent, SimpleMatrix goal, double w_u, double w_l, double sigma
 			, double alpha, double eta, double gain, double tolerance)
 	{
-		super(name, parent, null, null, null);
+		super(name, parent);
 		this.w_u = w_u;
 		this.w_l = w_l;
 		this.sigma = sigma;
@@ -23,10 +24,27 @@ public class GoalAttractor extends RMPLeaf {
 		else
 			this.goal = goal;
 		
-		updateGoal(this.goal);//Set psi, j, and j_dot
+		updateGoal(this.goal);
+		goalSize = this.goal.numCols() * this.goal.numRows();
+		jeye = eye(goalSize);
 	}
+
+	public SimpleMatrix phi(SimpleMatrix q)
+	{
+		return q.minus(goal);
+	}
+
+	public SimpleMatrix j(SimpleMatrix q)
+	{
+		return jeye;
+	};
+
+	public SimpleMatrix j_dot(SimpleMatrix q, SimpleMatrix q_dot)
+	{
+		return new SimpleMatrix(goalSize, goalSize);
+	};
 	
-	public void solveF()
+	public SimpleMatrix solveF()
 	{
 		double x_norm = x.normF();
 		
@@ -34,7 +52,6 @@ public class GoalAttractor extends RMPLeaf {
 		double w = (w_u - w_l) * beta + w_l;
 		double s = (1 - Math.exp(-2 * alpha * x_norm)) / (1 + Math.exp(-2 * alpha * x_norm));
 		
-		//SimpleMatrix G = eye(this.goal.numCols() * this.goal.numRows()).scale(w);
 		SimpleMatrix grad_Phi;
 		if(x_norm > tolerance)
 			grad_Phi = x.scale(s / x_norm * w * gain);
@@ -46,44 +63,25 @@ public class GoalAttractor extends RMPLeaf {
 		double x_dot_norm = x_dot.normF();
 		SimpleMatrix xi = grad_w.scale(Math.pow(x_dot_norm, 2)).minus(x_dot.mult(x_dot.transpose()).mult(grad_w).scale(2)).scale(-.5);
 		
-		this.f = grad_Phi.scale(-1).minus(bx_dot).minus(xi);
+		return grad_Phi.scale(-1).minus(bx_dot).minus(xi);
 	}
 	
-	public void solveM()
+	public SimpleMatrix solveM()
 	{
 		double x_norm = x.normF();
 		
 		double beta = Math.exp(- Math.pow(x_norm, 2) / 2 / Math.pow(sigma, 2));
 		double w = (w_u - w_l) * beta + w_l;
-		//double s = (1 - Math.exp(-2 * alpha * x_norm)) / (1 + Math.exp(-2 * alpha * x_norm));
 		
 		SimpleMatrix G = eye(this.goal.numCols() * this.goal.numRows()).scale(w);
-		
-		/*
-		SimpleMatrix grad_Phi;
-		if(x_norm > tolerance)
-			grad_Phi = x.scale(s / x_norm * w * gain);
-		else
-			grad_Phi = new SimpleMatrix(1 , 1);
-		SimpleMatrix bx_dot = x_dot.scale(eta * w);//eta * w * x_dot.get(0 , 0);
-		SimpleMatrix grad_w = x.scale(-beta * (w_u - w_l) / Math.pow(sigma, 2));
-		
-		double x_dot_norm = x_dot.normF();
-		SimpleMatrix xi = grad_w.scale(Math.pow(x_dot_norm, 2)).minus(x_dot.mult(x_dot.transpose()).mult(grad_w).scale(2)).scale(-.5);
-		*/
-		
-		this.m = G;
+
+		return G;
 	}
 	
 	public void updateGoal(SimpleMatrix goal)
 	{
 		if(goal.numRows() == 1)
 			goal = goal.transpose();
-		
-		int n = goal.numCols() * goal.numRows();
-		final SimpleMatrix finalGoal = goal;
-		psi = (y) -> y.minus(finalGoal);
-		j = (y) -> eye(n);
-		j_dot = (SimpleMatrix y, SimpleMatrix y_dot) -> new SimpleMatrix(n, n);
+		this.goal = goal;
 	}
 }

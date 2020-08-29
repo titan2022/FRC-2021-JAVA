@@ -1,10 +1,8 @@
-package frc.robot.motionGeneration.rmpFlow;
+package frc.robot.motiongeneration.rmpflow;
 
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
@@ -15,7 +13,7 @@ import org.ejml.simple.SimpleMatrix;
 
 public class RMPFlowTester{
 
-	public static void main(String[] args) {
+	public RMPFlowTester() {
 		//RMP_example
 		double alpha = 1e-5, eta = 2, epsilon = .2;
 		//double alpha = 1e-3, eta = 4, epsilon = 1;
@@ -66,9 +64,9 @@ public class RMPFlowTester{
 		
 		for(int i = 0; i < simulationData.size(); i+=6)
 		{
-			System.out.println(//simulationData.get(i) + "\t" + simulationData.get(i + 1)
-					+ simulationData.get(i + 2) + "\t" + simulationData.get(i + 3)
-					+ simulationData.get(i + 4) + "\t" + simulationData.get(i + 5)
+			System.out.println(simulationData.get(i) + "\t" + simulationData.get(i + 1)
+					//+ simulationData.get(i + 2) + "\t" + simulationData.get(i + 3)
+					//+ simulationData.get(i + 4) + "\t" + simulationData.get(i + 5)
 					);
 		}
 		
@@ -115,7 +113,7 @@ public class RMPFlowTester{
 		JFrame f = new JFrame("RMPFlow Example");
 		f.setVisible(true);
 		f.setSize(500, 500);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setResizable(false);
 		
 		final double xLf = xL, xHf = xH, yLf = yL, yHf = yH, vLf = vL, vHf = vH, aLf = aL, aHf = aH;

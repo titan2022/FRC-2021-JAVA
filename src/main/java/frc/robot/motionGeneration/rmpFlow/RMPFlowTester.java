@@ -1,4 +1,4 @@
-package frc.robot.motiongeneration.rmpflow;
+package frc.robot.motionGeneration.rmpFlow;
 
 import java.awt.Color;
 import java.awt.Graphics;

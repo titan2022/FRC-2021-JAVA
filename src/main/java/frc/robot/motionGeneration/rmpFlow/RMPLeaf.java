@@ -1,4 +1,4 @@
-package frc.robot.motiongeneration.rmpflow;
+package frc.robot.motionGeneration.rmpFlow;
 
 import org.ejml.simple.SimpleMatrix;
 

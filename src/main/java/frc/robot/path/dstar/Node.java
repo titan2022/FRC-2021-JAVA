@@ -12,6 +12,7 @@ public class Node implements Comparable<Node> {
   public double g;
   public double rhs;
   public final Obstacle obstacle;
+  public boolean visited = false;
   
   public Node(double x, double y, Obstacle obstacle, List<Node> edges) {
     this.x = x;

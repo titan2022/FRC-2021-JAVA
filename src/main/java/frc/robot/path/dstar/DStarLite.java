@@ -26,6 +26,7 @@ public class DStarLite {
       else if(v.g < v.rhs){
         v.g = Double.POSITIVE_INFINITY;
       }
+      if(!v.visited) connect(v);
       for(Node e: v.edges){
         updateVertex(e);
       }
@@ -40,6 +41,22 @@ public class DStarLite {
     }
     queue.remove(v);
     if(v.rhs != v.g) queue.add(v);
+  }
+
+  private void connect(Node v) {
+    for(Obstacle obs : map){
+      Node[] endpoints = obs.endpoints(v);
+      for(int i=0; i<endpoints.length; i++){
+        Node endpoint = endpoints[i];
+        if(v.obstacle.isEndpoint(i, v) && isClear(v, endpoint)){
+          v.edges.add(endpoint);
+          endpoint.edges.add(v);
+          updateVertex(endpoint);
+        }
+      }
+    }
+    updateVertex(v);
+    v.visited = true;
   }
 
   public boolean isClear(Node a, Node b) {

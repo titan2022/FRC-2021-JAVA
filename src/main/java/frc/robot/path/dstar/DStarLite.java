@@ -15,6 +15,7 @@ public class DStarLite {
     this.goal = goal;
     map = Arrays.asList(obstacles);
     queue = new PriorityQueue<Node>();
+    queue.add(goal);
   }
 
   public Node getPath() {
@@ -25,6 +26,7 @@ public class DStarLite {
       }
       else if(v.g < v.rhs){
         v.g = Double.POSITIVE_INFINITY;
+        updateVertex(v);
       }
       if(!v.visited) connect(v);
       for(Node e: v.edges){

@@ -41,4 +41,11 @@ public class DStarLite {
     queue.remove(v);
     if(v.rhs != v.g) queue.add(v);
   }
+
+  public boolean isClear(Node a, Node b) {
+    for(Obstacle obs : map)
+      if(!obs.isClear(a, b))
+        return false;
+    return true;
+  }
 }

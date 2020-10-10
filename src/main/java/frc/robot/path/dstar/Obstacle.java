@@ -25,4 +25,23 @@ public class Obstacle {
     }
     return true;
   }
+
+  public Node[] endpoints(Node source) {
+    Node argmin = null, argmax = null;
+    double theta;
+    double min = 360.;
+    double max = 360.;
+    for(Node vertex : vertexes){
+      theta = getAngle(vertexes.get(0), source, vertex);
+      if(theta > max){
+        max = theta;
+        argmax = vertex;
+      }
+      if(theta < min){
+        min = theta;
+        argmin = vertex;
+      }
+    }
+    return new Node[] {argmin, argmax};
+  }
 }

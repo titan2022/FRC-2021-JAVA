@@ -11,14 +11,16 @@ public class Node implements Comparable<Node> {
   double y;
   public double g;
   public double rhs;
+  public final Obstacle obstacle;
   
-  public Node(double x, double y, List<Node> edges) {
+  public Node(double x, double y, Obstacle obstacle, List<Node> edges) {
     this.x = x;
     this.y = y;
     this.edges = edges;
+    this.obstacle = obstacle;
   }
-  public Node(double x, double y) {
-    this(x, y, new ArrayList<Node>());
+  public Node(double x, double y, Obstacle obstacle) {
+    this(x, y, obstacle, new ArrayList<Node>());
   }
   
   public double weightTo(Node dest) {
@@ -38,14 +40,14 @@ public class Node implements Comparable<Node> {
   }
 
   private class GoalDistOrder implements Comparator<Node> {
-		Node from;
-		GoalDistOrder(Node from) {
-			this.from = from;
-		}
-		
-		@Override
-		public int compare(Node o1, Node o2) {
-			return (int) Math.signum(from.weightTo(o1) + o1.g - from.weightTo(o2) - o2.g);
-		}
-	}
+    Node from;
+    GoalDistOrder(Node from) {
+      this.from = from;
+    }
+    
+    @Override
+    public int compare(Node o1, Node o2) {
+      return (int) Math.signum(from.weightTo(o1) + o1.g - from.weightTo(o2) - o2.g);
+    }
+  }
 }

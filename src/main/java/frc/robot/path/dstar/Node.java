@@ -7,8 +7,8 @@ import java.util.Collections;
 
 public class Node implements Comparable<Node> {
   public List<Node> edges;
-  double x;
-  double y;
+  final double x;
+  final double y;
   public double g;
   public double rhs;
   public final Obstacle obstacle;

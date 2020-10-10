@@ -17,6 +17,22 @@ public class DStarLite {
     queue = new PriorityQueue<Node>();
   }
 
+  public Node getPath() {
+    while(queue.size() > 0 && (queue.peek().key() < start.key() || start.g != start.rhs)){
+      Node v = queue.poll();
+      if(v.g > v.rhs){
+        v.g = v.rhs;
+      }
+      else if(v.g < v.rhs){
+        v.g = Double.POSITIVE_INFINITY;
+      }
+      for(Node e: v.edges){
+        updateVertex(e);
+      }
+    }
+    return start.getNext();
+  }
+
   private void updateVertex(Node v) {
     if(v != goal){
       Node next = v.getNext();

@@ -3,7 +3,7 @@ package frc.robot.path.dstar;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Node {
+public class Node implements Comparable<Node> {
   public List<Node> edges;
   double x;
   double y;
@@ -25,5 +25,9 @@ public class Node {
 
   public double key() {
     return Math.min(g, rhs);
+  }
+
+  public int compareTo(Node o) {
+    return (int) Math.signum(o.key() - key());
   }
 }

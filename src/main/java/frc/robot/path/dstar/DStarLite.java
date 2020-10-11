@@ -74,4 +74,15 @@ public class DStarLite {
       connect(node);
     }
   }
+
+  public void deleteObstacle(Obstacle obstacle) {
+    map.remove(obstacle);
+    for(Node vertex : obstacle.vertexes){
+      for(Node neighbor : vertex.edges){
+        neighbor.edges.remove(vertex);
+        updateVertex(neighbor);
+      }
+      queue.remove(vertex);
+    }
+  }
 }

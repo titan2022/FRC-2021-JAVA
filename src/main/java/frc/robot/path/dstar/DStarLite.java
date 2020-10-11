@@ -67,4 +67,11 @@ public class DStarLite {
         return false;
     return true;
   }
+
+  public void addObstacle(Obstacle obstacle) {
+    map.add(obstacle);
+    for(Node node : obstacle.vertexes){
+      connect(node);
+    }
+  }
 }

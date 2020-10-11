@@ -25,7 +25,7 @@ public class Obstacle {
   
   private static double getAngle(Node base, Node vertex, Node leg) {
     return (Math.atan2(leg.y - vertex.y, leg.x - vertex.x) -
-      Math.atan2(base.y - vertex.y, base.x - vertex.x)) % 180.;
+      Math.atan2(base.y - vertex.y, base.x - vertex.x)) % Math.PI;
   }
   
   public boolean isClear(Node a, Node b) {

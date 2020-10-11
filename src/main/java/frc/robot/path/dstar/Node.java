@@ -44,18 +44,31 @@ public class Node implements Comparable<Node> {
     this(x, y, obstacle, new ArrayList<Node>());
   }
   
+  /**
+   * Calculates the distance from this node to another node.
+   * 
+   * @param dest  The node to calculate the distance to.
+   * @return  The distance between this node and the specified node.
+   */
   public double weightTo(Node dest) {
     return Math.sqrt(Math.pow(x - dest.x, 2) + Math.pow(y - dest.y, 2));
   }
 
+  /** Returns the next node which greedily minimizes the distance to the goal. */
   public Node getNext() {
     return Collections.min(edges, new Node.GoalDistOrder(this));
   }
 
+  /** Calculates the key of this node used in the D* Lite algorithm.
+   * 
+   * @return  The minimum of the g and rhs values of this node.
+   */
   public double key() {
     return Math.min(g, rhs);
   }
 
+  /** Compares this node to another by D* Lite key value. */
+  @Override
   public int compareTo(Node o) {
     return (int) Math.signum(o.key() - key());
   }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Collections;
 
+/** A node along a possible path. */
 public class Node implements Comparable<Node> {
   public List<Node> edges;
   final double x;
@@ -14,12 +15,31 @@ public class Node implements Comparable<Node> {
   public final Obstacle obstacle;
   public boolean visited = false;
   
+  /**
+   * Creates a node at a specific position with a parent obstacle.
+   * 
+   * @param x  The x coordinate of this node.
+   * @param y  The y coordinate of this node.
+   * @param obstacle  The parent obstacle of this node. Should not be null.
+   * @param edges  A list of the neighbors of this node.
+   */
   public Node(double x, double y, Obstacle obstacle, List<Node> edges) {
     this.x = x;
     this.y = y;
     this.edges = edges;
     this.obstacle = obstacle;
   }
+  /**
+   * Creates a node at a specific position with a parent obstacle.
+   * 
+   * <p>This constructor initializes the edges of this node to an empty list.
+   * Use {@link #Node(double, double, Obstacle, List<Node>)} to specify the
+   * neighbors of this node on creation.
+   * 
+   * @param x  The x coordinate of this node.
+   * @param y  The y coordinate of this node.
+   * @param obstacle  The parent obstacle of this node. Should not be null.
+   */
   public Node(double x, double y, Obstacle obstacle) {
     this(x, y, obstacle, new ArrayList<Node>());
   }

@@ -4,12 +4,21 @@ import java.util.PriorityQueue;
 import java.util.List;
 import java.util.Arrays;
 
+/** An implementation of the D* Lite dynamic path planning algorithm. */
 public class DStarLite {
   private Node start;
   private Node goal;
   private PriorityQueue<Node> queue;
   private List<Obstacle> map;
   
+  /**
+   * Creates an instance of the D* Lite algorithm.
+   * 
+   * @param start  The start node for the algorithm.
+   *  This will change as the robot moves.
+   * @param goal  The goal node for the algorithm.
+   * @param obstacles  The obstacles to avoid along the path.
+   */
   public DStarLite(Node start, Node goal, Obstacle... obstacles) {
     this.start = start;
     this.goal = goal;

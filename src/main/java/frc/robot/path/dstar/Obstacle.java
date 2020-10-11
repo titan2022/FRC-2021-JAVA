@@ -2,9 +2,23 @@ package frc.robot.path.dstar;
 
 import java.util.List;
 
+/**
+ * A polygonal obstacle for path planning.
+ * 
+ * <p>This class implements a general convex polygonal obstacle with a node at
+ * each vertex. Concave obstacles may be represented as multiple convex
+ * obstacles, and obstacles with smooth sides may be approximated by a polygon
+ * entirely containing the boundaries of the obstacle. Subclasses of this class
+ * may provide more efficient implementations for specific types of obstacles.
+ */
 public class Obstacle {
   public final List<Node> vertexes;
   
+  /**
+   * Creates an obstacle from a list of its vertexes.
+   * 
+   * @param vertexes  A list of the vertexes of this obstacle.
+   */
   public Obstacle(List<Node> vertexes) {
     this.vertexes = List.copyOf(vertexes);
   }

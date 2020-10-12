@@ -1,13 +1,14 @@
 package frc.robot.path.dstar;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Set;
+import java.util.LinkedHashSet;
 import java.util.Comparator;
 import java.util.Collections;
+import java.util.Collection;
 
 /** A node along a possible path. */
 public class Node implements Comparable<Node> {
-  public List<Node> edges;
+  public Set<Node> edges;
   final double x;
   final double y;
   public double g;
@@ -23,10 +24,10 @@ public class Node implements Comparable<Node> {
    * @param obstacle  The parent obstacle of this node. Should not be null.
    * @param edges  A list of the neighbors of this node.
    */
-  public Node(double x, double y, Obstacle obstacle, List<Node> edges) {
+  public Node(double x, double y, Obstacle obstacle, Collection<Node> edges) {
     this.x = x;
     this.y = y;
-    this.edges = edges;
+    this.edges = new LinkedHashSet<Node>(edges);
     this.obstacle = obstacle;
   }
   /**
@@ -41,7 +42,7 @@ public class Node implements Comparable<Node> {
    * @param obstacle  The parent obstacle of this node. Should not be null.
    */
   public Node(double x, double y, Obstacle obstacle) {
-    this(x, y, obstacle, new ArrayList<Node>());
+    this(x, y, obstacle, new LinkedHashSet<Node>());
   }
   
   /**

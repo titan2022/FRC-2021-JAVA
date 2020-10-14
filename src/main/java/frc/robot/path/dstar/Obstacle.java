@@ -1,6 +1,7 @@
 package frc.robot.path.dstar;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A polygonal obstacle for path planning.
@@ -19,8 +20,12 @@ public class Obstacle {
    * 
    * @param vertexes  A list of the vertexes of this obstacle.
    */
-  public Obstacle(List<Node> vertexes) {
-    this.vertexes = List.copyOf(vertexes);
+  public Obstacle(Iterable<Point> verts) {
+    List<Node> nodes = new ArrayList<Node>();
+    for(Point point : verts){
+      nodes.add(new Node(point.x, point.y, this));
+    }
+    vertexes = List.copyOf(nodes);
   }
   
   /**

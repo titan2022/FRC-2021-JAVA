@@ -57,6 +57,30 @@ public class Node extends Point implements Comparable<Node> {
     return Collections.min(edges, new Node.GoalDistOrder(this));
   }
 
+  /**
+   * Determines if this node is an endpoint of its parent obstacle.
+   * 
+   * <p>When a single vertex is in question, this method is faster than comparing
+   * the vertex against the nodes returned form {@link Obstacle#endpoints(Node)}.
+   * 
+   * @param source  The node this obstacle is being viewed from.
+   * @return  Either true, if this node is an endpoint of its parent obstacle as
+   *  seen from the source node, or false, otherwise.
+   */
+  public boolean isEndpoint(Node source) {
+    int idx = obstacle.vertexes.indexOf(this);
+    int numVerts = obstacle.vertexes.size();
+    Node next = obstacle.vertexes.get((idx + 1) % numVerts);
+    Node prev = obstacle.vertexes.get((idx + numVerts - 1) % numVerts);
+    double theta_next = getAngle(this, source, next);
+    double theta_prev = getAngle(this, source, prev);
+    if(theta_next * theta_prev < 0) return false;
+    else if(theta_next * theta_prev > 0) return true;
+    else if(theta_next == 0 && source.distance(next) < source.distance(this)) return false;
+    else if(theta_prev == 0 && source.distance(prev) < source.distance(this)) return false;
+    else return true;
+  }
+
   /** Calculates the key of this node used in the D* Lite algorithm.
    * 
    * @return  The minimum of the g and rhs values of this node.

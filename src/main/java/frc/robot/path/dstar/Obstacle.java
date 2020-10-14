@@ -96,29 +96,4 @@ public class Obstacle {
     }
     return new Node[] {argmin, argmax};
   }
-
-  /**
-   * Determines if a vertex of this node is an endpoint from a given node.
-   * 
-   * <p>When a single vertex is in question, this method is faster than comparing
-   * the vertex against the nodes returned form {@link #endpoints(Node)}.
-   * 
-   * @param idx  The index of the possible endpoint in question in the vertexes
-   *  list of this obstacle.
-   * @param source  The node this obstacle is being viewed from.
-   * @return  Either true, if the {@code idx}th vertex of this obstacle is an
-   *  endpoint as seen from the source node, or false, otherwise.
-   */
-  public boolean isEndpoint(int idx, Node source) {
-    Node endpoint = vertexes.get(idx);
-    Node next = vertexes.get((idx+1) % vertexes.size());
-    Node prev = vertexes.get((idx + vertexes.size() -1) % vertexes.size());
-    double theta_next = getAngle(endpoint, source, next);
-    double theta_prev = getAngle(endpoint, source, prev);
-    if(theta_next * theta_prev < 0) return false;
-    else if(theta_next * theta_prev > 0) return true;
-    else if(theta_next == 0 && source.weightTo(next) < source.weightTo(endpoint)) return false;
-    else if(theta_prev == 0 && source.weightTo(prev) < source.weightTo(endpoint)) return false;
-    else return true;
-  }
 }

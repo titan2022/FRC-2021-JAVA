@@ -7,10 +7,8 @@ import java.util.Collections;
 import java.util.Collection;
 
 /** A node along a possible path. */
-public class Node implements Comparable<Node> {
+public class Node extends Point implements Comparable<Node> {
   public Set<Node> edges;
-  final double x;
-  final double y;
   public double g;
   public double rhs;
   public final Obstacle obstacle;
@@ -25,8 +23,7 @@ public class Node implements Comparable<Node> {
    * @param edges  A list of the neighbors of this node.
    */
   public Node(double x, double y, Obstacle obstacle, Collection<Node> edges) {
-    this.x = x;
-    this.y = y;
+    super(x, y);
     this.edges = new LinkedHashSet<Node>(edges);
     this.obstacle = obstacle;
   }
@@ -52,7 +49,7 @@ public class Node implements Comparable<Node> {
    * @return  The distance between this node and the specified node.
    */
   public double weightTo(Node dest) {
-    return Math.sqrt(Math.pow(x - dest.x, 2) + Math.pow(y - dest.y, 2));
+    return distance(dest);
   }
 
   /** Returns the next node which greedily minimizes the distance to the goal. */

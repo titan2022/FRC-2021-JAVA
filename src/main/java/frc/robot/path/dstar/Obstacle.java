@@ -61,14 +61,12 @@ public class Obstacle implements Iterable<Node> {
    *  obstacle, and this method returns true.
    */
   public boolean isClear(Node a, Node b) {
-    Node x = head, y = head.next;
-   do{
+    for(Node x : this){
+      Node y = x.next;
       if(getAngle(a, b, x) * getAngle(a, b, y) < 0 &&
          getAngle(x, y, a) * getAngle(x, y, b) < 0)
         return false;
-      x = y;
-      y = x.next;
-    } while(x != head);
+    }
     return true;
   }
 
@@ -87,8 +85,7 @@ public class Obstacle implements Iterable<Node> {
     double theta;
     double min = 360.;
     double max = 360.;
-    Node vertex = head;
-    do{
+    for(Node vertex : this){
       theta = getAngle(head, source, vertex);
       if(theta > max){
         max = theta;
@@ -98,8 +95,7 @@ public class Obstacle implements Iterable<Node> {
         min = theta;
         argmin = vertex;
       }
-      vertex = vertex.next;
-    } while(vertex != head);
+    }
     return new Node[] {argmin, argmax};
   }
 

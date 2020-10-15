@@ -108,11 +108,10 @@ public class DStarLite {
    */
   public void addObstacle(Obstacle obstacle) {
     map.add(obstacle);
-    Node node = obstacle.head;
-    do{
+    for(Node node : obstacle){
       connect(node);
       node = node.next;
-    } while(node != obstacle.head);
+    }
   }
 
   /**
@@ -128,14 +127,12 @@ public class DStarLite {
    */
   public void deleteObstacle(Obstacle obstacle) {
     map.remove(obstacle);
-    Node vertex = obstacle.head;
-    do{
+    for(Node vertex : obstacle){
       for(Node neighbor : vertex.edges){
         neighbor.edges.remove(vertex);
         updateVertex(neighbor);
       }
       queue.remove(vertex);
-      vertex = vertex.next;
-    } while(vertex != obstacle.head);
+    }
   }
 }

@@ -21,4 +21,23 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  public void setleftspeed(){
+
+  }
+
+  public void setrightspeed(){
+
+  }
+
+  public int getLeftEncoderCount() {
+		return 0;
+	}	
+	public int getRightEncoderCount() {
+		return 0;
+  }
+  
+  public int getGyroAngle(){
+    return 0;
+  }
 }

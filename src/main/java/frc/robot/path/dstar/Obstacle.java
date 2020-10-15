@@ -1,7 +1,6 @@
 package frc.robot.path.dstar;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * A polygonal obstacle for path planning.
@@ -13,7 +12,7 @@ import java.util.ArrayList;
  * may provide more efficient implementations for specific types of obstacles.
  */
 public class Obstacle {
-  public final List<Node> vertexes;
+  public final Node head;
   
   /**
    * Creates an obstacle from a list of its vertexes.
@@ -21,18 +20,16 @@ public class Obstacle {
    * @param vertexes  A list of the vertexes of this obstacle.
    */
   public Obstacle(Iterable<Point> verts) {
-    Node vertex, prev, next;
-    List<Node> nodes = new ArrayList<Node>();
-    for(Point point : verts){
-      vertex = new Node(point.x, point.y);
-      nodes.add(vertex);
-      prev = nodes.get((nodes.size()*2-2) % nodes.size());
-      next = nodes.get(0);
-      prev.next = next.prev = vertex;
-      vertex.next = next;
-      vertex.prev = prev;
+    Node next, tail;
+    Iterator<Point> iter = verts.iterator();
+    Point point = iter.next();
+    tail = head = new Node(point.x, point.y);
+    while(iter.hasNext()){
+      point = iter.next();
+      next = new Node(point.x, point.y, tail, head);
+      tail = tail.next = next;
     }
-    vertexes = List.copyOf(nodes);
+    head.prev = tail;
   }
   
   /**
@@ -64,14 +61,14 @@ public class Obstacle {
    *  obstacle, and this method returns true.
    */
   public boolean isClear(Node a, Node b) {
-    Node x, y;
-    for(int i=0; i<vertexes.size(); i++){
-      x = vertexes.get(i);
-      y = vertexes.get((i+1) % vertexes.size());
+    Node x = head, y = head.next;
+   do{
       if(getAngle(a, b, x) * getAngle(a, b, y) < 0 &&
          getAngle(x, y, a) * getAngle(x, y, b) < 0)
         return false;
-    }
+      x = y;
+      y = x.next;
+    } while(x != head);
     return true;
   }
 
@@ -90,8 +87,9 @@ public class Obstacle {
     double theta;
     double min = 360.;
     double max = 360.;
-    for(Node vertex : vertexes){
-      theta = getAngle(vertexes.get(0), source, vertex);
+    Node vertex = head;
+    do{
+      theta = getAngle(head, source, vertex);
       if(theta > max){
         max = theta;
         argmax = vertex;
@@ -100,7 +98,8 @@ public class Obstacle {
         min = theta;
         argmin = vertex;
       }
-    }
+      vertex = vertex.next;
+    } while(vertex != head);
     return new Node[] {argmin, argmax};
   }
 }

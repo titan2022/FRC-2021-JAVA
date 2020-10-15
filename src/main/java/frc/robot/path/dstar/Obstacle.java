@@ -21,9 +21,16 @@ public class Obstacle {
    * @param vertexes  A list of the vertexes of this obstacle.
    */
   public Obstacle(Iterable<Point> verts) {
+    Node vertex, prev, next;
     List<Node> nodes = new ArrayList<Node>();
     for(Point point : verts){
-      nodes.add(new Node(point.x, point.y, this));
+      vertex = new Node(point.x, point.y);
+      nodes.add(vertex);
+      prev = nodes.get((nodes.size()*2-2) % nodes.size());
+      next = nodes.get(0);
+      prev.next = next.prev = vertex;
+      vertex.next = next;
+      vertex.prev = prev;
     }
     vertexes = List.copyOf(nodes);
   }

@@ -11,35 +11,124 @@ public class Node extends Point implements Comparable<Node> {
   public Set<Node> edges;
   public double g;
   public double rhs;
-  public final Obstacle obstacle;
   public boolean visited = false;
+  public Node next;
+  public Node prev;
   
   /**
-   * Creates a node at a specific position with a parent obstacle.
+   * Creates a node at a specific position.
    * 
    * @param x  The x coordinate of this node.
    * @param y  The y coordinate of this node.
-   * @param obstacle  The parent obstacle of this node. Should not be null.
-   * @param edges  A list of the neighbors of this node.
+   * @param prev  The node to link to as the previous vertex of this node's
+   *  parent obstacle. Must not be null.
+   * @param next  The node to link to as the next vertex of this node's  parent
+   *  obstacle. Must not be null
+   * @param edges  The neighbors of this node.
+   * @throws IllegalArgumentException  One or both of the values passed as
+   *  {@code prev} and {@code next} is null.
    */
-  public Node(double x, double y, Obstacle obstacle, Collection<Node> edges) {
+  public Node(double x, double y, Node prev, Node next, Collection<Node> edges)
+      throws IllegalArgumentException {
     super(x, y);
     this.edges = new LinkedHashSet<Node>(edges);
-    this.obstacle = obstacle;
+    this.prev = prev;
+    this.next = next;
   }
   /**
-   * Creates a node at a specific position with a parent obstacle.
+   * Creates a node at a specific position.
    * 
-   * <p>This constructor initializes the edges of this node to an empty list.
-   * Use {@link #Node(double, double, Obstacle, List<Node>)} to specify the
-   * neighbors of this node on creation.
+   * <p>This constructor initializes the edges of this node to an empty set.
+   * Use {@link #Node(double, double, Node, Node, Collection<Node>)} to specify
+   * the neighbors of this node on creation.
    * 
    * @param x  The x coordinate of this node.
    * @param y  The y coordinate of this node.
-   * @param obstacle  The parent obstacle of this node. Should not be null.
+   * @param prev  The node to link to as the previous vertex of this node's
+   *  parent obstacle. Must not be null.
+   * @param next  The node to link to as the next vertex of this node's  parent
+   *  obstacle. Must not be null
+   * @throws IllegalArgumentException  One or both of the values passed as
+   *  {@code prev} and {@code next} is null.
    */
-  public Node(double x, double y, Obstacle obstacle) {
-    this(x, y, obstacle, new LinkedHashSet<Node>());
+  public Node(double x, double y, Node prev, Node next)
+      throws IllegalArgumentException {
+    this(x, y, prev, next, new LinkedHashSet<Node>());
+  }
+  /**
+   * Creates a node at a specific position.
+   * 
+   * <p>This constructor links this node to a single other node as both the
+   * previous and next node in this node's parent obstacle. See
+   * {@link #Node(double, double, Node, Node, Collection)} to specify
+   * different previous and next links for this node.
+   * 
+   * @param x  The x coordinate of this node.
+   * @param y  The y coordinate of this node.
+   * @param link  The node to link to as the previous and next node in this
+   *  node's parent obstacle. Must not be null.
+   * @param edges  A list of the neighbors of this node.
+   * @throws IllegalArgumentException  The value passed as {@code link} is null.
+   */
+  public Node(double x, double y, Node link, Collection<Node> edges)
+      throws IllegalArgumentException {
+    this(x, y, link, link, edges);
+  }
+  /**
+   * Creates a node at a specific position.
+   * 
+   * <p>This constructor links this node to a single other node as both the
+   * previous and next node in this node's parent obstacle. It also initializes
+   * the edges of this node as an empty set. See
+   * {@link #Node(double, double, Node, Node, Collection)},
+   * {@link #Node(double, double, Node, Collection)}, and
+   * {@link #Node(double, double, Node, Node)} to specify one or both of these
+   * parameters.
+   * 
+   * @param x  The x coordinate of this node.
+   * @param y  The y coordinate of this node.
+   * @param link  The node to link to as the previous and next node in this
+   *  node's parent obstacle. Must not be null.
+   * @throws IllegalArgumentException  The value passed as {@code link} is null.
+   */
+  public Node(double x, double y, Node link) throws IllegalArgumentException {
+    this(x, y, link, link);
+  }
+  /**
+   * Creates a node at a specific position.
+   * 
+   * <p>This constructor links this node to itself as both the previous and
+   * next node in this node's parent obstacle, effectively making this node its
+   * own obstacle. See {@link #Node(double, double, Node, Node, Collection)} to
+   * specify previous and next links for this node.
+   * 
+   * @param x  The x coordinate of this node.
+   * @param y  The y coordinate of this node.
+   * @param edges  A list of the neighbors of this node.
+   */
+  public Node(double x, double y, Collection<Node> edges) {
+    super(x, y);
+    this.edges = new LinkedHashSet<Node>(edges);
+    this.prev = this;
+    this.next = this;
+  }
+  /**
+   * Creates a node at a specific position.
+   * 
+   * <p>This constructor links this node to itself as both the previous and
+   * next node in this node's parent obstacle, effectively making this node its
+   * own obstacle. This also initializes this node's edges to an empty set. See
+   * {@link #Node(double, double, Node, Node, Collection)} for a full list of
+   * possible parameters.
+   * 
+   * @param x  The x coordinate of this node.
+   * @param y  The y coordinate of this node.
+   */
+  public Node(double x, double y) {
+    super(x, y);
+    this.edges = new LinkedHashSet<Node>();
+    this.prev = this;
+    this.next = this;
   }
   
   /**
@@ -68,10 +157,6 @@ public class Node extends Point implements Comparable<Node> {
    *  seen from the source node, or false, otherwise.
    */
   public boolean isEndpoint(Node source) {
-    int idx = obstacle.vertexes.indexOf(this);
-    int numVerts = obstacle.vertexes.size();
-    Node next = obstacle.vertexes.get((idx + 1) % numVerts);
-    Node prev = obstacle.vertexes.get((idx + numVerts - 1) % numVerts);
     double theta_next = getAngle(this, source, next);
     double theta_prev = getAngle(this, source, prev);
     if(theta_next * theta_prev < 0) return false;

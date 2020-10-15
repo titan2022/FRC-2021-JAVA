@@ -11,7 +11,7 @@ import java.util.Iterator;
  * entirely containing the boundaries of the obstacle. Subclasses of this class
  * may provide more efficient implementations for specific types of obstacles.
  */
-public class Obstacle {
+public class Obstacle implements Iterable<Node> {
   public final Node head;
   
   /**
@@ -101,5 +101,23 @@ public class Obstacle {
       vertex = vertex.next;
     } while(vertex != head);
     return new Node[] {argmin, argmax};
+  }
+
+  /** Returns an iterator over the vertexes of this object. */
+  @Override
+  public Iterator<Node> iterator() {
+    return new Iterator<Node>() {
+      private Node curr = head.prev;
+
+      public Node next() {
+        curr = curr.next;
+        if(curr == head.prev) curr = null;
+        return curr;
+      }
+
+      public boolean hasNext() {
+        return curr != null;
+      }
+    };
   }
 }

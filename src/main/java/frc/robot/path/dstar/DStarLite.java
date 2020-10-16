@@ -68,7 +68,7 @@ public class DStarLite {
       Node[] endpoints = obs.endpoints(v);
       for(int i=0; i<endpoints.length; i++){
         Node endpoint = endpoints[i];
-        if(v.isEndpoint(v) && isClear(v, endpoint)){
+        if(v.isEndpoint(endpoint) && isClear(v, endpoint)){
           v.edges.add(endpoint);
           endpoint.edges.add(v);
           updateVertex(endpoint);

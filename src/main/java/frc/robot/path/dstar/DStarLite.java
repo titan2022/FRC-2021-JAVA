@@ -28,6 +28,21 @@ public class DStarLite {
   }
 
   /**
+   * Sets the start node for the algorithm.
+   * 
+   * @param start  The new start node to use.
+   */
+  public void setStart(Node start) {
+    for(Node neighbor : this.start.edges){
+      neighbor.edges.remove(this.start);
+      updateVertex(neighbor);
+    }
+    queue.remove(this.start);
+    this.start = start;
+    connect(start);
+  }
+
+  /**
    * Computes the shortest to the goal and returns the next node along the path.
    * 
    * This method also automatically creates edges to connect nodes to their
@@ -110,7 +125,6 @@ public class DStarLite {
     map.add(obstacle);
     for(Node node : obstacle){
       connect(node);
-      node = node.next;
     }
   }
 

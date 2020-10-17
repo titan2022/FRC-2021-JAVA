@@ -22,8 +22,11 @@ public class Kinematics{
 
     }
 
-    public Matrix getAbsoluteVelocity(double vL, double vR){
+    //method requires angular velocity of both wheels and the heading of the robot.
+    @SuppressWarnings("rawtypes")
+    public Matrix getAbsoluteVelocity(double vL, double vR, double phi){
         Q = QBuilder.fill(vL, vR);
-        DifferentialJacobian = DifferentialJacobianBuilder.fill();
+        DifferentialJacobian = DifferentialJacobianBuilder.fill((wR/2)*Math.cos(phi),(wR/2)*Math.cos(phi),(wR/2)*Math.sin(phi),(wR/2)*Math.sin(phi),wR/(2*a),-wR/(2*a));
+        return DifferentialJacobian.times(Q);
     }
 }

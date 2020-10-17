@@ -2,7 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpiutil.math.*;
 import java.lang.Math.*;
-public class Kinematics{
+public class DifferentialDriveKinematics{
     // public Kinematics(){
     // }
     double wR, a;
@@ -12,7 +12,7 @@ public class Kinematics{
     Matrix Q;
     VecBuilder PBuilder;
     Matrix P;
-    public Kinematics(double wheelRadius, double robotWidth){
+    public DifferentialDriveKinematics(double wheelRadius, double robotWidth){
         wR = wheelRadius;
         a = robotWidth/2.0;
 

@@ -49,6 +49,14 @@ public class DStarLite {
     connect(goal);
   }
 
+  public Node getStart() {
+    return start;
+  }
+  
+  public Node getGoal() {
+    return goal;
+  }
+
   /**
    * Computes the shortest to the goal and returns the next node along the path.
    * 

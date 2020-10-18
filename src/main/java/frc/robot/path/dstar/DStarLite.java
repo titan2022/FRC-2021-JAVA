@@ -33,11 +33,7 @@ public class DStarLite {
    * @param start  The new start node to use.
    */
   public void setStart(Node start) {
-    for(Node neighbor : this.start.edges){
-      neighbor.edges.remove(this.start);
-      updateVertex(neighbor);
-    }
-    queue.remove(this.start);
+    remove(this.start);
     this.start = start;
     connect(start);
   }
@@ -48,11 +44,7 @@ public class DStarLite {
    * @param goal  The new goal node to use.
    */
   public void setGoal(Node goal) {
-    for(Node neighbor : this.goal.edges){
-      neighbor.edges.remove(this.goal);
-      updateVertex(neighbor);
-    }
-    queue.remove(this.goal);
+    remove(this.goal);
     this.goal = goal;
     connect(goal);
   }
@@ -109,6 +101,14 @@ public class DStarLite {
     v.visited = true;
   }
 
+  private void remove(Node v) {
+    for(Node neighbor : v.edges){
+      neighbor.edges.remove(v);
+      updateVertex(neighbor);
+    }
+    queue.remove(v);
+  }
+
   /**
    * Determines if a straight path between two nodes is free of obstacles.
    * 
@@ -157,11 +157,7 @@ public class DStarLite {
   public void deleteObstacle(Obstacle obstacle) {
     map.remove(obstacle);
     for(Node vertex : obstacle){
-      for(Node neighbor : vertex.edges){
-        neighbor.edges.remove(vertex);
-        updateVertex(neighbor);
-      }
-      queue.remove(vertex);
+      remove(vertex);
     }
   }
 }

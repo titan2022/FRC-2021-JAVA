@@ -43,6 +43,21 @@ public class DStarLite {
   }
 
   /**
+   * Sets the goal node for the algorithm.
+   * 
+   * @param goal  The new goal node to use.
+   */
+  public void setGoal(Node goal) {
+    for(Node neighbor : this.goal.edges){
+      neighbor.edges.remove(this.goal);
+      updateVertex(neighbor);
+    }
+    queue.remove(this.goal);
+    this.goal = goal;
+    connect(goal);
+  }
+
+  /**
    * Computes the shortest to the goal and returns the next node along the path.
    * 
    * This method also automatically creates edges to connect nodes to their

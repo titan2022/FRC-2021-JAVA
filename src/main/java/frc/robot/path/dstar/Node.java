@@ -177,7 +177,7 @@ public class Node extends Point implements Comparable<Node> {
   /** Compares this node to another by D* Lite key value. */
   @Override
   public int compareTo(Node o) {
-    return (int) Math.signum(o.key() - key());
+    return (int) Math.signum(key() - o.key());
   }
 
   private class GoalDistOrder implements Comparator<Node> {

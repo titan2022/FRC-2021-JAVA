@@ -31,7 +31,8 @@ public class Point {
    */
   public static double getAngle(Point base, Point vertex, Point leg) {
     return (Math.atan2(leg.y - vertex.y, leg.x - vertex.x) -
-      Math.atan2(base.y - vertex.y, base.x - vertex.x)) % Math.PI;
+      Math.atan2(base.y - vertex.y, base.x - vertex.x) + 3*Math.PI)
+      % (2*Math.PI) - Math.PI;
   }
   
   /**

@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.motionGeneration.rmpFlow.*;
@@ -20,6 +21,7 @@ import frc.robot.motionGeneration.rmpFlow.*;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private Command rmpDemoRun;
 
   private RobotContainer m_robotContainer;
 
@@ -72,6 +74,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    rmpDemoRun = m_robotContainer.getRMPDemoCommand();
+    rmpDemoRun.schedule();
   }
 
   /**
@@ -103,7 +108,11 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    RMPFlowTester test = new RMPFlowTester();
+    //RMPFlowTester test = new RMPFlowTester();
+    rmpDemoRun = m_robotContainer.getRMPDemoCommand();
+    rmpDemoRun.schedule();
+    //SmartDashboard.putNumber("Time (s)", 10);
+    System.out.println("Hello 2");
   }
 
   /**
@@ -111,6 +120,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    CommandScheduler.getInstance().run();
+    System.out.println("Hello");
   }
 
   @Override
@@ -122,6 +133,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void simulationPeriodic() {
-    
+    //CommandScheduler.getInstance().run();
   }
 }

@@ -89,15 +89,16 @@ public class Obstacle implements Iterable<Node> {
   public Iterator<Node> iterator() {
     return new Iterator<Node>() {
       private Node curr = head.prev;
+      private boolean consumed = false;
 
       public Node next() {
         curr = curr.next;
-        if(curr == head.prev) curr = null;
+        if(curr == head.prev) consumed = true;
         return curr;
       }
 
       public boolean hasNext() {
-        return curr != null;
+        return !consumed;
       }
     };
   }

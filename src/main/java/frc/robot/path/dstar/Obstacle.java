@@ -33,22 +33,6 @@ public class Obstacle implements Iterable<Node> {
   }
   
   /**
-   * Computes the angle between three nodes.
-   * 
-   * @param base  The node defining the ray the angle is measured from.
-   * @param vertex  The node defining the common endpoint of the rays
-   *  forming the angle to measure.
-   * @param leg  The node defining the ray the angle is measured to.
-   * @return  The signed angle from the ray from {@code vertex} to {@code base}
-   *  to the ray from {@code vertex} to {@code leg}. This value is the measure
-   *  of that angle in radians, and is always on the interval [-pi, pi].
-   */
-  private static double getAngle(Node base, Node vertex, Node leg) {
-    return (Math.atan2(leg.y - vertex.y, leg.x - vertex.x) -
-      Math.atan2(base.y - vertex.y, base.x - vertex.x)) % Math.PI;
-  }
-  
-  /**
    * Determines if a straight line between two nodes pass through this obstacle.
    * 
    * @param a  The node at one endpoint of the straight line.
@@ -63,8 +47,8 @@ public class Obstacle implements Iterable<Node> {
   public boolean isClear(Node a, Node b) {
     for(Node x : this){
       Node y = x.next;
-      if(getAngle(a, b, x) * getAngle(a, b, y) < 0 &&
-         getAngle(x, y, a) * getAngle(x, y, b) < 0)
+      if(Point.getAngle(a, b, x) * Point.getAngle(a, b, y) < 0 &&
+         Point.getAngle(x, y, a) * Point.getAngle(x, y, b) < 0)
         return false;
     }
     return true;
@@ -86,7 +70,7 @@ public class Obstacle implements Iterable<Node> {
     double min = 360.;
     double max = 360.;
     for(Node vertex : this){
-      theta = getAngle(head, source, vertex);
+      theta = Point.getAngle(head, source, vertex);
       if(theta > max){
         max = theta;
         argmax = vertex;

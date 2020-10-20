@@ -22,8 +22,7 @@ public class DifferentialDriveKinematics{
 
     }
 
-    //method requires angular velocity of both wheels and the heading of the robot.
-    //heading should be 
+    //heading should be taken from the gyro
     @SuppressWarnings("rawtypes")
     public Matrix getAbsoluteVelocity(double vL, double vR, double phi){
         Q = QBuilder.fill(vR, vL);

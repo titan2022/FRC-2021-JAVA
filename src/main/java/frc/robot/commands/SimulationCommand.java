@@ -14,17 +14,15 @@ import frc.robot.Robot;
 /**
  * An example command that uses an example subsystem, like a boss.
  */
-public class KinematicsCommand extends CommandBase {
+public class SimulationCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final DriveSubsystem driveSubsystem;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public KinematicsCommand(DriveSubsystem subsystem) {
-    driveSubsystem = new DriveSubsystem();
+  public SimulationCommand(DriveSubsystem subsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -32,11 +30,16 @@ public class KinematicsCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    //start the timer
+    //set the speeds of each wheel and stuff
+    //set up the simulation environment w position
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    //import my kinematics class and run the kinematics command on the previous position and the given left and right wheel velocities
+
   }
 
   // Called once the command ends or is interrupted.

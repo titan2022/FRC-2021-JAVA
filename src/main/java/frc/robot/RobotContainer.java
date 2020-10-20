@@ -9,7 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.KinematicsCommand;
+import frc.robot.commands.SimulationCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -23,7 +23,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem m_exampleSubsystem = new DriveSubsystem();
 
-  private final KinematicsCommand m_autoCommand = new KinematicsCommand(m_exampleSubsystem);
+  private final SimulationCommand m_autoCommand = new SimulationCommand(m_exampleSubsystem);
 
 
 

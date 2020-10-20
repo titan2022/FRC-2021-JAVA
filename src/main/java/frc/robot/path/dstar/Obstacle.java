@@ -48,7 +48,8 @@ public class Obstacle implements Iterable<Node> {
     for(Node x : this){
       Node y = x.next;
       if(Point.getAngle(a, b, x) * Point.getAngle(a, b, y) < 0 &&
-         Point.getAngle(x, y, a) * Point.getAngle(x, y, b) < 0)
+         Point.getAngle(x, y, a) * Point.getAngle(x, y, b) < 0 &&
+         x != a && x != b && y != a && y != b)
         return false;
     }
     return true;

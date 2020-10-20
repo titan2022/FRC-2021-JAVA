@@ -46,11 +46,11 @@ public class RMPDemoCommand extends CommandBase {
 
     double alpha = 1e-5, eta = 2, epsilon = .2;
 
-    collisionAvoiders.add(new CollisionAvoidance("Collision Avoidance Test1", root, new SimpleMatrix(1, 2,  false, new double[] {6.752, 4.35}), .5, epsilon, alpha, eta));
-		collisionAvoiders.add(new CollisionAvoidance("Collision Avoidance Test2", root, new SimpleMatrix(1, 2, false, new double[] {4.467, 6.415}), .5, epsilon, alpha, eta));
-		collisionAvoiders.add(new CollisionAvoidance("Collision Avoidance Test3", root, new SimpleMatrix(1, 2, false, new double[] {4.4966, 1.83}), .5, epsilon, alpha, eta));
-		collisionAvoiders.add(new CollisionAvoidance("Collision Avoidance Test4", root, new SimpleMatrix(1, 2, false, new double[] {9.037, 1.7576}), .5, epsilon, alpha, eta));
-    collisionAvoiders.add(new CollisionAvoidance("Collision Avoidance Test5", root, new SimpleMatrix(1, 2, false, new double[] {8.964, 6.44729}), .5, epsilon, alpha, eta));
+    collisionAvoiders.add(new CollisionAvoidance("Collision Avoidance Test1", root, new SimpleMatrix(1, 2,  false, new double[] {6.752, 4.35}), 1, epsilon, alpha, eta));
+		collisionAvoiders.add(new CollisionAvoidance("Collision Avoidance Test2", root, new SimpleMatrix(1, 2, false, new double[] {4.467, 6.415}), 1, epsilon, alpha, eta));
+		collisionAvoiders.add(new CollisionAvoidance("Collision Avoidance Test3", root, new SimpleMatrix(1, 2, false, new double[] {4.4966, 1.83}), 1, epsilon, alpha, eta));
+		collisionAvoiders.add(new CollisionAvoidance("Collision Avoidance Test4", root, new SimpleMatrix(1, 2, false, new double[] {9.037, 1.7576}), 1, epsilon, alpha, eta));
+    collisionAvoiders.add(new CollisionAvoidance("Collision Avoidance Test5", root, new SimpleMatrix(1, 2, false, new double[] {8.964, 6.44729}), 1, epsilon, alpha, eta));
     
     goalAttractors.add(new GoalAttractor("Goal Attractor Test", root, new SimpleMatrix(1, 2, false, new double[] {12.728, 4.306}), 10, 1, 10, 1, 2, 2, .005));
 
@@ -63,18 +63,19 @@ public class RMPDemoCommand extends CommandBase {
   @Override
   public void execute() {
     
+    Rotation2d theta = new Rotation2d(field.getRobotPose().getTranslation().getX() - x.get(0), field.getRobotPose().getTranslation().getY() - x.get(1));
 
     x = new SimpleMatrix(1, 2, false, new double[] {field.getRobotPose().getTranslation().getX(), field.getRobotPose().getTranslation().getY()});
 
-    //if(x)
     x_ddot = root.solve(x, x_dot);
     double[] newState = solveIntegration(.01*5, x_ddot, x_dot, x);
     //double[] newState = solveIntegration(timer.get() - previousTime, x_ddot, x_dot, x);
 		x_dot.set(1, newState[3]);
 		x_dot.set(0, newState[2]);
-		x.set(1, newState[1]);
-    x.set(0, newState[0]);
-    field.setRobotPose(x.get(0), x.get(1), new Rotation2d());
+		//x.set(1, newState[1]);
+    //x.set(0, newState[0]);
+    //field.setRobotPose(x.get(0), x.get(1), theta);
+    field.setRobotPose(newState[0], newState[1], theta);
 
     //Update data
     SmartDashboard.putNumber("Time (s)", previousTime);

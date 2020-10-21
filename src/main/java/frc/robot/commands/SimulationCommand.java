@@ -6,16 +6,34 @@
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.commands;
+//package frc.robot.motionGeneration.rmpFlow;
 
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
+import javax.swing.JFrame;
+import frc.robot.DifferentialDriveKinematics;
+import edu.wpi.first.wpiutil.math.*;
+import java.lang.Math.*;
+
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+//import frc.wpilibjTemp.Field2d;
 
 /**
  * An example command that uses an example subsystem, like a boss.
  */
 public class SimulationCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  //MatBuilder DifferentialJacobianBuilder;
+  private Matrix DifferentialJacobian;
+  private double vl;
+  private double vr;
+  private Field2d f;
+  private Timer timer;
+  private double previousTime;
 
   /**
    * Creates a new ExampleCommand.
@@ -33,13 +51,29 @@ public class SimulationCommand extends CommandBase {
     //start the timer
     //set the speeds of each wheel and stuff
     //set up the simulation environment w position
+
+    
+    f.setRobotPose(0, 0, 0);
+    vl = 5;
+    vr = 10;
+
+    timer = new Timer();
+    f = new Field2d();
+    timer.start();
+    previousTime = timer.get();
+
+
+    //DifferentialJacobianBuilder = new MatBuilder<>(Nat.N3(), Nat.N2());
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     //import my kinematics class and run the kinematics command on the previous position and the given left and right wheel velocities
-
+    DifferentialDriveKinematics object = new DifferentialDriveKinematics(1, 1);
+    DifferentialJacobian = object.getAbsoluteVelocity(vl, vr, f.getRobotPose().getRotation());
+    f.setRobotPose(DifferentialJacobian.get(1,1), DifferentialJacobian.get(2,1), DifferentialJacobian.get(3,1));
   }
 
   // Called once the command ends or is interrupted.

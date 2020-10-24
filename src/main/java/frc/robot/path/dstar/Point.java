@@ -1,5 +1,7 @@
 package frc.robot.path.dstar;
 
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+
 /**
  * A point on a 2D cartesian plane.
  */
@@ -44,5 +46,15 @@ public class Point {
    */
   public double distance(Point dest) {
     return Math.sqrt(Math.pow(x - dest.x, 2) + Math.pow(y - dest.y, 2));
+  }
+
+  /** Converts this Point to a Translation2d from the origin. */
+  public Translation2d translation() {
+    return new Translation2d(x, y);
+  }
+
+  /** Constructs a Point from a translation from the origin. */
+  public static Point fromTranslation(Translation2d translation) {
+    return new Point(translation.getX(), translation.getY());
   }
 }

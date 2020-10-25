@@ -1,8 +1,7 @@
 package frc.robot.path.dstar;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Transform2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 
 public interface Segment {
   public Point getStart();
@@ -42,5 +41,4 @@ public interface Segment {
     Translation2d offset = center.translation();
     return translate(offset.unaryMinus()).rotate(rotation).translate(offset);
   }
-  public Segment transform(Transform2d transformation);
 }

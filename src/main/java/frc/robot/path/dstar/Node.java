@@ -138,7 +138,7 @@ public class Node extends Point implements Comparable<Node> {
    * @return  The distance between this node and the specified node.
    */
   public double weightTo(Node dest) {
-    return distance(dest);
+    return getDistance(dest);
   }
 
   /** Returns the next node which greedily minimizes the distance to the goal. */
@@ -161,8 +161,8 @@ public class Node extends Point implements Comparable<Node> {
     double theta_prev = getAngle(this, source, prev).getRadians();
     if(theta_next * theta_prev < 0) return false;
     else if(theta_next * theta_prev > 0) return true;
-    else if(theta_next == 0 && source.distance(next) < source.distance(this)) return false;
-    else if(theta_prev == 0 && source.distance(prev) < source.distance(this)) return false;
+    else if(theta_next == 0 && source.getDistance(next) < source.getDistance(this)) return false;
+    else if(theta_prev == 0 && source.getDistance(prev) < source.getDistance(this)) return false;
     else return true;
   }
 

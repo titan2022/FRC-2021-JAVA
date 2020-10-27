@@ -1,11 +1,12 @@
 package frc.robot.path.dstar;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 
 /**
  * A point on a 2D cartesian plane.
  */
-public class Point {
+public class Point extends Translation2d {
   public final double x;
   public final double y;
   
@@ -16,6 +17,7 @@ public class Point {
    * @param y  The y coordinate of this point.
    */
   public Point(double x, double y){
+    super(x, y);
     this.x = x;
     this.y = y;
   }
@@ -38,16 +40,5 @@ public class Point {
   /** Returns the polar angle of this Point. */
   public Rotation2d angle() {
     return new Rotation2d(x, y);
-  }
-  
-  /**
-   * Finds the Euclidean distance from this point to another point.
-   * 
-   * @param dest  The point to compute the distance to.
-   * @return  The Euclidean (L2) distance from this point to the point
-   *  specified as the {@code dest} parameter.
-   */
-  public double distance(Point dest) {
-    return Math.sqrt(Math.pow(x - dest.x, 2) + Math.pow(y - dest.y, 2));
   }
 }

@@ -13,7 +13,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants;
-public class AutoAimSubsystem extends SubsystemBase {
+public class LimelightSubsystem extends SubsystemBase {
   /**
    * Creates a new AutoAimSubsystem.
    */
@@ -22,19 +22,13 @@ public class AutoAimSubsystem extends SubsystemBase {
   private NetworkTable table;
   private NetworkTableEntry tx;
   private NetworkTableEntry ty;
-  private NetworkTableEntry ta;
   public static double x;
   public static double y;
   public double steeringAdjust;
-  public AutoAimSubsystem() {
-    table = NetworkTableInstance.getDefault().getTable("limelight");
-    tx = table.getEntry("tx");
-    ty = table.getEntry("ty");
-    ta = table.getEntry("ta");
-    x = tx.getDouble(0.0);
-    y= ty.getDouble(0.0);
+  public LimelightSubsystem() {
+    
   }
-
+  
   public static void calculateDistance()
   {
     distance = (Constants.targetHeight - Constants.limelightHeight) / Math.tan(Constants.limelightAngle + angleToTarget);
@@ -48,10 +42,33 @@ public class AutoAimSubsystem extends SubsystemBase {
     double xCoor = vpw/2 *nx;
     angleToTarget = Math.atan(xCoor/1);
   }
+  public static double steering()
+  {
+    double heading_error = -x;
+    double steeringAdjust = 0;
+    if(x> 1.0)
+    {
+       steeringAdjust = Constants.KpAim* heading_error - Constants.min_command;
+    }
+    else if(LimelightSubsystem.x< 1.0)
+    {
+        steeringAdjust =  Constants.KpAim* heading_error + Constants.min_command;
+    }
+    return steeringAdjust;
+  }
+  public static double distance()
+  {
+    calculateAngleToTarget();
+    double distanceError = Constants.desiredDistance - LimelightSubsystem.distance;
+    return distanceError;
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    
-   
+    table = NetworkTableInstance.getDefault().getTable("limelight");
+    tx = table.getEntry("tx");
+    ty = table.getEntry("ty");
+    x = tx.getDouble(0.0);
+    y= ty.getDouble(0.0);
   }
 }

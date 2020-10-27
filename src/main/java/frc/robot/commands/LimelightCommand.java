@@ -7,43 +7,33 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.AutoAimSubsystem;
-import frc.robot.Constants;
-public class AutoAimCommand extends CommandBase {
+import frc.robot.subsystems.LimelightSubsystem;
+import edu.wpi.first.networktables.NetworkTableInstance;
+public class LimelightCommand extends CommandBase {
   /**
    * Creates a new AutoAimCommand.
    */
-  private AutoAimSubsystem subsystem;
-  public XboxController xbox; //placeholder for dedicated xbox class
-  public AutoAimCommand() {
+  private LimelightSubsystem subsystem;
+  public LimelightCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(subsystem);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    subsystem = new AutoAimSubsystem();
-    addRequirements(subsystem);
+    subsystem = new LimelightSubsystem();
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double heading_error = -AutoAimSubsystem.x;
-    double steeringAdjust = 0;
-    if(AutoAimSubsystem.x> 1.0)
-    {
-       steeringAdjust = Constants.KpAim* heading_error - Constants.min_command;
-    }
-    else if(AutoAimSubsystem.x< 1.0)
-    {
-        steeringAdjust =  Constants.KpAim* heading_error + Constants.min_command;
-    }
-    AutoAimSubsystem.calculateDistance();
-    AutoAimSubsystem.calculateAngleToTarget();
-    double distanceError = Constants.desiredDistance - AutoAimSubsystem.distance;
+    
+    LimelightSubsystem.steering();
+    LimelightSubsystem.distance();
   }
 
   // Called once the command ends or is interrupted.
@@ -54,12 +44,6 @@ public class AutoAimCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(xbox.getAButtonPressed()==true)
-    {
-      return false;
-    }
-    else{
-      return true;
-    }
+    return false;
   }
 }

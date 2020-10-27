@@ -34,6 +34,11 @@ public class Point {
     return new Rotation2d(Math.atan2(leg.y - vertex.y, leg.x - vertex.x) -
       Math.atan2(base.y - vertex.y, base.x - vertex.x));
   }
+
+  /** Returns the polar angle of this Point. */
+  public Rotation2d angle() {
+    return new Rotation2d(x, y);
+  }
   
   /**
    * Finds the Euclidean distance from this point to another point.

@@ -75,8 +75,9 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
 
-    rmpDemoRun = m_robotContainer.getRMPDemoCommand();
-    rmpDemoRun.schedule();
+    //rmpDemoRun = m_robotContainer.getRMPDemoCommand();
+    //rmpDemoRun.schedule();
+    new RMPDemoCommand().schedule();
   }
 
   /**
@@ -109,7 +110,7 @@ public class Robot extends TimedRobot {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
     //RMPFlowTester test = new RMPFlowTester();
-    rmpDemoRun = m_robotContainer.getRMPDemoCommand();
+    new RMPDemoCommand().schedule();
     rmpDemoRun.schedule();
     //SmartDashboard.putNumber("Time (s)", 10);
     System.out.println("Hello 2");

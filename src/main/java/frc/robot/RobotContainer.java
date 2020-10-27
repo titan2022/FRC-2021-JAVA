@@ -26,8 +26,6 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-  private final RMPDemoCommand rmpDemo = new RMPDemoCommand();
-
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -55,15 +53,5 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return m_autoCommand;
-  }
-
-  /**
-   * Use this to pass the rmp demo command to the main {@link Robot} class.
-   *
-   * @return RMP demo
-   */
-  public Command getRMPDemoCommand() {
-    // An ExampleCommand will run in autonomous
-    return rmpDemo;
   }
 }

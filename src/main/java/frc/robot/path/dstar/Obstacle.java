@@ -47,8 +47,8 @@ public class Obstacle implements Iterable<Node> {
   public boolean isClear(Node a, Node b) {
     for(Node x : this){
       Node y = x.next;
-      if(Point.getAngle(a, b, x) * Point.getAngle(a, b, y) < 0 &&
-         Point.getAngle(x, y, a) * Point.getAngle(x, y, b) < 0 &&
+      if(Point.getAngle(a, b, x).getRadians() * Point.getAngle(a, b, y).getRadians() < 0 &&
+         Point.getAngle(x, y, a).getRadians() * Point.getAngle(x, y, b).getRadians() < 0 &&
          x != a && x != b && y != a && y != b)
         return false;
     }
@@ -71,7 +71,7 @@ public class Obstacle implements Iterable<Node> {
     double min = 360.;
     double max = -360.;
     for(Node vertex : this){
-      theta = Point.getAngle(head, source, vertex);
+      theta = Point.getAngle(head, source, vertex).getRadians();
       if(theta > max){
         max = theta;
         argmax = vertex;

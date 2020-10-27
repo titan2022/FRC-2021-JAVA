@@ -157,8 +157,8 @@ public class Node extends Point implements Comparable<Node> {
    *  seen from the source node, or false, otherwise.
    */
   public boolean isEndpoint(Node source) {
-    double theta_next = getAngle(this, source, next);
-    double theta_prev = getAngle(this, source, prev);
+    double theta_next = getAngle(this, source, next).getRadians();
+    double theta_prev = getAngle(this, source, prev).getRadians();
     if(theta_next * theta_prev < 0) return false;
     else if(theta_next * theta_prev > 0) return true;
     else if(theta_next == 0 && source.distance(next) < source.distance(this)) return false;

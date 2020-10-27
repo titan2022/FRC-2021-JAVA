@@ -1,5 +1,7 @@
 package frc.robot.path.dstar;
 
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+
 /**
  * A point on a 2D cartesian plane.
  */
@@ -26,13 +28,11 @@ public class Point {
    *  forming the angle to measure.
    * @param leg  The point defining the ray the angle is measured to.
    * @return  The signed angle from the ray from {@code vertex} to {@code base}
-   *  to the ray from {@code vertex} to {@code leg}. This value is the measure
-   *  of that angle in radians, and is always on the interval [-pi, pi].
+   *  to the ray from {@code vertex} to {@code leg}.
    */
-  public static double getAngle(Point base, Point vertex, Point leg) {
-    return (Math.atan2(leg.y - vertex.y, leg.x - vertex.x) -
-      Math.atan2(base.y - vertex.y, base.x - vertex.x) + 3*Math.PI)
-      % (2*Math.PI) - Math.PI;
+  public static Rotation2d getAngle(Point base, Point vertex, Point leg) {
+    return new Rotation2d(Math.atan2(leg.y - vertex.y, leg.x - vertex.x) -
+      Math.atan2(base.y - vertex.y, base.x - vertex.x));
   }
   
   /**

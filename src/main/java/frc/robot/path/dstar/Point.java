@@ -21,6 +21,23 @@ public class Point extends Translation2d {
     this.x = x;
     this.y = y;
   }
+  /**
+   * Creates a point from polar coordinates
+   * 
+   * @param distance  The distance from the origin to the point.
+   * @param angle  The angle from the positive x-axis to the vector from the
+   *  origin to the point.
+   */
+  public Point(double distance, Rotation2d angle) {
+    this(angle.getCos() * distance, angle.getSin() * distance);
+  }
+  /** Creates a point from a Translation2d.
+   * 
+   * @param translation  The translation to create this Point from.
+   */
+  public Point(Translation2d translation) {
+    this(translation.getX(), translation.getY());
+  }
   
   /**
    * Computes the angle between three points.
@@ -40,5 +57,41 @@ public class Point extends Translation2d {
   /** Returns the polar angle of this Point. */
   public Rotation2d angle() {
     return new Rotation2d(x, y);
+  }
+
+  @Override
+  public Point plus(Translation2d other) {
+    return new Point(getX() + other.getX(), getY() + other.getY());
+  }
+
+  @Override
+  public Point minus(Translation2d other) {
+    return new Point(getX() - other.getX(), getY() - other.getY());
+  }
+
+  @Override
+  public Point unaryMinus() {
+    return new Point(-getX(), -getY());
+  }
+
+  @Override
+  public Point rotateBy(Rotation2d other) {
+    return new Point(getX()*other.getCos() - getY()*other.getSin(),
+        getX()*other.getSin() + getY()*other.getCos());
+  }
+
+  @Override
+  public Point times(double scalar) {
+    return new Point(getX()*scalar, getY()*scalar);
+  }
+
+  @Override
+  public Point div(double scalar) {
+    return new Point(getX()/scalar, getY()/scalar);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("Point(%.2f, %.2f)", getX(), getY());
   }
 }

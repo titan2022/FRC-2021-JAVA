@@ -23,10 +23,10 @@ public class Obstacle implements Iterable<Node> {
     Node next, tail;
     Iterator<Point> iter = verts.iterator();
     Point point = iter.next();
-    tail = head = new Node(point.x, point.y);
+    tail = head = new Node(point.getX(), point.getY());
     while(iter.hasNext()){
       point = iter.next();
-      next = new Node(point.x, point.y, tail, head);
+      next = new Node(point.getX(), point.getY(), tail, head);
       tail = tail.next = next;
     }
     head.prev = tail;

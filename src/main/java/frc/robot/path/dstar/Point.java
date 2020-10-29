@@ -1,13 +1,12 @@
 package frc.robot.path.dstar;
 
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 
 /**
  * A point on a 2D cartesian plane.
  */
-public class Point {
-  public final double x;
-  public final double y;
+public class Point extends Translation2d {
   
   /**
    * Creates a point with specified cartesian coordinates.
@@ -16,8 +15,24 @@ public class Point {
    * @param y  The y coordinate of this point.
    */
   public Point(double x, double y){
-    this.x = x;
-    this.y = y;
+    super(x, y);
+  }
+  /**
+   * Creates a point from polar coordinates
+   * 
+   * @param distance  The distance from the origin to the point.
+   * @param angle  The angle from the positive x-axis to the vector from the
+   *  origin to the point.
+   */
+  public Point(double distance, Rotation2d angle) {
+    this(angle.getCos() * distance, angle.getSin() * distance);
+  }
+  /** Creates a point from a Translation2d.
+   * 
+   * @param translation  The translation to create this Point from.
+   */
+  public Point(Translation2d translation) {
+    this(translation.getX(), translation.getY());
   }
   
   /**
@@ -28,33 +43,50 @@ public class Point {
    *  forming the angle to measure.
    * @param leg  The point defining the ray the angle is measured to.
    * @return  The signed angle from the ray from {@code vertex} to {@code base}
-   *  to the ray from {@code vertex} to {@code leg}. This value is the measure
-   *  of that angle in radians, and is always on the interval [-pi, pi].
+   *  to the ray from {@code vertex} to {@code leg}.
    */
-  public static double getAngle(Point base, Point vertex, Point leg) {
-    return (Math.atan2(leg.y - vertex.y, leg.x - vertex.x) -
-      Math.atan2(base.y - vertex.y, base.x - vertex.x) + 3*Math.PI)
-      % (2*Math.PI) - Math.PI;
-  }
-  
-  /**
-   * Finds the Euclidean distance from this point to another point.
-   * 
-   * @param dest  The point to compute the distance to.
-   * @return  The Euclidean (L2) distance from this point to the point
-   *  specified as the {@code dest} parameter.
-   */
-  public double distance(Point dest) {
-    return Math.sqrt(Math.pow(x - dest.x, 2) + Math.pow(y - dest.y, 2));
+  public static Rotation2d getAngle(Point base, Point vertex, Point leg) {
+    return vertex.minus(base).angle().minus(leg.minus(base).angle());
   }
 
-  /** Converts this Point to a Translation2d from the origin. */
-  public Translation2d translation() {
-    return new Translation2d(x, y);
+  /** Returns the polar angle of this Point. */
+  public Rotation2d angle() {
+    return new Rotation2d(getX(), getY());
   }
 
-  /** Constructs a Point from a translation from the origin. */
-  public static Point fromTranslation(Translation2d translation) {
-    return new Point(translation.getX(), translation.getY());
+  @Override
+  public Point plus(Translation2d other) {
+    return new Point(getX() + other.getX(), getY() + other.getY());
+  }
+
+  @Override
+  public Point minus(Translation2d other) {
+    return new Point(getX() - other.getX(), getY() - other.getY());
+  }
+
+  @Override
+  public Point unaryMinus() {
+    return new Point(-getX(), -getY());
+  }
+
+  @Override
+  public Point rotateBy(Rotation2d other) {
+    return new Point(getX()*other.getCos() - getY()*other.getSin(),
+        getX()*other.getSin() + getY()*other.getCos());
+  }
+
+  @Override
+  public Point times(double scalar) {
+    return new Point(getX()*scalar, getY()*scalar);
+  }
+
+  @Override
+  public Point div(double scalar) {
+    return new Point(getX()/scalar, getY()/scalar);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("Point(%.2f, %.2f)", getX(), getY());
   }
 }

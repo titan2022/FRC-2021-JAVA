@@ -21,11 +21,11 @@ public class LinearSegment implements Segment {
   }
 
   public double getLength() {
-    return start.distance(end);
+    return start.getDistance(end);
   }
 
   public Rotation2d getRotation(double distance) {
-    return new Rotation2d(end.x - start.x, end.y - start.y);
+    return end.minus(start).angle();
   }
 
   public Rotation2d angularVelocity(double distance) {
@@ -33,14 +33,10 @@ public class LinearSegment implements Segment {
   }
 
   public LinearSegment translate(Translation2d offset) {
-    return new LinearSegment(
-        Point.fromTranslation(start.translation().plus(offset)),
-        Point.fromTranslation(end.translation().plus(offset)));
+    return new LinearSegment(start.plus(offset), end.plus(offset));
   }
   
   public LinearSegment rotate(Rotation2d rotation) {
-    return new LinearSegment(
-        Point.fromTranslation(start.translation().rotateBy(rotation)), 
-        Point.fromTranslation(end.translation().rotateBy(rotation)));
+    return new LinearSegment(start.rotateBy(rotation), end.rotateBy(rotation));
   }
 }

@@ -1,6 +1,9 @@
 package frc.robot.path.dstar;
 
 import java.util.Set;
+
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+
 import java.util.LinkedHashSet;
 import java.util.Comparator;
 import java.util.Collections;
@@ -130,6 +133,98 @@ public class Node extends Point implements Comparable<Node> {
     this.prev = this;
     this.next = this;
   }
+  /**
+   * Creates a node at a specific position.
+   * 
+   * @param position  The position of this node.
+   * @param prev  The node to link to as the previous vertex of this node's
+   *  parent obstacle. Must not be null.
+   * @param next  The node to link to as the next vertex of this node's  parent
+   *  obstacle. Must not be null
+   */
+  public Node(Translation2d position, Node prev, Node next, Collection<Node> edges) {
+    this(position.getX(), position.getY(), prev, next, edges);
+  }
+  /**
+   * Creates a node at a specific position.
+   * 
+   * <p>This constructor initializes the edges of this node to an empty set.
+   * Use {@link #Node(Translation2d, Node, Node, Collection<Node>)} to specify
+   * the neighbors of this node on creation.
+   * 
+   * @param position  The position of this node.
+   * @param prev  The node to link to as the previous vertex of this node's
+   *  parent obstacle. Must not be null.
+   * @param next  The node to link to as the next vertex of this node's  parent
+   *  obstacle. Must not be null
+   */
+  public Node(Translation2d position, Node prev, Node next) {
+    this(position, prev, next, new LinkedHashSet<Node>());
+  }
+  /**
+   * Creates a node at a specific position.
+   * 
+   * <p>This constructor links this node to a single other node as both the
+   * previous and next node in this node's parent obstacle. See
+   * {@link #Node(Translation2d, Node, Node, Collection<Node>)} to specify different
+   * previous and next links for this node.
+   * 
+   * @param position  The y coordinate of this node.
+   * @param link  The node to link to as the previous and next node in this
+   *  node's parent obstacle. Must not be null.
+   * @param edges  A list of the neighbors of this node.
+   */
+  public Node(Translation2d position, Node link, Collection<Node> edges) {
+    this(position, link, link, edges);
+  }
+  /**
+   * Creates a node at a specific position.
+   * 
+   * <p>This constructor links this node to a single other node as both the
+   * previous and next node in this node's parent obstacle. It also initializes
+   * the edges of this node as an empty set. See
+   * {@link #Node(Translation2d, Node, Node, Collection<Node>)},
+   * {@link #Node(Translation2d, Node, Collection<Node>)}, and
+   * {@link #Node(Translation2d, Node, Node)} to specify one or both of these
+   * parameters.
+   * 
+   * @param position  The position of this node.
+   * @param link  The node to link to as the previous and next node in this
+   *  node's parent obstacle. Must not be null.
+   */
+  public Node(Translation2d position, Node link) {
+    this(position, link, link, new LinkedHashSet<Node>());
+  }
+  /**
+   * Creates a node at a specific position.
+   * 
+   * <p>This constructor links this node to itself as both the previous and
+   * next node in this node's parent obstacle, effectively making this node its
+   * own obstacle. See {@link #Node(Translation2d, Node, Node, Collection<Node>)}
+   * to specify previous and next links for this node.
+   * 
+   * @param position  The position of this node.
+   * @param edges  A list of the neighbors of this node.
+   */
+  public Node(Translation2d position, Collection<Node> edges) {
+    super(position.getX(), position.getY());
+    this.edges = new LinkedHashSet<Node>(edges);
+    next = prev = this;
+  }
+  /**
+   * Creates a node at a specific position.
+   * 
+   * <p>This constructor links this node to itself as both the previous and
+   * next node in this node's parent obstacle, effectively making this node its
+   * own obstacle. This also initializes this node's edges to an empty set. See
+   * {@link #Node(Translation2d, Node, Node, Collection)} for a full list of
+   * possible parameters.
+   * 
+   * @param position  The position of this node.
+   */
+  public Node(Translation2d position) {
+    this(position, new LinkedHashSet<Node>());
+  }
   
   /**
    * Calculates the distance from this node to another node.
@@ -138,7 +233,7 @@ public class Node extends Point implements Comparable<Node> {
    * @return  The distance between this node and the specified node.
    */
   public double weightTo(Node dest) {
-    return distance(dest);
+    return getDistance(dest);
   }
 
   /** Returns the next node which greedily minimizes the distance to the goal. */
@@ -157,12 +252,12 @@ public class Node extends Point implements Comparable<Node> {
    *  seen from the source node, or false, otherwise.
    */
   public boolean isEndpoint(Node source) {
-    double theta_next = getAngle(this, source, next);
-    double theta_prev = getAngle(this, source, prev);
+    double theta_next = getAngle(this, source, next).getRadians();
+    double theta_prev = getAngle(this, source, prev).getRadians();
     if(theta_next * theta_prev < 0) return false;
     else if(theta_next * theta_prev > 0) return true;
-    else if(theta_next == 0 && source.distance(next) < source.distance(this)) return false;
-    else if(theta_prev == 0 && source.distance(prev) < source.distance(this)) return false;
+    else if(theta_next == 0 && source.getDistance(next) < source.getDistance(this)) return false;
+    else if(theta_prev == 0 && source.getDistance(prev) < source.getDistance(this)) return false;
     else return true;
   }
 

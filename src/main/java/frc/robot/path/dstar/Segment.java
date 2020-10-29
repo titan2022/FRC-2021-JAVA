@@ -38,7 +38,6 @@ public interface Segment {
   public Segment translate(Translation2d offset);
   public Segment rotate(Rotation2d rotation);
   public default Segment rotate(Rotation2d rotation, Point center){
-    Translation2d offset = center.translation();
-    return translate(offset.unaryMinus()).rotate(rotation).translate(offset);
+    return translate(center.unaryMinus()).rotate(rotation).translate(center);
   }
 }

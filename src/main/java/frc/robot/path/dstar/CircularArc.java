@@ -4,27 +4,27 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 
 public class CircularArc implements Segment {
-  private final Translation2d center;
-  private final Translation2d start;
+  private final Point center;
+  private final Point start;
   private final Rotation2d theta;
 
   public CircularArc(Point center, Point start, Point end) {
-    this.center = center.translation();
-    this.start = start.translation().minus(this.center);
-    theta = Rotation2d.fromDegrees(Point.getAngle(start, center, end));
-  }
-  public CircularArc(Translation2d center, Translation2d start, Rotation2d theta) {
     this.center = center;
-    this.start = start;
+    this.start = start.minus(this.center);
+    theta = Point.getAngle(start, center, end);
+  }
+  public CircularArc(Point center, Translation2d start, Rotation2d theta) {
+    this.center = center;
+    this.start = new Point(start);
     this.theta = theta;
   }
 
   public Point getStart() {
-    return Point.fromTranslation(start);
+    return center.plus(start);
   }
 
   public Point getEnd() {
-    return Point.fromTranslation(start.rotateBy(theta).plus(center));
+    return center.plus(start.rotateBy(theta));
   }
 
   public double getLength() {
@@ -32,8 +32,8 @@ public class CircularArc implements Segment {
   }
 
   public Rotation2d getRotation(double distance) {
-    return new Rotation2d(-start.getY(), start.getX())
-        .plus(new Rotation2d(distance / start.getNorm()));
+    return new Rotation2d(distance / start.getNorm() + Math.PI)
+        .times(Math.signum(theta.getRadians())).plus(start.angle());
   }
 
   public Rotation2d angularVelocity(double distance) {

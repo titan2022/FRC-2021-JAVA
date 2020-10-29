@@ -3,6 +3,7 @@ package frc.robot.path.dstar;
 import java.util.Set;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 
 import java.util.LinkedHashSet;
 import java.util.Comparator;
@@ -285,5 +286,22 @@ public class Node extends Point implements Comparable<Node> {
     public int compare(Node o1, Node o2) {
       return (int) Math.signum(from.weightTo(o1) + o1.g - from.weightTo(o2) - o2.g);
     }
+  }
+
+  /**
+   * Get a linear path from a Point to this Node with obstacle growth.
+   * 
+   * @param from  The point to get a path from.
+   * @param radius  The radius around this point to avoid. The returned
+   *  path will end this many units from this Node.
+   * @return A LinearSegment tangent to the circle centered at this Node
+   *  with the specified radius. The segment will start at the point
+   *  {@code from} and will end at the point of tangency. 
+   */
+  public Segment segmentFrom(Point from, double radius) {
+    Rotation2d theta = new Rotation2d(Math.acos(radius / getDistance(from)))
+        .times(Math.signum(Point.getAngle(next, this, from).getRadians()));
+    Point offset = new Point(radius, theta.plus(from.minus(this).angle()));
+    return new LinearSegment(from, this.plus(offset));
   }
 }

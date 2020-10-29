@@ -310,10 +310,24 @@ public class Node extends Point implements Comparable<Node> {
    * @return The point of tangency of a line from {@code from} to a
    *  circle around this Node with the specified radius.
    */
-  private Point getTangency(Point from, double radius) {
+  public Point getTangency(Point from, double radius) {
     Rotation2d theta = new Rotation2d(Math.acos(radius / getDistance(from)))
         .times(Math.signum(Point.getAngle(next, this, from).getRadians()));
     Point offset = new Point(radius, theta.plus(from.minus(this).angle()));
     return plus(offset);
+  }
+
+  /**
+   * Gets a path from a Point around this Node to face another Point.
+   * 
+   * @param start  The starting point of the path.
+   * @param target  The point the path should end facing towards.
+   * @return A CircularArc segment starting at the specified start Point
+   *  and ending the same distance from this Node, facing towards the
+   *  specified target Point.
+   */
+  public Segment segmentAround(Point start, Point target) {
+    double radius = start.getDistance(this);
+    return new CircularArc(this, start, getTangency(target, radius));
   }
 }

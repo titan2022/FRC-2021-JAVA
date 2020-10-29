@@ -299,9 +299,21 @@ public class Node extends Point implements Comparable<Node> {
    *  {@code from} and will end at the point of tangency. 
    */
   public Segment segmentFrom(Point from, double radius) {
+    return new LinearSegment(from, getTangency(from, radius));
+  }
+
+  /**
+   * Gets the point of tangency from a point to a circle around this Node.
+   * 
+   * @param from  The point to get the point of tangency from.
+   * @param radius  The radius of the circle around this Node.
+   * @return The point of tangency of a line from {@code from} to a
+   *  circle around this Node with the specified radius.
+   */
+  private Point getTangency(Point from, double radius) {
     Rotation2d theta = new Rotation2d(Math.acos(radius / getDistance(from)))
         .times(Math.signum(Point.getAngle(next, this, from).getRadians()));
     Point offset = new Point(radius, theta.plus(from.minus(this).angle()));
-    return new LinearSegment(from, this.plus(offset));
+    return plus(offset);
   }
 }

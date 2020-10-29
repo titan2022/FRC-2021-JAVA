@@ -85,6 +85,28 @@ public class DStarLite {
     return start.getNext();
   }
 
+  /**
+   * Gets an iterable over the path segments from the start node to the goal.
+   * 
+   * @param radius  The obstacle growth radius to use. That is, the minimum
+   *  distance the path should keep away from the nearest edge.
+   * @return An iterable of {@link Segment}s describing the path to the
+   *  goal. If the most recently returned path segment ends at a Node that
+   *  is still a part of the shortest path to goal after the map is
+   *  updated, updates to the map stored in this object will be
+   *  reflected by the iterator if the {@link #getPath()} method of this
+   *  object is called before the next segment is returned from the
+   *  iterator.
+   */
+  public Iterable<Segment> getSegments(double radius) {
+    return new Iterable<Segment>() {
+      @Override
+      public Iterator<Segment> iterator(){
+        return new DStarLite.PathIterator(start, radius);
+      }
+    };
+  }
+
   private void updateVertex(Node v) {
     if(v != goal){
       Node next = v.getNext();

@@ -3,6 +3,7 @@ package frc.robot.path.dstar;
 import java.util.PriorityQueue;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Iterator;
 
 /** An implementation of the D* Lite dynamic path planning algorithm. */
 public class DStarLite {
@@ -166,6 +167,43 @@ public class DStarLite {
     map.remove(obstacle);
     for(Node vertex : obstacle){
       remove(vertex);
+    }
+  }
+
+  /** An iterator over path segments to a goal node. */
+  protected class PathIterator implements Iterator<Segment> {
+    private Point curr;
+    private Node target;
+    private final double radius;
+  
+    /** Creates a PathIterator from a start node and obstacle growth radius.
+     * 
+     * @param start  The starting node of the path to iterate over.
+     * @param radius  The radius to use for obstacle growth for this path.
+     */
+    PathIterator(Node start, double radius) {
+      curr = start;
+      target = start.getNext();
+      this.radius = radius;
+    }
+  
+    @Override
+    public boolean hasNext() {
+      return target.getNext() == target;
+    }
+  
+    @Override
+    public Segment next() {
+      Segment segment;
+      if(curr.getDistance(target) <= radius){
+        segment = target.segmentAround(curr, target.getNext());
+        target = target.getNext();
+        curr = segment.getEnd();
+        return segment;
+      }
+      segment = target.segmentFrom(curr, radius);
+      curr = segment.getEnd();
+      return segment;
     }
   }
 }

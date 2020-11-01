@@ -24,6 +24,10 @@ public class LinearSegment implements Segment {
     return start.getDistance(end);
   }
 
+  public Point getPos(double distance) {
+    return new Point(distance, getRotation(0)).plus(start);
+  }
+
   public Rotation2d getRotation(double distance) {
     return end.minus(start).angle();
   }

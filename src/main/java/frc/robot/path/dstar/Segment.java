@@ -7,6 +7,7 @@ public interface Segment {
   public Point getStart();
   public Point getEnd();
   public double getLength();
+  public Point getPos(double distance);
 
   // differential drive
   public Rotation2d getRotation(double distance);

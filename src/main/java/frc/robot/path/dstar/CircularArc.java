@@ -31,6 +31,13 @@ public class CircularArc implements Segment {
     return start.getNorm() * theta.getRadians();
   }
 
+  public Point getPos(double distance) {
+    return start
+        .rotateBy(new Rotation2d(distance / start.getNorm())
+            .times(Math.signum(theta.getRadians())))
+        .plus(center);
+  }
+
   public Rotation2d getRotation(double distance) {
     return new Rotation2d(distance / start.getNorm() + Math.PI)
         .times(Math.signum(theta.getRadians())).plus(start.angle());

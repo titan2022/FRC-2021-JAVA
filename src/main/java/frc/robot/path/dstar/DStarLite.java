@@ -1,8 +1,9 @@
 package frc.robot.path.dstar;
 
 import java.util.PriorityQueue;
-import java.util.List;
+import java.util.Set;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 
 /** An implementation of the D* Lite dynamic path planning algorithm. */
@@ -10,7 +11,7 @@ public class DStarLite {
   private Node start;
   private Node goal;
   private PriorityQueue<Node> queue;
-  private List<Obstacle> map;
+  private Set<Obstacle> map;
   
   /**
    * Creates an instance of the D* Lite algorithm.
@@ -23,7 +24,7 @@ public class DStarLite {
   public DStarLite(Node start, Node goal, Obstacle... obstacles) {
     this.start = start;
     this.goal = goal;
-    map = Arrays.asList(obstacles);
+    map = new LinkedHashSet<Obstacle>(Arrays.asList(obstacles));
     queue = new PriorityQueue<Node>();
     queue.add(goal);
   }

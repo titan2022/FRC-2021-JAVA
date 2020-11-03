@@ -87,6 +87,29 @@ public class DStarLite {
   }
 
   /**
+   * Finds the shortest to the goal and returns the next segment along the path.
+   * 
+   * This method automatically creates edges to connect nodes to their relevant
+   * neighbors as necessary, so connections between nodes do not have to be
+   * pre-specified.
+   * 
+   * @param radius  The obstacle growth radius to use. That is, the minimum
+   *  distance the path should keep away from the nearest edge.
+   * @return  The next path {@link Segment} along the shortest path to goal with
+   *  the specified obstacle growth radius, or null if the start point is
+   *  already within the specified radius around the goal.
+   */
+  public Segment getSegment(double radius) {
+    Node target = getPath();
+    if(start.getDistance(goal) <= radius)
+      return null;
+    else if(start.getDistance(target) <= radius)
+      return target.segmentAround(start, target.getNext());
+    else
+      return target.segmentFrom(start, radius);
+  }
+
+  /**
    * Gets an iterable over the path segments from the start node to the goal.
    * 
    * @param radius  The obstacle growth radius to use. That is, the minimum

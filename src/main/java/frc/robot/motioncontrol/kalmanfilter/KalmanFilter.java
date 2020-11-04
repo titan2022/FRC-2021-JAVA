@@ -1,4 +1,5 @@
 package frc.robot.motioncontrol.kalmanfilter;
+
 import frc.robot.motioncontrol.MatrixOperations;
 
 public class KalmanFilter {
@@ -28,7 +29,10 @@ public class KalmanFilter {
         measMatrix = new double[][] { { 1, 0 } };
         x = new double[][] { { 0 }, { 0 } };
         sz = Math.pow(measNoise, 2);
-        sw = new double[][] {};
+        sw = MatrixOperations.scalarMultiply(Math.pow(aNoise, 2),
+                new double[][] { { Math.pow(tDelta, 4) / 4, Math.pow(tDelta, 3) / 2 },
+                        { Math.pow(tDelta, 3) / 2, Math.pow(tDelta, 2) } });
+        P = sw.clone();
 
     }
 

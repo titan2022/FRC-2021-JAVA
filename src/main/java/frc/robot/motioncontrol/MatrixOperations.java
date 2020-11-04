@@ -110,4 +110,29 @@ public class MatrixOperations {
 
     }
 
+    /**
+     * Inverts an array (ONLY 1x1)
+     * 
+     * @param array - 1x1 double 2D array.
+     * @return Inverted array
+     */
+
+    public static double[][] matrixInverse(double[][] array) {
+
+        double[][] inverted = new double[array.length][array[0].length];
+
+        if (inverted.length == inverted[0].length) {
+
+            if (inverted.length == 1) {
+
+                inverted[0][0] = 1 / array[0][0];
+
+            }
+
+        }
+
+        return inverted;
+
+    }
+
 }

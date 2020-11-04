@@ -289,6 +289,23 @@ public class Node extends Point implements Comparable<Node> {
   }
 
   /**
+   * Returns the next segment towards the goal from a point near this Node.
+   * 
+   * @param start  The starting point of the segment to find.
+   * @param radius  The obstacle growth radius to use when generating the path.
+   * @return The next {@code Segment} on the path to the goal, or null if no
+   *  such path exists.
+   */
+  public Segment nextSegment(Point start, double radius){
+    if(edges.size() == 0)
+      return null;
+    else if(getDistance(start) <= radius)
+      return segmentAround(start, getNext());
+    else
+      return segmentFrom(start, radius);
+  }
+
+  /**
    * Get a linear path from a Point to this Node with obstacle growth.
    * 
    * @param from  The point to get a path from.

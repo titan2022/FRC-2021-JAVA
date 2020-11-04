@@ -1,4 +1,5 @@
 package frc.robot.motioncontrol.kalmanfilter;
+import frc.robot.motioncontrol.MatrixOperations;
 
 public class KalmanFilter {
 
@@ -28,28 +29,6 @@ public class KalmanFilter {
         x = new double[][] { { 0 }, { 0 } };
         sz = Math.pow(measNoise, 2);
         sw = new double[][] {};
-
-    }
-
-    /**
-     * Multiplies 2D array by a scalar
-     * 
-     * @param scalar - Scalar to multiply by.
-     * @param array  - Array to be multiplied (class variable).
-     * 
-     */
-
-    private static void scalarMultiply(double scalar, double[][] array) {
-
-        for (int i = 0; i < array.length; i++) {
-
-            for (int j = 0; j < array[i].length; j++) {
-
-                array[i][j] *= scalar;
-
-            }
-
-        }
 
     }
 

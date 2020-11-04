@@ -1,0 +1,32 @@
+package frc.robot.motioncontrol;
+
+public class MatrixOperations {
+
+    /**
+     * Multiplies 2D array by a scalar
+     * 
+     * @param scalar - Scalar to multiply by.
+     * @param array  - Array to be multiplied (class variable).
+     * @return Scalar-multiplied array.
+     * 
+     */
+
+    public static double[][] scalarMultiply(double scalar, double[][] array) {
+
+        array = array.clone();
+
+        for (int i = 0; i < array.length; i++) {
+
+            for (int j = 0; j < array[i].length; j++) {
+
+                array[i][j] *= scalar;
+
+            }
+
+        }
+
+        return array;
+
+    }
+
+}

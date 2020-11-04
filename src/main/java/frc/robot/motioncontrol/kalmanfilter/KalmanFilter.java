@@ -14,6 +14,7 @@ public class KalmanFilter {
     private double[][] inputMatrix;
     private double[][] measMatrix; // measurement matrix
     private double[][] sw; // process noise covariance
+    private double[][] P; // estimation covariance
 
     public KalmanFilter(double tDelta, double a, double aNoise, double measNoise) {
 
@@ -25,6 +26,7 @@ public class KalmanFilter {
         inputMatrix = new double[][] { { Math.pow(tDelta, 2) / 2 }, { tDelta } };
         measMatrix = new double[][] { { 1, 0 } };
         x = new double[][] { { 0 }, { 0 } };
+        sz = Math.pow(measNoise, 2);
 
     }
 

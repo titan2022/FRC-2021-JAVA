@@ -122,11 +122,41 @@ public class DStarLite {
    *  object is called before the next segment is returned from the
    *  iterator.
    */
+  /**
+   * Gets an iterable over the path segments from the start node to the goal.
+   * 
+   * @param radius  The obstacle growth radius to use. That is, the minimum
+   *  distance the path should keep away from the nearest edge.
+   * @return An iterable of {@link Segment}s describing the shortest path to the
+   *  goal. This iterator is automatically updated as the internal map of this
+   *  object is updated.
+   * @see #getSegment(double)
+   * @see #getPath()
+   */
   public Iterable<Segment> getSegments(double radius) {
     return new Iterable<Segment>() {
       @Override
       public Iterator<Segment> iterator(){
-        return new DStarLite.PathIterator(start, radius);
+        return new Iterator<Segment>() {
+          private Node curr = start;
+          private Point pos = start;
+
+          @Override
+          public boolean hasNext() {
+            return pos.getDistance(goal) <= radius;
+          }
+
+          @Override
+          public Segment next() {
+            Segment path = curr.nextSegment(pos, radius);
+            if(path != null && path.getLength() == 0){
+              curr = curr.getNext();
+              path = curr.nextSegment(pos, radius);
+            }
+            pos = path.getEnd();
+            return path;
+          }
+        };
       }
     };
   }
@@ -213,43 +243,6 @@ public class DStarLite {
     map.remove(obstacle);
     for(Node vertex : obstacle){
       remove(vertex);
-    }
-  }
-
-  /** An iterator over path segments to a goal node. */
-  protected class PathIterator implements Iterator<Segment> {
-    private Point curr;
-    private Node target;
-    private final double radius;
-  
-    /** Creates a PathIterator from a start node and obstacle growth radius.
-     * 
-     * @param start  The starting node of the path to iterate over.
-     * @param radius  The radius to use for obstacle growth for this path.
-     */
-    PathIterator(Node start, double radius) {
-      curr = start;
-      target = start.getNext();
-      this.radius = radius;
-    }
-  
-    @Override
-    public boolean hasNext() {
-      return target.getNext() == target;
-    }
-  
-    @Override
-    public Segment next() {
-      Segment segment;
-      if(curr.getDistance(target) <= radius){
-        segment = target.segmentAround(curr, target.getNext());
-        target = target.getNext();
-        curr = segment.getEnd();
-        return segment;
-      }
-      segment = target.segmentFrom(curr, radius);
-      curr = segment.getEnd();
-      return segment;
     }
   }
 }

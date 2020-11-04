@@ -29,4 +29,22 @@ public class MatrixOperations {
 
     }
 
+    public static double[][] transpose(double[][] array) {
+
+        double[][] transposed = new double[array[0].length][array.length];
+
+        for (int i = 0; i < array.length; i++) {
+
+            for (int j = 0; j < array[0].length; j++) {
+
+                transposed[j][i] = array[i][j];
+
+            }
+
+        }
+
+        return transposed;
+
+    }
+
 }

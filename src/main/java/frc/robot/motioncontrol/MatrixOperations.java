@@ -29,6 +29,13 @@ public class MatrixOperations {
 
     }
 
+    /**
+     * Transposes a 2D double array
+     * 
+     * @param array
+     * @return Transposed array.
+     */
+
     public static double[][] transpose(double[][] array) {
 
         double[][] transposed = new double[array[0].length][array.length];

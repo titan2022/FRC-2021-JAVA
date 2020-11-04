@@ -59,9 +59,9 @@ public class MatrixOperations {
      * 
      * @param array1 - First 2D double array.
      * @param array2 - Second 2D double array.
-     * @return Product of two matrices.
+     * @return Product of two arrays.
      */
-    
+
     public static double[][] matrixMultiply(double[][] array1, double[][] array2) {
 
         double[][] productMatrix = new double[array1.length][array2[0].length];
@@ -81,6 +81,32 @@ public class MatrixOperations {
         }
 
         return productMatrix;
+
+    }
+
+    /**
+     * Adds 2 arrays (order does not matter)
+     * 
+     * @param array1 - First 2D double array.
+     * @param array2 - Second 2D double array.
+     * @return Sum of two arrays.
+     */
+
+    public static double[][] matrixAdd(double[][] array1, double[][] array2) {
+
+        double[][] sumMatrix = array1.clone();
+
+        for (int i = 0; i < sumMatrix.length; i++) {
+
+            for (int j = 0; j < sumMatrix[i].length; j++) {
+
+                sumMatrix[i][j] += array2[i][j];
+
+            }
+
+        }
+
+        return sumMatrix;
 
     }
 

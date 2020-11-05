@@ -245,4 +245,50 @@ public class DStarLite {
       remove(vertex);
     }
   }
+
+  /**
+   * Returns an iterator over all endpoints visible from a given node.
+   * 
+   * <p>See {@link Obstacle#endpoint(Node)} for more information about endpoints.
+   * The iterator returned by this method considers the start and goal nodes
+   * to be endpoints visible from every location.
+   * 
+   * @param source  The node to find the endpoints from.
+   */
+  public Iterable<Node> endpoints(Node source) {
+    return new Iterable<Node>() {
+      @Override
+      public Iterator<Node> iterator() {
+        return new Iterator<Node>() {
+          private Iterator<Obstacle> mapIter;
+          private Node[] ends;
+          private int idx=0;
+
+          @Override
+          public Node next() {
+            if(mapIter == null){
+              mapIter = map.iterator();
+              if(mapIter.hasNext()) ends = mapIter.next().endpoints(source);
+              else ends = new Node[]{};
+              return goal;
+            }
+            while(idx >= ends.length){
+              if(!mapIter.hasNext()){
+                ends = null;
+                return start;
+              }
+              idx = 0;
+              ends = mapIter.next().endpoints(source);
+            }
+            return ends[idx++];
+          }
+
+          @Override
+          public boolean hasNext() {
+            return ends != null || mapIter == null;
+          }
+        };
+      }
+    };
+  }
 }

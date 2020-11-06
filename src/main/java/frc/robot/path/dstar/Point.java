@@ -46,7 +46,7 @@ public class Point extends Translation2d {
    *  to the ray from {@code vertex} to {@code leg}.
    */
   public static Rotation2d getAngle(Point base, Point vertex, Point leg) {
-    return vertex.minus(base).angle().minus(leg.minus(base).angle());
+    return base.minus(vertex).angle().minus(leg.minus(vertex).angle());
   }
 
   /** Returns the polar angle of this Point. */

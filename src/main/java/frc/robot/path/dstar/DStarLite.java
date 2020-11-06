@@ -218,6 +218,24 @@ public class DStarLite {
    * @param obstacle  The obstacle to add to the map.
    */
   public void addObstacle(Obstacle obstacle) {
+    for(Obstacle obs : map){
+      for(Node v : obs){
+        for(Node u : new LinkedHashSet<Node>(v.edges)){
+          if(!obstacle.isClear(u, v)){
+            u.edges.remove(v);
+            v.edges.remove(u);
+            updateVertex(u);
+            updateVertex(v);
+          }
+        }
+      }
+    }
+    if(!obstacle.isClear(start, goal)){
+      start.edges.remove(goal);
+      goal.edges.remove(start);
+      updateVertex(start);
+      updateVertex(goal);
+    }
     map.add(obstacle);
     for(Node node : obstacle){
       connect(node);

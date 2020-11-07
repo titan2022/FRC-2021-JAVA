@@ -71,6 +71,7 @@ public class Obstacle implements Iterable<Node> {
     double min = 360.;
     double max = -360.;
     for(Node vertex : this){
+      if(source == vertex) continue;
       theta = Point.getAngle(head, source, vertex).getRadians();
       if(theta > max){
         max = theta;

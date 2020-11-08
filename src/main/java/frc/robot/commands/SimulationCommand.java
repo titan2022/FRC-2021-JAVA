@@ -8,12 +8,11 @@
 package frc.robot.commands;
 //package frc.robot.motionGeneration.rmpFlow;
 
-import frc.robot.subsystems.DriveSubsystem;
 import frc.wpilibjTemp.Field2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Robot;
+import frc.robot.kinematics.DifferentialDriveKinematics;
+
 import javax.swing.JFrame;
-import frc.robot.DifferentialDriveKinematics;
 import edu.wpi.first.wpiutil.math.*;
 import java.lang.Math.*;
 
@@ -35,6 +34,7 @@ public class SimulationCommand extends CommandBase {
   private Field2d f;
   private Timer timer;
   private double previousTime;
+  private DifferentialDriveKinematics object;
   
 
   /**
@@ -42,9 +42,9 @@ public class SimulationCommand extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public SimulationCommand(DriveSubsystem subsystem) {
+  public SimulationCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    //addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -62,7 +62,7 @@ public class SimulationCommand extends CommandBase {
     vl = 5;
     vr = 10;
 
-
+    object = new DifferentialDriveKinematics(1, 1);
     //DifferentialJacobianBuilder = new MatBuilder<>(Nat.N3(), Nat.N2());
 
   }
@@ -71,10 +71,17 @@ public class SimulationCommand extends CommandBase {
   @Override
   public void execute() {
     //import my kinematics class and run the kinematics command on the previous position and the given left and right wheel velocities
-    DifferentialDriveKinematics object = new DifferentialDriveKinematics(1, 1);
+    double currentTime = timer.get();
+    double deltat = currentTime - previousTime;
+    //use left and right velocity and phi
     DifferentialJacobian = object.getAbsoluteVelocity(vl, vr, f.getRobotPose().getRotation().getRadians());
+    
+    //integrate it over a delta t to integrate x, y, phi
+
+    //add intgrated values to the current position
     f.setRobotPose(DifferentialJacobian.get(1,1), DifferentialJacobian.get(2,1), new Rotation2d(DifferentialJacobian.get(3,1)));
-    previousTime = timer.get();
+    previousTime = currentTime;
+    System.out.println("Simulation of drive");
   }
 
   // Called once the command ends or is interrupted.

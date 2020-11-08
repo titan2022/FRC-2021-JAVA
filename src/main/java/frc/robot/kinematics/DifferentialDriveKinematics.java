@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.kinematics;
 
 import edu.wpi.first.wpiutil.math.MatBuilder;
 import edu.wpi.first.wpiutil.math.Matrix;
@@ -41,6 +41,18 @@ public class DifferentialDriveKinematics {
         DifferentialJacobian = DifferentialJacobianBuilder.fill((wR/2)*Math.cos(phi),(wR/2)*Math.cos(phi)
                                                                 ,(wR/2)*Math.sin(phi),(wR/2)*Math.sin(phi)
                                                                 ,wR/(2*a)            ,-wR/(2*a));
+        return DifferentialJacobian.times(Q);
+    }
+
+    /**
+     * 
+     * @param vX
+     * @param vY
+     * @param phi
+     * @return
+     */
+    public Matrix getWheelVelocity(double vX, double vY, double phi)
+    {
         return DifferentialJacobian.times(Q);
     }
 }

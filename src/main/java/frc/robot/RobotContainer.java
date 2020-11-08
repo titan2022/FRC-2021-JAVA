@@ -23,10 +23,6 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem m_exampleSubsystem = new DriveSubsystem();
 
-  private final SimulationCommand m_autoCommand = new SimulationCommand(m_exampleSubsystem);
-
-
-
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
@@ -45,13 +41,13 @@ public class RobotContainer {
   }
 
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return m_autoCommand;
-  }
+  // /**
+  //  * Use this to pass the autonomous command to the main {@link Robot} class.
+  //  *
+  //  * @return the command to run in autonomous
+  //  */
+  // public Command getAutonomousCommand() {
+  //   // An ExampleCommand will run in autonomous
+  //   return m_autoCommand;
+  // }
 }

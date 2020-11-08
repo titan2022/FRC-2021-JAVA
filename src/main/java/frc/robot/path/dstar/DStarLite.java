@@ -26,6 +26,7 @@ public class DStarLite {
     this.goal = goal;
     map = new LinkedHashSet<Obstacle>(Arrays.asList(obstacles));
     queue = new PriorityQueue<Node>();
+    goal.rhs = 0;
     queue.add(goal);
   }
 
@@ -48,6 +49,7 @@ public class DStarLite {
   public void setGoal(Node goal) {
     remove(this.goal);
     this.goal = goal;
+    goal.rhs = 0;
     connect(goal);
   }
 

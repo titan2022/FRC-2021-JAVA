@@ -13,8 +13,8 @@ import java.util.Collection;
 /** A node along a possible path. */
 public class Node extends Point implements Comparable<Node> {
   public Set<Node> edges;
-  public double g;
-  public double rhs;
+  public double g = Double.POSITIVE_INFINITY;
+  public double rhs = Double.POSITIVE_INFINITY;
   public boolean visited = false;
   public Node next;
   public Node prev;

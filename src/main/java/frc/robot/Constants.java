@@ -19,8 +19,5 @@ public final class Constants {
     public static double targetHeight = 1; //test values
     public static double limelightHeight= 1;
     public static double limelightAngle = 90;
-    public static double KpDistance = -0.1f;
-    public static double desiredDistance= 4;
-    public static double KpAim = -0.1f;
-    public static double min_command = 0;
+
 }

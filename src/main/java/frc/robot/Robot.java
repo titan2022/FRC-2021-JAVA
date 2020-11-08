@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.LimelightCommand;
 import frc.robot.subsystems.LimelightSubsystem;
-import edu.wpi.first.wpilibj2.
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -25,7 +25,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   public static LimelightSubsystem limelightSub;
-  public static LimelightCommand limelightCom;
+  Command LimelightCommand;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -36,7 +36,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     limelightSub = new LimelightSubsystem();
-    limelightCom = new LimelightCommand();
+    LimelightCommand = new LimelightCommand();
   }
 
   /**

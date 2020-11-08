@@ -8,67 +8,55 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.Constants;
 public class LimelightSubsystem extends SubsystemBase {
   /**
-   * Creates a new AutoAimSubsystem.
+   * Creates a new LimelightSubsystem.
    */
-  public static double distance;
-  public static double angleToTarget;
-  private NetworkTable table;
-  private NetworkTableEntry tx;
-  private NetworkTableEntry ty;
-  public static double x;
-  public static double y;
-  public double steeringAdjust;
+  private static NetworkTable table;
   public LimelightSubsystem() {
-    
+    table = NetworkTableInstance.getDefault().getTable("limelight"); //initialize table
+    table.getEntry("getPipe").setNumber(0); //set default pipeline
   }
-  
-  public static void calculateDistance()
+  public static void setPipeline(int i)
   {
-    distance = (Constants.targetHeight - Constants.limelightHeight) / Math.tan(Constants.limelightAngle + angleToTarget);
+    table.getEntry("getPipe").setNumber(i);
   }
-  public static void calculateAngleToTarget()
+  public static double getPipeline()
   {
-    double nx = (1/160) *(x -159.5);  //normalized pixel values
-    //double ny =(1/120) * (119.5 -y);
-    double vpw = 2.0 *Math.tan(54/2);  //calculates horizontal fov
-    //double vph = 2.0 *Math.tan(41/2);
-    double xCoor = vpw/2 *nx;
-    angleToTarget = Math.atan(xCoor/1);
+    return table.getEntry("getPipe").getDouble(0);
   }
-  public static double steering()
+  public static boolean validTarget()
   {
-    double heading_error = -x;
-    double steeringAdjust = 0;
-    if(x> 1.0)
+    if(table.getEntry("tv").getDouble(0)==0)
     {
-       steeringAdjust = Constants.KpAim* heading_error - Constants.min_command;
+      return false;
     }
-    else if(LimelightSubsystem.x< 1.0)
+    else
     {
-        steeringAdjust =  Constants.KpAim* heading_error + Constants.min_command;
+      return true;
     }
-    return steeringAdjust;
   }
-  public static double distance()
+  public static double getX()
   {
-    calculateAngleToTarget();
-    double distanceError = Constants.desiredDistance - LimelightSubsystem.distance;
-    return distanceError;
+    return table.getEntry("tx").getDouble(0);
+  } 
+  public static double getY()
+  {
+    return table.getEntry("ty").getDouble(0);
+  }
+  public static double[] getCamPose()
+  {
+    return table.getEntry("camtran").getDoubleArray(new double[]{});
+  }
+  public static double getLatency()
+  {
+    return table.getEntry("tl").getDouble(0);
   }
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
     table = NetworkTableInstance.getDefault().getTable("limelight");
-    tx = table.getEntry("tx");
-    ty = table.getEntry("ty");
-    x = tx.getDouble(0.0);
-    y= ty.getDouble(0.0);
+    // This method will be called once per scheduler run
   }
 }

@@ -156,7 +156,7 @@ public class DStarLite {
   private void updateVertex(Node v) {
     if(v != goal){
       Node next = v.getNext();
-      v.rhs = v.weightTo(next) + next.g;
+      if(next != null) v.rhs = v.weightTo(next) + next.g;
     }
     queue.remove(v);
     if(v.rhs != v.g) queue.add(v);

@@ -239,6 +239,7 @@ public class Node extends Point implements Comparable<Node> {
 
   /** Returns the next node which greedily minimizes the distance to the goal. */
   public Node getNext() {
+    if(edges.size() == 0) return null;
     return Collections.min(edges, new Node.GoalDistOrder(this));
   }
 

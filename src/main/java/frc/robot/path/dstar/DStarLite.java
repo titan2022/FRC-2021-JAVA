@@ -201,13 +201,16 @@ public class DStarLite {
   /**
    * Determines if a straight path between two nodes is free of obstacles.
    * 
-   * @param a  The node at one endpoint of the straight path.
-   * @param b  The node at the other endpoint of the straight path.
+   * @param start  The node at one endpoint of the straight path.
+   * @param end  The node at the other endpoint of the straight path.
    * @return  Either true, if the path does not pass through the interior of any
    *  obstacles, or false, otherwise.
    * @see Obstacle#isClear(Node, Node)
    */
-  public boolean isClear(Node a, Node b) {
+  public boolean isClear(Node start, Node end) {
+    Point mid = start.plus(end).div(2);
+    Point a = start.getTangency(mid, radius);
+    Point b = end.getTangency(mid, radius);
     for(Obstacle obs : map)
       if(!obs.isClear(a, b))
         return false;

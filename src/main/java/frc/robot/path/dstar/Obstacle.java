@@ -44,7 +44,7 @@ public class Obstacle implements Iterable<Node> {
    *  perimeter, the path is considered not to pass through the interior of this
    *  obstacle, and this method returns true.
    */
-  public boolean isClear(Node a, Node b) {
+  public boolean isClear(Point a, Point b) {
     for(Node x : this){
       Node y = x.next;
       if(Point.getAngle(a, b, x).getRadians() * Point.getAngle(a, b, y).getRadians() < 0 &&

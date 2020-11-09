@@ -10,23 +10,41 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+/**
+ * 
+ */
 public class LimelightSubsystem extends SubsystemBase {
+  private static NetworkTable table;
+
   /**
    * Creates a new LimelightSubsystem.
    */
-  private static NetworkTable table;
   public LimelightSubsystem() {
     table = NetworkTableInstance.getDefault().getTable("limelight"); //initialize table
     table.getEntry("getPipe").setNumber(0); //set default pipeline
   }
+
+  /**
+   * 
+   */
   public static void setPipeline(int i)
   {
     table.getEntry("getPipe").setNumber(i);
   }
+
+  /**
+   * 
+   * @return
+   */
   public static double getPipeline()
   {
     return table.getEntry("getPipe").getDouble(0);
   }
+
+  /**
+   * 
+   * @return
+   */
   public static boolean validTarget()
   {
     if(table.getEntry("tv").getDouble(0)==0)
@@ -38,22 +56,43 @@ public class LimelightSubsystem extends SubsystemBase {
       return true;
     }
   }
+
+  /**
+   * 
+   * @return
+   */
   public static double getX()
   {
     return table.getEntry("tx").getDouble(0);
-  } 
+  }
+
+  /**
+   * 
+   * @return
+   */
   public static double getY()
   {
     return table.getEntry("ty").getDouble(0);
   }
+
+  /**
+   * 
+   * @return
+   */
   public static double[] getCamPose()
   {
     return table.getEntry("camtran").getDoubleArray(new double[]{});
   }
+
+  /**
+   * 
+   * @return
+   */
   public static double getLatency()
   {
     return table.getEntry("tl").getDouble(0);
   }
+  
   @Override
   public void periodic() {
     table = NetworkTableInstance.getDefault().getTable("limelight");

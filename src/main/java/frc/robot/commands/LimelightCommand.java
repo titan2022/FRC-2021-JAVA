@@ -12,29 +12,42 @@ import frc.robot.subsystems.LimelightSubsystem;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DriverStation;
-public class LimelightCommand extends CommandBase {
+/**
+ * 
+ */
+public class LimelightCommand extends CommandBase
+{
+  private LimelightSubsystem subsystem;
+
   /**
    * Creates a new LimelightCommand.
    */
-  private LimelightSubsystem subsystem;
-  public LimelightCommand() {
-    // Use addRequirements() here to declare subsystem dependencies.
+  public LimelightCommand()
+  {
     addRequirements(subsystem);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);//Set to use vision camera
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     subsystem = new LimelightSubsystem();
     
   }
+
+  /**
+   * 
+   * @return
+   */
   public double calculateDistance()
   {
     double distance = (Constants.targetHeight - Constants.limelightHeight) / Math.tan(Constants.limelightAngle + calculateAngleToTarget());
     return distance;
   }
 
+  /**
+   * 
+   * @return
+   */
   public double calculateAngleToTarget()
   {
     double nx = (1/160) *(LimelightSubsystem.getX() -159.5);  //normalized pixel values
@@ -45,7 +58,15 @@ public class LimelightCommand extends CommandBase {
     double angleToTarget = Math.atan(xCoor/1);
     return angleToTarget;
   }
-  // Called every time the scheduler runs while the command is scheduled.
+  
+  /**
+   * 
+   */
+  public boolean relativeCamPosition() //TODO: Transform it to be relative to the camera.
+  {
+    return false;
+  }
+
   @Override
   public void execute() {
     if(LimelightSubsystem.validTarget())

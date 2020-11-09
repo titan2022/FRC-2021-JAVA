@@ -2,7 +2,6 @@ package frc.robot.path.dstar;
 
 import java.util.PriorityQueue;
 import java.util.Set;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Iterator;
 
@@ -10,8 +9,8 @@ import java.util.Iterator;
 public class DStarLite {
   private Node start;
   private Node goal;
-  private PriorityQueue<Node> queue;
-  private Set<Obstacle> map;
+  private PriorityQueue<Node> queue = new PriorityQueue<Node>();
+  private Set<Obstacle> map = new LinkedHashSet<Obstacle>();
   
   /**
    * Creates an instance of the D* Lite algorithm.
@@ -24,10 +23,11 @@ public class DStarLite {
   public DStarLite(Node start, Node goal, Obstacle... obstacles) {
     this.start = start;
     this.goal = goal;
-    map = new LinkedHashSet<Obstacle>(Arrays.asList(obstacles));
-    queue = new PriorityQueue<Node>();
     goal.rhs = 0;
     queue.add(goal);
+    start.edges.add(goal);
+    for(Obstacle obs : obstacles)
+      addObstacle(obs);
   }
 
   /**

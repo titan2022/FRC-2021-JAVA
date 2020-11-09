@@ -43,7 +43,7 @@ public class DStarDemoCommand extends CommandBase {
 
   public void execute() {
     planner.setStart(new Node(robot.getRobotPose().getTranslation()));
-    Segment segment = planner.getSegments(radius).iterator().next();
+    Segment segment = planner.getSegment();
     robot.setRobotPose(
         new Pose2d(segment.getPos(speed), segment.getRotation(speed)));
   }

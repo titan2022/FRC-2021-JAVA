@@ -11,6 +11,7 @@ public class DStarLite {
   private Node goal;
   private PriorityQueue<Node> queue = new PriorityQueue<Node>();
   private Set<Obstacle> map = new LinkedHashSet<Obstacle>();
+  public final double radius;
   
   /**
    * Creates an instance of the D* Lite algorithm.
@@ -18,16 +19,35 @@ public class DStarLite {
    * @param start  The start node for the algorithm.
    *  This will change as the robot moves.
    * @param goal  The goal node for the algorithm.
+   * @param radius  The obstacle growth radius to use. That is, the minimum
+   *  distance any point on a valid path may be away from the nearest obstacle.
    * @param obstacles  The obstacles to avoid along the path.
    */
-  public DStarLite(Node start, Node goal, Obstacle... obstacles) {
+  public DStarLite(Node start, Node goal, double radius, Obstacle... obstacles) {
     this.start = start;
     this.goal = goal;
+    this.radius = radius;
     goal.rhs = 0;
     queue.add(goal);
     start.edges.add(goal);
     for(Obstacle obs : obstacles)
       addObstacle(obs);
+  }
+  /**
+   * Creates an instance of the D* Lite algorithm.
+   * 
+   * <p>This constructor does not allow specification of the obstacle growth
+   * radius to use, instead assuming a radius of 0. See
+   * {@link #DStarLite(Node, Node, double, Obstacle...)} to specify a different
+   * radius.
+   * 
+   * @param start  The start node for the algorithm.
+   *  This will change as the robot moves.
+   * @param goal  The goal node for the algorithm.
+   * @param obstacles  The obstacles to avoid along the path.
+   */
+  public DStarLite(Node start, Node goal, Obstacle... obstacles) {
+    this(start, goal, 0.0, obstacles);
   }
 
   /**
@@ -95,13 +115,11 @@ public class DStarLite {
    * neighbors as necessary, so connections between nodes do not have to be
    * pre-specified.
    * 
-   * @param radius  The obstacle growth radius to use. That is, the minimum
-   *  distance the path should keep away from the nearest edge.
    * @return  The next path {@link Segment} along the shortest path to goal with
    *  the specified obstacle growth radius, or null if the start point is
    *  already within the specified radius around the goal.
    */
-  public Segment getSegment(double radius) {
+  public Segment getSegment() {
     Node target = getPath();
     if(start.getDistance(goal) <= radius)
       return null;
@@ -114,8 +132,6 @@ public class DStarLite {
   /**
    * Gets an iterable over the path segments from the start node to the goal.
    * 
-   * @param radius  The obstacle growth radius to use. That is, the minimum
-   *  distance the path should keep away from the nearest edge.
    * @return An iterable of {@link Segment}s describing the path to the
    *  goal. If the most recently returned path segment ends at a Node that
    *  is still a part of the shortest path to goal after the map is
@@ -125,7 +141,7 @@ public class DStarLite {
    *  iterator.
    * @see #getSegment(double)
    */
-  public Iterable<Segment> getSegments(double radius) {
+  public Iterable<Segment> getSegments() {
     return new Iterable<Segment>() {
       @Override
       public Iterator<Segment> iterator(){

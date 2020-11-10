@@ -35,6 +35,7 @@ public class SimulationCommand extends CommandBase {
   private Timer timer;
   private double previousTime;
   private DifferentialDriveKinematics object;
+  private Rotation2d rotationamount;
   
 
   /**
@@ -78,11 +79,18 @@ public class SimulationCommand extends CommandBase {
     
     //integrate it over a delta t to integrate x, y, phi
 
+    //System.out.println(DifferentialJacobian.getNumCols());
+    //System.out.println(DifferentialJacobian.getNumRows());
+
+    rotationamount = new Rotation2d(DifferentialJacobian.get(2,0) * deltat + f.getRobotPose().getRotation().getRadians());
+
     //add intgrated values to the current position
-    f.setRobotPose(DifferentialJacobian.get(1,1), DifferentialJacobian.get(2,1), new Rotation2d(DifferentialJacobian.get(3,1)));
+    f.setRobotPose(DifferentialJacobian.get(0,0) * deltat + f.getRobotPose().getTranslation().getX(), DifferentialJacobian.get(1,0) * deltat + f.getRobotPose().getTranslation().getY(), rotationamount);
     previousTime = currentTime;
     System.out.println("Simulation of drive");
   }
+
+  //public static double[] solveIntegration(double deltatime, double )
 
   // Called once the command ends or is interrupted.
   @Override

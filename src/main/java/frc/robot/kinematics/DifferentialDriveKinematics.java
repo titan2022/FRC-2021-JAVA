@@ -10,7 +10,7 @@ import edu.wpi.first.wpiutil.math.VecBuilder;
  */
 public class DifferentialDriveKinematics {
     private double wR, a;
-    private MatBuilder DifferentialJacobianBuilder;
+    private MatBuilder DifferentialJacobianBuilder, InverseDifferentialJacobianBuilder;
     private Matrix DifferentialJacobian;
     private VecBuilder QBuilder, PBuilder;
     private Matrix Q, P;
@@ -25,6 +25,7 @@ public class DifferentialDriveKinematics {
         a = robotWidth/2.0;
 
         DifferentialJacobianBuilder = new MatBuilder<>(Nat.N3(), Nat.N2());
+        InverseDifferentialJacobianBuilder = new MatBuilder<>(Nat.N2(), Nat.N3());
         QBuilder = new VecBuilder<>(Nat.N2());
         PBuilder = new VecBuilder<>(Nat.N3());
     }
@@ -53,6 +54,10 @@ public class DifferentialDriveKinematics {
      */
     public Matrix getWheelVelocity(double vX, double vY, double phi)
     {
-        return DifferentialJacobian.times(Q);
+        P = PBuilder.fill(vX, vY, phi);
+        DifferentialJacobian = InverseDifferentialJacobianBuilder.fill(Math.cos(phi), Math.sin(phi), a,
+                                                                        Math.cos(phi), Math.sin(phi), -a);
+        DifferentialJacobian = DifferentialJacobian.times(1.0/wR);
+        return DifferentialJacobian.times(P);
     }
 }

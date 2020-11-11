@@ -16,11 +16,11 @@ public class DifferentialDriveOdometry {
     private Rotation2d rotationamount;
     /**
      * 
-     * @param width
-     * @param wheelRadius
-     * @param xpos
-     * @param ypos
-     * @param phi
+     * @param width: Width of the robot
+     * @param wheelRadius: Radius of the wheels
+     * @param xpos: X position of the wheel
+     * @param ypos: Y position of the wheel
+     * @param phi: Angular position of robot 
      */
     public DifferentialDriveOdometry(double width, double wheelRadius, double xpos, double ypos, double phi) {
         //wR = wheelRadius;
@@ -29,14 +29,13 @@ public class DifferentialDriveOdometry {
         pose = f.getRobotPose();
         object = new DifferentialDriveKinematics(wheelRadius, width);
 
-        //DifferentialJacobian = object.getAbsoluteVelocity(vL, vR, f.getRobotPose().getRotation().getRadians());
     }
     /**
      * 
-     * @param deltaT
-     * @param vL
-     * @param vR
-     * @return
+     * @param deltaT: Change in time
+     * @param vL: Angular velocity of left wheel
+     * @param vR: Angular velocity of right wheel
+     * @return Pose2d: Returns the estimated pose of the robot
      */
     public Pose2d getPosition(double deltaT, double vL, double vR)
     {

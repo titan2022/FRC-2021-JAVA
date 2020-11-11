@@ -64,8 +64,6 @@ public class SimulationCommand extends CommandBase {
     vr = 10;
 
     object = new DifferentialDriveKinematics(1, 1);
-    //DifferentialJacobianBuilder = new MatBuilder<>(Nat.N3(), Nat.N2());
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -76,11 +74,6 @@ public class SimulationCommand extends CommandBase {
     double deltat = currentTime - previousTime;
     //use left and right velocity and phi
     DifferentialJacobian = object.getAbsoluteVelocity(vl, vr, f.getRobotPose().getRotation().getRadians());
-    
-    //integrate it over a delta t to integrate x, y, phi
-
-    //System.out.println(DifferentialJacobian.getNumCols());
-    //System.out.println(DifferentialJacobian.getNumRows());
 
     rotationamount = new Rotation2d(DifferentialJacobian.get(2,0) * deltat + f.getRobotPose().getRotation().getRadians());
 
@@ -89,8 +82,6 @@ public class SimulationCommand extends CommandBase {
     previousTime = currentTime;
     System.out.println("Simulation of drive");
   }
-
-  //public static double[] solveIntegration(double deltatime, double )
 
   // Called once the command ends or is interrupted.
   @Override

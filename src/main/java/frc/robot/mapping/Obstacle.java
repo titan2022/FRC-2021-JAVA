@@ -65,9 +65,4 @@ public interface Obstacle extends Comparator<Point> {
     default public boolean isEndpoint(Point endpoint, Point other) {
         return isEndpoint(endpoint, other, 0);
     }
-
-    public Path edgePath(Point start, Point end, double radius);
-    default public Path edgePath(Point start, Point end) {
-        return edgePath(start, end, 0);
-    }
 }

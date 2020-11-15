@@ -1,40 +1,29 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
+/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package frc.robot.vision;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.LimelightSubsystem;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DriverStation;
 /**
- * 
+ * Add your docs here.
  */
-public class LimelightCommand extends CommandBase
-{
-  private LimelightSubsystem subsystem;
+public class LimelightMath {
 
-  /**
-   * Creates a new LimelightCommand.
-   */
-  public LimelightCommand()
-  {
-    addRequirements(subsystem);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);//Set to use vision camera
-  }
+    private LimelightSubsystem subsystem;
 
-  @Override
-  public void initialize() {
-    subsystem = new LimelightSubsystem();
-    
-  }
-
-  /**
+    public LimelightMath()
+    {
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);//Set to use vision camera
+        subsystem = new LimelightSubsystem();
+    }
+ /**
    * 
    * @return
    */
@@ -67,8 +56,7 @@ public class LimelightCommand extends CommandBase
     return false;
   }
 
-  @Override
-  public void execute() {
+  public void checkDistance() {
     if(LimelightSubsystem.validTarget())
     {
       calculateDistance();
@@ -77,16 +65,5 @@ public class LimelightCommand extends CommandBase
     {
       DriverStation.reportError("Valid target not found", false);
     }
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return true;
   }
 }

@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 /**
@@ -27,9 +28,9 @@ public class LimelightSubsystem extends SubsystemBase {
   /**
    * 
    */
-  public static void setPipeline(int i)
+  public static void setPipeline(Constants.LimelightPipeline i)
   {
-    table.getEntry("getPipe").setNumber(i);
+    table.getEntry("getPipe").setNumber(i.pipelineNum());
   }
 
   /**

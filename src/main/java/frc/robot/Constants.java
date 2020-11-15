@@ -20,4 +20,24 @@ public final class Constants {
     public static double limelightHeight= 1;
     public static double limelightAngle = 90;
 
+    public enum LimelightPipeline
+    {
+        TowerTarget(0), 
+        HatchTarget(1) 
+        //Add names of Pipelines here, include pipeline number in constructor
+        ;
+        
+        private int pipelineNum;
+
+        public int pipelineNum()
+        {
+            return this.pipelineNum();
+        }
+
+        LimelightPipeline (int pipelineNum)
+        {
+            this.pipelineNum = pipelineNum;
+        }
+    }
+
 }

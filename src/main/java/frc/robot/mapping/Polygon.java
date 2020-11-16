@@ -8,11 +8,22 @@ import java.util.List;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 
+/**
+ * A convex polygon obstacle.
+ */
 public class Polygon implements Obstacle {
+  /** The vertces of this polygon, in order. */
   protected final Point[] verts;
+  /** A point in the intorerior of this polygon. */
   protected final Point interior;
+  /** The length of the perimeter of this polygon, before obstacle growth. */
   protected final double basePerimeter;
 
+  /**
+   * Creates a polygon with the provided vertices.
+   * 
+   * @param vertices  The vertices of the polygon, in order.
+   */
   public Polygon(Point... vertices) {
     verts = vertices;
     Point center = new Point(0, 0);
@@ -30,6 +41,15 @@ public class Polygon implements Obstacle {
     this.interior = interior;
   }
 
+  /**
+   * Gets the point of tangency to a circle around a vertex.
+   * 
+   * @param vertIdx  The index of the vertex of this obstacle.
+   * @param from  The endpoint of the tangent line.
+   * @param radius  The radius around the vertex.
+   * @return The point of tangency of a line passing through {@code from} to a
+   *  circle of the given radius around the given vertex of this obstacle.
+   */
   protected Point getTangency(int vertIdx, Point from, double radius) {
     Point vertex = verts[vertIdx];
     double cos = radius / vertex.getDistance(from);
@@ -38,6 +58,7 @@ public class Polygon implements Obstacle {
     return vertex.plus(new Point(radius, new Rotation2d(theta)));
   }
 
+  @Override
   public Set<Point> getEndpoints(Point source, double radius) {
     Point argmin = null, argmax = null, tangency;
     double min = 360, max = -360., theta;
@@ -59,12 +80,14 @@ public class Polygon implements Obstacle {
     return endpoints;
   }
 
+  @Override
   public int compare(Point a, Point b) {
     return (int) Math.signum(
         a.minus(interior).getAngle().getRadians() -
         b.minus(interior).getAngle().getRadians()); 
   }
 
+  @Override
   public Polygon translateBy(Translation2d offset) {
     Point[] vertices = new Point[verts.length];
     int i = 0;
@@ -72,6 +95,7 @@ public class Polygon implements Obstacle {
     return new Polygon(vertices, interior.plus(offset), basePerimeter);
   }
 
+  @Override
   public Polygon rotateBy(Rotation2d rotation) {
     Point[] vertices = new Point[verts.length];
     int i = 0;
@@ -79,6 +103,18 @@ public class Polygon implements Obstacle {
     return new Polygon(vertices, interior.rotateBy(rotation), basePerimeter);
   }
 
+  /** Gets the tangent lines between this obstacle and another.
+   * 
+   * <p>Implements {@link Obstacle#getTangents(Obstacle, double)} for the case
+   * where this obstacle and the other obstacle are both convex polygons.
+   * 
+   * @param other  The other obstacle to get tangent lines between.
+   * @param radius  The obstacle growth radius to use.
+   * @return An iterable over the tangent lines between this obstacle and the
+   *  other specified obstacle. Each tangent is represented as a LinearSegment
+   *  from the point of tangency with this obstacle to the point of tangency
+   *  with the other obstacle.
+   */
   public Iterable<LinearSegment> getTangents(Polygon other, double radius) {
     if(other == this) return new ArrayList<LinearSegment>(0);
     List<LinearSegment> res = new ArrayList<LinearSegment>(2);

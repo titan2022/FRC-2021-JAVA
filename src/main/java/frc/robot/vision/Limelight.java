@@ -9,16 +9,17 @@ package frc.robot.vision;
 
 import frc.robot.subsystems.LimelightSubsystem;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.Constants;
-import edu.wpi.first.wpilibj.DriverStation;
 /**
  * Add your docs here.
  */
-public class LimelightMath {
+public class Limelight {
 
     private LimelightSubsystem subsystem;
-
-    public LimelightMath()
+    public static double targetHeight = 1; //test values
+    public static double limelightHeight= 1;
+    public static double limelightAngle = 90;
+    
+    public Limelight()
     {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);//Set to use vision camera
         subsystem = new LimelightSubsystem();
@@ -29,7 +30,7 @@ public class LimelightMath {
    */
   public double calculateDistance()
   {
-    double distance = (Constants.targetHeight - Constants.limelightHeight) / Math.tan(Constants.limelightAngle + calculateAngleToTarget());
+    double distance = (targetHeight - limelightHeight) / Math.tan(limelightAngle + calculateAngleToTarget());
     return distance;
   }
 
@@ -56,14 +57,4 @@ public class LimelightMath {
     return false;
   }
 
-  public void checkDistance() {
-    if(LimelightSubsystem.validTarget())
-    {
-      calculateDistance();
-    }
-    else
-    {
-      DriverStation.reportError("Valid target not found", false);
-    }
-  }
 }

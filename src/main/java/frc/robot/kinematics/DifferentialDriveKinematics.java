@@ -1,5 +1,6 @@
 package frc.robot.kinematics;
 
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpiutil.math.MatBuilder;
 import edu.wpi.first.wpiutil.math.Matrix;
 import edu.wpi.first.wpiutil.math.Nat;
@@ -47,10 +48,28 @@ public class DifferentialDriveKinematics {
 
     /**
      * 
-     * @param vX - the x component of the chassis velocity relative to the field
-     * @param vY - the y component of the chassis velocity relative to the field
-     * @param dPhi - rotataional velocity in radians per second
-     * @param phi - the absolute rotational pose of the robot chassis in radians
+     * @param chassisSpeeds an object that encapsulates vx, vy, and rotational velocity
+     * @param phi the absolute heading of the robot
+     * @return
+     */
+    public Matrix getWheelVelocity(ChassisSpeeds chassisSpeeds, double phi)
+    {
+        double vX = chassisSpeeds.vxMetersPerSecond;
+        double vY = chassisSpeeds.vyMetersPerSecond;
+        double dPhi = chassisSpeeds.omegaRadiansPerSecond;
+        P = PBuilder.fill(vX, vY, dPhi);
+        DifferentialJacobian = InverseDifferentialJacobianBuilder.fill(Math.cos(phi), Math.sin(phi), a,
+                                                                        Math.cos(phi), Math.sin(phi), -a);
+        DifferentialJacobian = DifferentialJacobian.times(1.0/wR);
+        return DifferentialJacobian.times(P);
+    }
+
+    /**
+     * 
+     * @param vX
+     * @param vY
+     * @param dPhi
+     * @param phi
      * @return
      */
     public Matrix getWheelVelocity(double vX, double vY, double dPhi, double phi)

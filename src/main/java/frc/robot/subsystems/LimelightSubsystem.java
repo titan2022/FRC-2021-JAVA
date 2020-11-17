@@ -12,11 +12,10 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.vision.LimelightEnum;
 /**
- * 
+ * Limelight Subsystem class, contains getter and setter methods for NetworkTable values
  */
 public class LimelightSubsystem extends SubsystemBase {
   private static NetworkTable table;
-
   /**
    * Creates a new LimelightSubsystem.
    */
@@ -28,22 +27,24 @@ public class LimelightSubsystem extends SubsystemBase {
   /**
    * 
    */
-  public static void setPipeline(LimelightEnum.LimelightPipeline i)
+  public static void setPipeline(LimelightEnum i)
   {
     table.getEntry("getPipe").setNumber(i.ordinal());
   }
-  
+
   /**
-   * 
+   * Changes pipeline based on enum value
    * @return
    */
-  public static double getPipeline()
+  public static String getPipeline()
   {
-    return table.getEntry("getPipe").getDouble(0);
+    int pipelineNumber = (int)table.getEntry("getPipe").getDouble(0);
+    LimelightEnum pipeline = LimelightEnum.values()[pipelineNumber];
+    return pipeline.name();
   }
 
   /**
-   * 
+   * Returns current pipeline as string
    * @return
    */
   public static boolean validTarget()
@@ -59,7 +60,7 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   /**
-   * 
+   *  Checks for valid reflective target
    * @return
    */
   public static double getX()
@@ -68,7 +69,7 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   /**
-   * 
+   * Returns X distance to reflective target
    * @return
    */
   public static double getY()
@@ -77,7 +78,7 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   /**
-   * 
+   * Returns Y distance to reflective target
    * @return
    */
   public static double[] getCamPose()
@@ -86,14 +87,17 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   /**
-   * 
+   * Returns 3D cam pose relative to target
    * @return
    */
   public static double getLatency()
   {
     return table.getEntry("tl").getDouble(0);
   }
-  
+    /**
+   * Returns current camera latency
+   * @return
+   */
   @Override
   public void periodic() {
     table = NetworkTableInstance.getDefault().getTable("limelight");

@@ -8,15 +8,19 @@
 package frc.robot.vision;
 
 /**
- * Add your docs here.
+ * Limelight Enum Class
  */
-public class LimelightEnum {
 
-    public enum LimelightPipeline
+    public enum LimelightEnum
     {
         TowerTarget, 
         HatchTarget 
         //Add names of Pipelines here, include pipeline number in constructor
         ;
     }
-}
+
+     /**
+   * Enum for specific pipeline to be run
+   * @return
+   */
+

@@ -160,4 +160,57 @@ public class Polygon implements Obstacle {
   public double getPerimeter(double radius) {
     return basePerimeter + radius * (verts.length-2) * Math.PI;
   }
+
+  @Override
+  public Path edgePath(Point a, Point b, double radius) {
+    Point end = null, curr = null, mid;  // end point; end of accumulated path
+    List<Path> segments = new ArrayList<>();  // accumulated path
+    Rotation2d theta = new Rotation2d(Math.PI/2);
+    int i = -1, ctr = 0;
+    while(ctr < verts.length){
+      Point vertex = verts[(++i)%verts.length];
+      Point vNext = verts[(i+1)%verts.length];
+      Point offset = new Point(radius, vNext.minus(vertex).getAngle().plus(theta));
+      if(curr == null && vertex.getDistance(a) == radius){
+        end = b;
+        curr = a;
+        ctr = 0;
+      }
+      else if(curr == null && vertex.getDistance(b) == radius){
+        end = a;
+        curr = b;
+        ctr = 0;
+      }
+      if(curr != null){
+        if(vertex.getDistance(end) == radius){
+          segments.add(new CircularArc(curr, vertex, end));
+          break;
+        }
+        mid = vertex.plus(offset);
+        segments.add(new CircularArc(curr, vertex, mid));
+        curr = mid;
+      }
+      if(curr == null && Point.getAngle(vNext, vertex, a).getCos() == 1){
+        end = b;
+        curr = a;
+        ctr = 0;
+      }
+      else if(curr == null && Point.getAngle(vNext, vertex, b).getCos() == 1){
+        end = a;
+        curr = b;
+        ctr = 0;
+      }
+      if(curr != null){
+        if(Point.getAngle(vNext, vertex, end).getCos() == 1){
+          segments.add(new LinearSegment(curr, end));
+          break;
+        }
+        mid = vNext.plus(offset);
+        segments.add(new LinearSegment(curr, mid));
+        curr = mid;
+      }
+      ctr++;
+    }
+    return new CompoundPath(segments.toArray(new Path[0]));
+  }
 }

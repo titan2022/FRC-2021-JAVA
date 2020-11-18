@@ -210,4 +210,20 @@ public interface Obstacle extends Comparator<Point> {
     default public double getPerimeter() {
         return getPerimeter(0);
     }
+
+    /**
+     * Finds a path around this obstacle to connect two points.
+     * 
+     * @param a  The start point of the path to find.
+     * @param b  The end point of the path to find.
+     * @param radius  The obstacle growth radius to use for the path. The start
+     *  and end points must be exactly this far from the obstacle. The behavior of
+     *  this method is undefined if this condition is not met.
+     * @return A path connecting point a to point b around this obstacle, keeping
+     *  the specified obstacle growth radius between the path and this obstacle.
+     *  With the exception of a single point, the points along the returned path
+     *  must be increasing with respect to ordering induced by the comparator
+     *  defined by this obstacle.
+     */
+    public Path edgePath(Point a, Point b, double radius);
 }

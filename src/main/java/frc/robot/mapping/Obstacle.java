@@ -190,4 +190,24 @@ public interface Obstacle extends Comparator<Point> {
     default public boolean isEndpoint(Point endpoint, Point other) {
         return isEndpoint(endpoint, other, 0);
     }
+
+    /**
+     * Gets the length of the perimeter of this obstacle.
+     * 
+     * @param radius  The obstacle growth radius to use.
+     * @return The length of the perimeter of this obstacle after obstacle
+     *  growth with the specified radius.
+     */
+    public double getPerimeter(double radius);
+    /**
+     * Gets the length of the perimeter of this obstacle.
+     * 
+     * <p>This method is equivalent to {@link #getPerimeter(double)} with a
+     * radius of 0.
+     * 
+     * @return The perimeter of this obstacle without obstacle growth.
+     */
+    default public double getPerimeter() {
+        return getPerimeter(0);
+    }
 }

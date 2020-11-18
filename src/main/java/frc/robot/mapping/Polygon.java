@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
  * A convex polygon obstacle.
  */
 public class Polygon implements Obstacle {
-  /** The vertces of this polygon, in order. */
+  /** The vertces of this polygon, in clockwise order. */
   protected final Point[] verts;
   /** A point in the intorerior of this polygon. */
   protected final Point interior;
@@ -29,8 +29,8 @@ public class Polygon implements Obstacle {
     Point center = new Point(0, 0);
     double p0 = 0;
     for(int i=0; i<verts.length; i++){
-        center = center.plus(verts[i]);
-        p0 += verts[i].getDistance(verts[(i+1)%verts.length]);
+      center = center.plus(verts[i]);
+      p0 += verts[i].getDistance(verts[(i+1)%verts.length]);
     }
     interior = center.div(verts.length);
     basePerimeter = p0;
@@ -147,5 +147,10 @@ public class Polygon implements Obstacle {
       thisPrev = thisCurr;
     }
     return res;
+  }
+
+  @Override
+  public double getPerimeter(double radius) {
+    return basePerimeter + radius * (verts.length-2) * Math.PI;
   }
 }

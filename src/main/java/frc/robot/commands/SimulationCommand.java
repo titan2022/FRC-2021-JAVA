@@ -71,7 +71,7 @@ public class SimulationCommand extends CommandBase {
   public void execute() {
     //import my kinematics class and run the kinematics command on the previous position and the given left and right wheel velocities
     double currentTime = timer.get();
-    double deltat = currentTime - previousTime;
+    double deltat = 0.5 * (currentTime - previousTime);
     //use left and right velocity and phi
     DifferentialJacobian = object.getAbsoluteVelocity(vl, vr, f.getRobotPose().getRotation().getRadians());
 
@@ -80,7 +80,7 @@ public class SimulationCommand extends CommandBase {
     //add intgrated values to the current position
     f.setRobotPose(DifferentialJacobian.get(0,0) * deltat + f.getRobotPose().getTranslation().getX(), DifferentialJacobian.get(1,0) * deltat + f.getRobotPose().getTranslation().getY(), rotationamount);
     previousTime = currentTime;
-    //System.out.println("Simulation of drive");
+    
     if(f.getRobotPose().getTranslation().getX() <= 0 || f.getRobotPose().getTranslation().getX() >= 15.98 || f.getRobotPose().getTranslation().getY() <= 0 || f.getRobotPose().getTranslation().getY() >= 8.21)
     {
       f.setRobotPose(7, 3, new Rotation2d(0));

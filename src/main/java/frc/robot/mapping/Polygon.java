@@ -213,4 +213,21 @@ public class Polygon implements Obstacle {
     }
     return new CompoundPath(segments.toArray(new Path[0]));
   }
+
+  public Path getBoundary(double radius) {
+    Path[] segments = new Path[verts.length*2];
+    Rotation2d theta = new Rotation2d(Math.PI/2);
+    Point prev = verts[0].plus(new Point(radius,
+        verts[verts.length-1].minus(verts[0]).getAngle().minus(theta)));
+    Point mid, offset, vNext;
+    for(int i=0; i<verts.length; i++){
+      vNext = verts[(i+1)%verts.length];
+      offset = new Point(radius, vNext.minus(verts[i]).getAngle().plus(theta));
+      mid = verts[i].plus(offset);
+      segments[i*2] = new CircularArc(prev, verts[i], mid);
+      prev = vNext.plus(offset);
+      segments[i*2+1] = new LinearSegment(mid, prev);
+    }
+    return new CompoundPath(segments);
+  } 
 }

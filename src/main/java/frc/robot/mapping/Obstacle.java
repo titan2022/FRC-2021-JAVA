@@ -226,4 +226,25 @@ public interface Obstacle extends Comparator<Point> {
      *  defined by this obstacle.
      */
     public Path edgePath(Point a, Point b, double radius);
+
+    /**
+     * Gets the boundary of this obstacle.
+     * 
+     * @param radius  The obstacle growth radius to use.
+     * @return A path defining the boundary of this obstacle after obstacle
+     *  growth.
+     */
+    public Path getBoundary(double radius);
+    /**
+     * Gets the boundary of this obstacle.
+     * 
+     * <p>This method is equivalent to {@link #getBounday(double)} with a radius
+     * of 0.
+     * 
+     * @return A path defining the boundary of this obstacle without obstacle
+     *  growth.
+     */
+    default public Path getBoundary() {
+        return getBoundary(0);
+    }
 }

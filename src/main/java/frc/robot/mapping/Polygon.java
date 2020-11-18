@@ -34,6 +34,13 @@ public class Polygon implements Obstacle {
     }
     interior = center.div(verts.length);
     basePerimeter = p0;
+    if(Point.getAngle(verts[0], interior, verts[verts.length-1]).getSin() > 0){
+      for(int i=0; i<verts.length/2; i++){
+        Point tmp = verts[i];
+        verts[i] = verts[verts.length-i];
+        verts[verts.length-1] = tmp;
+      }
+    }
   }
   private Polygon(Point[] vertices, Point interior, double perimeter) {
     verts = vertices;

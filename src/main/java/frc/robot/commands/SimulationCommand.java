@@ -62,7 +62,8 @@ public class SimulationCommand extends CommandBase {
     f.setRobotPose(7, 3, new Rotation2d(0));
     vl = 5;
     vr = 10;
-
+    SmartDashboard.putNumber("left", 5);
+    SmartDashboard.putNumber("right", 10);
     object = new DifferentialDriveKinematics(1, 1);
   }
 
@@ -72,9 +73,12 @@ public class SimulationCommand extends CommandBase {
     //import my kinematics class and run the kinematics command on the previous position and the given left and right wheel velocities
     double currentTime = timer.get();
     double deltat = currentTime - previousTime;
+    vl = SmartDashboard.getNumber("left", 5);
+    vr = SmartDashboard.getNumber("right", 10);
     //use left and right velocity and phi
     DifferentialJacobian = object.getAbsoluteVelocity(vl, vr, f.getRobotPose().getRotation().getRadians());
 
+    
     rotationamount = new Rotation2d(DifferentialJacobian.get(2,0) * deltat + f.getRobotPose().getRotation().getRadians());
 
     //add intgrated values to the current position

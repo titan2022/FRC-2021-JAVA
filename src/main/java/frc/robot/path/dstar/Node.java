@@ -10,6 +10,8 @@ import java.util.Comparator;
 import java.util.Collections;
 import java.util.Collection;
 
+import frc.robot.mapping.Point;
+
 /** A node along a possible path. */
 public class Node extends Point implements Comparable<Node> {
   public Set<Node> edges;
@@ -332,7 +334,7 @@ public class Node extends Point implements Comparable<Node> {
   public Point getTangency(Point from, double radius) {
     Rotation2d theta = new Rotation2d(Math.acos(radius / getDistance(from)))
         .times(Math.signum(Point.getAngle(next, this, from).getRadians()));
-    Point offset = new Point(radius, theta.plus(from.minus(this).angle()));
+    Point offset = new Point(radius, theta.plus(from.minus(this).getAngle()));
     return plus(offset);
   }
 

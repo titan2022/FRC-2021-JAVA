@@ -1,4 +1,4 @@
-package frc.robot.path.dstar;
+package frc.robot.mapping;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
@@ -20,12 +20,12 @@ public class Point extends Translation2d {
   /**
    * Creates a point from polar coordinates
    * 
-   * @param distance  The distance from the origin to the point.
-   * @param angle  The angle from the positive x-axis to the vector from the
+   * @param r  The distance from the origin to the point.
+   * @param theta  The angle from the positive x-axis to the vector from the
    *  origin to the point.
    */
-  public Point(double distance, Rotation2d angle) {
-    this(angle.getCos() * distance, angle.getSin() * distance);
+  public Point(double r, Rotation2d theta) {
+    this(theta.getCos() * r, theta.getSin() * r);
   }
   /** Creates a point from a Translation2d.
    * 
@@ -46,11 +46,11 @@ public class Point extends Translation2d {
    *  to the ray from {@code vertex} to {@code leg}.
    */
   public static Rotation2d getAngle(Point base, Point vertex, Point leg) {
-    return leg.minus(vertex).angle().minus(base.minus(vertex).angle());
+    return leg.minus(vertex).getAngle().minus(base.minus(vertex).getAngle());
   }
 
   /** Returns the polar angle of this Point. */
-  public Rotation2d angle() {
+  public Rotation2d getAngle() {
     return new Rotation2d(getX(), getY());
   }
 

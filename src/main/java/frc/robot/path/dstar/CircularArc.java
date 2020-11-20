@@ -3,6 +3,8 @@ package frc.robot.path.dstar;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 
+import frc.robot.mapping.Point;
+
 public class CircularArc implements Segment {
   private final Point center;
   private final Point start;
@@ -40,7 +42,7 @@ public class CircularArc implements Segment {
 
   public Rotation2d getRotation(double distance) {
     return new Rotation2d(distance / start.getNorm() + Math.PI / 2)
-        .plus(start.angle()).times(Math.signum(theta.getRadians()));
+        .plus(start.getAngle()).times(Math.signum(theta.getRadians()));
   }
 
   public Rotation2d angularVelocity(double distance) {

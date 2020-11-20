@@ -3,6 +3,8 @@ package frc.robot.path.dstar;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 
+import frc.robot.mapping.Point;
+
 public interface Segment {
   public Point getStart();
   public Point getEnd();

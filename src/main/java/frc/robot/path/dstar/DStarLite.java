@@ -5,6 +5,8 @@ import java.util.Set;
 import java.util.LinkedHashSet;
 import java.util.Iterator;
 
+import frc.robot.mapping.Point;
+
 /** An implementation of the D* Lite dynamic path planning algorithm. */
 public class DStarLite {
   private Node start;

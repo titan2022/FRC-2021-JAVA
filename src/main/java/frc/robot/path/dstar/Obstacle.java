@@ -2,6 +2,8 @@ package frc.robot.path.dstar;
 
 import java.util.Iterator;
 
+import frc.robot.mapping.Point;
+
 /**
  * A polygonal obstacle for path planning.
  * 

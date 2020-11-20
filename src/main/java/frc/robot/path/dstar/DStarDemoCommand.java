@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import frc.wpilibjTemp.Field2d;
 
+import frc.robot.mapping.Point;
+
 public class DStarDemoCommand extends CommandBase {
   DStarLite planner;
   Field2d robot;

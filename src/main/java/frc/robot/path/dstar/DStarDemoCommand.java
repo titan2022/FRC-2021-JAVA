@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import frc.wpilibjTemp.Field2d;
 
 import frc.robot.mapping.Point;
+import frc.robot.mapping.Path;
 
 public class DStarDemoCommand extends CommandBase {
   DStarLite planner;
@@ -45,7 +46,7 @@ public class DStarDemoCommand extends CommandBase {
 
   public void execute() {
     planner.setStart(new Node(robot.getRobotPose().getTranslation()));
-    Segment segment = planner.getSegment();
+    Path segment = planner.getSegment();
     robot.setRobotPose(
         new Pose2d(segment.getPos(speed), segment.getRotation(speed)));
   }

@@ -11,6 +11,9 @@ import java.util.Collections;
 import java.util.Collection;
 
 import frc.robot.mapping.Point;
+import frc.robot.mapping.Path;
+import frc.robot.mapping.LinearSegment;
+import frc.robot.mapping.CircularArc;
 
 /** A node along a possible path. */
 public class Node extends Point implements Comparable<Node> {
@@ -300,7 +303,7 @@ public class Node extends Point implements Comparable<Node> {
    * @return The next {@code Segment} on the path to the goal, or null if no
    *  such path exists.
    */
-  public Segment nextSegment(Point start, double radius){
+  public Path nextSegment(Point start, double radius){
     if(edges.size() == 0)
       return null;
     else if(getDistance(start) <= radius)
@@ -319,7 +322,7 @@ public class Node extends Point implements Comparable<Node> {
    *  with the specified radius. The segment will start at the point
    *  {@code from} and will end at the point of tangency. 
    */
-  public Segment segmentFrom(Point from, double radius) {
+  public Path segmentFrom(Point from, double radius) {
     return new LinearSegment(from, getTangency(from, radius));
   }
 
@@ -347,7 +350,7 @@ public class Node extends Point implements Comparable<Node> {
    *  and ending the same distance from this Node, facing towards the
    *  specified target Point.
    */
-  public Segment segmentAround(Point start, Point target) {
+  public Path segmentAround(Point start, Point target) {
     double radius = start.getDistance(this);
     return new CircularArc(this, start, getTangency(target, radius));
   }

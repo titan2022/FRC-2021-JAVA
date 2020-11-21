@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.Iterator;
 
 import frc.robot.mapping.Point;
+import frc.robot.mapping.Path;
 
 /** An implementation of the D* Lite dynamic path planning algorithm. */
 public class DStarLite {
@@ -121,7 +122,7 @@ public class DStarLite {
    *  the specified obstacle growth radius, or null if the start point is
    *  already within the specified radius around the goal.
    */
-  public Segment getSegment() {
+  public Path getSegment() {
     Node target = getPath();
     if(start.getDistance(goal) <= radius)
       return null;
@@ -143,11 +144,11 @@ public class DStarLite {
    *  iterator.
    * @see #getSegment(double)
    */
-  public Iterable<Segment> getSegments() {
-    return new Iterable<Segment>() {
+  public Iterable<Path> getSegments() {
+    return new Iterable<Path>() {
       @Override
-      public Iterator<Segment> iterator(){
-        return new Iterator<Segment>() {
+      public Iterator<Path> iterator(){
+        return new Iterator<Path>() {
           private Node curr = start;
           private Point pos = start;
 
@@ -157,8 +158,8 @@ public class DStarLite {
           }
 
           @Override
-          public Segment next() {
-            Segment path = curr.nextSegment(pos, radius);
+          public Path next() {
+            Path path = curr.nextSegment(pos, radius);
             if(path != null && path.getLength() == 0){
               curr = curr.getNext();
               path = curr.nextSegment(pos, radius);

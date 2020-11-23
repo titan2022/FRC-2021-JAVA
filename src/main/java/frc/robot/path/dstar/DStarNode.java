@@ -19,4 +19,18 @@ class DStarNode extends Point {
         super(position);
         this.queue = queue;
     }
+
+    double rhs() {
+        if(next == null)
+            return Double.POSITIVE_INFINITY;
+        return next.g + edges.get(next).getLength();
+    }
+
+    double key() {
+        return Math.min(g, rhs());
+    }
+
+    boolean isConsistent() {
+        return g == rhs();
+    }
 }

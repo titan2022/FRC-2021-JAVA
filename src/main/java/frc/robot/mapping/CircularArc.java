@@ -183,4 +183,11 @@ public class CircularArc implements Path {
     return Math.min(Math.min(other.getDistance(getStart()), other.getDistance(getEnd())),
         Math.min(getDistance(other.getStart()), getDistance(other.getEnd())));
   }
+
+  @Override
+  public double getDistance(Path other) {
+    if(other instanceof LinearSegment) return getDistance((LinearSegment) other);
+    else if(other instanceof CircularArc) return getDistance((CircularArc) other);
+    else return other.getDistance((CircularArc) this);
+  }
 }

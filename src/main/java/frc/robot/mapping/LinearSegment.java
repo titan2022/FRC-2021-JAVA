@@ -115,4 +115,10 @@ public class LinearSegment implements Path {
     public LinearSegment reverse() {
         return new LinearSegment(end, start);
     }
+
+    @Override
+    public double getDistance(Path other) {
+        if(other instanceof LinearSegment) return getDistance((LinearSegment) other);
+        else return other.getDistance((LinearSegment) this);
+    }
 }

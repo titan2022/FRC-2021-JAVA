@@ -37,7 +37,7 @@ public class Polygon implements Obstacle {
     if(Point.getAngle(verts[0], interior, verts[verts.length-1]).getSin() > 0){
       for(int i=0; i<verts.length/2; i++){
         Point tmp = verts[i];
-        verts[i] = verts[verts.length-i];
+        verts[i] = verts[verts.length-i-1];
         verts[verts.length-1] = tmp;
       }
     }

@@ -14,11 +14,19 @@ class DStarNode extends Point {
     private double g = Double.POSITIVE_INFINITY;
     private double rhs = Double.POSITIVE_INFINITY;
     private final Map<DStarNode, Path> edges = new HashMap<>();
-    DStarNode next = null;
+    private DStarNode next = null;
 
     DStarNode(Translation2d position, Queue<DStarNode> queue) {
         super(position);
         this.queue = queue;
+    }
+
+    Path getPath() {
+        return edges.get(next);
+    }
+
+    DStarNode getNext() {
+        return next;
     }
 
     void connect(DStarNode neighbor, Path edge) {

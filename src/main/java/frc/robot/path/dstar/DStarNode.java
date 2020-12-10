@@ -21,6 +21,31 @@ class DStarNode extends Point {
         this.queue = queue;
     }
 
+    void connect(DStarNode neighbor, Path edge) {
+        if(edges.putIfAbsent(neighbor, edge) != null && edge.getLength() < edges.get(neighbor).getLength()){
+            edges.put(neighbor, edge);
+            if(neighbor.g + edge.getLength() < rhs){
+                next = neighbor;
+                rhs = neighbor.g + edge.getLength();
+                update();
+            }
+        }
+    }
+
+    void sever(DStarNode neighbor) {
+        edges.remove(neighbor);
+        alert(neighbor);
+        neighbor.edges.remove(this);
+        neighbor.alert(this);
+    }
+
+    void sever() {
+        for(DStarNode neighbor : edges.keySet()){
+            neighbor.edges.remove(this);
+            neighbor.alert(this);
+        }
+    }
+
     void update() {
         queue.remove(this);
         if(!isConsistent())
@@ -40,6 +65,7 @@ class DStarNode extends Point {
     private void alert(DStarNode neighbor) {
         if(neighbor == next){
             if(!edges.containsKey(neighbor) || neighbor.g + edges.get(neighbor).getLength() > rhs){
+                rhs = Double.POSITIVE_INFINITY;
                 for(Map.Entry<DStarNode, Path> entry : edges.entrySet()){
                     if(entry.getKey().g + entry.getValue().getLength() < rhs){
                         next = entry.getKey();

@@ -133,8 +133,8 @@ public class Polygon implements Obstacle {
       Point thisNext = verts[(i+1)%verts.length];
       Point otherPrev = other.verts[other.verts.length-1];
       for(int j=0; j<other.verts.length; j++){
-        Point otherCurr = other.verts[i];
-        Point otherNext = other.verts[(i+1)%other.verts.length];
+        Point otherCurr = other.verts[j];
+        Point otherNext = other.verts[(j+1)%other.verts.length];
         oca = Point.getAngle(otherCurr, thisCurr, thisPrev);
         ocb = Point.getAngle(otherCurr, thisCurr, thisNext);
         cox = Point.getAngle(thisCurr, otherCurr, otherPrev);

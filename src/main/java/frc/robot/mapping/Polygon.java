@@ -163,7 +163,7 @@ public class Polygon implements Obstacle {
 
   @Override
   public Path edgePath(Point a, Point b, double radius) {
-    Point end = null, curr = null, mid;  // end point; end of accumulated path
+    Point end = null, curr = null;  // end point; end of accumulated path
     List<Path> segments = new ArrayList<>();  // accumulated path
     Rotation2d theta = new Rotation2d(Math.PI/2);
     int i = -1, ctr = 0;
@@ -171,6 +171,8 @@ public class Polygon implements Obstacle {
       Point vertex = verts[(++i)%verts.length];
       Point vNext = verts[(i+1)%verts.length];
       Point offset = new Point(radius, vNext.minus(vertex).getAngle().plus(theta));
+      Point alpha = vertex.plus(offset);
+      Point beta = vNext.plus(offset);
       if(curr == null && vertex.getDistance(a) == radius){
         end = b;
         curr = a;
@@ -186,9 +188,8 @@ public class Polygon implements Obstacle {
           segments.add(new CircularArc(curr, vertex, end));
           break;
         }
-        mid = vertex.plus(offset);
-        segments.add(new CircularArc(curr, vertex, mid));
-        curr = mid;
+        segments.add(new CircularArc(curr, vertex, alpha));
+        curr = alpha;
       }
       if(curr == null && Point.getAngle(vNext, vertex, a).getCos() == 1){
         end = b;
@@ -205,9 +206,8 @@ public class Polygon implements Obstacle {
           segments.add(new LinearSegment(curr, end));
           break;
         }
-        mid = vNext.plus(offset);
-        segments.add(new LinearSegment(curr, mid));
-        curr = mid;
+        segments.add(new LinearSegment(curr, beta));
+        curr = beta;
       }
       ctr++;
     }

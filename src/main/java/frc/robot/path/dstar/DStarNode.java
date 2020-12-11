@@ -20,6 +20,11 @@ class DStarNode extends Point implements Comparable<DStarNode> {
         super(position);
         this.queue = queue;
     }
+    DStarNode(Translation2d position, Queue<DStarNode> queue, double g, double rhs) {
+        this(position, queue);
+        this.g = g;
+        this.rhs = rhs;
+    }
 
     Path getPath() {
         return edges.get(next);

@@ -97,4 +97,20 @@ class DStarNode extends Point {
     boolean isConsistent() {
         return g == rhs;
     }
+
+    int getDegree() {
+        return edges.size();
+    }
+
+    Iterable<DStarNode> getNeighbors() {
+        return edges.keySet();
+    }
+
+    Iterable<Path> getEdges() {
+        return edges.values();
+    }
+
+    Iterable<Map.Entry<DStarNode, Path>> getConnections() {
+        return edges.entrySet();
+    }
 }

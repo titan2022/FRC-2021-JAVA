@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import frc.robot.mapping.Point;
 import frc.robot.mapping.Path;
 
-class DStarNode extends Point {
+class DStarNode extends Point implements Comparable<DStarNode> {
     private final Queue<DStarNode> queue;
     private double g = Double.POSITIVE_INFINITY;
     private double rhs = Double.POSITIVE_INFINITY;
@@ -112,5 +112,10 @@ class DStarNode extends Point {
 
     Iterable<Map.Entry<DStarNode, Path>> getConnections() {
         return edges.entrySet();
+    }
+
+    @Override
+    public int compareTo(DStarNode other) {
+        return (int) Math.signum(key() - other.key());
     }
 }

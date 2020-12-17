@@ -41,4 +41,10 @@ public class KalmanFilter {
 
     }
 
+    private void updateCovariance() {
+
+        P = (SimpleMatrix.identity(x.numRows()).minus(K.mult(H))).mult(P);
+
+    }
+
 }

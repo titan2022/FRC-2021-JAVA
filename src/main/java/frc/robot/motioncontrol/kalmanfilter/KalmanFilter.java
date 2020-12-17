@@ -35,4 +35,10 @@ public class KalmanFilter {
 
     }
 
+    private void updateState() {
+
+        x = x.plus(K.mult(z.minus(H.mult(x))));
+
+    }
+
 }

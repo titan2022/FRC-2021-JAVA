@@ -9,9 +9,7 @@ public class KalmanFilter {
     private SimpleMatrix x; // state vector
     private SimpleMatrix Q; // state (or process) noise covariance
     private SimpleMatrix P; // state covariance (accuracy of state)
-    private SimpleMatrix z; // measurement
     private SimpleMatrix R; // measurement noise covariance
-    private SimpleMatrix u; // control input vector
     private SimpleMatrix A; // relates previous state to current state, often found as F
     private SimpleMatrix B; // relates control input to current state
     private SimpleMatrix H; // relates current state to measurement
@@ -31,9 +29,10 @@ public class KalmanFilter {
 
     /**
      * Predicts future state (x)
+     * @param u - Control input from user.
      */
 
-    private void predictState() {
+    private void predictState(SimpleMatrix u) {
 
         x = (A.mult(x)).plus(B.mult(u));
 
@@ -56,8 +55,7 @@ public class KalmanFilter {
 
     public void predictFilter(SimpleMatrix u) {
 
-        this.u = u;
-        predictState();
+        predictState(u);
         predictCovariance();
 
     }
@@ -74,9 +72,10 @@ public class KalmanFilter {
 
     /**
      * Updates current state (x)
+     * @param z - Measurement from system.
      */
 
-    private void updateState() {
+    private void updateState(SimpleMatrix z) {
 
         x = x.plus(K.mult(z.minus(H.mult(x))));
 
@@ -99,9 +98,8 @@ public class KalmanFilter {
 
     public void updateFilter(SimpleMatrix z) {
 
-        this.z = z;
         updateKalmanGain();
-        updateState();
+        updateState(z);
         updateCovariance();
 
     }

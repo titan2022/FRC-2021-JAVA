@@ -11,9 +11,9 @@ public class KalmanFilter {
     private SimpleMatrix P; // state covariance (accuracy of state)
     private SimpleMatrix z; // measurement
     private SimpleMatrix R; // measurement noise covariance
-    private double t; // time between measurements
+    private SimpleMatrix u; // control input vector
     private SimpleMatrix A; // relates previous state to current state, often found as F
-    private SimpleMatrix B; // relates control vector to current state
+    private SimpleMatrix B; // relates control input to current state
     private SimpleMatrix H; // relates current state to measurement
     private SimpleMatrix K; // process's Kalman gain
 

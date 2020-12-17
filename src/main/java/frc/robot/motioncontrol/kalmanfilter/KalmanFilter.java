@@ -16,6 +16,17 @@ public class KalmanFilter extends SubsystemBase {
     private SimpleMatrix H; // relates current state to measurement
     private SimpleMatrix K; // process's Kalman gain
 
+    /**
+     * Creates a new KalmanFilter
+     * @param x - Initial state vector.
+     * @param Q - Initial process noise covariance.
+     * @param P - Initial state covariance.
+     * @param R - Initial measurement noise covariance.
+     * @param A - Relates states from diff. timesteps.
+     * @param B - Relates control input to state.
+     * @param H - Relates measurement to state.
+     */
+
     public KalmanFilter(SimpleMatrix x, SimpleMatrix Q, SimpleMatrix P, SimpleMatrix R, SimpleMatrix A, SimpleMatrix B, SimpleMatrix H) {
 
         this.x = x;

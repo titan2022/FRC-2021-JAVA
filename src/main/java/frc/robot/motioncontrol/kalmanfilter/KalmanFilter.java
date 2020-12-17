@@ -1,22 +1,21 @@
 package frc.robot.motioncontrol.kalmanfilter;
 
-import frc.robot.motioncontrol.MatrixOperations;
+import org.ejml.simple.SimpleMatrix;
 
 public class KalmanFilter {
 
     // class variables
 
-    private double tDelta;
-    private double a; // given acceleration
-    private double aNoise;
-    private double measNoise; // measurement noise
-    private double sz; // measurement noise covariance
-    private double[][] x; // state vector
-    private double[][] transMatrix; // transition matrix
-    private double[][] inputMatrix;
-    private double[][] measMatrix; // measurement matrix
-    private double[][] sw; // process noise covariance
-    private double[][] P; // estimation covariance
+    private SimpleMatrix x; // state vector
+    private SimpleMatrix Q; // state (or process) noise covariance
+    private SimpleMatrix P; // state covariance (accuracy of state)
+    private SimpleMatrix z; // measurement
+    private SimpleMatrix R; // measurement noise covariance
+    private double t; // time between measurements
+    private SimpleMatrix A; // relates previous state to current state, often found as F
+    private SimpleMatrix B; // relates control vector to current state
+    private SimpleMatrix H; // relates current state to measurement
+    private SimpleMatrix K; // process's Kalman gain
 
     public KalmanFilter(double tDelta, double a, double aNoise, double measNoise) {
 

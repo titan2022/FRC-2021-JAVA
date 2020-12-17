@@ -29,6 +29,18 @@ public class KalmanFilter {
 
     }
 
+    private void predictState() {
+
+        x = (A.mult(x)).plus(B.mult(u));
+
+    }
+
+    private void predictCovariance() {
+
+        P = (A.mult(P).mult(A.transpose())).plus(Q);
+
+    }
+
     /**
      * Updates Kalman gain (K)
      */

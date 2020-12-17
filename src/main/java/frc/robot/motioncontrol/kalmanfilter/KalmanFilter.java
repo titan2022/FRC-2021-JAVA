@@ -29,15 +29,36 @@ public class KalmanFilter {
 
     }
 
+    /**
+     * Predicts future state (x)
+     */
+
     private void predictState() {
 
         x = (A.mult(x)).plus(B.mult(u));
 
     }
 
+    /**
+     * Predicts state covariance (P)
+     */
+
     private void predictCovariance() {
 
         P = (A.mult(P).mult(A.transpose())).plus(Q);
+
+    }
+
+    /**
+     * Predits Kalman filter's state and covariance.
+     * @param u - Control input from user.
+     */
+
+    public void predictFilter(SimpleMatrix u) {
+
+        this.u = u;
+        predictState();
+        predictCovariance();
 
     }
 
@@ -72,7 +93,7 @@ public class KalmanFilter {
     }
 
     /**
-     * Updates Kalman filter's state, covariance, and Kalman gain
+     * Updates Kalman filter's state, covariance, and Kalman gain.
      * @param z - Measurement from system.
      */
 

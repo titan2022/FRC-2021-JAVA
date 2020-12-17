@@ -29,4 +29,10 @@ public class KalmanFilter {
 
     }
 
+    private void updateKalmanGain() {
+
+        K = P.mult(H.transpose()).mult(((H.mult(P).mult(H.transpose())).plus(R)).invert());
+
+    }
+
 }

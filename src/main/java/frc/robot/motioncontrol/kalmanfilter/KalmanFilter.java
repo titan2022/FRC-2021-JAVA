@@ -29,11 +29,19 @@ public class KalmanFilter {
 
     }
 
+    /**
+     * Updates Kalman gain (K)
+     */
+
     private void updateKalmanGain() {
 
         K = P.mult(H.transpose()).mult(((H.mult(P).mult(H.transpose())).plus(R)).invert());
 
     }
+
+    /**
+     * Updates current state (x)
+     */
 
     private void updateState() {
 
@@ -41,9 +49,27 @@ public class KalmanFilter {
 
     }
 
+    /**
+     * Updates state covariance (P)
+     */
+
     private void updateCovariance() {
 
         P = (SimpleMatrix.identity(x.numRows()).minus(K.mult(H))).mult(P);
+
+    }
+
+    /**
+     * Updates Kalman filter's state, covariance, and Kalman gain
+     * @param z - Measurement from system.
+     */
+
+    public void updateFilter(SimpleMatrix z) {
+
+        this.z = z;
+        updateKalmanGain();
+        updateState();
+        updateCovariance();
 
     }
 

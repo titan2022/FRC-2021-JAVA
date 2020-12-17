@@ -106,4 +106,26 @@ public class KalmanFilter {
 
     }
 
+    /**
+     * Returns current state (predicted if after predict step)
+     * @return Current state vector.
+     */
+
+    public SimpleMatrix getState() {
+
+        return x;
+
+    }
+
+    /**
+     * Returns current covariance (predicted if after predict step)
+     * @return Current state covariance.
+     */
+
+    public SimpleMatrix getCovariance() {
+
+        return P;
+
+    }
+
 }

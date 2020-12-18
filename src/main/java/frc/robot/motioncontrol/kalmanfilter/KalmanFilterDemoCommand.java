@@ -13,7 +13,7 @@ public class KalmanFilterDemoCommand extends CommandBase {
     private Field2d field;
     private KalmanFilter filter;
     private SimpleMatrix posReal;
-    private SimpleMatrix posHat;
+    private SimpleMatrix posNoisy;
     private Rotation2d angle;
     private Random rand;
 
@@ -32,25 +32,29 @@ public class KalmanFilterDemoCommand extends CommandBase {
 
         posReal = new SimpleMatrix(new double[][] { { 50 }, { 50 } });
         field.setRobotPose(posReal.get(0, 0), posReal.get(1, 0), angle);
-        posHat = new SimpleMatrix(posReal);
+        posNoisy = new SimpleMatrix(posReal);
 
         SimpleMatrix Q = SimpleMatrix.identity(2).scale(0.00001);
-        SimpleMatrix R = SimpleMatrix.identity(2).scale(0.001);
+        SimpleMatrix R = SimpleMatrix.identity(2).scale(0.01);
 
-        filter = new KalmanFilter(posHat, Q, SimpleMatrix.identity(2), R, SimpleMatrix.identity(2), SimpleMatrix.identity(2),
-                SimpleMatrix.identity(2));
+        filter = new KalmanFilter(new SimpleMatrix(posReal), Q, SimpleMatrix.identity(2), R, SimpleMatrix.identity(2),
+                SimpleMatrix.identity(2), SimpleMatrix.identity(2));
 
     }
 
     @Override
     public void execute() {
 
-        double realX = field.getRobotPose().getTranslation().getX();
-        double realY = field.getRobotPose().getTranslation().getY();
+        posReal.set(0, 0, field.getRobotPose().getTranslation().getX());
+        posReal.set(1, 0, field.getRobotPose().getTranslation().getY());
 
-        SmartDashboard.putNumber("x (real)", realX);
-        SmartDashboard.putNumber("y (real)", realY);
+        posNoisy.set(0, 0, (1 + 0.1 * rand.nextGaussian()) * posReal.get(0, 0));
+        posNoisy.set(1, 0, (1 + 0.1 * rand.nextGaussian()) * posReal.get(1, 0));
 
+        SmartDashboard.putNumber("x (real)", posReal.get(0, 0));
+        SmartDashboard.putNumber("y (real)", posReal.get(1, 0));
+        SmartDashboard.putNumber("x (noisy)", posNoisy.get(0, 0));
+        SmartDashboard.putNumber("y (noisy)", posNoisy.get(1, 0));
 
     }
 

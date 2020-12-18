@@ -26,10 +26,14 @@ public class KalmanFilterDemoCommand extends CommandBase {
     @Override
     public void initialize() {
 
+        rand = new Random();
         field = new Field2d();
         angle = new Rotation2d();
-        posReal = new SimpleMatrix(new double[][] { { 0 }, { 0 } });
+
+        posReal = new SimpleMatrix(new double[][] { { 50 }, { 50 } });
+        field.setRobotPose(posReal.get(0, 0), posReal.get(1, 0), angle);
         posHat = new SimpleMatrix(posReal);
+
         SimpleMatrix Q = SimpleMatrix.identity(2).scale(0.00001);
         SimpleMatrix R = SimpleMatrix.identity(2).scale(0.001);
 
@@ -41,9 +45,11 @@ public class KalmanFilterDemoCommand extends CommandBase {
     @Override
     public void execute() {
 
-        field.setRobotPose(posReal.get(0, 0), posReal.get(1, 0), angle);
-        SmartDashboard.putNumber("x (real)", field.getRobotPose().getTranslation().getX());
-        SmartDashboard.putNumber("y (real)", field.getRobotPose().getTranslation().getY());
+        double realX = field.getRobotPose().getTranslation().getX();
+        double realY = field.getRobotPose().getTranslation().getY();
+
+        SmartDashboard.putNumber("x (real)", realX);
+        SmartDashboard.putNumber("y (real)", realY);
 
 
     }

@@ -18,6 +18,7 @@ public class KalmanFilter extends SubsystemBase {
 
     /**
      * Creates a new KalmanFilter
+     * 
      * @param x - Initial state vector.
      * @param Q - Initial process noise covariance.
      * @param P - Initial state covariance.
@@ -27,7 +28,8 @@ public class KalmanFilter extends SubsystemBase {
      * @param H - Relates measurement to state.
      */
 
-    public KalmanFilter(SimpleMatrix x, SimpleMatrix Q, SimpleMatrix P, SimpleMatrix R, SimpleMatrix A, SimpleMatrix B, SimpleMatrix H) {
+    public KalmanFilter(SimpleMatrix x, SimpleMatrix Q, SimpleMatrix P, SimpleMatrix R, SimpleMatrix A, SimpleMatrix B,
+            SimpleMatrix H) {
 
         this.x = x;
         this.Q = Q;
@@ -41,6 +43,7 @@ public class KalmanFilter extends SubsystemBase {
 
     /**
      * Predicts future state (x)
+     * 
      * @param u - Control input from user.
      */
 
@@ -62,6 +65,7 @@ public class KalmanFilter extends SubsystemBase {
 
     /**
      * Predits Kalman filter's state and covariance.
+     * 
      * @param u - Control input from user.
      */
 
@@ -84,6 +88,7 @@ public class KalmanFilter extends SubsystemBase {
 
     /**
      * Updates current state (x)
+     * 
      * @param z - Measurement from system.
      */
 
@@ -105,6 +110,7 @@ public class KalmanFilter extends SubsystemBase {
 
     /**
      * Updates Kalman filter's state, covariance, and Kalman gain.
+     * 
      * @param z - Measurement from system.
      */
 
@@ -117,7 +123,22 @@ public class KalmanFilter extends SubsystemBase {
     }
 
     /**
+     * Convenience method that predicts on input then updates on measurement.
+     * 
+     * @param u - Control input from user.
+     * @param z - Measurement from system.
+     */
+
+    public void runFilter(SimpleMatrix u, SimpleMatrix z) {
+
+        predictFilter(u);
+        updateFilter(z);
+
+    }
+
+    /**
      * Returns current state (predicted if after predict step)
+     * 
      * @return Current state vector.
      */
 
@@ -129,6 +150,7 @@ public class KalmanFilter extends SubsystemBase {
 
     /**
      * Returns current covariance (predicted if after predict step)
+     * 
      * @return Current state covariance.
      */
 

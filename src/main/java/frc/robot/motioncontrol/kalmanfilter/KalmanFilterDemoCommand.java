@@ -51,10 +51,14 @@ public class KalmanFilterDemoCommand extends CommandBase {
         posNoisy.set(0, 0, (1 + 0.1 * rand.nextGaussian()) * posReal.get(0, 0));
         posNoisy.set(1, 0, (1 + 0.1 * rand.nextGaussian()) * posReal.get(1, 0));
 
+        filter.runFilter(new SimpleMatrix(new double[][] { { 0 }, { 0 } }), posNoisy);
+
         SmartDashboard.putNumber("x (real)", posReal.get(0, 0));
         SmartDashboard.putNumber("y (real)", posReal.get(1, 0));
         SmartDashboard.putNumber("x (noisy)", posNoisy.get(0, 0));
         SmartDashboard.putNumber("y (noisy)", posNoisy.get(1, 0));
+        SmartDashboard.putNumber("x (est.)", filter.getState().get(0, 0));
+        SmartDashboard.putNumber("y (est.)", filter.getState().get(1, 0));
 
     }
 

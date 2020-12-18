@@ -30,11 +30,11 @@ public class KalmanFilterDemoCommand extends CommandBase {
         field = new Field2d();
         angle = new Rotation2d();
 
-        posReal = new SimpleMatrix(new double[][] { { 50 }, { 50 } });
+        posReal = new SimpleMatrix(new double[][] { { 0 }, { 0 } });
         field.setRobotPose(posReal.get(0, 0), posReal.get(1, 0), angle);
         posNoisy = new SimpleMatrix(posReal);
 
-        SimpleMatrix Q = SimpleMatrix.identity(2).scale(0.00001);
+        SimpleMatrix Q = SimpleMatrix.identity(2).scale(0.0001);
         SimpleMatrix R = SimpleMatrix.identity(2).scale(0.01);
 
         filter = new KalmanFilter(new SimpleMatrix(posReal), Q, SimpleMatrix.identity(2), R, SimpleMatrix.identity(2),

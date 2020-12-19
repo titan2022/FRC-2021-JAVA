@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.motionGeneration.rmpFlow;
+package frc.robot.motion.generation.rmpflow.demos;
 
 import java.util.ArrayList;
 
@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.motion.generation.rmpflow.*;
 import frc.wpilibjTemp.Field2d;;
 
 public class RMPDemoCommand extends CommandBase {

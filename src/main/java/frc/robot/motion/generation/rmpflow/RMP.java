@@ -1,4 +1,4 @@
-package frc.robot.motionGeneration.rmpFlow;
+package frc.robot.motion.generation.rmpflow;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;

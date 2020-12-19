@@ -1,6 +1,8 @@
-package frc.robot.motionGeneration.rmpFlow;
+package frc.robot.motion.generation.rmpflow;
 
 import org.ejml.simple.SimpleMatrix;
+
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 
 public class CollisionAvoidance extends RMPLeaf {
 	private double r, alpha, eta, epsilon;
@@ -16,6 +18,18 @@ public class CollisionAvoidance extends RMPLeaf {
 		
 		if(center.numRows() == 1)
 			this.center = center.transpose();
+		else
+			this.center = center;
+	}
+
+	public CollisionAvoidance(String name, RMPNode parent, Translation2d center, double r, double epsilon, double alpha, double eta)
+	{
+		super(name, parent);
+		this.r = r;
+		this.alpha = alpha;
+		this.eta = eta;
+		this.epsilon = epsilon;
+		this.center = new SimpleMatrix(1, 2,  false, new double[] {center.getX(), center.getY()});
 	}
 
 	public SimpleMatrix phi(SimpleMatrix q)

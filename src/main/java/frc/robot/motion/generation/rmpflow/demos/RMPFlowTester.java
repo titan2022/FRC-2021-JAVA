@@ -1,4 +1,4 @@
-package frc.robot.motionGeneration.rmpFlow;
+package frc.robot.motion.generation.rmpflow.demos;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -10,6 +10,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.ejml.simple.SimpleMatrix;
+
+import frc.robot.motion.generation.rmpflow.*;
 
 public class RMPFlowTester{
 

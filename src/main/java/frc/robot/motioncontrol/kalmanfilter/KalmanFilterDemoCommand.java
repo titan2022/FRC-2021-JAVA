@@ -16,6 +16,7 @@ public class KalmanFilterDemoCommand extends CommandBase {
     private SimpleMatrix posNoisy;
     private Rotation2d angle;
     private Random rand;
+    private final SimpleMatrix ZERO_MATRIX = new SimpleMatrix(new double[][] { { 0 }, { 0 } });
 
     public KalmanFilterDemoCommand() {
 
@@ -34,10 +35,8 @@ public class KalmanFilterDemoCommand extends CommandBase {
         field.setRobotPose(posReal.get(0, 0), posReal.get(1, 0), angle);
         posNoisy = new SimpleMatrix(posReal);
 
-        SimpleMatrix Q = SimpleMatrix.identity(2).scale(0.0001);
-        SimpleMatrix R = SimpleMatrix.identity(2).scale(0.01);
-
-        filter = new KalmanFilter(new SimpleMatrix(posReal), Q, SimpleMatrix.identity(2), R, SimpleMatrix.identity(2),
+        filter = new KalmanFilter(new SimpleMatrix(posReal), SimpleMatrix.identity(2).scale(0.0001),
+                SimpleMatrix.identity(2), SimpleMatrix.identity(2).scale(0.01), SimpleMatrix.identity(2),
                 SimpleMatrix.identity(2), SimpleMatrix.identity(2));
 
     }
@@ -51,7 +50,7 @@ public class KalmanFilterDemoCommand extends CommandBase {
         posNoisy.set(0, 0, (1 + 0.1 * rand.nextGaussian()) * posReal.get(0, 0));
         posNoisy.set(1, 0, (1 + 0.1 * rand.nextGaussian()) * posReal.get(1, 0));
 
-        filter.runFilter(new SimpleMatrix(new double[][] { { 0 }, { 0 } }), posNoisy);
+        filter.runFilter(ZERO_MATRIX, posNoisy);
 
         SmartDashboard.putNumber("x (real)", posReal.get(0, 0));
         SmartDashboard.putNumber("y (real)", posReal.get(1, 0));

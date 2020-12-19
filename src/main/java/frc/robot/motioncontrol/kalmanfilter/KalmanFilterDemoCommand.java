@@ -18,11 +18,19 @@ public class KalmanFilterDemoCommand extends CommandBase {
     private Random rand;
     private final SimpleMatrix ZERO_MATRIX = new SimpleMatrix(new double[][] { { 0 }, { 0 } });
 
+    /**
+     * Creates a KalmanFilterDemoCommand object
+     */
+
     public KalmanFilterDemoCommand() {
 
         addRequirements();
 
     }
+
+    /**
+     * Initializes a Kalman filter demo and all instance variables
+     */
 
     @Override
     public void initialize() {
@@ -31,9 +39,13 @@ public class KalmanFilterDemoCommand extends CommandBase {
         field = new Field2d();
         angle = new Rotation2d();
 
+        // starting position of robot on field
+
         posReal = new SimpleMatrix(new double[][] { { 10 }, { 10 } });
-        field.setRobotPose(posReal.get(0, 0), posReal.get(1, 0), angle);
         posNoisy = new SimpleMatrix(posReal);
+        field.setRobotPose(posReal.get(0, 0), posReal.get(1, 0), angle);
+
+        // initializing KalmanFilter, Q = 0.0001I, R = 0.01I, P = A = B = H = I, I in M2
 
         filter = new KalmanFilter(new SimpleMatrix(posReal), SimpleMatrix.identity(2).scale(0.0001),
                 SimpleMatrix.identity(2), SimpleMatrix.identity(2).scale(0.01), SimpleMatrix.identity(2),
@@ -41,16 +53,26 @@ public class KalmanFilterDemoCommand extends CommandBase {
 
     }
 
+    /**
+     * Periodic updating of Kalman filter demo
+     */
+
     @Override
     public void execute() {
+
+        // getting real position of robot
 
         posReal.set(0, 0, field.getRobotPose().getTranslation().getX());
         posReal.set(1, 0, field.getRobotPose().getTranslation().getY());
 
+        // adding Gaussian noise factor with avg = 1, stdev = 0.1
+
         posNoisy.set(0, 0, (1 + 0.1 * rand.nextGaussian()) * posReal.get(0, 0));
         posNoisy.set(1, 0, (1 + 0.1 * rand.nextGaussian()) * posReal.get(1, 0));
 
-        filter.runFilter(ZERO_MATRIX, posNoisy);
+        filter.runFilter(ZERO_MATRIX, new SimpleMatrix(posNoisy));
+
+        // adding numbers to SmartDashboard
 
         SmartDashboard.putNumber("x (real)", posReal.get(0, 0));
         SmartDashboard.putNumber("y (real)", posReal.get(1, 0));

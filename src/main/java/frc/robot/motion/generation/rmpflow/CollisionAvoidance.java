@@ -51,7 +51,7 @@ public class CollisionAvoidance extends RMPLeaf {
 		return q_dot.transpose().mult(b).divide(this.r);
 	};
 	
-	public SimpleMatrix solveF()
+	public SimpleMatrix solveF(SimpleMatrix x, SimpleMatrix x_dot)
 	{
 		double w;
 		double grad_w;
@@ -79,7 +79,7 @@ public class CollisionAvoidance extends RMPLeaf {
 
 	}
 	
-	public SimpleMatrix solveM()
+	public SimpleMatrix solveM(SimpleMatrix x, SimpleMatrix x_dot)
 	{
 		double w;
 		if(x.get(0, 0) < 0)

@@ -44,7 +44,7 @@ public class GoalAttractor extends RMPLeaf {
 		return new SimpleMatrix(goalSize, goalSize);
 	};
 	
-	public SimpleMatrix solveF()
+	public SimpleMatrix solveF(SimpleMatrix x, SimpleMatrix x_dot)
 	{
 		double x_norm = x.normF();
 		
@@ -66,7 +66,7 @@ public class GoalAttractor extends RMPLeaf {
 		return grad_Phi.scale(-1).minus(bx_dot).minus(xi);
 	}
 	
-	public SimpleMatrix solveM()
+	public SimpleMatrix solveM(SimpleMatrix x, SimpleMatrix x_dot)
 	{
 		double x_norm = x.normF();
 		

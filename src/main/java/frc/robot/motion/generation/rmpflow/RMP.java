@@ -61,7 +61,7 @@ public class RMP extends RMPLeaf {
 	 * , where F is the motion policy that describes the dynamical system as a second-order differential equation that uses position and velocity.
 	 * @return F 
 	 */
-    protected SimpleMatrix solveF()
+    protected SimpleMatrix solveF(SimpleMatrix x, SimpleMatrix x_dot)
     {
         return f.get();
     }
@@ -71,7 +71,7 @@ public class RMP extends RMPLeaf {
 	 * , where M is the canonical version of the Riemannian metric A
 	 * @return M
 	 */
-    protected SimpleMatrix solveM()
+    protected SimpleMatrix solveM(SimpleMatrix x, SimpleMatrix x_dot)
     {
         return m.get();
     }

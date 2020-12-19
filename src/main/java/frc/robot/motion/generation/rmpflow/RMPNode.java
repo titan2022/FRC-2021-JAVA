@@ -11,7 +11,7 @@ public abstract class RMPNode {
 	private String name;
 	private RMPNode parent;
 	private ArrayList<RMPNode> children = new ArrayList<RMPNode>();
-	protected SimpleMatrix x, x_dot, f, a, m;
+	private SimpleMatrix x, x_dot, f, m;
 	
 	/**
 	 * A node for an tree that contains mappings and functions for Riemannian Motion Policies.
@@ -27,7 +27,6 @@ public abstract class RMPNode {
 		this.x = null;
 		this.x_dot = null;
 		this.f = null;
-		this.a = null;
 		this.m = null;
 	}
 
@@ -131,4 +130,59 @@ public abstract class RMPNode {
 			}
 		}
 	}
+
+	/**
+	 * Returns current state
+	 * @return x
+	 */
+	public SimpleMatrix getX() {return x;}
+
+	/**
+	 * Sets the current state
+	 * @param x
+	 */
+	public void setX(SimpleMatrix x) {this.x = x;}
+
+	/**
+	 * Gets the current derivative of the state
+	 * @return first order of system
+	 */
+	public SimpleMatrix getXdot() {return x_dot;}
+
+	/**
+	 * Sets the current first order state
+	 * @param xdot is the first order of the system
+	 */
+	public void setXdot(SimpleMatrix xdot) {this.x_dot = xdot;}
+
+	/**
+	 * Returns acceleration motion policy
+	 * @return f
+	 */
+	public SimpleMatrix getF() {return f;}
+
+	/**
+	 * Sets acceleration motion policy
+	 * @param f
+	 */
+	public void setF(SimpleMatrix f) {this.f = f;}
+
+	/**
+	 * Returns riemannian metric
+	 * @return M
+	 */
+	public SimpleMatrix getM() {return m;}
+
+	/**
+	 * Sets riemannian metric
+	 * @param m
+	 */
+	public void setM(SimpleMatrix m) {this.m = m;}
+
+	/**
+	 * Computes and returns motion policy as a = M†f.
+	 * † denotes Moore-Penrose inverse.
+	 * @return A
+	 */
+	public SimpleMatrix getA() {return m.pseudoInverse().mult(f);}
 }

@@ -28,13 +28,13 @@ public class Damper extends RMPLeaf{
 	};
 
 
-    public SimpleMatrix solveF(){
+    public SimpleMatrix solveF(SimpleMatrix x, SimpleMatrix x_dot){
         SimpleMatrix bx_dot = x_dot.scale(-(eta * w));
         return bx_dot;
     }
 
     
-    public SimpleMatrix solveM(){
+    public SimpleMatrix solveM(SimpleMatrix x, SimpleMatrix x_dot){
         return new SimpleMatrix(1, 1, false, new double[]{w});
     }
 

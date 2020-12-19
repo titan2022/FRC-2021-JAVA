@@ -23,13 +23,13 @@ public class RMPRoot extends RMPNode{
 	public void setRootState(SimpleMatrix x, SimpleMatrix x_dot)
 	{
 		if(x.numRows() == 1)
-			this.x = x.transpose();
+			setX(x.transpose());
 		else
-			this.x = x;
+			setX(x);
 		if(x_dot.numRows() == 1)
-			this.x_dot = x_dot.transpose();
+			setXdot(x_dot.transpose());
 		else
-			this.x_dot = x_dot;
+			setXdot(x_dot);
 	}
 	
 	/**
@@ -50,8 +50,7 @@ public class RMPRoot extends RMPNode{
 	 */
 	public SimpleMatrix resolve()
 	{
-		a = m.pseudoInverse().mult(f);
-		return a;
+		return getA();
 	}
 	
 	/**

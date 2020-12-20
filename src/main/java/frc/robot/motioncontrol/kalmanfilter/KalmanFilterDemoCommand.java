@@ -41,14 +41,16 @@ public class KalmanFilterDemoCommand extends CommandBase {
 
         // starting position of robot on field
 
-        posReal = new SimpleMatrix(new double[][] { { 10 }, { 10 } });
+        posReal = new SimpleMatrix(new double[][] { { 5 }, { 5 } });
         posNoisy = new SimpleMatrix(posReal);
         field.setRobotPose(posReal.get(0, 0), posReal.get(1, 0), angle);
 
-        // initializing KalmanFilter, Q = 0.0001I, R = 0.01I, P = A = B = H = I, I in M2
+        // initializing KalmanFilter, Q = 0.0001I, R = 0.25I, P = A = B = H = I, I in M2
+        // Q is generally very small (process noise)
+        // R is generally I * variance, or I * (stdev^2) = 0.25I
 
         filter = new KalmanFilter(new SimpleMatrix(posReal), SimpleMatrix.identity(2).scale(0.0001),
-                SimpleMatrix.identity(2), SimpleMatrix.identity(2).scale(0.01), SimpleMatrix.identity(2),
+                SimpleMatrix.identity(2), SimpleMatrix.identity(2).scale(0.25), SimpleMatrix.identity(2),
                 SimpleMatrix.identity(2), SimpleMatrix.identity(2));
 
     }
@@ -65,10 +67,10 @@ public class KalmanFilterDemoCommand extends CommandBase {
         posReal.set(0, 0, field.getRobotPose().getTranslation().getX());
         posReal.set(1, 0, field.getRobotPose().getTranslation().getY());
 
-        // adding Gaussian noise factor with avg = 1, stdev = 0.1
+        // adding Gaussian noise factor with avg = 0, stdev = 0.5
 
-        posNoisy.set(0, 0, (1 + 0.1 * rand.nextGaussian()) * posReal.get(0, 0));
-        posNoisy.set(1, 0, (1 + 0.1 * rand.nextGaussian()) * posReal.get(1, 0));
+        posNoisy.set(0, 0, (0.5 * rand.nextGaussian()) + posReal.get(0, 0));
+        posNoisy.set(1, 0, (0.5 * rand.nextGaussian()) + posReal.get(1, 0));
 
         filter.runFilter(ZERO_MATRIX, new SimpleMatrix(posNoisy));
 

@@ -104,7 +104,7 @@ public class Robot extends TimedRobot {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
 
-    new KalmanFilterDemoCommand().schedule();
+    // new KalmanFilterDemoCommand().schedule();
     new KalmanFilterTestCommand().schedule();
 
   }

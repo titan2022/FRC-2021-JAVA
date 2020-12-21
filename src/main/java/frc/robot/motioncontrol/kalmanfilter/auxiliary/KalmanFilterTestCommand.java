@@ -4,9 +4,10 @@ import java.util.Random;
 
 import org.ejml.simple.SimpleMatrix;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.motioncontrol.kalmanfilter.KalmanFilter;
 
-public class KalmanFilterTestCommand {
+public class KalmanFilterTestCommand extends CommandBase {
 
     private Random rand;
     private double prevT;

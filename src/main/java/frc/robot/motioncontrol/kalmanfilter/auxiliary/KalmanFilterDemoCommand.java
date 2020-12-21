@@ -1,4 +1,4 @@
-package frc.robot.motioncontrol.kalmanfilter;
+package frc.robot.motioncontrol.kalmanfilter.auxiliary;
 
 import org.ejml.simple.SimpleMatrix;
 import java.util.Random;
@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.wpilibjTemp.Field2d;
+import frc.robot.motioncontrol.kalmanfilter.KalmanFilter;
 
 public class KalmanFilterDemoCommand extends CommandBase {
 

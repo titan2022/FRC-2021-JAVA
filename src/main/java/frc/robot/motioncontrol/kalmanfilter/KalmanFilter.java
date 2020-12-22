@@ -8,8 +8,8 @@ public class KalmanFilter extends SubsystemBase {
     // class variables
 
     private SimpleMatrix x; // state vector
-    private SimpleMatrix Q; // state (or process) noise covariance
     private SimpleMatrix P; // state covariance (accuracy of state)
+    private SimpleMatrix Q; // state (or process) noise covariance
     private SimpleMatrix R; // measurement noise covariance
     private SimpleMatrix A; // relates previous state to current state, often found as F
     private SimpleMatrix B; // relates control input to current state
@@ -20,20 +20,20 @@ public class KalmanFilter extends SubsystemBase {
      * Creates a new KalmanFilter
      * 
      * @param x - Initial state vector.
-     * @param Q - Initial process noise covariance.
      * @param P - Initial state covariance.
+     * @param Q - Initial process noise covariance.
      * @param R - Initial measurement noise covariance.
      * @param A - Relates states from diff. timesteps.
      * @param B - Relates control input to state.
      * @param H - Relates measurement to state.
      */
 
-    public KalmanFilter(SimpleMatrix x, SimpleMatrix Q, SimpleMatrix P, SimpleMatrix R, SimpleMatrix A, SimpleMatrix B,
+    public KalmanFilter(SimpleMatrix x, SimpleMatrix P, SimpleMatrix Q, SimpleMatrix R, SimpleMatrix A, SimpleMatrix B,
             SimpleMatrix H) {
 
         this.x = x;
-        this.Q = Q;
         this.P = P;
+        this.Q = Q;
         this.R = R;
         this.A = A;
         this.B = B;

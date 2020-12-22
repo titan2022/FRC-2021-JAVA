@@ -50,8 +50,8 @@ public class KalmanFilterDemoCommand extends CommandBase {
         // Q is generally very small (process noise)
         // R is generally I * variance, or I * (stdev^2) = 0.25I
 
-        filter = new KalmanFilter(new SimpleMatrix(posReal), SimpleMatrix.identity(2).scale(0.0001),
-                SimpleMatrix.identity(2), SimpleMatrix.identity(2).scale(0.25), SimpleMatrix.identity(2),
+        filter = new KalmanFilter(new SimpleMatrix(posReal), SimpleMatrix.identity(2),
+                SimpleMatrix.identity(2).scale(0.0001), SimpleMatrix.identity(2).scale(0.25), SimpleMatrix.identity(2),
                 SimpleMatrix.identity(2), SimpleMatrix.identity(2));
 
     }

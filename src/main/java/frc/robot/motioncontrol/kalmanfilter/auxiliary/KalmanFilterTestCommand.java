@@ -20,7 +20,9 @@ public class KalmanFilterTestCommand extends CommandBase {
     private Random rand;
     private double power;
     private Rotation2d theta;
+    private SimpleMatrix u;
     private SimpleMatrix posReal; // measurement format: [x,y] ^ T
+    private SimpleMatrix prevPosReal;
     private SimpleMatrix posNoisy;
     private final double STDEV = 0.25;
 
@@ -38,6 +40,7 @@ public class KalmanFilterTestCommand extends CommandBase {
         field = new Field2d();
         power = 0;
         theta = Rotation2d.fromDegrees(45);
+        u = new SimpleMatrix(new double[][] { { 0 }, { 0 } });
         posReal = new SimpleMatrix(new double[][] { { 1 }, { 1 } });
         posNoisy = new SimpleMatrix(posReal);
         SmartDashboard.putNumber("Power", power);
@@ -57,8 +60,19 @@ public class KalmanFilterTestCommand extends CommandBase {
     @Override
     public void execute() {
 
+        t = timer.get();
+        timer.reset();
+
+        filter.setA(updateA());
+
+        power = SmartDashboard.getNumber("Power", 0);
+        theta = Rotation2d.fromDegrees(SmartDashboard.getNumber("Theta (Degs)", -45));
+        u.set(0, 0, (power * theta.getCos()));
+        u.set(0, 1, (power * theta.getSin()));
+        
         // getting real position of robot
 
+        prevPosReal = new SimpleMatrix(posReal);
         posReal.set(0, 0, field.getRobotPose().getTranslation().getX());
         posReal.set(1, 0, field.getRobotPose().getTranslation().getY());
 
@@ -66,11 +80,24 @@ public class KalmanFilterTestCommand extends CommandBase {
 
         posNoisy.set(0, 0, (STDEV * rand.nextGaussian()) + posReal.get(0, 0));
         posNoisy.set(1, 0, (STDEV * rand.nextGaussian()) + posReal.get(1, 0));
-        
-        power = SmartDashboard.getNumber("Power", 0);
-        theta = Rotation2d.fromDegrees(SmartDashboard.getNumber("Theta (Degs)", -45));
-        t = timer.get();
-        timer.reset();
+
+        filter.runFilter(u, posNoisy);
+
+        // adding numbers to SmartDashboard
+
+        SmartDashboard.putNumber("x (real)", posReal.get(0, 0));
+        SmartDashboard.putNumber("y (real)", posReal.get(1, 0));
+        SmartDashboard.putNumber("x (noisy)", posNoisy.get(0, 0));
+        SmartDashboard.putNumber("y (noisy)", posNoisy.get(1, 0));
+        SmartDashboard.putNumber("x (filt.)", filter.getState().get(0, 0));
+        SmartDashboard.putNumber("y (filt.)", filter.getState().get(3, 0));
+        SmartDashboard.putNumber("vx (est.)", value)
+        SmartDashboard.putNumber("vx (filt.)", filter.getState().get(1, 0));
+        SmartDashboard.putNumber("vy (filt.)", filter.getState().get(4, 0));
+        SmartDashboard.putNumber("ax (input)", u.get(0, 0));
+        SmartDashboard.putNumber("ay (input)", u.get(1, 0));
+        SmartDashboard.putNumber("ax (filt.)", filter.getState().get(2, 0));
+        SmartDashboard.putNumber("ay (filt.)", filter.getState().get(5, 0));
 
     }
 
@@ -104,18 +131,4 @@ public class KalmanFilterTestCommand extends CommandBase {
                         { 0, 0, 0, 1, t, Math.pow(t, 2) / 2 }, { 0, 0, 0, 0, 1, t }, { 0, 0, 0, 0, 0, 0 } });
 
     }
-
-    /**
-     * Updates u matrix for specific power and theta. System input format:
-     * [power(cos(theta)),power(sin(theta))] ^ T.
-     * 
-     * @return Updated u matrix.
-     */
-
-    private SimpleMatrix updateU() {
-
-        return new SimpleMatrix(new double[][] { { power * theta.getCos() }, { power * theta.getSin() } });
-
-    }
-
-}
+    

@@ -5,6 +5,7 @@ import java.util.Random;
 import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.motioncontrol.kalmanfilter.KalmanFilter;
 
@@ -21,13 +22,19 @@ public class KalmanFilterTestCommand extends CommandBase {
         addRequirements();
 
     }
-    
+
     @Override
     public void initialize() {
 
         rand = new Random();
         timer = new Timer();
         timer.start();
+        deltaT = 1;
+        SimpleMatrix matrix = new SimpleMatrix(new double[][] { { deltaT } });
+        SmartDashboard.putNumber("delta 1", matrix.get(0, 0));
+        deltaT = 2;
+        SmartDashboard.putNumber("delta 2", matrix.get(0, 0));
+        timer.stop();
 
     }
 

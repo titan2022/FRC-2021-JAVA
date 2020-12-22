@@ -43,7 +43,15 @@ public class KalmanFilterTestCommand extends CommandBase {
         SmartDashboard.putNumber("Power", power);
         SmartDashboard.putNumber("Theta (Degs)", theta.getDegrees());
         updatePose();
-        filter = new KalmanFilter(new SimpleMatrix(new double[][] {{1},{1},{0},{0},{0},{0}}), SimpleMatrix.identity(6), SimpleMatrix.identity(6).scale(0.001), R, updateA(), B, H)
+
+        filter = new KalmanFilter(new SimpleMatrix(new double[][] { { 1 }, { 0 }, { 0 }, { 1 }, { 0 }, { 0 } }),
+                SimpleMatrix.identity(6),
+                SimpleMatrix.identity(6).scale(0.001), 
+                SimpleMatrix.identity(2).scale(0.0625),
+                updateA(),
+                new SimpleMatrix(new double[][] { { 0, 0 }, { 0, 0 }, { 1, 0 }, { 0, 0 }, { 0, 0 }, { 0, 1 } }),
+                new SimpleMatrix(new double[][] { { 1, 0, 0, 0, 0, 0 }, { 0, 0, 0, 1, 0, 0, 0 } }));
+
         timer.start();
 
     }

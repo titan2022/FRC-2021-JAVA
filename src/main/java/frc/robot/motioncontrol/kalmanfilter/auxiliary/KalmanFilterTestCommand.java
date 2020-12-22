@@ -5,17 +5,21 @@ import java.util.Random;
 import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj.Timer;
+import static edu.wpi.first.wpilibj.geometry.Rotation2d.fromDegrees;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.motioncontrol.kalmanfilter.KalmanFilter;
+import frc.wpilibjTemp.Field2d;
 
 public class KalmanFilterTestCommand extends CommandBase {
 
     private KalmanFilter filter;
     private Timer timer;
-    private Random rand;
-    private double prevT;
     private double deltaT;
+    private Field2d field;
+    private Random rand;
+    private SimpleMatrix u; // input format: [power,theta] ^ T
+    private SimpleMatrix pos; // measurement format: [x,y] ^ T
 
     public KalmanFilterTestCommand() {
 
@@ -28,19 +32,51 @@ public class KalmanFilterTestCommand extends CommandBase {
 
         rand = new Random();
         timer = new Timer();
+        field = new Field2d();
+        u = new SimpleMatrix(new double[][] { { 25 }, { 45 } });
+        pos = new SimpleMatrix(new double[][] { { 1 }, { 1 } });
+        SmartDashboard.putNumber("Power", u.get(0, 0));
+        SmartDashboard.putNumber("Theta (Degs)", u.get(1, 0));
+        setPose();
         timer.start();
-        deltaT = 1;
-        SimpleMatrix matrix = new SimpleMatrix(new double[][] { { deltaT } });
-        SmartDashboard.putNumber("delta 1", matrix.get(0, 0));
-        deltaT = 2;
-        SmartDashboard.putNumber("delta 2", matrix.get(0, 0));
+
+    }
+
+    @Override
+    public void execute() {
+
+        deltaT = timer.get();
+        timer.reset();
+
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+
         timer.stop();
 
     }
 
+    /**
+     * Makes a measurement noisy (Gaussian)
+     * @param actual - Actual field position.
+     * @param stdev - Standard deviation for noise.
+     * @return Gaussian noisy measurement.
+     */
+
     private double getNoisy(double actual, double stdev) {
 
         return (stdev * rand.nextGaussian() + actual);
+
+    }
+
+    /**
+     * Sets pose of the robot
+     */
+    
+    private void setPose() {
+
+        field.setRobotPose(pos.get(0, 0), pos.get(1, 0), fromDegrees(u.get(1, 0)));
 
     }
 

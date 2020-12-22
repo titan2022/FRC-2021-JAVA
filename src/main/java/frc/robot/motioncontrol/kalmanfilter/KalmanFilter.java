@@ -173,18 +173,6 @@ public class KalmanFilter extends SubsystemBase {
     }
 
     /**
-     * Gets B, which relates control input to current state.
-     * 
-     * @return Current B matrix.
-     */
-
-    public SimpleMatrix getB() {
-
-        return B;
-
-    }
-
-    /**
      * Gets H, which relates measurement to current state.
      * 
      * @return Current H matrix.
@@ -205,18 +193,6 @@ public class KalmanFilter extends SubsystemBase {
     public void setA(SimpleMatrix A) {
 
         this.A = A;
-
-    }
-
-    /**
-     * Sets B, which relates control input to current state.
-     * 
-     * @param B - B matrix.
-     */
-
-    public void setB(SimpleMatrix B) {
-
-        this.B = B;
 
     }
 

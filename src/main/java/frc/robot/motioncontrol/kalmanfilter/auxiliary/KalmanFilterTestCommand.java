@@ -5,7 +5,8 @@ import java.util.Random;
 import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj.Timer;
-import static edu.wpi.first.wpilibj.geometry.Rotation2d.fromDegrees;
+// import static edu.wpi.first.wpilibj.geometry.Rotation2d.fromDegrees;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.motioncontrol.kalmanfilter.KalmanFilter;
@@ -18,7 +19,9 @@ public class KalmanFilterTestCommand extends CommandBase {
     private double t;
     private Field2d field;
     private Random rand;
-    private SimpleMatrix u; // input format: [power,theta] ^ T
+    private double power;
+    private Rotation2d theta;
+    private SimpleMatrix u; // system input format: [power(cos(theta)),power(sin(theta))] ^ T
     private SimpleMatrix pos; // measurement format: [x,y] ^ T
 
     public KalmanFilterTestCommand() {
@@ -33,11 +36,13 @@ public class KalmanFilterTestCommand extends CommandBase {
         rand = new Random();
         timer = new Timer();
         field = new Field2d();
-        u = new SimpleMatrix(new double[][] { { 25 }, { 45 } });
+        power = 10;
+        theta = Rotation2d.fromDegrees(45);
         pos = new SimpleMatrix(new double[][] { { 1 }, { 1 } });
-        SmartDashboard.putNumber("Power", u.get(0, 0));
-        SmartDashboard.putNumber("Theta (Degs)", u.get(1, 0));
-        setPose();
+        SmartDashboard.putNumber("Power", power);
+        SmartDashboard.putNumber("Theta (Degs)", theta.getDegrees());
+        updatePose();
+        filter = new KalmanFilter(new SimpleMatrix(pos), SimpleMatrix., Q, R, A, B, H)
         timer.start();
 
     }
@@ -45,6 +50,8 @@ public class KalmanFilterTestCommand extends CommandBase {
     @Override
     public void execute() {
 
+        power = SmartDashboard.getNumber("Power", 0);
+        theta = Rotation2d.fromDegrees(SmartDashboard.getNumber("Theta (Degs)", -45));
         t = timer.get();
         timer.reset();
 
@@ -72,17 +79,18 @@ public class KalmanFilterTestCommand extends CommandBase {
     }
 
     /**
-     * Sets pose of the robot
+     * Updates pose of the robot.
      */
 
-    private void setPose() {
+    private void updatePose() {
 
-        field.setRobotPose(pos.get(0, 0), pos.get(1, 0), fromDegrees(u.get(1, 0)));
+        field.setRobotPose(pos.get(0, 0), pos.get(1, 0), theta);
 
     }
 
     /**
-     * Updates A matrix for specific time
+     * Updates A matrix for specific time.
+     * @return Updated A matrix.
      */
 
     private SimpleMatrix updateA() {
@@ -90,6 +98,17 @@ public class KalmanFilterTestCommand extends CommandBase {
         return new SimpleMatrix(
                 new double[][] { { 1, t, Math.pow(t, 2) / 2, 0, 0, 0 }, { 0, 1, t, 0, 0, 0 }, { 0, 0, 1, 0, 0, 0 },
                         { 0, 0, 0, 1, t, Math.pow(t, 2) / 2 }, { 0, 0, 0, 0, 1, t }, { 0, 0, 0, 0, 0, 1 } });
+
+    }
+
+    /**
+     * Updates u matrix for specific power and theta.
+     * @return Updated u matrix.
+     */
+
+    private SimpleMatrix updateU() {
+
+        return new SimpleMatrix(new double[][] { { power * theta.getCos() }, { power * theta.getSin() } });
 
     }
 

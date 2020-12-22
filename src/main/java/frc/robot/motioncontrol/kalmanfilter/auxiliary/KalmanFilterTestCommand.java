@@ -5,7 +5,6 @@ import java.util.Random;
 import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj.Timer;
-// import static edu.wpi.first.wpilibj.geometry.Rotation2d.fromDegrees;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -21,8 +20,9 @@ public class KalmanFilterTestCommand extends CommandBase {
     private Random rand;
     private double power;
     private Rotation2d theta;
-    private SimpleMatrix u; // system input format: [power(cos(theta)),power(sin(theta))] ^ T
-    private SimpleMatrix pos; // measurement format: [x,y] ^ T
+    private SimpleMatrix posReal; // measurement format: [x,y] ^ T
+    private SimpleMatrix posNoisy;
+    private final double STDEV = 0.25;
 
     public KalmanFilterTestCommand() {
 
@@ -38,17 +38,15 @@ public class KalmanFilterTestCommand extends CommandBase {
         field = new Field2d();
         power = 0;
         theta = Rotation2d.fromDegrees(45);
-        pos = new SimpleMatrix(new double[][] { { 1 }, { 1 } });
-        u = new SimpleMatrix(new double[][] { { 0 }, { 0 } });
+        posReal = new SimpleMatrix(new double[][] { { 1 }, { 1 } });
+        posNoisy = new SimpleMatrix(posReal);
         SmartDashboard.putNumber("Power", power);
         SmartDashboard.putNumber("Theta (Degs)", theta.getDegrees());
         updatePose();
 
         filter = new KalmanFilter(new SimpleMatrix(new double[][] { { 1 }, { 0 }, { 0 }, { 1 }, { 0 }, { 0 } }),
-                SimpleMatrix.identity(6),
-                SimpleMatrix.identity(6).scale(0.001), 
-                SimpleMatrix.identity(2).scale(0.0625),
-                updateA(),
+                SimpleMatrix.identity(6), SimpleMatrix.identity(6).scale(0.001),
+                SimpleMatrix.identity(2).scale(Math.pow(STDEV, 2)), updateA(),
                 new SimpleMatrix(new double[][] { { 0, 0 }, { 0, 0 }, { 1, 0 }, { 0, 0 }, { 0, 0 }, { 0, 1 } }),
                 new SimpleMatrix(new double[][] { { 1, 0, 0, 0, 0, 0 }, { 0, 0, 0, 1, 0, 0, 0 } }));
 
@@ -59,6 +57,16 @@ public class KalmanFilterTestCommand extends CommandBase {
     @Override
     public void execute() {
 
+        // getting real position of robot
+
+        posReal.set(0, 0, field.getRobotPose().getTranslation().getX());
+        posReal.set(1, 0, field.getRobotPose().getTranslation().getY());
+
+        // adding Gaussian noise factor
+
+        posNoisy.set(0, 0, (STDEV * rand.nextGaussian()) + posReal.get(0, 0));
+        posNoisy.set(1, 0, (STDEV * rand.nextGaussian()) + posReal.get(1, 0));
+        
         power = SmartDashboard.getNumber("Power", 0);
         theta = Rotation2d.fromDegrees(SmartDashboard.getNumber("Theta (Degs)", -45));
         t = timer.get();
@@ -70,20 +78,6 @@ public class KalmanFilterTestCommand extends CommandBase {
     public void end(boolean interrupted) {
 
         timer.stop();
-
-    }
-
-    /**
-     * Makes a measurement noisy (Gaussian)
-     * 
-     * @param actual - Actual field position.
-     * @param stdev  - Standard deviation for noise.
-     * @return Gaussian noisy measurement.
-     */
-
-    private double getNoisy(double actual, double stdev) {
-
-        return (stdev * rand.nextGaussian() + actual);
 
     }
 
@@ -112,7 +106,8 @@ public class KalmanFilterTestCommand extends CommandBase {
     }
 
     /**
-     * Updates u matrix for specific power and theta.
+     * Updates u matrix for specific power and theta. System input format:
+     * [power(cos(theta)),power(sin(theta))] ^ T.
      * 
      * @return Updated u matrix.
      */

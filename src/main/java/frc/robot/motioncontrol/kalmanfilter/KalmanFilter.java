@@ -9,23 +9,23 @@ public class KalmanFilter extends SubsystemBase {
 
     private SimpleMatrix x; // state vector
     private SimpleMatrix P; // state covariance (accuracy of state)
+    private SimpleMatrix K; // process's Kalman gain
     private SimpleMatrix Q; // state (or process) noise covariance
     private SimpleMatrix R; // measurement noise covariance
-    private SimpleMatrix A; // relates previous state to current state, often found as F
+    private SimpleMatrix A; // relates previous state to current state (otherwise seen as F)
     private SimpleMatrix B; // relates control input to current state
-    private SimpleMatrix H; // relates current state to measurement
-    private SimpleMatrix K; // process's Kalman gain
+    private SimpleMatrix H; // relates measurement to current state
 
     /**
      * Creates a new KalmanFilter
      * 
      * @param x - Initial state vector.
      * @param P - Initial state covariance.
-     * @param Q - Initial process noise covariance.
-     * @param R - Initial measurement noise covariance.
-     * @param A - Relates states from diff. timesteps.
-     * @param B - Relates control input to state.
-     * @param H - Relates measurement to state.
+     * @param Q - Process noise covariance.
+     * @param R - Measurement noise covariance.
+     * @param A - Relates previous state to current state.
+     * @param B - Relates control input to current state.
+     * @param H - Relates measurement to current state.
      */
 
     public KalmanFilter(SimpleMatrix x, SimpleMatrix P, SimpleMatrix Q, SimpleMatrix R, SimpleMatrix A, SimpleMatrix B,
@@ -42,7 +42,7 @@ public class KalmanFilter extends SubsystemBase {
     }
 
     /**
-     * Predicts future state (x)
+     * Predicts future state (x).
      * 
      * @param u - Control input from user.
      */
@@ -54,7 +54,7 @@ public class KalmanFilter extends SubsystemBase {
     }
 
     /**
-     * Predicts state covariance (P)
+     * Predicts state covariance (P).
      */
 
     private void predictCovariance() {
@@ -77,7 +77,7 @@ public class KalmanFilter extends SubsystemBase {
     }
 
     /**
-     * Updates Kalman gain (K)
+     * Updates Kalman gain (K).
      */
 
     private void updateKalmanGain() {
@@ -87,7 +87,7 @@ public class KalmanFilter extends SubsystemBase {
     }
 
     /**
-     * Updates current state (x)
+     * Updates current state (x).
      * 
      * @param z - Measurement from system.
      */
@@ -99,7 +99,7 @@ public class KalmanFilter extends SubsystemBase {
     }
 
     /**
-     * Updates state covariance (P)
+     * Updates state covariance (P).
      */
 
     private void updateCovariance() {
@@ -137,7 +137,7 @@ public class KalmanFilter extends SubsystemBase {
     }
 
     /**
-     * Returns current state (predicted if after predict step)
+     * Returns current state (predicted if after predict step).
      * 
      * @return Current state vector.
      */
@@ -149,7 +149,7 @@ public class KalmanFilter extends SubsystemBase {
     }
 
     /**
-     * Returns current covariance (predicted if after predict step)
+     * Returns current covariance (predicted if after predict step).
      * 
      * @return Current state covariance.
      */
@@ -157,6 +157,78 @@ public class KalmanFilter extends SubsystemBase {
     public SimpleMatrix getCovariance() {
 
         return P;
+
+    }
+
+    /**
+     * Gets A, which relates previous state to current state.
+     * 
+     * @return Current A matrix.
+     */
+
+    public SimpleMatrix getA() {
+
+        return A;
+
+    }
+
+    /**
+     * Gets B, which relates control input to current state.
+     * 
+     * @return Current B matrix.
+     */
+
+    public SimpleMatrix getB() {
+
+        return B;
+
+    }
+
+    /**
+     * Gets H, which relates measurement to current state.
+     * 
+     * @return Current H matrix.
+     */
+
+    public SimpleMatrix getH() {
+
+        return H;
+
+    }
+
+    /**
+     * Sets A, which relates previous state to current state.
+     * 
+     * @param A - A matrix.
+     */
+
+    public void setA(SimpleMatrix A) {
+
+        this.A = A;
+
+    }
+
+    /**
+     * Sets B, which relates control input to current state.
+     * 
+     * @param B - B matrix.
+     */
+
+    public void setB(SimpleMatrix B) {
+
+        this.B = B;
+
+    }
+
+    /**
+     * Sets H, which relates measurement to current state.
+     * 
+     * @param H - H matrix.
+     */
+
+    public void setH(SimpleMatrix H) {
+
+        this.H = H;
 
     }
 

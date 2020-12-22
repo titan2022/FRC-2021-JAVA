@@ -13,9 +13,9 @@ import frc.wpilibjTemp.Field2d;
 
 public class KalmanFilterTestCommand extends CommandBase {
 
-    private KalmanFilter filter;
+    private KalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc]
     private Timer timer;
-    private double deltaT;
+    private double t;
     private Field2d field;
     private Random rand;
     private SimpleMatrix u; // input format: [power,theta] ^ T
@@ -45,7 +45,7 @@ public class KalmanFilterTestCommand extends CommandBase {
     @Override
     public void execute() {
 
-        deltaT = timer.get();
+        t = timer.get();
         timer.reset();
 
     }
@@ -59,8 +59,9 @@ public class KalmanFilterTestCommand extends CommandBase {
 
     /**
      * Makes a measurement noisy (Gaussian)
+     * 
      * @param actual - Actual field position.
-     * @param stdev - Standard deviation for noise.
+     * @param stdev  - Standard deviation for noise.
      * @return Gaussian noisy measurement.
      */
 
@@ -73,10 +74,22 @@ public class KalmanFilterTestCommand extends CommandBase {
     /**
      * Sets pose of the robot
      */
-    
+
     private void setPose() {
 
         field.setRobotPose(pos.get(0, 0), pos.get(1, 0), fromDegrees(u.get(1, 0)));
+
+    }
+
+    /**
+     * Updates A matrix for specific time
+     */
+
+    private SimpleMatrix updateA() {
+
+        return new SimpleMatrix(
+                new double[][] { { 1, t, Math.pow(t, 2) / 2, 0, 0, 0 }, { 0, 1, t, 0, 0, 0 }, { 0, 0, 1, 0, 0, 0 },
+                        { 0, 0, 0, 1, t, Math.pow(t, 2) / 2 }, { 0, 0, 0, 0, 1, t }, { 0, 0, 0, 0, 0, 1 } });
 
     }
 

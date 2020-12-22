@@ -7,25 +7,28 @@ public class KalmanFilter extends SubsystemBase {
 
     // class variables
 
-    private SimpleMatrix x; // state vector
-    private SimpleMatrix P; // state covariance (accuracy of state)
-    private SimpleMatrix K; // process's Kalman gain
-    private SimpleMatrix Q; // state (or process) noise covariance
-    private SimpleMatrix R; // measurement noise covariance
-    private SimpleMatrix A; // relates previous state to current state (otherwise seen as F)
-    private SimpleMatrix B; // relates control input to current state
-    private SimpleMatrix H; // relates measurement to current state
+    // format: [matrix name/declaration]; // [description] (dimensions)
+    // z is the measurement vector (m x 1)
+    // u is the input vector (L x 1)
+    private SimpleMatrix x; // state vector (n x 1)
+    private SimpleMatrix P; // state covariance (n x n)
+    private SimpleMatrix K; // process Kalman gain (n x m)
+    private SimpleMatrix Q; // process noise covariance (n x n)
+    private SimpleMatrix R; // measurement noise covariance (m x m)
+    private SimpleMatrix A; // relates previous state to current state (n x n)
+    private SimpleMatrix B; // relates control input to current state (n x L)
+    private SimpleMatrix H; // relates current state to measurement (m x n)
 
     /**
      * Creates a new KalmanFilter
      * 
-     * @param x - Initial state vector.
-     * @param P - Initial state covariance.
-     * @param Q - Process noise covariance.
-     * @param R - Measurement noise covariance.
-     * @param A - Relates previous state to current state.
-     * @param B - Relates control input to current state.
-     * @param H - Relates measurement to current state.
+     * @param x - Initial state vector (n x 1).
+     * @param P - Initial state covariance (n x n).
+     * @param Q - Process noise covariance (n x n).
+     * @param R - Measurement noise covariance (m x m).
+     * @param A - Relates previous state to current state (n x n).
+     * @param B - Relates control input to current state (n x L).
+     * @param H - Relates current state to measurement (m x n).
      */
 
     public KalmanFilter(SimpleMatrix x, SimpleMatrix P, SimpleMatrix Q, SimpleMatrix R, SimpleMatrix A, SimpleMatrix B,
@@ -173,7 +176,7 @@ public class KalmanFilter extends SubsystemBase {
     }
 
     /**
-     * Gets H, which relates measurement to current state.
+     * Gets H, which relates current state to measurement.
      * 
      * @return Current H matrix.
      */
@@ -197,7 +200,7 @@ public class KalmanFilter extends SubsystemBase {
     }
 
     /**
-     * Sets H, which relates measurement to current state.
+     * Sets H, which relates current state to measurement.
      * 
      * @param H - H matrix.
      */

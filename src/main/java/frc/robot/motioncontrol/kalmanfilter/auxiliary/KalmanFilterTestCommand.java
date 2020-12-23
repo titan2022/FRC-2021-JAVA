@@ -21,8 +21,8 @@ public class KalmanFilterTestCommand extends CommandBase {
     private double power;
     private Rotation2d theta;
     private SimpleMatrix u;
+    private SimpleMatrix v;
     private SimpleMatrix posReal; // measurement format: [x,y] ^ T
-    private SimpleMatrix prevPosReal;
     private SimpleMatrix posNoisy;
     private final double STDEV = 0.25;
 
@@ -41,6 +41,7 @@ public class KalmanFilterTestCommand extends CommandBase {
         power = 0;
         theta = Rotation2d.fromDegrees(45);
         u = new SimpleMatrix(new double[][] { { 0 }, { 0 } });
+        v = new SimpleMatrix(u);
         posReal = new SimpleMatrix(new double[][] { { 1 }, { 1 } });
         posNoisy = new SimpleMatrix(posReal);
         SmartDashboard.putNumber("Power", power);
@@ -65,14 +66,15 @@ public class KalmanFilterTestCommand extends CommandBase {
 
         filter.setA(updateA());
 
+        v = v.plus(u.scale(t));
+
         power = SmartDashboard.getNumber("Power", 0);
         theta = Rotation2d.fromDegrees(SmartDashboard.getNumber("Theta (Degs)", -45));
         u.set(0, 0, (power * theta.getCos()));
         u.set(0, 1, (power * theta.getSin()));
-        
+
         // getting real position of robot
 
-        prevPosReal = new SimpleMatrix(posReal);
         posReal.set(0, 0, field.getRobotPose().getTranslation().getX());
         posReal.set(1, 0, field.getRobotPose().getTranslation().getY());
 
@@ -91,13 +93,16 @@ public class KalmanFilterTestCommand extends CommandBase {
         SmartDashboard.putNumber("y (noisy)", posNoisy.get(1, 0));
         SmartDashboard.putNumber("x (filt.)", filter.getState().get(0, 0));
         SmartDashboard.putNumber("y (filt.)", filter.getState().get(3, 0));
-        SmartDashboard.putNumber("vx (est.)", value)
+        SmartDashboard.putNumber("vx (est.)", v.get(0, 0));
+        SmartDashboard.putNumber("vy (est.)", v.get(1, 0));
         SmartDashboard.putNumber("vx (filt.)", filter.getState().get(1, 0));
         SmartDashboard.putNumber("vy (filt.)", filter.getState().get(4, 0));
         SmartDashboard.putNumber("ax (input)", u.get(0, 0));
         SmartDashboard.putNumber("ay (input)", u.get(1, 0));
         SmartDashboard.putNumber("ax (filt.)", filter.getState().get(2, 0));
         SmartDashboard.putNumber("ay (filt.)", filter.getState().get(5, 0));
+
+        updatePose();
 
     }
 
@@ -114,7 +119,8 @@ public class KalmanFilterTestCommand extends CommandBase {
 
     private void updatePose() {
 
-        field.setRobotPose(pos.get(0, 0), pos.get(1, 0), theta);
+        field.setRobotPose((posReal.get(0, 0) + t * v.get(0, 0) + Math.pow(t, 2) / 2 * u.get(0, 0)),
+                (posReal.get(1, 0) + t * v.get(1, 0) + Math.pow(t, 2) / 2 * u.get(1, 0)), theta);
 
     }
 
@@ -131,4 +137,5 @@ public class KalmanFilterTestCommand extends CommandBase {
                         { 0, 0, 0, 1, t, Math.pow(t, 2) / 2 }, { 0, 0, 0, 0, 1, t }, { 0, 0, 0, 0, 0, 0 } });
 
     }
-    
+
+}

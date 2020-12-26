@@ -1,4 +1,4 @@
-package frc.robot.motioncontrol.kalmanfilter.auxiliary;
+package frc.robot.motioncontrol.kalmanfilter.demo;
 
 import org.ejml.simple.SimpleMatrix;
 import java.util.Random;

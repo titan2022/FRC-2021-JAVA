@@ -1,4 +1,4 @@
-package frc.robot.motioncontrol.kalmanfilter.auxiliary;
+package frc.robot.motioncontrol.kalmanfilter.test;
 
 import java.util.Random;
 

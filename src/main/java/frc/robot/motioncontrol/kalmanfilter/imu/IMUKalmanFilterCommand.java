@@ -1,11 +1,11 @@
 package frc.robot.motioncontrol.kalmanfilter.imu;
 
 import java.util.ArrayList;
+import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.motioncontrol.kalmanfilter.KalmanFilter;
-import org.ejml.simple.SimpleMatrix;
 
 import com.github.swrirobotics.bags.reader.BagReader;
 import com.github.swrirobotics.bags.reader.BagFile;
@@ -16,13 +16,13 @@ import com.github.swrirobotics.bags.reader.messages.serialization.MessageType;
 import com.github.swrirobotics.bags.reader.messages.serialization.StringType;
 import com.github.swrirobotics.bags.reader.records.Connection;
 
-public class IMUKalmanFilterTestCommand extends CommandBase {
+public class IMUKalmanFilterCommand extends CommandBase {
 
     private KalmanFilter filter;
     private BagFile bag;
     private ArrayList<String> messages;
 
-    public IMUKalmanFilterTestCommand() {
+    public IMUKalmanFilterCommand() {
 
         addRequirements();
 
@@ -64,6 +64,13 @@ public class IMUKalmanFilterTestCommand extends CommandBase {
             SmartDashboard.putString("Exception Triggered", e.getMessage());
 
         }
+
+    }
+
+    @Override
+    public void execute() {
+
+        SmartDashboard.putString("Executed", "Executed");
 
     }
 

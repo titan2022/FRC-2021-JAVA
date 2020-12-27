@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.motioncontrol.kalmanfilter.demo.KalmanFilterDemoCommand;
+import frc.robot.motioncontrol.kalmanfilter.imu.IMUKalmanFilterCommand;
 import frc.robot.motioncontrol.kalmanfilter.test.KalmanFilterTestCommand;
 
 /**
@@ -71,7 +72,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
 
-    new KalmanFilterDemoCommand().schedule();
+    // new KalmanFilterDemoCommand().schedule();
+    new IMUKalmanFilterCommand().schedule();
 
   }
 
@@ -88,6 +90,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    // CommandScheduler.getInstance().cancelAll();
 
     new KalmanFilterTestCommand().schedule();
 

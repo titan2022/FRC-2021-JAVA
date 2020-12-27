@@ -2,6 +2,15 @@ package frc.robot.motion.generation.rmpflow;
 
 import org.ejml.simple.SimpleMatrix;
 
+/**
+ * <p>
+ * Implementation of a 2D Goal Attractor using riemannian motion policies.
+ * </p>
+ * 
+ * <p>
+ * @see <a href="https://arxiv.org/abs/1902.05177">Multi-Objective Policy Generation for Multi-Robot Systems Using Riemannian Motion Policies</a>
+ * </p>
+ */
 public class GoalAttractor extends RMPLeaf {
 	private double w_u, w_l, sigma, alpha, eta, gain , tolerance;
 	private SimpleMatrix goal, jeye;

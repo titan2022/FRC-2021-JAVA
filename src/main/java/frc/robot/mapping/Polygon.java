@@ -157,6 +157,14 @@ public class Polygon implements Obstacle {
   }
 
   @Override
+  public Iterable<LinearSegment> getTangents(Obstacle other, double radius) {
+    if(other instanceof Polygon)
+      return getTangents((Polygon) other, radius);
+    else
+      return other.getTangents((Polygon) this, radius);
+  }
+
+  @Override
   public double getPerimeter(double radius) {
     return basePerimeter + radius * (verts.length-2) * Math.PI;
   }

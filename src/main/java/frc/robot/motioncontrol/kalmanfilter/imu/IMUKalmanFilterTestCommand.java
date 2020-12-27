@@ -1,11 +1,13 @@
 package frc.robot.motioncontrol.kalmanfilter.imu;
 
+import java.util.ArrayList;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.motioncontrol.kalmanfilter.KalmanFilter;
 import org.ejml.simple.SimpleMatrix;
 
-import java.util.ArrayList;
-
-import static com.github.swrirobotics.bags.reader.BagReader.readFile;
+import com.github.swrirobotics.bags.reader.BagReader;
 import com.github.swrirobotics.bags.reader.BagFile;
 import com.github.swrirobotics.bags.reader.MessageHandler;
 import com.github.swrirobotics.bags.reader.exceptions.BagReaderException;
@@ -13,8 +15,6 @@ import com.github.swrirobotics.bags.reader.exceptions.UninitializedFieldExceptio
 import com.github.swrirobotics.bags.reader.messages.serialization.MessageType;
 import com.github.swrirobotics.bags.reader.messages.serialization.StringType;
 import com.github.swrirobotics.bags.reader.records.Connection;
-
-import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class IMUKalmanFilterTestCommand extends CommandBase {
 
@@ -35,34 +35,33 @@ public class IMUKalmanFilterTestCommand extends CommandBase {
 
         // from https://github.com/swri-robotics/bag-reader-java#print-all-of-the-std_msgstring-values-in-a-bag
 
-        MessageHandler handler = new MessageHandler(){
-        
-            @Override
-            public boolean process(MessageType message, Connection connection) {
-
-                try {
-
-                    messages.add(message.<StringType>getField("data").getValue());
-
-                } catch (UninitializedFieldException exception) {
-
-                    System.err.println(exception.toString());
-
-                }
-
-                return true;
-
-            }
-        };
-
         try {
 
-            bag = readFile("IMUAccelGyroData.bag");
-            bag.forMessagesOfType("std_msgs/String", handler);
+            bag = BagReader.readFile("IMUAccelGyroData.bag");
+            bag.forMessagesOfType("std_msgs/String", new MessageHandler(){
+        
+                @Override
+                public boolean process(MessageType message, Connection connection) {
+    
+                    try {
+                    
+                        messages.add(message.<StringType>getField("data").getValue());
 
-        } catch (BagReaderException exception) {
+                    } catch (UninitializedFieldException e) {
 
-            System.err.println(exception.toString());
+                        SmartDashboard.putString("Exception Triggered", e.getMessage());
+            
+                    }
+
+                    return true;
+    
+                }
+                
+            });
+
+        } catch (BagReaderException e) {
+
+            SmartDashboard.putString("Exception Triggered", e.getMessage());
 
         }
 

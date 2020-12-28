@@ -91,4 +91,24 @@ public class DStarGraph {
         }
         return true;
     }
+
+    public void dropNode(Point position, Obstacle obstacle) {
+        NavigableMap<Point, DStarNode> obsSet = obstacleSets.get(obstacle);
+        obsSet.remove(position);
+        DStarNode prev, next;
+        if(obsSet.size() > 0){
+            DStarNode node = obsSet.get(position);
+            Map.Entry<Point, DStarNode> prevEntry = obsSet.floorEntry(position);
+            prev = (prevEntry == null ? obsSet.lastEntry() : prevEntry).getValue();
+            Map.Entry<Point, DStarNode> nextEntry = obsSet.ceilingEntry(position);
+            next = (nextEntry == null ? obsSet.firstEntry() : nextEntry).getValue();
+            node.sever(next);
+            node.sever(prev);
+            if(obsSet.size() > 1){
+                Path edge = obstacle.edgePath(prev, next, radius);
+                prev.connect(next, edge);
+                next.connect(prev, edge.reverse());
+            }
+        }
+    }
 }

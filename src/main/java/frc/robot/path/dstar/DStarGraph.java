@@ -69,4 +69,26 @@ public class DStarGraph {
             }
         };
     }
+
+    public boolean addNode(Point position, Obstacle obstacle) {
+        NavigableMap<Point, DStarNode> obsSet = obstacleSets.get(obstacle);
+        if(obsSet.putIfAbsent(position, new DStarNode(position, queue)) != null)
+            return false;
+        if(obsSet.size() > 1){
+            DStarNode node = obsSet.get(position);
+            Map.Entry<Point, DStarNode> prevEntry = obsSet.floorEntry(position);
+            DStarNode prev = (prevEntry == null ? obsSet.lastEntry() : prevEntry).getValue();
+            Map.Entry<Point, DStarNode> nextEntry = obsSet.ceilingEntry(position);
+            DStarNode next = (nextEntry == null ? obsSet.firstEntry() : nextEntry).getValue();
+            prev.sever(next);
+            next.sever(prev);
+            Path prevEdge = obstacle.edgePath(prev, node, radius);
+            prev.connect(node, prevEdge);
+            node.connect(prev, prevEdge.reverse());
+            Path nextEdge = obstacle.edgePath(node, next, radius);
+            node.connect(next, nextEdge);
+            next.connect(node, nextEdge.reverse());
+        }
+        return true;
+    }
 }

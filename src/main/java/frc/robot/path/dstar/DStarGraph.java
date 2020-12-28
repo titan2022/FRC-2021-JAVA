@@ -10,6 +10,7 @@ import java.util.Queue;
 import java.util.Set;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import frc.robot.mapping.LinearSegment;
 import frc.robot.mapping.Obstacle;
 import frc.robot.mapping.ObstacleMap;
 import frc.robot.mapping.Path;
@@ -110,5 +111,14 @@ public class DStarGraph {
                 next.connect(prev, edge.reverse());
             }
         }
+    }
+
+    void addEdge(Obstacle a, Obstacle b, Path edge) {
+        addNode(edge.getStart(), a);
+        addNode(edge.getEnd(), b);
+        DStarNode beg = obstacleSets.get(a).get(edge.getStart());
+        DStarNode end = obstacleSets.get(b).get(edge.getEnd());
+        beg.connect(end, edge);
+        end.connect(beg, edge.reverse());
     }
 }

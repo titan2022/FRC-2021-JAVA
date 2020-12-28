@@ -113,9 +113,14 @@ public class DStarGraph {
         }
     }
     public void dropNode(Point position) {
+        dropNode(position, findNode(position));
+    }
+
+    Obstacle findNode(Point position) {
         for(Map.Entry<Obstacle, NavigableMap<Point, DStarNode>> entry : obstacleSets.entrySet())
             if(entry.getValue().containsKey(position))
-                dropNode(position, entry.getKey());
+                return entry.getKey();
+        return null;
     }
 
     void addEdge(Obstacle a, Obstacle b, Path edge) {

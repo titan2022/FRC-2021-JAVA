@@ -1,5 +1,6 @@
 package frc.robot.path.dstar;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -107,15 +108,15 @@ class DStarNode extends Point implements Comparable<DStarNode> {
         return edges.size();
     }
 
-    Iterable<DStarNode> getNeighbors() {
+    Collection<DStarNode> getNeighbors() {
         return edges.keySet();
     }
 
-    Iterable<Path> getEdges() {
+    Collection<Path> getEdges() {
         return edges.values();
     }
 
-    Iterable<Map.Entry<DStarNode, Path>> getConnections() {
+    Collection<Map.Entry<DStarNode, Path>> getConnections() {
         return edges.entrySet();
     }
 

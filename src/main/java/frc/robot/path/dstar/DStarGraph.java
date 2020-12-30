@@ -1,5 +1,6 @@
 package frc.robot.path.dstar;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -8,6 +9,7 @@ import java.util.NavigableMap;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TreeMap;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import frc.robot.mapping.LinearSegment;
@@ -130,5 +132,30 @@ public class DStarGraph {
         DStarNode end = obstacleSets.get(b).get(edge.getEnd());
         beg.connect(end, edge);
         end.connect(beg, edge.reverse());
+    }
+
+    void addObstacle(Obstacle obstacle) {
+        if(obstacleSets.containsKey(obstacle)) return;
+        obstacleSets.put(obstacle, new TreeMap<>(obstacle));
+        // Connect to other obstacles
+        for(Obstacle b : obstacleSets.keySet())
+            for(LinearSegment edge : obstacle.getTangents(b, radius))
+                if(map.isClear(edge))
+                    addEdge(obstacle, b, edge);
+        // Connect to start and goal
+        for(Point endpoint : obstacle.getEndpoints(start)){
+            if(map.isClear(new LinearSegment(start, endpoint))){
+                addNode(endpoint, obstacle);
+                start.connect(obstacleSets.get(obstacle).get(endpoint), new LinearSegment(start, endpoint));
+                obstacleSets.get(obstacle).get(endpoint).connect(start, new LinearSegment(endpoint, start));
+            }
+        }
+        for(Point endpoint : obstacle.getEndpoints(goal)){
+            if(map.isClear(new LinearSegment(goal, endpoint))){
+                addNode(endpoint, obstacle);
+                goal.connect(obstacleSets.get(obstacle).get(endpoint), new LinearSegment(goal, endpoint));
+                obstacleSets.get(obstacle).get(endpoint).connect(goal, new LinearSegment(endpoint, goal));
+            }
+        }
     }
 }

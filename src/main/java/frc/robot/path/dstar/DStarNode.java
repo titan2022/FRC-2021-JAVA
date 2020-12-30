@@ -120,6 +120,10 @@ class DStarNode extends Point implements Comparable<DStarNode> {
         return edges.entrySet();
     }
 
+    Path getEdge(DStarNode neighbor) {
+        return edges.get(neighbor);
+    }
+
     @Override
     public int compareTo(DStarNode other) {
         return (int) Math.signum(key() - other.key());

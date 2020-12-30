@@ -171,4 +171,15 @@ public class DStarGraph {
             }
         }
     }
+
+    public void removeObstacle(Obstacle obstacle) {
+        for(DStarNode node : new ArrayList<>(obstacleSets.get(obstacle).values()))
+            dropNode(node, obstacle);
+        obstacleSets.remove(obstacle);
+        for(Obstacle a : obstacleSets.keySet())
+            for(Obstacle b : obstacleSets.keySet())
+                for(LinearSegment edge : a.getTangents(b, radius))
+                    if(map.isClear(edge))
+                        addEdge(a, b, edge);
+    }
 }

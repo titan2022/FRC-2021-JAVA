@@ -97,10 +97,11 @@ public class DStarGraph {
 
     public void dropNode(Point position, Obstacle obstacle) {
         NavigableMap<Point, DStarNode> obsSet = obstacleSets.get(obstacle);
+        DStarNode node = obsSet.get(position);
+        node.sever();
         obsSet.remove(position);
         DStarNode prev, next;
         if(obsSet.size() > 0){
-            DStarNode node = obsSet.get(position);
             Map.Entry<Point, DStarNode> prevEntry = obsSet.floorEntry(position);
             prev = (prevEntry == null ? obsSet.lastEntry() : prevEntry).getValue();
             Map.Entry<Point, DStarNode> nextEntry = obsSet.ceilingEntry(position);

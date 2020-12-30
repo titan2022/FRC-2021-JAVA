@@ -136,6 +136,18 @@ public class DStarGraph {
 
     void addObstacle(Obstacle obstacle) {
         if(obstacleSets.containsKey(obstacle)) return;
+        // Remove blocked connections
+		for(var entry : obstacleSets.entrySet()){
+            for(DStarNode node : new ArrayList<DStarNode>(entry.getValue().values())){
+                for(Map.Entry<DStarNode, Path> conn : new ArrayList<>(node.getConnections()))
+                    if(!obstacle.isClear(conn.getValue()))
+                        node.sever(conn.getKey());
+                if(node.getDegree() == 0)
+                    dropNode(node, entry.getKey());
+            }
+        }
+        if(start.getEdge(goal) != null && !obstacle.isClear(start.getEdge(goal)))
+            start.sever(goal);
         obstacleSets.put(obstacle, new TreeMap<>(obstacle));
         // Connect to other obstacles
         for(Obstacle b : obstacleSets.keySet())

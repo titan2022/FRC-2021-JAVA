@@ -141,6 +141,14 @@ public class DStarGraph {
         dropNode(position, findNode(position));
     }
 
+    public Point getStart() {
+        return start;
+    }
+
+    public Point getGoal() {
+        return goal;
+    }
+
     Obstacle findNode(Point position) {
         for(Map.Entry<Obstacle, NavigableMap<Point, DStarNode>> entry : obstacleSets.entrySet())
             if(entry.getValue().containsKey(position))

@@ -44,6 +44,26 @@ public class DStarGraph {
         this(map, goal, 0);
     }
 
+    public void setStart(Point position) {
+        start.sever();
+        start = new DStarNode(position, queue);
+        Path goalEdge = new LinearSegment(start, goal);
+        for(Obstacle obs : map.getObstacles()){
+            for(Point endpoint : obs.getEndpoints(start, radius)){
+                if(map.isClear(new LinearSegment(start, endpoint))){
+                    addNode(endpoint, obs);
+                    DStarNode vertex = obstacleSets.get(obs).get(endpoint);
+                    start.connect(vertex, new LinearSegment(position, endpoint));
+                    vertex.connect(start, new LinearSegment(endpoint, position));
+                }
+            }
+            if(goalEdge != null && !obs.isClear(goalEdge))
+                goalEdge = null;
+        }
+        start.connect(goal, goalEdge);
+        goal.connect(start, goalEdge);
+    }
+
     public Iterable<DStarNode> getNodes() {
         Set<DStarNode> res = new LinkedHashSet<>();
         res.add(goal);

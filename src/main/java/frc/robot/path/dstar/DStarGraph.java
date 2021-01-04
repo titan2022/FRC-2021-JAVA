@@ -31,6 +31,8 @@ public class DStarGraph {
         this.goal = new DStarNode(goal, queue, 0, 0);
         this.start = new DStarNode(start, queue);
         this.radius = radius;
+        this.map.onAddition(this::addObstacle);
+        this.map.onRemoval(this::removeObstacle);
     }
     public DStarGraph(ObstacleMap map, Translation2d start, Translation2d goal) {
         this(map, start, goal, 0);

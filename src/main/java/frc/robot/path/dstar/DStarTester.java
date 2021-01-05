@@ -47,7 +47,7 @@ public class DStarTester extends CommandBase {
         allPass &= truth;
         truth = a.getRhs() == 1;
         allPass &= truth;
-        truth = b.getRhs() == 1;
+        truth = b.getRhs() == 0;
         allPass &= truth;
         truth = a.getNext() == b;
         allPass &= truth;
@@ -69,7 +69,7 @@ public class DStarTester extends CommandBase {
         allPass &= truth;
         truth = c.getRhs() == a.getG() + 2;
         allPass &= truth;
-        truth = c.getRhs() == 1;
+        truth = c.getRhs() == Double.POSITIVE_INFINITY;
         allPass &= truth;
         a.sever(b);
         truth = a.getDegree() == 1;

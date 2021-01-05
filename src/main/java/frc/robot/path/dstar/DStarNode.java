@@ -104,6 +104,14 @@ class DStarNode extends Point implements Comparable<DStarNode> {
         return g == rhs;
     }
 
+    public double getG() {
+        return g;
+    }
+
+    public double getRhs() {
+        return rhs;
+    }
+
     int getDegree() {
         return edges.size();
     }

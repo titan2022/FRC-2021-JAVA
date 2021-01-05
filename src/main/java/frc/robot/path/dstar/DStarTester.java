@@ -3,10 +3,22 @@ package frc.robot.path.dstar;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.mapping.LinearSegment;
 import frc.robot.mapping.Point;
 
-public class DStarTester {
+public class DStarTester extends CommandBase {
+    @Override
+    public void initialize() {
+        System.out.print("Node methods: ");
+        System.out.println(testNode());
+    }
+
+    @Override
+    public void execute() {
+        return;
+    }
+
     public boolean testNode() {
         boolean truth = true;
         boolean allPass = true;

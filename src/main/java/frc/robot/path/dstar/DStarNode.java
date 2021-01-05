@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import frc.robot.mapping.Point;
 import frc.robot.mapping.Path;
 
-class DStarNode extends Point implements Comparable<DStarNode> {
+public class DStarNode extends Point implements Comparable<DStarNode> {
     private final Queue<DStarNode> queue;
     private double g = Double.POSITIVE_INFINITY;
     private double rhs = Double.POSITIVE_INFINITY;
@@ -27,15 +27,15 @@ class DStarNode extends Point implements Comparable<DStarNode> {
         this.rhs = rhs;
     }
 
-    Path getPath() {
+    public Path getPath() {
         return edges.get(next);
     }
 
-    DStarNode getNext() {
+    public DStarNode getNext() {
         return next;
     }
 
-    void connect(DStarNode neighbor, Path edge) {
+    public void connect(DStarNode neighbor, Path edge) {
         if(edges.putIfAbsent(neighbor, edge) != null && edge.getLength() < edges.get(neighbor).getLength()){
             edges.put(neighbor, edge);
             if(neighbor.g + edge.getLength() < rhs){
@@ -46,27 +46,26 @@ class DStarNode extends Point implements Comparable<DStarNode> {
         }
     }
 
-    void sever(DStarNode neighbor) {
+    public void sever(DStarNode neighbor) {
         edges.remove(neighbor);
         alert(neighbor);
         neighbor.edges.remove(this);
         neighbor.alert(this);
     }
-
-    void sever() {
+    public void sever() {
         for(DStarNode neighbor : edges.keySet()){
             neighbor.edges.remove(this);
             neighbor.alert(this);
         }
     }
 
-    void update() {
+    public void update() {
         queue.remove(this);
         if(!isConsistent())
             queue.add(this);
     }
 
-    void rectify() {
+    public void rectify() {
         if(g > rhs)
             g = rhs;
         else if(g < rhs)
@@ -96,11 +95,11 @@ class DStarNode extends Point implements Comparable<DStarNode> {
         }
     }
 
-    double key() {
+    public double key() {
         return Math.min(g, rhs);
     }
 
-    boolean isConsistent() {
+    public boolean isConsistent() {
         return g == rhs;
     }
 
@@ -112,23 +111,23 @@ class DStarNode extends Point implements Comparable<DStarNode> {
         return rhs;
     }
 
-    int getDegree() {
+    public int getDegree() {
         return edges.size();
     }
 
-    Collection<DStarNode> getNeighbors() {
+    public Collection<DStarNode> getNeighbors() {
         return edges.keySet();
     }
 
-    Collection<Path> getEdges() {
+    public Collection<Path> getEdges() {
         return edges.values();
     }
 
-    Collection<Map.Entry<DStarNode, Path>> getConnections() {
+    public Collection<Map.Entry<DStarNode, Path>> getConnections() {
         return edges.entrySet();
     }
 
-    Path getEdge(DStarNode neighbor) {
+    public Path getEdge(DStarNode neighbor) {
         return edges.get(neighbor);
     }
 

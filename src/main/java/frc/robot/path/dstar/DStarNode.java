@@ -36,13 +36,12 @@ public class DStarNode extends Point implements Comparable<DStarNode> {
     }
 
     public void connect(DStarNode neighbor, Path edge) {
-        if(edges.putIfAbsent(neighbor, edge) != null && edge.getLength() < edges.get(neighbor).getLength()){
+        if(edges.putIfAbsent(neighbor, edge) != null && edge.getLength() < edges.get(neighbor).getLength())
             edges.put(neighbor, edge);
-            if(neighbor.g + edge.getLength() < rhs){
-                next = neighbor;
-                rhs = neighbor.g + edge.getLength();
-                update();
-            }
+        if(neighbor.g + edges.get(neighbor).getLength() < rhs){
+            next = neighbor;
+            rhs = neighbor.g + edge.getLength();
+            update();
         }
     }
 

@@ -64,6 +64,12 @@ public class DStarGraph {
         goal.connect(start, goalEdge);
     }
 
+    public Path getSegment() {
+        while(queue.size() > 0 && (queue.peek().key() < start.key() || !start.isConsistent()))
+            queue.poll().rectify();
+        return start.getPath();
+    }
+
     public Iterable<DStarNode> getNodes() {
         Set<DStarNode> res = new LinkedHashSet<>();
         res.add(goal);

@@ -33,6 +33,10 @@ public class DStarGraph {
         this.radius = radius;
         this.map.onAddition(this::addObstacle);
         this.map.onRemoval(this::removeObstacle);
+        this.start.connect(this.goal, new LinearSegment(this.start, this.goal));
+        this.goal.connect(this.start, new LinearSegment(this.goal, this.start));
+        for(Obstacle obs : map.getObstacles())
+            addObstacle(obs);
     }
     public DStarGraph(ObstacleMap map, Translation2d start, Translation2d goal) {
         this(map, start, goal, 0);

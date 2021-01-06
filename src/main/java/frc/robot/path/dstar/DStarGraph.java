@@ -54,14 +54,14 @@ public class DStarGraph {
         Path goalEdge = new LinearSegment(start, goal);
         for(Obstacle obs : map.getObstacles()){
             for(Point endpoint : obs.getEndpoints(start, radius)){
-                if(map.isClear(new LinearSegment(start, endpoint))){
+                if(map.isClear(new LinearSegment(start, endpoint), radius)){
                     addNode(endpoint, obs);
                     DStarNode vertex = obstacleSets.get(obs).get(endpoint);
                     start.connect(vertex, new LinearSegment(position, endpoint));
                     vertex.connect(start, new LinearSegment(endpoint, position));
                 }
             }
-            if(goalEdge != null && !obs.isClear(goalEdge))
+            if(goalEdge != null && !obs.isClear(goalEdge, radius))
                 goalEdge = null;
         }
         start.connect(goal, goalEdge);
@@ -181,30 +181,30 @@ public class DStarGraph {
 		for(var entry : obstacleSets.entrySet()){
             for(DStarNode node : new ArrayList<DStarNode>(entry.getValue().values())){
                 for(Map.Entry<DStarNode, Path> conn : new ArrayList<>(node.getConnections()))
-                    if(!obstacle.isClear(conn.getValue()))
+                    if(!obstacle.isClear(conn.getValue(), radius))
                         node.sever(conn.getKey());
                 if(node.getDegree() == 0)
                     dropNode(node, entry.getKey());
             }
         }
-        if(start.getEdge(goal) != null && !obstacle.isClear(start.getEdge(goal)))
+        if(start.getEdge(goal) != null && !obstacle.isClear(start.getEdge(goal), radius))
             start.sever(goal);
         obstacleSets.put(obstacle, new TreeMap<>(obstacle));
         // Connect to other obstacles
         for(Obstacle b : obstacleSets.keySet())
             for(LinearSegment edge : obstacle.getTangents(b, radius))
-                if(map.isClear(edge))
+                if(map.isClear(edge, radius))
                     addEdge(obstacle, b, edge);
         // Connect to start and goal
-        for(Point endpoint : obstacle.getEndpoints(start)){
-            if(map.isClear(new LinearSegment(start, endpoint))){
+        for(Point endpoint : obstacle.getEndpoints(start, radius)){
+            if(map.isClear(new LinearSegment(start, endpoint), radius)){
                 addNode(endpoint, obstacle);
                 start.connect(obstacleSets.get(obstacle).get(endpoint), new LinearSegment(start, endpoint));
                 obstacleSets.get(obstacle).get(endpoint).connect(start, new LinearSegment(endpoint, start));
             }
         }
-        for(Point endpoint : obstacle.getEndpoints(goal)){
-            if(map.isClear(new LinearSegment(goal, endpoint))){
+        for(Point endpoint : obstacle.getEndpoints(goal, radius)){
+            if(map.isClear(new LinearSegment(goal, endpoint), radius)){
                 addNode(endpoint, obstacle);
                 goal.connect(obstacleSets.get(obstacle).get(endpoint), new LinearSegment(goal, endpoint));
                 obstacleSets.get(obstacle).get(endpoint).connect(goal, new LinearSegment(endpoint, goal));
@@ -219,7 +219,7 @@ public class DStarGraph {
         for(Obstacle a : obstacleSets.keySet())
             for(Obstacle b : obstacleSets.keySet())
                 for(LinearSegment edge : a.getTangents(b, radius))
-                    if(map.isClear(edge))
+                    if(map.isClear(edge, radius))
                         addEdge(a, b, edge);
     }
 }

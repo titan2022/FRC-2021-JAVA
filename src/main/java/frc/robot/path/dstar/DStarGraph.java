@@ -151,11 +151,11 @@ public class DStarGraph {
         dropNode(position, findNode(position));
     }
 
-    public Point getStart() {
+    public DStarNode getStart() {
         return start;
     }
 
-    public Point getGoal() {
+    public DStarNode getGoal() {
         return goal;
     }
 

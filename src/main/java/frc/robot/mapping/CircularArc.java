@@ -26,7 +26,7 @@ public class CircularArc implements Path {
     this.center = center;
     this.theta = theta;
     radius = center.getDistance(start);
-    off = start.minus(start);
+    off = start.minus(center);
   }
   /**
    * Creates a new CircularArc from start, end, and center points.

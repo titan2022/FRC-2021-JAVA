@@ -5,6 +5,7 @@ import java.util.Queue;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.mapping.LinearSegment;
+import frc.robot.mapping.ObstacleMap;
 import frc.robot.mapping.Point;
 
 public class DStarTester extends CommandBase {
@@ -14,6 +15,8 @@ public class DStarTester extends CommandBase {
         System.out.println(testNode());
         System.out.print("D* Lite primitives: ");
         System.out.println(testPrimitives());
+        System.out.print("D* Lite graph getters and setters: ");
+        System.out.println(testGraphGetters());
     }
 
     @Override
@@ -133,6 +136,34 @@ public class DStarTester extends CommandBase {
         truth = d.getG() == 0;
         allPass &= truth;
         truth = d.getRhs() == 0;
+        allPass &= truth;
+        return allPass;
+    }
+
+    public boolean testGraphGetters() {
+        boolean truth = true;
+        boolean allPass = true;
+        ObstacleMap map = new ObstacleMap();
+        DStarGraph graph = new DStarGraph(map, new Point(0, 0), new Point(10, 10), 1);
+        truth = graph.getStart().equals(new Point(0, 0));
+        allPass &= truth;
+        truth = graph.getGoal().equals(new Point(10, 10));
+        allPass &= truth;
+        int n = 0;
+        for(DStarNode node : graph.getNodes())
+            n += 1;
+        truth = n == 2;
+        allPass &= truth;
+        graph.setStart(new Point(1, 1));
+        truth = graph.getStart().equals(new Point(1, 1));
+        allPass &= truth;
+        n = 0;
+        for(DStarNode node : graph.getNodes()){
+            n += 1;
+            truth = node.getDegree() == 1;
+            allPass &= truth;
+        }
+        truth = n == 2;
         allPass &= truth;
         return allPass;
     }

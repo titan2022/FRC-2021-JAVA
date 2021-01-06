@@ -88,10 +88,10 @@ public class LinearSegment implements Path {
      */
     public boolean intersects(LinearSegment other) {
         double abx, aby, xya, xyb;
-        abx = Point.getAngle(start, end, other.start).getCos();
-        aby = Point.getAngle(start, end, other.end).getCos();
-        xya = Point.getAngle(other.start, other.end, start).getCos();
-        xyb = Point.getAngle(other.start, other.end, end).getCos();
+        abx = Point.getAngle(start, end, other.start).getSin();
+        aby = Point.getAngle(start, end, other.end).getSin();
+        xya = Point.getAngle(other.start, other.end, start).getSin();
+        xyb = Point.getAngle(other.start, other.end, end).getSin();
         if(abx * aby <= 0 && xya * xyb <= 0) return true;
         else return false;
     }

@@ -41,7 +41,7 @@ public class CircularArc implements Path {
    *  IllegalArgumentException is thrown.
    */
   public CircularArc(Point start, Point center, Point end) {
-    if(center.getDistance(start) != center.getDistance(end))
+    if(Math.abs(center.getDistance(start) - center.getDistance(end)) > 0.001)
       throw new IllegalArgumentException("start and end must be equidistant from center.");
     this.center = center;
     theta = Point.getAngle(start, center, end).getRadians();

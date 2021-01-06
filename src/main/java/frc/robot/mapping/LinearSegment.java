@@ -58,7 +58,7 @@ public class LinearSegment implements Path {
         Rotation2d theta = Point.getAngle(end, start, from);
         double startDist = start.getDistance(from);
         if(theta.getCos() >= 0 && theta.getCos() * startDist < getLength())
-            return theta.getSin() * startDist;
+            return Math.abs(theta.getSin() * startDist);
         return Math.min(startDist, end.getDistance(from));
     }
 

@@ -98,17 +98,19 @@ public class DStarTester extends CommandBase {
         allPass &= truth;
         truth = a.getRhs() == Double.POSITIVE_INFINITY;
         allPass &= truth;
+        queue.poll();
         DStarNode b = new DStarNode(new Point(0, 1), queue, 0, 1);
         b.update();
         truth = queue.size() == 1;
         allPass &= truth;
         b.rectify();
-        truth = queue.size() == 0;
+        truth = queue.size() == 1;
         allPass &= truth;
         truth = b.getG() == Double.POSITIVE_INFINITY;
         allPass &= truth;
         truth = b.getRhs() == 1;
         allPass &= truth;
+        queue.poll();
         DStarNode c = new DStarNode(new Point(1, 0), queue, 1, 0);
         c.update();
         truth = queue.size() == 1;
@@ -120,6 +122,7 @@ public class DStarTester extends CommandBase {
         allPass &= truth;
         truth = c.getRhs() == 0;
         allPass &= truth;
+        queue.poll();
         DStarNode d = new DStarNode(new Point(0, 0), queue, 0, 0);
         d.update();
         truth = queue.size() == 0;

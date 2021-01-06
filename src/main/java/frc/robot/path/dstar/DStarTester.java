@@ -5,8 +5,10 @@ import java.util.Queue;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.mapping.LinearSegment;
+import frc.robot.mapping.Obstacle;
 import frc.robot.mapping.ObstacleMap;
 import frc.robot.mapping.Point;
+import frc.robot.mapping.Polygon;
 
 public class DStarTester extends CommandBase {
     @Override
@@ -17,6 +19,8 @@ public class DStarTester extends CommandBase {
         System.out.println(testPrimitives());
         System.out.print("D* Lite graph getters and setters: ");
         System.out.println(testGraphGetters());
+        System.out.print("Obstacle addition/removal: ");
+        System.out.println(testObstacles());
     }
 
     @Override
@@ -164,6 +168,40 @@ public class DStarTester extends CommandBase {
             allPass &= truth;
         }
         truth = n == 2;
+        allPass &= truth;
+        return allPass;
+    }
+
+    public boolean testObstacles() {
+        boolean truth = true;
+        boolean allPass = true;
+        ObstacleMap map = new ObstacleMap();
+        Obstacle first = new Polygon(new Point(1, 4), new Point(4, 1), new Point(2, 2));
+        map.addObstacle(first);
+        DStarGraph graph = new DStarGraph(map, new Point(0, 0), new Point(10, 10), 0.1);
+        truth = graph.getStart().getDegree() == 2;
+        allPass &= truth;
+        truth = graph.getGoal().getDegree() == 2;
+        allPass &= truth;
+        truth = graph.getGoal().getNext() == null;
+        allPass &= truth;
+        Obstacle second = new Polygon(new Point(3, 3), new Point(6, 0), new Point(4, 4));
+        map.addObstacle(second);
+        truth = graph.getGoal().getDegree() == 3;
+        allPass &= truth;
+        truth = graph.getStart().getDegree() == 3;
+        allPass &= truth;
+        map.removeObstacle(first);
+        truth = graph.getStart().getDegree() == 2;
+        allPass &= truth;
+        truth = graph.getGoal().getDegree() == 2;
+        allPass &= truth;
+        map.removeObstacle(second);
+        truth = graph.getStart().getNext() == graph.getGoal();
+        allPass &= truth;
+        truth = graph.getStart().getDegree() == 1;
+        allPass &= truth;
+        truth = graph.getGoal().getDegree() == 1;
         allPass &= truth;
         return allPass;
     }

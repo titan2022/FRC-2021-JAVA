@@ -219,7 +219,7 @@ public class DStarGraph {
         for(Obstacle a : obstacleSets.keySet())
             for(Obstacle b : obstacleSets.keySet())
                 for(LinearSegment edge : a.getTangents(b, radius))
-                    if(map.isClear(edge, radius))
+                    if(map.isClear(edge, radius, a, b))
                         addEdge(a, b, edge);
     }
 }

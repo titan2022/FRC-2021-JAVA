@@ -238,5 +238,9 @@ public class DStarGraph {
                 }
             }
         }
+        if(start.getNext() != goal && map.isClear(new LinearSegment(start, goal), radius)){
+            start.connect(goal, new LinearSegment(start, goal));
+            goal.connect(start, new LinearSegment(goal, start));
+        }
     }
 }

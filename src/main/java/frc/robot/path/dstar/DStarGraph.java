@@ -193,18 +193,18 @@ public class DStarGraph {
         // Connect to other obstacles
         for(Obstacle b : obstacleSets.keySet())
             for(LinearSegment edge : obstacle.getTangents(b, radius))
-                if(map.isClear(edge, radius))
+                if(map.isClear(edge, radius, obstacle, b))
                     addEdge(obstacle, b, edge);
         // Connect to start and goal
         for(Point endpoint : obstacle.getEndpoints(start, radius)){
-            if(map.isClear(new LinearSegment(start, endpoint), radius)){
+            if(map.isClear(new LinearSegment(start, endpoint), radius, obstacle)){
                 addNode(endpoint, obstacle);
                 start.connect(obstacleSets.get(obstacle).get(endpoint), new LinearSegment(start, endpoint));
                 obstacleSets.get(obstacle).get(endpoint).connect(start, new LinearSegment(endpoint, start));
             }
         }
         for(Point endpoint : obstacle.getEndpoints(goal, radius)){
-            if(map.isClear(new LinearSegment(goal, endpoint), radius)){
+            if(map.isClear(new LinearSegment(goal, endpoint), radius, obstacle)){
                 addNode(endpoint, obstacle);
                 goal.connect(obstacleSets.get(obstacle).get(endpoint), new LinearSegment(goal, endpoint));
                 obstacleSets.get(obstacle).get(endpoint).connect(goal, new LinearSegment(endpoint, goal));

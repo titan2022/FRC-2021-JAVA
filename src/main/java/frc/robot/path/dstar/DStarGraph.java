@@ -111,9 +111,9 @@ public class DStarGraph {
             return false;
         if(obsSet.size() > 1){
             DStarNode node = obsSet.get(position);
-            Map.Entry<Point, DStarNode> prevEntry = obsSet.floorEntry(position);
+            Map.Entry<Point, DStarNode> prevEntry = obsSet.lowerEntry(position);
             DStarNode prev = (prevEntry == null ? obsSet.lastEntry() : prevEntry).getValue();
-            Map.Entry<Point, DStarNode> nextEntry = obsSet.ceilingEntry(position);
+            Map.Entry<Point, DStarNode> nextEntry = obsSet.higherEntry(position);
             DStarNode next = (nextEntry == null ? obsSet.firstEntry() : nextEntry).getValue();
             prev.sever(next);
             next.sever(prev);
@@ -134,9 +134,9 @@ public class DStarGraph {
         obsSet.remove(position);
         DStarNode prev, next;
         if(obsSet.size() > 0){
-            Map.Entry<Point, DStarNode> prevEntry = obsSet.floorEntry(position);
+            Map.Entry<Point, DStarNode> prevEntry = obsSet.lowerEntry(position);
             prev = (prevEntry == null ? obsSet.lastEntry() : prevEntry).getValue();
-            Map.Entry<Point, DStarNode> nextEntry = obsSet.ceilingEntry(position);
+            Map.Entry<Point, DStarNode> nextEntry = obsSet.higherEntry(position);
             next = (nextEntry == null ? obsSet.firstEntry() : nextEntry).getValue();
             node.sever(next);
             node.sever(prev);

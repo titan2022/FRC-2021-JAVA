@@ -78,6 +78,7 @@ public class DStarNode extends Point implements Comparable<DStarNode> {
         if(neighbor == next){
             if(!edges.containsKey(neighbor) || neighbor.g + edges.get(neighbor).getLength() > rhs){
                 rhs = Double.POSITIVE_INFINITY;
+                next = null;
                 for(Map.Entry<DStarNode, Path> entry : edges.entrySet()){
                     if(entry.getKey().g + entry.getValue().getLength() < rhs){
                         next = entry.getKey();

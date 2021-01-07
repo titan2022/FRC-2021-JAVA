@@ -216,10 +216,27 @@ public class DStarGraph {
         for(DStarNode node : new ArrayList<>(obstacleSets.get(obstacle).values()))
             dropNode(node, obstacle);
         obstacleSets.remove(obstacle);
-        for(Obstacle a : obstacleSets.keySet())
-            for(Obstacle b : obstacleSets.keySet())
-                for(LinearSegment edge : a.getTangents(b, radius))
+        for(Obstacle a : obstacleSets.keySet()){
+            for(Obstacle b : obstacleSets.keySet()){
+                for(LinearSegment edge : a.getTangents(b, radius)){
                     if(map.isClear(edge, radius, a, b))
                         addEdge(a, b, edge);
+                }
+            }
+            for(Point endpoint : a.getEndpoints(start)){
+                if(map.isClear(new LinearSegment(start, endpoint), a)){
+                    addNode(endpoint, a);
+                    start.connect(obstacleSets.get(a).get(endpoint), new LinearSegment(start, endpoint));
+                    obstacleSets.get(a).get(endpoint).connect(start, new LinearSegment(endpoint, start));
+                }
+            }
+            for(Point endpoint : a.getEndpoints(goal)){
+                if(map.isClear(new LinearSegment(goal, endpoint), a)){
+                    addNode(endpoint, a);
+                    goal.connect(obstacleSets.get(a).get(endpoint), new LinearSegment(goal, endpoint));
+                    obstacleSets.get(a).get(endpoint).connect(goal, new LinearSegment(endpoint, goal));
+                }
+            }
+        }
     }
 }

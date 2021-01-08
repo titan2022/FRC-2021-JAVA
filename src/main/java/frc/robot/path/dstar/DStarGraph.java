@@ -64,8 +64,10 @@ public class DStarGraph {
             if(goalEdge != null && !obs.isClear(goalEdge, radius))
                 goalEdge = null;
         }
-        start.connect(goal, goalEdge);
-        goal.connect(start, goalEdge);
+        if(goalEdge != null){
+            start.connect(goal, goalEdge);
+            goal.connect(start, goalEdge);
+        }
     }
 
     public Path getSegment() {

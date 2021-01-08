@@ -95,8 +95,8 @@ public class CompoundPath implements Path {
     @Override
     public CompoundPath reverse() {
         Path[] newSegments = new Path[segments.length];
-        for(int i=segments.length-1; i>=0; i--)
-            newSegments[i] = segments[i].reverse();
+        for(int i=0; i<segments.length; i++)
+            newSegments[segments.length-i-1] = segments[i].reverse();
         return new CompoundPath(newSegments);
     }
 

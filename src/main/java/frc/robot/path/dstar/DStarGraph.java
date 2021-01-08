@@ -54,7 +54,7 @@ public class DStarGraph {
         Path goalEdge = new LinearSegment(start, goal);
         for(Obstacle obs : map.getObstacles()){
             for(Point endpoint : obs.getEndpoints(start, radius)){
-                if(map.isClear(new LinearSegment(start, endpoint), radius)){
+                if(map.isClear(new LinearSegment(start, endpoint), radius, obs)){
                     addNode(endpoint, obs);
                     DStarNode vertex = obstacleSets.get(obs).get(endpoint);
                     start.connect(vertex, new LinearSegment(position, endpoint));

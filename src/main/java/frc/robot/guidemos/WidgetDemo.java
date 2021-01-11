@@ -29,12 +29,26 @@ public class WidgetDemo extends CommandBase {
   @Override
   public void execute() {
     ShuffleboardTab tab = Shuffleboard.getTab("Widget Demo Tab");  
-    tab.add("Message","This is how to add a graph to a Layout:")
+    tab.add("Message","To add a widget to you Shuffleboard, first call a tab using the getTab method. Then use the appropriate widgets from the BuiltInWidgets Class.")
+      .withWidget(BuiltInWidgets.kTextView);
+    tab.add("Message","You can represent the same values through multiple widgets like sliders,number bars, and graphs")
+      .withWidget(BuiltInWidgets.kTextView);
+    tab.add("Message","To create a number slider, first create the widget using the add method from the ShuffleBoardTab class. Then use the withWidget method to set the value to a number slider - '.withWidget(BuiltinWidgets.kNumberSlider);'")
+       .withWidget(BuiltInWidgets.kTextView); 
+    tab.add("Slider 1",2.5)
+       .withWidget(BuiltInWidgets.kNumberSlider);
+    tab.add("Message","To create a graph, similarily use '.withWidget(BuiltinWidgets.kGraph);'")
       .withWidget(BuiltInWidgets.kTextView);
     tab.add("Graph 1",122.2)
       .withWidget(BuiltInWidgets.kGraph);
-    tab.add("Message","To create the graph, first create the widget using the add method from the ShuffleBoardTab class. Then use the withWidget method to set the what widget you want the value to appear in. For example, for the data, use 'tab.add('Title',111(this can be any value))'. Then to set the widget, use '.withWidget(BuiltinWidgets.kGraph);'")
-      .withWidget(BuiltInWidgets.kTextView);    
+    tab.add("Message","To return data, use the .getEntry() method.")
+      .withWidget(BuiltInWidgets.kTextView);
+    tab.add("Slider 1",2.5)
+      .withWidget(BuiltInWidgets.kNumberSlider)
+      .getEntry();
+    
+
+
   }
 
   // Called once the command ends or is interrupted.

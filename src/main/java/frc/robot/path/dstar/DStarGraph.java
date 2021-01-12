@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.PriorityQueue;
@@ -12,6 +14,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import frc.robot.mapping.CompoundPath;
 import frc.robot.mapping.LinearSegment;
 import frc.robot.mapping.Obstacle;
 import frc.robot.mapping.ObstacleMap;
@@ -74,6 +77,16 @@ public class DStarGraph {
         while(queue.size() > 0 && (queue.peek().key() < start.key() || !start.isConsistent()))
             queue.poll().rectify();
         return start.getPath();
+    }
+
+    public CompoundPath getPath() {
+        List<Path> parts = new LinkedList<>();
+        DStarNode node = start;
+        while(node != goal){
+            parts.add(node.getEdge(node.getNext()));
+            node = node.getNext();
+        }
+        return new CompoundPath(parts.toArray(new Path[0]));
     }
 
     public Iterable<DStarNode> getNodes() {

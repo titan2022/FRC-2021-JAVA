@@ -173,7 +173,7 @@ public class Polygon implements Obstacle {
   public Path edgePath(Point a, Point b, double radius) {
     Point end = null, curr = null;  // end point; end of accumulated path
     List<Path> segments = new ArrayList<>();  // accumulated path
-    Rotation2d theta = new Rotation2d(Math.PI/2);
+    Rotation2d theta = new Rotation2d(-Math.PI/2);
     int i = -1, ctr = 0;
     while(ctr < verts.length){
       Point vertex = verts[(++i)%verts.length];
@@ -224,7 +224,7 @@ public class Polygon implements Obstacle {
 
   public Path getBoundary(double radius) {
     Path[] segments = new Path[verts.length*2];
-    Rotation2d theta = new Rotation2d(Math.PI/2);
+    Rotation2d theta = new Rotation2d(-Math.PI/2);
     Point prev = verts[0].plus(new Point(radius,
         verts[verts.length-1].minus(verts[0]).getAngle().minus(theta)));
     Point mid, offset, vNext;

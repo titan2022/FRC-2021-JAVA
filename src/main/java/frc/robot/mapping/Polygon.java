@@ -62,7 +62,7 @@ public class Polygon implements Obstacle {
     double cos = radius / vertex.getDistance(from);
     if(cos > 1) return from;
     double theta = Math.copySign(Math.acos(cos), Point.getAngle(interior, vertex, from).getSin());
-    return vertex.plus(new Point(radius, new Rotation2d(theta)));
+    return vertex.plus(new Point(radius, new Rotation2d(theta).plus(from.minus(vertex).getAngle())));
   }
 
   @Override

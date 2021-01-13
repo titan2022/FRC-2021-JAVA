@@ -7,10 +7,10 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 // using WPILib's docs' example from:
@@ -29,6 +29,7 @@ public class DriveSubsystem extends SubsystemBase {
   private TalonSRX leftPrimary, leftSecondary, rightPrimary, rightSecondary;
 
   private boolean inverted;
+  private double driveSpeed;
 
   // encoders to be added in navigation?
 
@@ -45,6 +46,7 @@ public class DriveSubsystem extends SubsystemBase {
     rightSecondary = new TalonSRX(RIGHT_SECONDARY_PORT);
 
     inverted = false;
+    driveSpeed = 1;
     
     leftSecondary.follow(leftPrimary);
     rightSecondary.follow(rightPrimary);
@@ -96,11 +98,70 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void setInversion(boolean invert) {
 
-    leftPrimary.setInverted(invert);
-    leftSecondary.setInverted(invert);
-    rightPrimary.setInverted(!invert);
-    rightSecondary.setInverted(!invert);
+    inverted = invert;
+    leftPrimary.setInverted(inverted);
+    leftSecondary.setInverted(inverted);
+    rightPrimary.setInverted(!inverted);
+    rightSecondary.setInverted(!inverted);
     
+  }
+
+  /**
+   * Toggles current inversion of motors.
+   */
+  public void toggleInversion() {
+
+    setInversion(!inverted);
+
+  }
+
+  // speed methods
+
+  /**
+   * Returns the current maximum drive speed as a percentage of output.
+   * @return Maximum drive speed.
+   */
+  public double getDriveSpeed() {
+
+    return driveSpeed;
+
+  }
+
+  /**
+   * Sets the maximum drive speed as a percentage of output.
+   * @param driveSpeed - Maximum drive speed (percentage).
+   */
+  public void setDriveSpeed(double driveSpeed) {
+
+    this.driveSpeed = driveSpeed;
+
+  }
+
+  /**
+   * Sets speed of a motor at a percentage of output.
+   * @param inputSpeed - Input speed (percentage).
+   * @param useLeft - Whether to use the left-side motor (disregarding inversion).
+   * @param controlled - Whether to control the input using driveSpeed.
+   */
+  public void setMotorSpeed(double inputSpeed, boolean useLeft, boolean controlled) {
+
+    // if controlled, cap the input speed at driveSpeed (both percentages)
+
+    double speed = controlled ? (driveSpeed * inputSpeed) : inputSpeed;
+
+    // if ((not inverted and use right) or (inverted and use left)) set right speed
+    // if ((inverted and use right) or (not inverted and use left)) set left speed
+    
+    if ((!inverted && !useLeft) || (inverted && useLeft)) {
+
+      rightPrimary.set(ControlMode.PercentOutput, speed);
+
+    } else {
+
+      leftPrimary.set(ControlMode.PercentOutput, speed);
+      
+    }
+
   }
 
 }

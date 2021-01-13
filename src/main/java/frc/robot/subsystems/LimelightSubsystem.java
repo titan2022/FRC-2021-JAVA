@@ -15,7 +15,7 @@ import frc.robot.vision.LimelightEnum;
  * Limelight Subsystem class, contains getter and setter methods for NetworkTable values
  */
 public class LimelightSubsystem extends SubsystemBase {
-  private static NetworkTable table;
+  private NetworkTable table;
   /**
    * Creates a new LimelightSubsystem.
    */
@@ -27,7 +27,7 @@ public class LimelightSubsystem extends SubsystemBase {
   /**
    * 
    */
-  public static void setPipeline(LimelightEnum i)
+  public void setPipeline(LimelightEnum i)
   {
     table.getEntry("getPipe").setNumber(i.ordinal());
   }
@@ -36,7 +36,7 @@ public class LimelightSubsystem extends SubsystemBase {
    * Changes pipeline based on enum value
    * @return
    */
-  public static String getPipeline()
+  public String getPipeline()
   {
     int pipelineNumber = (int)table.getEntry("getPipe").getDouble(0);
     LimelightEnum pipeline = LimelightEnum.values()[pipelineNumber];
@@ -47,7 +47,7 @@ public class LimelightSubsystem extends SubsystemBase {
    * Returns current pipeline as string
    * @return
    */
-  public static boolean validTarget()
+  public boolean validTarget()
   {
     if(table.getEntry("tv").getDouble(0)==0)
     {
@@ -63,7 +63,7 @@ public class LimelightSubsystem extends SubsystemBase {
    *  Checks for valid reflective target
    * @return
    */
-  public static double getX()
+  public double getX()
   {
     return table.getEntry("tx").getDouble(0);
   }
@@ -72,7 +72,7 @@ public class LimelightSubsystem extends SubsystemBase {
    * Returns X distance to reflective target
    * @return
    */
-  public static double getY()
+  public double getY()
   {
     return table.getEntry("ty").getDouble(0);
   }
@@ -81,7 +81,7 @@ public class LimelightSubsystem extends SubsystemBase {
    * Returns Y distance to reflective target
    * @return
    */
-  public static double[] getCamPose()
+  public double[] getCamPose()
   {
     return table.getEntry("camtran").getDoubleArray(new double[]{});
   }
@@ -90,7 +90,7 @@ public class LimelightSubsystem extends SubsystemBase {
    * Returns 3D cam pose relative to target
    * @return
    */
-  public static double getLatency()
+  public double getLatency()
   {
     return table.getEntry("tl").getDouble(0);
   }

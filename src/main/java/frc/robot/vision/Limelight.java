@@ -14,15 +14,14 @@ import edu.wpi.first.networktables.NetworkTableInstance;
  */
 public class Limelight {
 
-    private LimelightSubsystem subsystem;
     public static double targetHeight = 1; //test values
     public static double limelightHeight= 1;
     public static double limelightAngle = 90;
+    LimelightSubsystem subsystem = new LimelightSubsystem();
 
     public Limelight()
     {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);//Set to use vision camera
-        subsystem = new LimelightSubsystem();
     }
  /**
    * Limelight Constructor
@@ -40,7 +39,7 @@ public class Limelight {
    */
   public double calculateAngleToTargetV()
   {
-    double nx = (1/160) *(LimelightSubsystem.getX() -159.5);  //normalized pixel values
+    double nx = (1/160) *(subsystem.getX() -159.5);  //normalized pixel values
     //double ny =(1/120) * (119.5 -y);
     double vpw = 2.0 *Math.tan(54/2);  //calculates horizontal fov
     //double vph = 2.0 *Math.tan(41/2);
@@ -54,7 +53,7 @@ public class Limelight {
    */
   public double calculateAngleToTargetH()  
   {
-    double ny =(1/120) * (119.5 -LimelightSubsystem.getY());
+    double ny =(1/120) * (119.5 -subsystem.getY());
     double vph = 2.0 *Math.tan(41/2);
     double yCoor = vph/2 *ny;
     double angleToTarget = Math.atan(yCoor/1);
@@ -68,6 +67,27 @@ public class Limelight {
   public boolean relativeCamPosition() //TODO: Transform it to be relative to the camera.
   {
     return false;
+  }
+
+  public double latency()
+  {
+    return subsystem.getLatency();
+  }
+  public double[] camPos()
+  {
+    return subsystem.getCamPose();
+  }
+  public boolean validTarget()
+  {
+    return subsystem.validTarget();
+  }
+  public String pipeline()
+  {
+    return subsystem.getPipeline();
+  }
+  public void setPipeline(LimelightEnum i)
+  {
+    subsystem.setPipeline(i);
   }
    /**
    * Returns target position relative to camera

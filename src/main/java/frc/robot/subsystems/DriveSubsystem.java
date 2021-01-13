@@ -207,7 +207,27 @@ public class DriveSubsystem extends SubsystemBase {
 
   }
 
-  // voltage methods (isBrowningOut from 2020)
+  /**
+   * Stops the robot.
+   */
+  public void stop() {
+
+    leftPrimary.set(ControlMode.PercentOutput, 0);
+    rightPrimary.set(ControlMode.PercentOutput, 0);
+
+  }
+
+  // voltage methods (isBrowningOut * getVoltage from 2020)
+
+  /**
+   * Gets voltage of power distribution panel.
+   * @return Current voltage of PDP.
+   */
+  public double getVoltage() {
+
+    return pdp.getVoltage();
+
+  }
 
   /**
    * Checks if system is browning out.

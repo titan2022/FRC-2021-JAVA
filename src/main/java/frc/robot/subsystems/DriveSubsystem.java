@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -16,6 +9,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // using WPILib's docs' example from:
 // https://docs.wpilib.org/en/stable/docs/software/examples-tutorials/trajectory-tutorial/creating-drive-subsystem.html
 
+/**
+ * Differential Drive Subsystem
+ */
 public class DriveSubsystem extends SubsystemBase {
 
   // port numbers to be added later
@@ -28,187 +24,115 @@ public class DriveSubsystem extends SubsystemBase {
 
   private TalonSRX leftPrimary, leftSecondary, rightPrimary, rightSecondary;
 
-  private boolean inverted;
-  private double maxSpeed;
+  private final static double MAX_SPEED = 10; // meters/sec
 
-  // encoders to be added in navigation?
+  //TODO: add encoders?
 
   /**
    * Creates a new DriveSubsystem.
    */
   public DriveSubsystem() {
-
     // motor initialization block
 
     leftPrimary = new TalonSRX(LEFT_PRIMARY_PORT);
     leftSecondary = new TalonSRX(LEFT_SECONDARY_PORT);
     rightPrimary = new TalonSRX(RIGHT_PRIMARY_PORT);
     rightSecondary = new TalonSRX(RIGHT_SECONDARY_PORT);
-
     
+    leftPrimary.configFactoryDefault();
+    leftSecondary.configFactoryDefault();
+    rightPrimary.configFactoryDefault();
+    rightSecondary.configFactoryDefault();
 
-    inverted = false;
-    maxSpeed = 1;
-    
+    rightPrimary.setInverted(false);
+    rightSecondary.setInverted(false);
+
+    leftPrimary.setInverted(false);
+    leftSecondary.setInverted(false);
+
     leftSecondary.follow(leftPrimary);
     rightSecondary.follow(rightPrimary);
-
-    rightPrimary.setInverted(true);
-    rightSecondary.setInverted(true);
-
+    
+    //Sets the direction that the talon will turn on the green LED when going 'forward'.
     leftPrimary.setSensorPhase(true);
     rightPrimary.setSensorPhase(true);
 
-    // motor config block
+    //Current limits in amps
+    leftPrimary.configPeakCurrentLimit(60);
+		leftPrimary.configContinuousCurrentLimit(50);
+		leftPrimary.enableCurrentLimit(true);
+		
+		rightPrimary.configPeakCurrentLimit(60);
+		rightPrimary.configContinuousCurrentLimit(50);
+		rightPrimary.enableCurrentLimit(true);
+  }
 
-    TalonSRXConfiguration leftPrimaryConfig = new TalonSRXConfiguration();
-    TalonSRXConfiguration leftSecondaryConfig = new TalonSRXConfiguration();
-    TalonSRXConfiguration rightPrimaryConfig = new TalonSRXConfiguration();
-    TalonSRXConfiguration rightSecondaryConfig = new TalonSRXConfiguration();
+  public DriveSubsystem(TalonSRXConfiguration leftConfig, TalonSRXConfiguration rightConfig) {
+    this();
 
-    // whatever configurations necessary like all .config methods
+    leftPrimary.configAllSettings(leftConfig);
+    leftSecondary.configAllSettings(leftConfig);
+    rightPrimary.configAllSettings(rightConfig);
+    rightSecondary.configAllSettings(rightConfig);
+  }
 
-    // applying configs to motors
+  /**
+   * Returns the current maximum drive speed in meters per second.
+   * @return Maximum drive speed in meters per second.
+   */
+  public double getMaxSpeed() {
+    return MAX_SPEED;
+  }
 
-    leftPrimary.configAllSettings(leftPrimaryConfig);
-    leftSecondary.configAllSettings(leftSecondaryConfig);
-    rightPrimary.configAllSettings(rightPrimaryConfig);
-    rightSecondary.configAllSettings(rightSecondaryConfig);
+  /**
+   * Sets motor outputs using specified control mode
+   * @param mode a ControlMode enum
+   * @param leftOutputValue left side output value for ControlMode
+   * @param rightOutputValue right side output value for ControlMode
+   */
+  public void setOutput(ControlMode mode, double leftOutputValue, double rightOutputValue)
+  {
+    if(mode == ControlMode.Velocity && leftOutputValue > MAX_SPEED)
+    {
+      leftOutputValue = MAX_SPEED;
+    }
 
+    if(mode == ControlMode.Velocity && rightOutputValue > MAX_SPEED)
+    {
+      rightOutputValue = MAX_SPEED;
+    }
+
+    //TODO: is check the current usage from Power Subsystem to restrict overcurrent
+    leftPrimary.set(mode, leftOutputValue);
+    rightPrimary.set(mode, rightOutputValue);
+  }
+
+  /**
+   * Enables brake.
+   */
+  public void enableBrakes() {
+    leftPrimary.setNeutralMode(NeutralMode.Brake);
+    rightPrimary.setNeutralMode(NeutralMode.Brake);
+  }
+
+  /**
+   * Disables brake.
+   */
+  public void disableBrakes() {
+    leftPrimary.setNeutralMode(NeutralMode.Coast);
+    rightPrimary.setNeutralMode(NeutralMode.Coast);
+  }
+
+  /**
+   * Stops the motors.
+   */
+  public void stop() {
+    leftPrimary.set(ControlMode.PercentOutput, 0);
+    rightPrimary.set(ControlMode.PercentOutput, 0);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
-
-  // inversion methods, carry over from 2020
-
-  /**
-   * Returns whether motors are inverted.
-   * @return Boolean measure of motor inversion.
-   */
-  public boolean getInversion() {
-
-    return inverted;
-
-  }
-
-  /**
-   * Sets motor inversion state.
-   * @param invert - Inverts motors.
-   */
-  public void setInversion(boolean invert) {
-
-    inverted = invert;
-    leftPrimary.setInverted(inverted);
-    leftSecondary.setInverted(inverted);
-    rightPrimary.setInverted(!inverted);
-    rightSecondary.setInverted(!inverted);
-    
-  }
-
-  /**
-   * Toggles current inversion of motors.
-   */
-  public void toggleInversion() {
-
-    setInversion(!inverted);
-
-  }
-
-  // speed methods
-
-  /**
-   * Returns the current maximum drive speed as a percentage of output.
-   * @return Maximum drive speed.
-   */
-  public double getMaxSpeed() {
-
-    return maxSpeed;
-
-  }
-
-  /**
-   * Sets the maximum drive speed as a percentage of output.
-   * @param maxSpeed - Maximum drive speed (percentage).
-   */
-  public void setmaxSpeed(double maxSpeed) {
-
-    this.maxSpeed = maxSpeed;
-
-  }
-
-  /**
-   * Sets speed of a motor at a percentage of output.
-   * @param inputSpeed - Input speed (percentage).
-   * @param useLeft - Whether to use the left-side motor (disregarding inversion).
-   * @param controlled - Whether to control the input speed using maxSpeed.
-   */
-  public void setMotorSpeed(double inputSpeed, boolean useLeft, boolean controlled) {
-
-    // if controlled, cap the input speed at maxSpeed (both percentages)
-
-    double speed = controlled ? (maxSpeed * inputSpeed) : inputSpeed;
-
-    // if ((not inverted and use right) or (inverted and use left)) set right speed
-    // if ((inverted and use right) or (not inverted and use left)) set left speed
-    
-    if ((!inverted && !useLeft) || (inverted && useLeft)) {
-
-      rightPrimary.set(ControlMode.PercentOutput, speed);
-
-    } else {
-
-      leftPrimary.set(ControlMode.PercentOutput, speed);
-      
-    }
-
-  }
-
-  /**
-   * Sets motor speeds using tank drive
-   * @param leftInputSpeed - Input speed for left-side motor (percentage).
-   * @param rightInputSpeed - Input speed for right-side motor (percentage).
-   * @param controlled - Whether to control the input speeds using maxSpeed.
-   */
-  public void tankDrive(double leftInputSpeed, double rightInputSpeed, boolean controlled) {
-
-    setMotorSpeed(leftInputSpeed, true, controlled);
-    setMotorSpeed(rightInputSpeed, false, controlled);
-
-  }
-
-  // braking methods (holdover from 2020)
-
-  /**
-   * Enables brake.
-   */
-  public void enableBrake() {
-
-    leftPrimary.setNeutralMode(NeutralMode.Brake);
-    rightPrimary.setNeutralMode(NeutralMode.Brake);
-
-  }
-
-  /**
-   * Disables brake.
-   */
-  public void disableBrake() {
-
-    leftPrimary.setNeutralMode(NeutralMode.Coast);
-    rightPrimary.setNeutralMode(NeutralMode.Coast);
-
-  }
-
-  /**
-   * Stops the robot.
-   */
-  public void stop() {
-
-    leftPrimary.set(ControlMode.PercentOutput, 0);
-    rightPrimary.set(ControlMode.PercentOutput, 0);
-
-  }
-
 }

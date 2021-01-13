@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -30,10 +31,31 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public DriveSubsystem() {
 
+    // motor initialization block
+
     leftPrimary = new TalonSRX(LEFT_PRIMARY_PORT);
     leftSecondary = new TalonSRX(LEFT_SECONDARY_PORT);
     rightPrimary = new TalonSRX(RIGHT_PRIMARY_PORT);
     rightSecondary = new TalonSRX(RIGHT_SECONDARY_PORT);
+    
+    leftSecondary.follow(leftPrimary);
+    rightSecondary.follow(rightPrimary);
+
+    // motor config block
+
+    TalonSRXConfiguration leftPrimaryConfig = new TalonSRXConfiguration();
+    TalonSRXConfiguration leftSecondaryConfig = new TalonSRXConfiguration();
+    TalonSRXConfiguration rightPrimaryConfig = new TalonSRXConfiguration();
+    TalonSRXConfiguration rightSecondaryConfig = new TalonSRXConfiguration();
+
+    // whatever configurations necessary like all .config methods
+
+    // applying configs to motors
+
+    leftPrimary.configAllSettings(leftPrimaryConfig);
+    leftSecondary.configAllSettings(leftSecondaryConfig);
+    rightPrimary.configAllSettings(rightPrimaryConfig);
+    rightSecondary.configAllSettings(rightSecondaryConfig);
 
   }
 
@@ -41,4 +63,5 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
 }

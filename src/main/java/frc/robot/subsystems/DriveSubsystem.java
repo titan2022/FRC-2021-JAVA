@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 // using WPILib's docs' example from:
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class DriveSubsystem extends SubsystemBase {
 
   // port numbers to be added later
+  // maybe add constants to an enum?
 
   private final static int LEFT_PRIMARY_PORT = 1;
   private final static int LEFT_SECONDARY_PORT = 2;
@@ -25,6 +27,10 @@ public class DriveSubsystem extends SubsystemBase {
   private final static int RIGHT_SECONDARY_PORT = 4;
 
   private TalonSRX leftPrimary, leftSecondary, rightPrimary, rightSecondary;
+
+  private boolean inverted;
+
+  // encoders to be added in navigation?
 
   /**
    * Creates a new DriveSubsystem.
@@ -37,9 +43,17 @@ public class DriveSubsystem extends SubsystemBase {
     leftSecondary = new TalonSRX(LEFT_SECONDARY_PORT);
     rightPrimary = new TalonSRX(RIGHT_PRIMARY_PORT);
     rightSecondary = new TalonSRX(RIGHT_SECONDARY_PORT);
+
+    inverted = false;
     
     leftSecondary.follow(leftPrimary);
     rightSecondary.follow(rightPrimary);
+
+    rightPrimary.setInverted(true);
+    rightSecondary.setInverted(true);
+
+    leftPrimary.setSensorPhase(true);
+    rightPrimary.setSensorPhase(true);
 
     // motor config block
 
@@ -62,6 +76,31 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  // inversion methods, carry over from 2020
+
+  /**
+   * Returns whether motors are inverted.
+   * @return Boolean measure of motor inversion.
+   */
+  public boolean getInversion() {
+
+    return inverted;
+
+  }
+
+  /**
+   * Sets motor inversion state.
+   * @param invert - Inverts motors.
+   */
+  public void setInversion(boolean invert) {
+
+    leftPrimary.setInverted(invert);
+    leftSecondary.setInverted(invert);
+    rightPrimary.setInverted(!invert);
+    rightSecondary.setInverted(!invert);
+    
   }
 
 }

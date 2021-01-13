@@ -8,9 +8,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 // using WPILib's docs' example from:
@@ -19,14 +21,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class DriveSubsystem extends SubsystemBase {
 
   // port numbers to be added later
-  // maybe add constants to an enum?
+  // add constants to file later
 
   private final static int LEFT_PRIMARY_PORT = 1;
   private final static int LEFT_SECONDARY_PORT = 2;
   private final static int RIGHT_PRIMARY_PORT = 3;
   private final static int RIGHT_SECONDARY_PORT = 4;
+  private final static int PDP_PORT = 5;
+  private final static double BROWNOUT_VOLTS = 9;
+  private final static double BLACKOUT_VOLTS = 1;
 
   private TalonSRX leftPrimary, leftSecondary, rightPrimary, rightSecondary;
+  private PowerDistributionPanel pdp;
 
   private boolean inverted;
   private double driveSpeed;
@@ -44,6 +50,8 @@ public class DriveSubsystem extends SubsystemBase {
     leftSecondary = new TalonSRX(LEFT_SECONDARY_PORT);
     rightPrimary = new TalonSRX(RIGHT_PRIMARY_PORT);
     rightSecondary = new TalonSRX(RIGHT_SECONDARY_PORT);
+
+    pdp = new PowerDistributionPanel(PDP_PORT);
 
     inverted = false;
     driveSpeed = 1;
@@ -141,7 +149,7 @@ public class DriveSubsystem extends SubsystemBase {
    * Sets speed of a motor at a percentage of output.
    * @param inputSpeed - Input speed (percentage).
    * @param useLeft - Whether to use the left-side motor (disregarding inversion).
-   * @param controlled - Whether to control the input using driveSpeed.
+   * @param controlled - Whether to control the input speed using driveSpeed.
    */
   public void setMotorSpeed(double inputSpeed, boolean useLeft, boolean controlled) {
 
@@ -161,6 +169,63 @@ public class DriveSubsystem extends SubsystemBase {
       leftPrimary.set(ControlMode.PercentOutput, speed);
       
     }
+
+  }
+
+  /**
+   * Sets motor speeds using tank drive
+   * @param leftInputSpeed - Input speed for left-side motor (percentage).
+   * @param rightInputSpeed - Input speed for right-side motor (percentage).
+   * @param controlled - Whether to control the input speeds using driveSpeed.
+   */
+  public void tankDrive(double leftInputSpeed, double rightInputSpeed, boolean controlled) {
+
+    setMotorSpeed(leftInputSpeed, true, controlled);
+    setMotorSpeed(rightInputSpeed, false, controlled);
+
+  }
+
+  // braking methods (holdover from 2020)
+
+  /**
+   * Enables brake.
+   */
+  public void enableBrake() {
+
+    leftPrimary.setNeutralMode(NeutralMode.Brake);
+    rightPrimary.setNeutralMode(NeutralMode.Brake);
+
+  }
+
+  /**
+   * Disables brake.
+   */
+  public void disableBrake() {
+
+    leftPrimary.setNeutralMode(NeutralMode.Coast);
+    rightPrimary.setNeutralMode(NeutralMode.Coast);
+
+  }
+
+  // voltage methods (isBrowningOut from 2020)
+
+  /**
+   * Checks if system is browning out.
+   * @return Whether system is browning out.
+   */
+  public boolean isBrowningOut() {
+
+    return (pdp.getVoltage() <= BROWNOUT_VOLTS);
+
+  }
+
+  /**
+   * Checks if system is blacking out.
+   * @return Whether system is blacking out.
+   */
+  public boolean isBlackingOut() {
+
+    return (pdp.getVoltage() <= BLACKOUT_VOLTS);
 
   }
 

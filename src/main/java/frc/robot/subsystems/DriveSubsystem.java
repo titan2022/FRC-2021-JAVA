@@ -26,7 +26,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final static double MAX_SPEED = 10; // meters/sec
 
-  //TODO: add encoders?
+  // TODO: add encoders?
 
   /**
    * Creates a new DriveSubsystem.
@@ -38,7 +38,7 @@ public class DriveSubsystem extends SubsystemBase {
     leftSecondary = new TalonSRX(LEFT_SECONDARY_PORT);
     rightPrimary = new TalonSRX(RIGHT_PRIMARY_PORT);
     rightSecondary = new TalonSRX(RIGHT_SECONDARY_PORT);
-    
+
     leftPrimary.configFactoryDefault();
     leftSecondary.configFactoryDefault();
     rightPrimary.configFactoryDefault();
@@ -52,19 +52,20 @@ public class DriveSubsystem extends SubsystemBase {
 
     leftSecondary.follow(leftPrimary);
     rightSecondary.follow(rightPrimary);
-    
-    //Sets the direction that the talon will turn on the green LED when going 'forward'.
+
+    // Sets the direction that the talon will turn on the green LED when going
+    // 'forward'.
     leftPrimary.setSensorPhase(true);
     rightPrimary.setSensorPhase(true);
 
-    //Current limits in amps
+    // Current limits in amps
     leftPrimary.configPeakCurrentLimit(60);
-		leftPrimary.configContinuousCurrentLimit(50);
-		leftPrimary.enableCurrentLimit(true);
-		
-		rightPrimary.configPeakCurrentLimit(60);
-		rightPrimary.configContinuousCurrentLimit(50);
-		rightPrimary.enableCurrentLimit(true);
+    leftPrimary.configContinuousCurrentLimit(50);
+    leftPrimary.enableCurrentLimit(true);
+
+    rightPrimary.configPeakCurrentLimit(60);
+    rightPrimary.configContinuousCurrentLimit(50);
+    rightPrimary.enableCurrentLimit(true);
   }
 
   public DriveSubsystem(TalonSRXConfiguration leftConfig, TalonSRXConfiguration rightConfig) {
@@ -78,6 +79,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Returns the current maximum drive speed in meters per second.
+   * 
    * @return Maximum drive speed in meters per second.
    */
   public double getMaxSpeed() {
@@ -86,23 +88,21 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Sets motor outputs using specified control mode
-   * @param mode a ControlMode enum
-   * @param leftOutputValue left side output value for ControlMode
+   * 
+   * @param mode             a ControlMode enum
+   * @param leftOutputValue  left side output value for ControlMode
    * @param rightOutputValue right side output value for ControlMode
    */
-  public void setOutput(ControlMode mode, double leftOutputValue, double rightOutputValue)
-  {
-    if(mode == ControlMode.Velocity && leftOutputValue > MAX_SPEED)
-    {
+  public void setOutput(ControlMode mode, double leftOutputValue, double rightOutputValue) {
+    if (mode == ControlMode.Velocity && leftOutputValue > MAX_SPEED) {
       leftOutputValue = MAX_SPEED;
     }
 
-    if(mode == ControlMode.Velocity && rightOutputValue > MAX_SPEED)
-    {
+    if (mode == ControlMode.Velocity && rightOutputValue > MAX_SPEED) {
       rightOutputValue = MAX_SPEED;
     }
 
-    //TODO: is check the current usage from Power Subsystem to restrict overcurrent
+    // TODO: is check the current usage from Power Subsystem to restrict overcurrent
     leftPrimary.set(mode, leftOutputValue);
     rightPrimary.set(mode, rightOutputValue);
   }

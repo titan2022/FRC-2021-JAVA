@@ -11,8 +11,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
-
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 // using WPILib's docs' example from:
@@ -21,18 +19,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class DriveSubsystem extends SubsystemBase {
 
   // port numbers to be added later
-  // add constants to file later
+  // TODO: add constants to file later
 
   private final static int LEFT_PRIMARY_PORT = 1;
   private final static int LEFT_SECONDARY_PORT = 2;
   private final static int RIGHT_PRIMARY_PORT = 3;
   private final static int RIGHT_SECONDARY_PORT = 4;
-  private final static int PDP_PORT = 5;
-  private final static double BROWNOUT_VOLTS = 9;
-  private final static double BLACKOUT_VOLTS = 1;
 
   private TalonSRX leftPrimary, leftSecondary, rightPrimary, rightSecondary;
-  private PowerDistributionPanel pdp;
 
   private boolean inverted;
   private double maxSpeed;
@@ -51,7 +45,7 @@ public class DriveSubsystem extends SubsystemBase {
     rightPrimary = new TalonSRX(RIGHT_PRIMARY_PORT);
     rightSecondary = new TalonSRX(RIGHT_SECONDARY_PORT);
 
-    pdp = new PowerDistributionPanel(PDP_PORT);
+    
 
     inverted = false;
     maxSpeed = 1;
@@ -214,38 +208,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     leftPrimary.set(ControlMode.PercentOutput, 0);
     rightPrimary.set(ControlMode.PercentOutput, 0);
-
-  }
-
-  // voltage methods (isBrowningOut * getVoltage from 2020)
-
-  /**
-   * Gets voltage of power distribution panel.
-   * @return Current voltage of PDP.
-   */
-  public double getVoltage() {
-
-    return pdp.getVoltage();
-
-  }
-
-  /**
-   * Checks if system is browning out.
-   * @return Whether system is browning out.
-   */
-  public boolean isBrowningOut() {
-
-    return (pdp.getVoltage() <= BROWNOUT_VOLTS);
-
-  }
-
-  /**
-   * Checks if system is blacking out.
-   * @return Whether system is blacking out.
-   */
-  public boolean isBlackingOut() {
-
-    return (pdp.getVoltage() <= BLACKOUT_VOLTS);
 
   }
 

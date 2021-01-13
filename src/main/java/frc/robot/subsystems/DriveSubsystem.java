@@ -35,7 +35,7 @@ public class DriveSubsystem extends SubsystemBase {
   private PowerDistributionPanel pdp;
 
   private boolean inverted;
-  private double driveSpeed;
+  private double maxSpeed;
 
   // encoders to be added in navigation?
 
@@ -54,7 +54,7 @@ public class DriveSubsystem extends SubsystemBase {
     pdp = new PowerDistributionPanel(PDP_PORT);
 
     inverted = false;
-    driveSpeed = 1;
+    maxSpeed = 1;
     
     leftSecondary.follow(leftPrimary);
     rightSecondary.follow(rightPrimary);
@@ -129,19 +129,19 @@ public class DriveSubsystem extends SubsystemBase {
    * Returns the current maximum drive speed as a percentage of output.
    * @return Maximum drive speed.
    */
-  public double getDriveSpeed() {
+  public double getMaxSpeed() {
 
-    return driveSpeed;
+    return maxSpeed;
 
   }
 
   /**
    * Sets the maximum drive speed as a percentage of output.
-   * @param driveSpeed - Maximum drive speed (percentage).
+   * @param maxSpeed - Maximum drive speed (percentage).
    */
-  public void setDriveSpeed(double driveSpeed) {
+  public void setmaxSpeed(double maxSpeed) {
 
-    this.driveSpeed = driveSpeed;
+    this.maxSpeed = maxSpeed;
 
   }
 
@@ -149,13 +149,13 @@ public class DriveSubsystem extends SubsystemBase {
    * Sets speed of a motor at a percentage of output.
    * @param inputSpeed - Input speed (percentage).
    * @param useLeft - Whether to use the left-side motor (disregarding inversion).
-   * @param controlled - Whether to control the input speed using driveSpeed.
+   * @param controlled - Whether to control the input speed using maxSpeed.
    */
   public void setMotorSpeed(double inputSpeed, boolean useLeft, boolean controlled) {
 
-    // if controlled, cap the input speed at driveSpeed (both percentages)
+    // if controlled, cap the input speed at maxSpeed (both percentages)
 
-    double speed = controlled ? (driveSpeed * inputSpeed) : inputSpeed;
+    double speed = controlled ? (maxSpeed * inputSpeed) : inputSpeed;
 
     // if ((not inverted and use right) or (inverted and use left)) set right speed
     // if ((inverted and use right) or (not inverted and use left)) set left speed
@@ -176,7 +176,7 @@ public class DriveSubsystem extends SubsystemBase {
    * Sets motor speeds using tank drive
    * @param leftInputSpeed - Input speed for left-side motor (percentage).
    * @param rightInputSpeed - Input speed for right-side motor (percentage).
-   * @param controlled - Whether to control the input speeds using driveSpeed.
+   * @param controlled - Whether to control the input speeds using maxSpeed.
    */
   public void tankDrive(double leftInputSpeed, double rightInputSpeed, boolean controlled) {
 

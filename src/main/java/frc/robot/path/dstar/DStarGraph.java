@@ -183,6 +183,24 @@ public class DStarGraph {
         return null;
     }
 
+    DStarNode getNode(Point position, Obstacle obstacle, boolean addIfMissing) {
+        if(addIfMissing)
+            addNode(position, obstacle);
+        NavigableMap<Point, DStarNode> obsSet = obstacleSets.get(obstacle);
+        if(position.equals(obsSet.floorKey(position)))
+            return obsSet.floorEntry(position).getValue();
+        else if(position.equals(obsSet.ceilingKey(position)))
+            return obsSet.ceilingEntry(position).getValue();
+        else
+            return null;
+    }
+    DStarNode getNode(Point position, Obstacle obstacle) {
+        return getNode(position, obstacle, true);
+    }
+    DStarNode getNode(Point position) {
+        return getNode(position, findNode(position), false);
+    }
+
     void addEdge(Obstacle a, Obstacle b, Path edge) {
         addNode(edge.getStart(), a);
         addNode(edge.getEnd(), b);

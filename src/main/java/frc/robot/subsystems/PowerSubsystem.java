@@ -52,9 +52,17 @@ public class PowerSubsystem extends SubsystemBase {
    * 
    * @return Whether system is browning out.
    */
-  public boolean isBrowningOut() {
+  public PowerErrorCode isBrowningOut() {
 
-    return (pdp.getVoltage() <= BROWNOUT_VOLTS);
+    if (pdp.getVoltage() <= BROWNOUT_VOLTS) {
+
+      return PowerErrorCode.BROWNOUT;
+
+    } else {
+
+      return PowerErrorCode.NO_ERROR;
+      
+    }
 
   }
 
@@ -63,9 +71,17 @@ public class PowerSubsystem extends SubsystemBase {
    * 
    * @return Whether system is blacking out.
    */
-  public boolean isBlackingOut() {
+  public PowerErrorCode isBlackingOut() {
 
-    return (pdp.getVoltage() <= BLACKOUT_VOLTS);
+    if (pdp.getVoltage() <= BLACKOUT_VOLTS) {
+
+      return PowerErrorCode.BLACKOUT;
+
+    } else {
+
+      return PowerErrorCode.NO_ERROR;
+      
+    }
 
   }
 
@@ -100,9 +116,17 @@ public class PowerSubsystem extends SubsystemBase {
    * @param channel - Channel for motor/device.
    * @return Whether current is greater than specified maximum current.
    */
-  public boolean checkCurrent(int channel) {
+  public PowerErrorCode checkCurrent(int channel) {
 
-    return (getCurrent(channel) > maxCurrentArray[channel]);
+    if (getCurrent(channel) > maxCurrentArray[channel]) {
+
+      return PowerErrorCode.CHANNEL_OVERCURRENT;
+      
+    } else {
+
+      return PowerErrorCode.NO_ERROR;
+
+    }
 
   }
 

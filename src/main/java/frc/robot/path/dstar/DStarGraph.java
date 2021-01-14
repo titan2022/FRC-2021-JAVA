@@ -58,8 +58,7 @@ public class DStarGraph {
         for(Obstacle obs : map.getObstacles()){
             for(Point endpoint : obs.getEndpoints(start, radius)){
                 if(map.isClear(new LinearSegment(start, endpoint), radius, obs)){
-                    addNode(endpoint, obs);
-                    DStarNode vertex = obstacleSets.get(obs).get(endpoint);  // TODO: change to getNode
+                    DStarNode vertex = getNode(endpoint, obs, true);
                     start.connect(vertex, new LinearSegment(position, endpoint));
                     vertex.connect(start, new LinearSegment(endpoint, position));
                 }
@@ -146,7 +145,7 @@ public class DStarGraph {
 
     public void dropNode(Point position, Obstacle obstacle) {
         NavigableMap<Point, DStarNode> obsSet = obstacleSets.get(obstacle);
-        DStarNode node = obsSet.get(position);  // TODO: change to getNode
+        DStarNode node = getNode(position, obstacle, false);  // TODO: add check for null value
         node.sever();
         obsSet.remove(position);
         DStarNode prev, next;
@@ -202,10 +201,8 @@ public class DStarGraph {
     }
 
     void addEdge(Obstacle a, Obstacle b, Path edge) {
-        addNode(edge.getStart(), a);
-        addNode(edge.getEnd(), b);
-        DStarNode beg = obstacleSets.get(a).get(edge.getStart());  // TODO: change to getNode
-        DStarNode end = obstacleSets.get(b).get(edge.getEnd());  // TODO: change to getNode
+        DStarNode beg = getNode(edge.getStart(), a, true);
+        DStarNode end = getNode(edge.getEnd(), b, true);
         beg.connect(end, edge);
         end.connect(beg, edge.reverse());
     }
@@ -233,16 +230,14 @@ public class DStarGraph {
         // Connect to start and goal
         for(Point endpoint : obstacle.getEndpoints(start, radius)){
             if(map.isClear(new LinearSegment(start, endpoint), radius, obstacle)){
-                addNode(endpoint, obstacle);
-                start.connect(obstacleSets.get(obstacle).get(endpoint), new LinearSegment(start, endpoint));  // TODO: change to getNode
-                obstacleSets.get(obstacle).get(endpoint).connect(start, new LinearSegment(endpoint, start));  // TODO: change to getNode
+                start.connect(getNode(endpoint, obstacle, true), new LinearSegment(start, endpoint));
+                getNode(endpoint, obstacle).connect(start, new LinearSegment(endpoint, start));
             }
         }
         for(Point endpoint : obstacle.getEndpoints(goal, radius)){
             if(map.isClear(new LinearSegment(goal, endpoint), radius, obstacle)){
-                addNode(endpoint, obstacle);
-                goal.connect(obstacleSets.get(obstacle).get(endpoint), new LinearSegment(goal, endpoint));  // TODO: change to getNode
-                obstacleSets.get(obstacle).get(endpoint).connect(goal, new LinearSegment(endpoint, goal));  // TODO: change to getNode
+                goal.connect(getNode(endpoint, obstacle, true), new LinearSegment(goal, endpoint));
+                getNode(endpoint, obstacle).connect(goal, new LinearSegment(endpoint, goal));
             }
         }
     }
@@ -260,16 +255,14 @@ public class DStarGraph {
             }
             for(Point endpoint : a.getEndpoints(start, radius)){
                 if(map.isClear(new LinearSegment(start, endpoint), radius, a)){
-                    addNode(endpoint, a);
-                    start.connect(obstacleSets.get(a).get(endpoint), new LinearSegment(start, endpoint));  // TODO: change to getNode
-                    obstacleSets.get(a).get(endpoint).connect(start, new LinearSegment(endpoint, start));  // TODO: change to getNode
+                    start.connect(getNode(endpoint, a, true), new LinearSegment(start, endpoint));
+                    getNode(endpoint, a).connect(start, new LinearSegment(endpoint, start));
                 }
             }
             for(Point endpoint : a.getEndpoints(goal, radius)){
                 if(map.isClear(new LinearSegment(goal, endpoint), radius, a)){
-                    addNode(endpoint, a);
-                    goal.connect(obstacleSets.get(a).get(endpoint), new LinearSegment(goal, endpoint));  // TODO: change to getNode
-                    obstacleSets.get(a).get(endpoint).connect(goal, new LinearSegment(endpoint, goal));  // TODO: change to getNode
+                    goal.connect(getNode(endpoint, a, true), new LinearSegment(goal, endpoint));
+                    getNode(endpoint, a).connect(goal, new LinearSegment(endpoint, goal));
                 }
             }
         }

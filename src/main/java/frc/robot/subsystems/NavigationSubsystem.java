@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 
+
 public class NavigationSubsystem extends SubsystemBase {
 
   public static final double METERS_PER_TICK = 0.1;
@@ -38,6 +39,12 @@ public class NavigationSubsystem extends SubsystemBase {
 
   // gyro methods, copied from 2020
 
+  public AHRS getGyro() {
+
+    return gyro;
+
+  }
+  
   public double getAngle() {
 
     return gyro.getAngle();
@@ -90,6 +97,18 @@ public class NavigationSubsystem extends SubsystemBase {
       return rightPrimary.getSelectedSensorVelocity(0) * METERS_PER_TICK;
 
     }
+
+  }
+
+  public DifferentialDriveOdometry getOdometry() {
+
+    return odometry;
+
+  }
+
+  public void updateOdometry() {
+
+    odometry.update(Rotation2d.fromDegrees(getHeading()), getEncoderDist(true), getEncoderDist(false));
 
   }
 

@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class DriveSubsystem extends SubsystemBase {
 
   // port numbers to be added later
-  public static final double ROBOT_WIDTH = 42; // meter //TODO: Ask DI team for distance between wheels
+  public static final double ROBOT_DIAMETER = 42; // meter //TODO: Ask DI team for distance between wheels
   public static final double WHEEL_RADIUS = 3; // meters// TODO: Ask DI team for correct wheel radius
 
   // TODO: add constants to file later

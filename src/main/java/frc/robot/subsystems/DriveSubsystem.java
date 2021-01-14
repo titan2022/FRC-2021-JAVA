@@ -16,10 +16,10 @@ public class DriveSubsystem extends SubsystemBase {
   public static final double WHEEL_RADIUS = 3; // meters// TODO: Ask DI team for correct wheel radius
 
   // TODO: add constants to file later
-  private static final int LEFT_PRIMARY_PORT = 1;
-  private static final int LEFT_SECONDARY_PORT = 2;
-  private static final int RIGHT_PRIMARY_PORT = 3;
-  private static final int RIGHT_SECONDARY_PORT = 4;
+  public static final int LEFT_PRIMARY_PORT = 1;
+  public static final int LEFT_SECONDARY_PORT = 2;
+  public static final int RIGHT_PRIMARY_PORT = 3;
+  public static final int RIGHT_SECONDARY_PORT = 4;
 
   private TalonSRX leftPrimary, leftSecondary, rightPrimary, rightSecondary;
 

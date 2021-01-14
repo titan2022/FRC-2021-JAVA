@@ -89,4 +89,11 @@ public class Point extends Translation2d {
   public String toString() {
     return String.format("Point(%.2f, %.2f)", getX(), getY());
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if(o instanceof Translation2d)
+      return getDistance((Translation2d) o) < 0.00001;
+    return super.equals(o);
+  }
 }

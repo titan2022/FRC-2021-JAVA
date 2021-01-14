@@ -2,7 +2,8 @@ package frc.robot.path.dstar;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
-import frc.wpilibjTemp.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.mapping.Point;
 import frc.robot.mapping.Polygon;
@@ -28,6 +29,7 @@ public class DStarDemoCommand extends CommandBase {
 
   public void initialize() {
     robot = new Field2d();
+    SmartDashboard.putData("Field", robot);
     ObstacleMap map = new ObstacleMap();
     planner = new DStarGraph(map, new Node(0, 0), new Node(6, 8), radius);
     map.addObstacle(new Polygon(new Point(-10, 1), new Point(2, 1), new Point(1, 2)));

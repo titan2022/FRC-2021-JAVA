@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 
 public class NavigationSubsystem extends SubsystemBase {
 
-  private static final double METERS_PER_TICK = 0.1;
+  public static final double METERS_PER_TICK = 0.1;
   
   private AHRS gyro;
   private DifferentialDriveOdometry odometry;
@@ -27,12 +27,12 @@ public class NavigationSubsystem extends SubsystemBase {
   /**
    * Creates a new NavigationSubsystem.
    */
-  public NavigationSubsystem(TalonSRX leftPrimary, TalonSRX rightPrimary) {
+  public NavigationSubsystem() {
 
     gyro = new AHRS(SPI.Port.kMXP);
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
-    this.leftPrimary = leftPrimary;
-    this.rightPrimary = rightPrimary;
+    leftPrimary = new TalonSRX(DriveSubsystem.LEFT_PRIMARY_PORT);
+    rightPrimary = new TalonSRX(DriveSubsystem.RIGHT_PRIMARY_PORT);
 
   }
 
@@ -53,6 +53,43 @@ public class NavigationSubsystem extends SubsystemBase {
   public void resetGyro() {
 
     gyro.reset();
+
+  }
+
+  // odometry methods
+
+  public double getEncoderCount(boolean useLeft) {
+
+    if (useLeft) {
+
+      return leftPrimary.getSelectedSensorPosition(0);
+    
+    } else {
+
+      return rightPrimary.getSelectedSensorPosition(0);
+
+    }
+
+  }
+
+  public double getEncoderDist(boolean useLeft) {
+
+    return getEncoderCount(useLeft) * METERS_PER_TICK;
+
+  }
+  
+
+  public double getEncoderVelocity(boolean useLeft) {
+
+    if (useLeft) {
+
+      return leftPrimary.getSelectedSensorVelocity(0) * METERS_PER_TICK;
+    
+    } else {
+
+      return rightPrimary.getSelectedSensorVelocity(0) * METERS_PER_TICK;
+
+    }
 
   }
 

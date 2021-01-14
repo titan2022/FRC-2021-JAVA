@@ -13,10 +13,11 @@ import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+
 import frc.robot.motion.generation.rmpflow.*;
-import frc.wpilibjTemp.Field2d;;
 
 public class RMPDemoCommand extends CommandBase {
   private Timer timer;
@@ -83,6 +84,7 @@ public class RMPDemoCommand extends CommandBase {
     SmartDashboard.putNumber("X Pos", field.getRobotPose().getTranslation().getX());
     SmartDashboard.putNumber("Y Pos", field.getRobotPose().getTranslation().getY());
     SmartDashboard.putNumber("theta Pos", field.getRobotPose().getRotation().getDegrees());
+    SmartDashboard.putData("Field", field);
     previousTime = timer.get();
   }
 

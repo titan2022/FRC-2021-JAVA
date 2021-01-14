@@ -9,11 +9,50 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+
 public class NavigationSubsystem extends SubsystemBase {
+
+  private static final double METERS_PER_TICK = 0.1;
+  
+  private AHRS gyro;
+  private DifferentialDriveOdometry odometry;
+  private TalonSRX leftPrimary, rightPrimary;
+
+  
   /**
    * Creates a new NavigationSubsystem.
    */
-  public NavigationSubsystem() {
+  public NavigationSubsystem(TalonSRX leftPrimary, TalonSRX rightPrimary) {
+
+    gyro = new AHRS(SPI.Port.kMXP);
+    odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
+    this.leftPrimary = leftPrimary;
+    this.rightPrimary = rightPrimary;
+
+  }
+
+  // gyro methods, copied from 2020
+
+  public double getAngle() {
+
+    return gyro.getAngle();
+
+  }
+
+  public double getHeading() {
+
+    return -Math.IEEEremainder(getAngle(), 360);
+
+  }
+
+  public void resetGyro() {
+
+    gyro.reset();
 
   }
 

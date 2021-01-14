@@ -16,15 +16,21 @@ public class XboxMap {
     //Driving Controls 
 	public static double left() {
 		return controller.getY(Hand.kLeft);
-	}
+    }
+    
 	public static double right() {
 		return controller.getY(Hand.kRight);
+    }
+
+    public static boolean toggleBrakes() {
+        return controller.getBumperPressed(Hand.kRight);
     }
     
     public static void startRumble(){
 		controller.setRumble(RumbleType.kLeftRumble, RUMBLE_INTENSITY);
 		controller.setRumble(RumbleType.kRightRumble, RUMBLE_INTENSITY);
-	}
+    }
+    
 	public static void stopRumble(){
 		controller.setRumble(RumbleType.kLeftRumble, 0);
 		controller.setRumble(RumbleType.kRightRumble, 0);

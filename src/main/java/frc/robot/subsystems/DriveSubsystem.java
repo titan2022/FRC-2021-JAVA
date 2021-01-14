@@ -6,27 +6,26 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-// using WPILib's docs' example from:
-// https://docs.wpilib.org/en/stable/docs/software/examples-tutorials/trajectory-tutorial/creating-drive-subsystem.html
-
 /**
  * Differential Drive Subsystem
  */
 public class DriveSubsystem extends SubsystemBase {
 
   // port numbers to be added later
-  // TODO: add constants to file later
+  public static final double ROBOT_WIDTH = 42; // meter //TODO: Ask DI team for distance between wheels
+  public static final double WHEEL_RADIUS = 3; // meters// TODO: Ask DI team for correct wheel radius
 
-  private final static int LEFT_PRIMARY_PORT = 1;
-  private final static int LEFT_SECONDARY_PORT = 2;
-  private final static int RIGHT_PRIMARY_PORT = 3;
-  private final static int RIGHT_SECONDARY_PORT = 4;
+  // TODO: add constants to file later
+  private static final int LEFT_PRIMARY_PORT = 1;
+  private static final int LEFT_SECONDARY_PORT = 2;
+  private static final int RIGHT_PRIMARY_PORT = 3;
+  private static final int RIGHT_SECONDARY_PORT = 4;
 
   private TalonSRX leftPrimary, leftSecondary, rightPrimary, rightSecondary;
 
   private final static double MAX_SPEED = 10; // meters/sec
 
-  // TODO: add encoders?
+  // TODO: add encoders
 
   /**
    * Creates a new DriveSubsystem.
@@ -53,8 +52,7 @@ public class DriveSubsystem extends SubsystemBase {
     leftSecondary.follow(leftPrimary);
     rightSecondary.follow(rightPrimary);
 
-    // Sets the direction that the talon will turn on the green LED when going
-    // 'forward'.
+    // Sets the direction that the talon will turn on the green LED when going 'forward'.
     leftPrimary.setSensorPhase(true);
     rightPrimary.setSensorPhase(true);
 

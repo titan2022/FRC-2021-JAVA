@@ -171,55 +171,117 @@ public class Polygon implements Obstacle {
 
   @Override
   public Path edgePath(Point a, Point b, double radius) {
-    Point end = null, curr = null;  // end point; end of accumulated path
-    List<Path> segments = new ArrayList<>();  // accumulated path
+    List<Path> suffix = new ArrayList<>();
+    List<Path> prefix = new ArrayList<>();
+    List<Path> complete = new ArrayList<>();  // accumulated path
+    List<Path> running = suffix;
     Rotation2d theta = new Rotation2d(-Math.PI/2);
-    int i = -1, ctr = 0;
-    while(ctr < verts.length){
-      Point vertex = verts[(++i)%verts.length];
-      Point vNext = verts[(i+1)%verts.length];
+    Point seeking = null;
+    Point alpha, beta;
+    for(int i=0; i<verts.length; i++){
+      Point vertex = verts[i];
+      Point vNext = verts[i+1 == verts.length ? 0 : i+1];
       Point offset = new Point(radius, vNext.minus(vertex).getAngle().plus(theta));
-      Point alpha = vertex.plus(offset);
-      Point beta = vNext.plus(offset);
-      if(curr == null && vertex.getDistance(a) == radius){
-        end = b;
-        curr = a;
-        ctr = 0;
+      
+      // Linear case
+      alpha = vertex.plus(offset);
+      beta = vNext.plus(offset);
+      boolean aPres = Point.getAngle(vNext, vertex, a).getCos() == 1;
+      boolean bPres = Point.getAngle(vNext, vertex, b).getCos() == 1;
+      if(aPres && bPres){
+        return new LinearSegment(a, b);
       }
-      else if(curr == null && vertex.getDistance(b) == radius){
-        end = a;
-        curr = b;
-        ctr = 0;
-      }
-      if(curr != null){
-        if(vertex.getDistance(end) == radius){
-          segments.add(new CircularArc(curr, vertex, end));
-          break;
+      if(seeking == null){
+        if(aPres){
+          suffix.add(new LinearSegment(alpha, a));
+          running = complete;
+          alpha = a;
+          seeking = b;
         }
-        segments.add(new CircularArc(curr, vertex, alpha));
-        curr = alpha;
-      }
-      if(curr == null && Point.getAngle(vNext, vertex, a).getCos() == 1){
-        end = b;
-        curr = a;
-        ctr = 0;
-      }
-      else if(curr == null && Point.getAngle(vNext, vertex, b).getCos() == 1){
-        end = a;
-        curr = b;
-        ctr = 0;
-      }
-      if(curr != null){
-        if(Point.getAngle(vNext, vertex, end).getCos() == 1){
-          segments.add(new LinearSegment(curr, end));
-          break;
+        else if(bPres){
+          suffix.add(new LinearSegment(alpha, a));
+          running = complete;
+          alpha = a;
+          seeking = b;
         }
-        segments.add(new LinearSegment(curr, beta));
-        curr = beta;
       }
-      ctr++;
+      if(seeking == b && bPres){
+        running.add(new LinearSegment(alpha, b));
+        running = prefix;
+        alpha = b;
+        seeking = a;
+      }
+      if(seeking == a && aPres){
+        running.add(new LinearSegment(alpha, a));
+        running = prefix;
+        alpha = a;
+        seeking = b;
+      }
+      if(seeking != null){
+        running.add(new LinearSegment(alpha, beta));
+      }
+      else{
+        suffix.add(new LinearSegment(alpha, beta));
+      }
+
+      // Circular Case
+      Point vNextNext = verts[i+2 >= verts.length ? i+2-verts.length : i+2];
+      alpha = beta;
+      beta = new Point(radius, beta.minus(vNext).getAngle().plus(
+        new Rotation2d(Math.PI).minus(Point.getAngle(vNextNext, vNext, vertex))
+      )).plus(vNext);
+      //aPres = vNext.getDistance(a) <= radius + 0.001;
+      //bPres = vNext.getDistance(b) <= radius + 0.001;
+      aPres = Point.getAngle(alpha, vNext, a).getSin() > 0 && Point.getAngle(a, vNext, beta).getSin() > 0;
+      bPres = Point.getAngle(alpha, vNext, b).getSin() > 0 && Point.getAngle(b, vNext, beta).getSin() > 0;
+      if(aPres && bPres){
+        return new CircularArc(a, vNext, b);
+      }
+      if(seeking == null){
+        if(aPres){
+          suffix.add(new CircularArc(alpha, vNext, a));
+          running = complete;
+          alpha = a;
+          seeking = b;
+        }
+        else if(bPres){
+          suffix.add(new CircularArc(alpha, vNext, b));
+          running = complete;
+          alpha = b;
+          seeking = a;
+        }
+      }
+      if(seeking == b && bPres){
+        running.add(new CircularArc(alpha, vNext, b));
+        running = prefix;
+        alpha = b;
+        seeking = a;
+      }
+      if(seeking == a && aPres){
+        running.add(new CircularArc(alpha, vNext, a));
+        running = prefix;
+        alpha = a;
+        seeking = b;
+      }
+      if(seeking != null){
+        running.add(new CircularArc(alpha, vNext, beta));
+      }
+      else{
+        suffix.add(new CircularArc(alpha, vNext, beta));
+      }
     }
-    return new CompoundPath(segments.toArray(new Path[0]));
+    double fullSum = 0, splitSum = 0;
+    for(Path path : complete)
+      fullSum += path.getLength();
+    for(Path path : prefix)
+      splitSum += path.getLength();
+    for(Path path : suffix)
+      splitSum += path.getLength();
+    if(splitSum < fullSum){
+      prefix.addAll(suffix);
+      return new CompoundPath(prefix.toArray(new Path[0]));
+    }
+    return new CompoundPath(complete.toArray(new Path[0]));
   }
 
   public Path getBoundary(double radius) {

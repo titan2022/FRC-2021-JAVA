@@ -14,6 +14,7 @@ public class DriveSubsystem extends SubsystemBase {
   // port numbers to be added later
   public static final double ROBOT_DIAMETER = 42; // meter //TODO: Ask DI team for distance between wheels
   public static final double WHEEL_RADIUS = 3; // meters// TODO: Ask DI team for correct wheel radius
+  public static final double METERS_PER_TICK = 0.1;
 
   // TODO: add constants to file later
   public static final int LEFT_PRIMARY_PORT = 1;
@@ -127,6 +128,57 @@ public class DriveSubsystem extends SubsystemBase {
   public void stop() {
     leftPrimary.set(ControlMode.PercentOutput, 0);
     rightPrimary.set(ControlMode.PercentOutput, 0);
+  }
+
+  // encoder methods
+
+  /**
+   * Gets the encoder count for a primary motor.
+   * @param useLeft - Whether to use the left primary motor.
+   * @return Encoder count for specified primary motor.
+   */
+  public double getEncoderCount(boolean useLeft) {
+
+    if (useLeft) {
+
+      return leftPrimary.getSelectedSensorPosition(0);
+    
+    } else {
+
+      return rightPrimary.getSelectedSensorPosition(0);
+
+    }
+
+  }
+
+  /**
+   * Gets the distance from a primary motor.
+   * @param useLeft - Whether to use the left primary motor.
+   * @return Distance from specified primary motor.
+   */
+  public double getEncoderDist(boolean useLeft) {
+
+    return getEncoderCount(useLeft) * METERS_PER_TICK;
+
+  }
+  
+  /**
+   * Gets current velocity of a primary motor.
+   * @param useLeft - Whether to use the left primary motor.
+   * @return Current velocity of a specified primary motor.
+   */
+  public double getEncoderVelocity(boolean useLeft) {
+
+    if (useLeft) {
+
+      return leftPrimary.getSelectedSensorVelocity(0) * METERS_PER_TICK;
+    
+    } else {
+
+      return rightPrimary.getSelectedSensorVelocity(0) * METERS_PER_TICK;
+
+    }
+
   }
 
   @Override

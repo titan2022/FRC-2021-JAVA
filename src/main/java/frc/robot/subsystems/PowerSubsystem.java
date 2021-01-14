@@ -20,6 +20,7 @@ public class PowerSubsystem extends SubsystemBase {
 
   private final static double BROWNOUT_VOLTS = 9;
   private final static double BLACKOUT_VOLTS = 1;
+  private final static double OVERCURRENT_AMPS = 100;
 
   private double[] maxCurrentArray;
 
@@ -116,12 +117,90 @@ public class PowerSubsystem extends SubsystemBase {
    * @param channel - Channel for motor/device.
    * @return Whether current is greater than specified maximum current.
    */
-  public PowerErrorCode checkCurrent(int channel) {
+  public PowerErrorCode checkChannelCurrent(int channel) {
 
     if (getCurrent(channel) > maxCurrentArray[channel]) {
 
       return PowerErrorCode.CHANNEL_OVERCURRENT;
       
+    } else {
+
+      return PowerErrorCode.NO_ERROR;
+
+    }
+
+  }
+
+  /**
+   * Checks if any channel's current exceeds its specified maximum current.
+   * @return Whether any channel's current is greater than its specified maximum current.
+   */
+  public PowerErrorCode checkAllChannelsCurrent() {
+
+    for (int i = 0; i < maxCurrentArray.length; i++) {
+
+      if (checkChannelCurrent(i) == PowerErrorCode.CHANNEL_OVERCURRENT) {
+
+        return PowerErrorCode.CHANNEL_OVERCURRENT;
+
+      }
+
+    }
+
+    return PowerErrorCode.NO_ERROR;
+
+  }
+
+  /**
+   * Gets the system's total current.
+   * @return Total current.
+   */
+  public double getSystemCurrent() {
+
+    return pdp.getTotalCurrent();
+
+  }
+
+  /**
+   * Checks if system's current exceeds its specified maximum current.
+   * @return Whether system's current is greater than its specified maximum current.
+   */
+  public PowerErrorCode checkSystemCurrent() {
+
+    if (getSystemCurrent() > OVERCURRENT_AMPS) {
+
+      return PowerErrorCode.SYSTEM_OVERCURRENT;
+      
+    } else {
+
+      return PowerErrorCode.NO_ERROR;
+
+    }
+
+  }
+
+  /**
+   * Checks if any PowerErrorCodes will be thrown by the power subsystem.
+   * @return Most pressing PowerErrorCode from subsystem.
+   */
+  public PowerErrorCode checkStatus() {
+
+    if (isBlackingOut() == PowerErrorCode.BLACKOUT) {
+
+      return PowerErrorCode.BLACKOUT;
+
+    } else if (isBrowningOut() == PowerErrorCode.BROWNOUT) {
+
+      return PowerErrorCode.BROWNOUT;
+
+    } else if (checkSystemCurrent() == PowerErrorCode.SYSTEM_OVERCURRENT) {
+
+      return PowerErrorCode.SYSTEM_OVERCURRENT;
+
+    } else if (checkAllChannelsCurrent() == PowerErrorCode.CHANNEL_OVERCURRENT) {
+
+      return PowerErrorCode.CHANNEL_OVERCURRENT;
+
     } else {
 
       return PowerErrorCode.NO_ERROR;

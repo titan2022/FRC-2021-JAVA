@@ -15,8 +15,12 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 
-
+/**
+ * Navigation Subsystem using Differential Drive Odometry and Gyro
+ */
 public class NavigationSubsystem extends SubsystemBase {
+
+  // ALL ODOMETRY DONE IN METERS, not imperial
 
   public static final double METERS_PER_TICK = 0.1;
   
@@ -24,7 +28,6 @@ public class NavigationSubsystem extends SubsystemBase {
   private DifferentialDriveOdometry odometry;
   private TalonSRX leftPrimary, rightPrimary;
 
-  
   /**
    * Creates a new NavigationSubsystem.
    */
@@ -39,32 +42,61 @@ public class NavigationSubsystem extends SubsystemBase {
 
   // gyro methods, copied from 2020
 
+  /**
+   * Gets the AHRS gyro in its current state.
+   * @return Gyro.
+   */
   public AHRS getGyro() {
 
     return gyro;
 
   }
   
+  /**
+   * Gets angle computed by AHRS gyro.
+   * @return Angle (degrees).
+   */
   public double getAngle() {
 
     return gyro.getAngle();
 
   }
 
+  /**
+   * Gets heading computed by AHRS gyro.
+   * @return Heading (degrees).
+   */
   public double getHeading() {
 
     return -Math.IEEEremainder(getAngle(), 360);
 
   }
 
+  /**
+   * Resets AHRS gyro.
+   */
   public void resetGyro() {
 
     gyro.reset();
 
   }
 
-  // odometry methods
+  /**
+   * Calibrates AHRS gyro.
+   */
+  public void calibrateGyro() {
 
+    gyro.calibrate();
+
+  }
+
+  // encoder methods
+
+  /**
+   * Gets the encoder count for a primary motor.
+   * @param useLeft - Whether to use the left primary motor.
+   * @return Encoder count for specified primary motor.
+   */
   public double getEncoderCount(boolean useLeft) {
 
     if (useLeft) {
@@ -79,13 +111,22 @@ public class NavigationSubsystem extends SubsystemBase {
 
   }
 
+  /**
+   * Gets the distance from a primary motor.
+   * @param useLeft - Whether to use the left primary motor.
+   * @return Distance from specified primary motor.
+   */
   public double getEncoderDist(boolean useLeft) {
 
     return getEncoderCount(useLeft) * METERS_PER_TICK;
 
   }
   
-
+  /**
+   * Gets current velocity of a primary motor.
+   * @param useLeft - Whether to use the left primary motor.
+   * @return Current velocity of a specified primary motor.
+   */
   public double getEncoderVelocity(boolean useLeft) {
 
     if (useLeft) {
@@ -100,12 +141,21 @@ public class NavigationSubsystem extends SubsystemBase {
 
   }
 
+  // odometry methods
+
+  /**
+   * Gets current DifferentialDriveOdometry.
+   * @return Differential drive odometry.
+   */
   public DifferentialDriveOdometry getOdometry() {
 
     return odometry;
 
   }
 
+  /**
+   * Updates differential drive odometry.
+   */
   public void updateOdometry() {
 
     odometry.update(Rotation2d.fromDegrees(getHeading()), getEncoderDist(true), getEncoderDist(false));

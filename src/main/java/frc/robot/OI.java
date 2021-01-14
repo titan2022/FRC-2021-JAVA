@@ -2,12 +2,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-/** Add your docs here. */
+/**
+ * Hardware for human interface
+ */
 public class OI {
-    public enum JoystickButtons { a, b1 }; //TODO: Add how many buttons there are
-
     public XboxController ps4;//, xbox;
     private static final int PS4_PORT = 1;
 

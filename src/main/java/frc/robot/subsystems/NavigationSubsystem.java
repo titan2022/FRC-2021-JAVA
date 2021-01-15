@@ -7,16 +7,16 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.motioncontrol.CustomKalmanFilter;
 import com.kauailabs.navx.frc.AHRS;
-
 import org.ejml.simple.SimpleMatrix;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.estimator.KalmanFilter;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import frc.robot.motioncontrol.CustomKalmanFilter;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * Navigation Subsystem using Differential Drive Odometry and Gyro
@@ -32,6 +32,8 @@ public class NavigationSubsystem extends SubsystemBase {
   private DifferentialDriveOdometry odometry;
   private DriveSubsystem drive;
   private CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc]
+  private Timer timer;
+  private double t;
 
   /**
    * Creates a new NavigationSubsystem.
@@ -49,6 +51,9 @@ public class NavigationSubsystem extends SubsystemBase {
         SimpleMatrix.identity(6).scale(Math.pow(MEAS_STD_DEV, 2)), updateA(),
         new SimpleMatrix(new double[][] { { 0, 0 }, { 1, 0 }, { 0, 0 }, { 0, 0 }, { 0, 1 }, { 0, 0 } }),
         SimpleMatrix.identity(6));
+
+    timer = new Timer();
+    timer.start();
 
   }
 
@@ -127,6 +132,36 @@ public class NavigationSubsystem extends SubsystemBase {
 
   }
 
+  // filter methods
+
+  /**
+   * Gets filterable vector motion measurement from odometry.
+   * @return Odometry vector measurement.
+   */
+  private SimpleMatrix getOdometryMeas() {
+
+    return new SimpleMatrix(new double[][] { { odometry.getPoseMeters().getX() }, { 0 }, { 0 },
+        { odometry.getPoseMeters().getY() }, { 0 }, { 0 } });
+
+  }
+
+  /**
+   * Gets filterable vector motion measurement from gyro.
+   * @return Gyro vector measurement.
+   */
+  private SimpleMatrix getGyroMeas() {
+
+    return new SimpleMatrix(
+        new double[][] { { gyro.getDisplacementX() }, { gyro.getVelocityX() }, { gyro.getWorldLinearAccelX() },
+            { gyro.getDisplacementZ() }, { gyro.getVelocityZ() }, { gyro.getWorldLinearAccelZ() } });
+
+  }
+
+  /**
+   * Updates A matrix for specific time.
+   * 
+   * @return Updated A matrix.
+   */
   private SimpleMatrix updateA() {
 
     return new SimpleMatrix(new double[][] { { 1, t, Math.pow(t, 2) / 2, 0, 0, 0 }, { 0, 1, t, 0, 0, 0 },
@@ -134,8 +169,31 @@ public class NavigationSubsystem extends SubsystemBase {
 
   }
 
+  /**
+   * Updates A matrix, and runs an iteration of the Kalman filter.
+   * 
+   * @param input - Control input from user.
+   * @param meas - Measurement from sensor.
+   */
+  private void doKalmanFilter(SimpleMatrix input, SimpleMatrix meas) {
+
+    t = timer.get();
+
+    filter.setA(updateA());
+    filter.runFilter(input, meas);
+
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    odometry.update(Rotation2d.fromDegrees(getHeading()), drive.getEncoderDist(true), drive.getEncoderDist(false));
+    doKalmanFilter(getOdometryMeas(), new SimpleMatrix(2, 1));
+    doKalmanFilter(getGyroMeas(), new SimpleMatrix(2, 1));
+    timer.reset();
+    
   }
+
+
 }

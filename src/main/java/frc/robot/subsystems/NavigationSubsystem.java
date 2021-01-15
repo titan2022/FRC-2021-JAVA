@@ -14,7 +14,6 @@ import org.ejml.simple.SimpleMatrix;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.estimator.KalmanFilter;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -33,7 +32,6 @@ public class NavigationSubsystem extends SubsystemBase {
   private DriveSubsystem drive;
   private CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc]
   private Timer timer;
-  private double t;
 
   /**
    * Creates a new NavigationSubsystem.
@@ -42,17 +40,17 @@ public class NavigationSubsystem extends SubsystemBase {
    */
   public NavigationSubsystem(DriveSubsystem drive) {
 
+    timer = new Timer();
     gyro = new AHRS(SPI.Port.kMXP);
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
     this.drive = drive;
 
     filter = new CustomKalmanFilter(new SimpleMatrix(6, 1), SimpleMatrix.identity(6),
         SimpleMatrix.identity(6).scale(Math.pow(STATE_STD_DEV, 2)),
-        SimpleMatrix.identity(6).scale(Math.pow(MEAS_STD_DEV, 2)), updateA(),
+        SimpleMatrix.identity(6).scale(Math.pow(MEAS_STD_DEV, 2)), updateA(0),
         new SimpleMatrix(new double[][] { { 0, 0 }, { 1, 0 }, { 0, 0 }, { 0, 0 }, { 0, 1 }, { 0, 0 } }),
         SimpleMatrix.identity(6));
 
-    timer = new Timer();
     timer.start();
 
   }
@@ -160,27 +158,13 @@ public class NavigationSubsystem extends SubsystemBase {
   /**
    * Updates A matrix for specific time.
    * 
+   * @param t - Time between filter runs.
    * @return Updated A matrix.
    */
-  private SimpleMatrix updateA() {
+  private SimpleMatrix updateA(double t) {
 
     return new SimpleMatrix(new double[][] { { 1, t, Math.pow(t, 2) / 2, 0, 0, 0 }, { 0, 1, t, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 1, t, Math.pow(t, 2) / 2 }, { 0, 0, 0, 0, 1, t }, { 0, 0, 0, 0, 0, 0 } });
-
-  }
-
-  /**
-   * Updates A matrix, and runs an iteration of the Kalman filter.
-   * 
-   * @param input - Control input from user.
-   * @param meas - Measurement from sensor.
-   */
-  private void doKalmanFilter(SimpleMatrix input, SimpleMatrix meas) {
-
-    t = timer.get();
-
-    filter.setA(updateA());
-    filter.runFilter(input, meas);
 
   }
 
@@ -189,10 +173,14 @@ public class NavigationSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
 
     odometry.update(Rotation2d.fromDegrees(getHeading()), drive.getEncoderDist(true), drive.getEncoderDist(false));
-    doKalmanFilter(getOdometryMeas(), new SimpleMatrix(2, 1));
-    doKalmanFilter(getGyroMeas(), new SimpleMatrix(2, 1));
+
+    filter.setA(updateA(timer.get()));
     timer.reset();
-    
+
+    // TODO: add filter.predictFilter(input (velocity)), bringing input from Xbox controller
+    filter.updateFilter(getOdometryMeas());
+    filter.updateFilter(getGyroMeas());
+
   }
 
 

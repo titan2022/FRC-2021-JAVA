@@ -5,7 +5,7 @@ import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.motioncontrol.kalmanfilter.KalmanFilter;
+import frc.robot.motioncontrol.kalmanfilter.CustomKalmanFilter;
 
 import com.github.swrirobotics.bags.reader.BagReader;
 import com.github.swrirobotics.bags.reader.BagFile;
@@ -18,7 +18,7 @@ import com.github.swrirobotics.bags.reader.records.Connection;
 
 public class IMUKalmanFilterCommand extends CommandBase {
 
-    private KalmanFilter filter;
+    private CustomKalmanFilter filter;
     private BagFile bag;
     private ArrayList<String> messages;
 

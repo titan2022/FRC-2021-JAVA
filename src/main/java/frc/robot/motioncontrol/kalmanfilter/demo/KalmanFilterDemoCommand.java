@@ -6,13 +6,13 @@ import java.util.Random;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.wpilibjTemp.Field2d;
-import frc.robot.motioncontrol.kalmanfilter.KalmanFilter;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import frc.robot.motioncontrol.kalmanfilter.CustomKalmanFilter;
 
 public class KalmanFilterDemoCommand extends CommandBase {
 
     private Field2d field;
-    private KalmanFilter filter;
+    private CustomKalmanFilter filter;
     private SimpleMatrix posReal;
     private SimpleMatrix posNoisy;
     private Rotation2d angle;
@@ -50,7 +50,7 @@ public class KalmanFilterDemoCommand extends CommandBase {
         // Q is generally very small (process noise)
         // R is generally I * variance, or I * (stdev^2) = 0.25I
 
-        filter = new KalmanFilter(new SimpleMatrix(posReal), SimpleMatrix.identity(2),
+        filter = new CustomKalmanFilter(new SimpleMatrix(posReal), SimpleMatrix.identity(2),
                 SimpleMatrix.identity(2).scale(0.0001), SimpleMatrix.identity(2).scale(0.25), SimpleMatrix.identity(2),
                 SimpleMatrix.identity(2), SimpleMatrix.identity(2));
 

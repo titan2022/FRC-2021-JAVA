@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.motioncontrol.kalmanfilter.KalmanFilter;
-import frc.wpilibjTemp.Field2d;
+import frc.robot.motioncontrol.kalmanfilter.CustomKalmanFilter;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class KalmanFilterTestCommand extends CommandBase {
 
-    private KalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc]
+    private CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc]
     private Timer timer;
     private double t;
     private Field2d field;
@@ -63,7 +63,7 @@ public class KalmanFilterTestCommand extends CommandBase {
 
         // see KalmanFilterTestCommandExplainer.pdf
 
-        filter = new KalmanFilter(new SimpleMatrix(new double[][] { { 1 }, { 0 }, { 0 }, { 1 }, { 0 }, { 0 } }),
+        filter = new CustomKalmanFilter(new SimpleMatrix(new double[][] { { 1 }, { 0 }, { 0 }, { 1 }, { 0 }, { 0 } }),
                 SimpleMatrix.identity(6), SimpleMatrix.identity(6).scale(Math.pow(STDEV, 4)),
                 SimpleMatrix.identity(2).scale(Math.pow(STDEV, 2)), updateA(),
                 new SimpleMatrix(new double[][] { { 0, 0 }, { 0, 0 }, { 0.00001, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0.00001 } }),

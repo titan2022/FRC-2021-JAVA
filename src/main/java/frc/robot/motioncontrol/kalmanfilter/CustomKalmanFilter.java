@@ -2,7 +2,7 @@ package frc.robot.motioncontrol.kalmanfilter;
 
 import org.ejml.simple.SimpleMatrix;
 
-public class KalmanFilter {
+public class CustomKalmanFilter {
 
     // class variables
 
@@ -30,7 +30,7 @@ public class KalmanFilter {
      * @param H - Relates current state to measurement (m x n).
      */
 
-    public KalmanFilter(SimpleMatrix x, SimpleMatrix P, SimpleMatrix Q, SimpleMatrix R, SimpleMatrix A, SimpleMatrix B,
+    public CustomKalmanFilter(SimpleMatrix x, SimpleMatrix P, SimpleMatrix Q, SimpleMatrix R, SimpleMatrix A, SimpleMatrix B,
             SimpleMatrix H) {
 
         this.x = x;

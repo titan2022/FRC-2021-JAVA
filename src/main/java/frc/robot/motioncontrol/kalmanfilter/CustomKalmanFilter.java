@@ -175,6 +175,18 @@ public class CustomKalmanFilter {
     }
 
     /**
+     * Gets B, which relates control input to current state.
+     * 
+     * @return Current B matrix.
+     */
+
+    public SimpleMatrix getB() {
+
+        return B;
+
+    }
+
+    /**
      * Gets H, which relates current state to measurement.
      * 
      * @return Current H matrix.
@@ -195,6 +207,18 @@ public class CustomKalmanFilter {
     public void setA(SimpleMatrix A) {
 
         this.A = A;
+
+    }
+
+    /**
+     * Sets B, which relates control input to current state.
+     * 
+     * @param B - B matrix.
+     */
+
+    public void setB(SimpleMatrix B) {
+
+        this.B = B;
 
     }
 

@@ -199,10 +199,10 @@ public class Polygon implements Obstacle {
           seeking = b;
         }
         else if(bPres){
-          suffix.add(new LinearSegment(alpha, a));
+          suffix.add(new LinearSegment(alpha, b));
           running = complete;
-          alpha = a;
-          seeking = b;
+          alpha = b;
+          seeking = a;
         }
       }
       if(seeking == b && bPres){

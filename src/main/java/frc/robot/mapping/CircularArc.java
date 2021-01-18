@@ -36,13 +36,13 @@ public class CircularArc implements Path {
    * 
    * @param start  The start point of this path.
    * @param center  The center of the arc this arc is constructed from.
-   * @param end  The terminating point of this path. This point and the start
-   *  point must be equidistant from the center point, or an
-   *  IllegalArgumentException is thrown.
+   * @param end  The point determining the terminating point of this path. The
+   *  end of this path is garunteed to lie on the ray from the center of this
+   *  arc through this point, and to be equidistant from the center of this arc
+   *  with the start point. The end point is not garunteed to be the point
+   *  provided as this argument.
    */
   public CircularArc(Point start, Point center, Point end) {
-    if(Math.abs(center.getDistance(start) - center.getDistance(end)) > 0.001)
-      throw new IllegalArgumentException("start and end must be equidistant from center.");
     this.center = center;
     theta = Point.getAngle(start, center, end).getRadians();
     radius = center.getDistance(start);

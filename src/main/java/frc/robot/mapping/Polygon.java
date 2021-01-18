@@ -232,8 +232,8 @@ public class Polygon implements Obstacle {
       )).plus(vNext);
       //aPres = vNext.getDistance(a) <= radius + 0.001;
       //bPres = vNext.getDistance(b) <= radius + 0.001;
-      aPres = Point.getAngle(alpha, vNext, a).getSin() > 0 && Point.getAngle(a, vNext, beta).getSin() > 0;
-      bPres = Point.getAngle(alpha, vNext, b).getSin() > 0 && Point.getAngle(b, vNext, beta).getSin() > 0;
+      aPres = Point.getAngle(alpha, vNext, a).getSin() >= 0 && Point.getAngle(a, vNext, beta).getSin() > 0;
+      bPres = Point.getAngle(alpha, vNext, b).getSin() >= 0 && Point.getAngle(b, vNext, beta).getSin() > 0;
       if(aPres && bPres){
         return new CircularArc(a, vNext, b);
       }

@@ -186,8 +186,8 @@ public class Polygon implements Obstacle {
       // Linear case
       alpha = vertex.plus(offset);
       beta = vNext.plus(offset);
-      boolean aPres = Point.getAngle(vNext, vertex, a).getCos() == 1;
-      boolean bPres = Point.getAngle(vNext, vertex, b).getCos() == 1;
+      boolean aPres = Point.getAngle(beta, alpha, a).getCos() == 1;
+      boolean bPres = Point.getAngle(beta, alpha, b).getCos() == 1;
       if(aPres && bPres){
         return new LinearSegment(a, b);
       }

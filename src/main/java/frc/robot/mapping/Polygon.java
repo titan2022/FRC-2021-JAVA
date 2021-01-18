@@ -277,11 +277,17 @@ public class Polygon implements Obstacle {
       splitSum += path.getLength();
     for(Path path : suffix)
       splitSum += path.getLength();
+    Path res;
     if(splitSum < fullSum){
       prefix.addAll(suffix);
-      return new CompoundPath(prefix.toArray(new Path[0]));
+      res = new CompoundPath(prefix.toArray(new Path[0]));
+      if(seeking == a) res = res.reverse();
     }
-    return new CompoundPath(complete.toArray(new Path[0]));
+    else{
+      res = new CompoundPath(complete.toArray(new Path[0]));
+      if(seeking == b) res = res.reverse();
+    }
+    return res;
   }
 
   public Path getBoundary(double radius) {

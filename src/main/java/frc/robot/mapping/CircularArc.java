@@ -68,7 +68,7 @@ public class CircularArc implements Path {
 
   @Override
   public double getLength() {
-    return radius * theta;
+    return Math.abs(radius * theta);
   }
 
   @Override

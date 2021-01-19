@@ -9,14 +9,16 @@ package frc.robot.vision.demos;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.vision.Limelight;
+import frc.robot.vision.LimelightMath;
 import frc.robot.vision.LimelightEnum;
+import frc.robot.subsystems.LimelightSubsystem;
 
 public class LimelightDataDemo extends CommandBase {
   /**
    * Creates a new LimelightDataDemo.
    */
-  Limelight limelight = new Limelight();
+  LimelightSubsystem subsystem = new LimelightSubsystem();
+  LimelightMath math = new LimelightMath();
   public LimelightDataDemo() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -29,13 +31,13 @@ public class LimelightDataDemo extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putString("pipeline", limelight.pipeline());
-    SmartDashboard.putBoolean("validTarget", limelight.validTarget());
-    SmartDashboard.putNumber("latency", limelight.latency());
-    SmartDashboard.putNumber("distance", limelight.calculateDistance());
-    SmartDashboard.putNumber("angleV", limelight.calculateAngleToTargetV());
-    SmartDashboard.putNumber("angleH", limelight.calculateAngleToTargetH());
-    limelight.setPipeline(LimelightEnum.valueOf(SmartDashboard.getString("pipeline", "TowerTarget")));
+    SmartDashboard.putString("pipeline", subsystem.getPipeline());
+    SmartDashboard.putBoolean("validTarget", subsystem.validTarget());
+    SmartDashboard.putNumber("latency", subsystem.getLatency());
+    SmartDashboard.putNumber("distance", math.calculateDistance());
+    SmartDashboard.putNumber("angleV", math.calculateAngleToTargetV());
+    SmartDashboard.putNumber("angleH", math.calculateAngleToTargetH());
+    subsystem.setPipeline(LimelightEnum.valueOf(SmartDashboard.getString("pipeline", "TowerTarget")));
   }
 
   // Called once the command ends or is interrupted.

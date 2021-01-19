@@ -12,21 +12,17 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 /**
  * Limelight class for returning distance and angle to reflective targets
  */
-public class Limelight {
+public class LimelightMath {
 
     public static double targetHeight = 1; //test values
     public static double limelightHeight= 1;
     public static double limelightAngle = 90;
     LimelightSubsystem subsystem = new LimelightSubsystem();
 
-    public Limelight()
-    {
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);//Set to use vision camera
-    }
- /**
-   * Limelight Constructor
-   * @return
-   */
+  public LimelightMath()
+  {
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
+  }
   public double calculateDistance()
   {
     double distance = (targetHeight - limelightHeight) / Math.tan(limelightAngle + calculateAngleToTargetV());
@@ -64,34 +60,5 @@ public class Limelight {
    * @return
    */
   
-  public boolean relativeCamPosition() //TODO: Transform it to be relative to the camera.
-  {
-    return false;
-  }
-
-  public double latency()
-  {
-    return subsystem.getLatency();
-  }
-  public double[] camPos()
-  {
-    return subsystem.getCamPose();
-  }
-  public boolean validTarget()
-  {
-    return subsystem.validTarget();
-  }
-  public String pipeline()
-  {
-    return subsystem.getPipeline();
-  }
-  public void setPipeline(LimelightEnum i)
-  {
-    subsystem.setPipeline(i);
-  }
-   /**
-   * Returns target position relative to camera
-   * @return
-   */
 
 }

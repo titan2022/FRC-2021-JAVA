@@ -6,60 +6,60 @@ import java.util.Set;
 
 
 
-public class Ransac
-{
+public class Ransac {
+
 	private static Random random = new Random();
 
 	
-	private static Set<Integer> randPerm(int N, int K)
-	{
+	private static Set<Integer> randPerm(int N, int K) {
+	
 		Set<Integer> res = new LinkedHashSet<>(); // unsorted set.
-		while (res.size() < K)
-		{
+		while (res.size() < K) {
+		
 			res.add(random.nextInt(N)); // [0, number-1]
 		}
 		return res;
 	}
 
-	private static double norm(List<Double> vec)
-	{
+	private static double norm(List<Double> vec) {
+	
 		return Math.sqrt(Math.pow(vec.get(0), 2) + Math.pow(vec.get(1), 2));
 	}
 
-	private static List<Integer> findLessThan(List<Double> distance, double threshDist)
-	{
+	private static List<Integer> findLessThan(List<Double> distance, double threshDist) {
+	
 		List<Integer> res = new ArrayList<>();
-		for (int i = 0; i < distance.size(); i++)
-		{
+		for (int i = 0; i < distance.size(); i++) {
+		
 			double dist = distance.get(i);
-			if (Math.abs(dist) <= threshDist)
-			{
+			if (Math.abs(dist) <= threshDist) {
+			
 				res.add(i);
 			}
 		}
 		return res;
 	}
 
-	public static List<Double> perform(List<Double> data_Y, int num, int iter, double threshDist, double inlierRatio)
-	{
+	public static List<Double> perform(List<Double> data_Y, int num, int iter, double threshDist, double inlierRatio) {
+	
 		int number = data_Y.size();
 		List<Integer> data_X = new ArrayList<>();
-		for (int i = 0; i < number; i++)
-		{
+		for (int i = 0; i < number; i++) {
+		
 			data_X.add(i + 1);
 		}
 
 		double bestInNum = 0;
 		double bestParameter1 = 0, bestParameter2 = 0;
 
-		for (int i = 0; i < iter; i++)
-		{
+		for (int i = 0; i < iter; i++) {
+		
 			Set<Integer> idx = randPerm(number, num);
 
 			List<Integer> sample_X = new ArrayList<>();
 			List<Double> sample_Y = new ArrayList<>();
-			for (Integer idxVal : idx)
-			{
+			for (Integer idxVal : idx) {
+			
 				sample_X.add(data_X.get(idxVal));
 				sample_Y.add(data_Y.get(idxVal));
 			}
@@ -78,8 +78,8 @@ public class Ransac
 			normVector.add(kLineNorm.get(0));
 
 			List<Double> distance = new ArrayList<>();
-			for (int j = 0; j < number; j++)
-			{
+			for (int j = 0; j < number; j++) {
+			
 				double distTmp = normVector.get(0) * (data_X.get(j) - sample_X.get(0));
 				distTmp += normVector.get(1) * (data_Y.get(j) - sample_Y.get(0));
 				distance.add(distTmp);
@@ -92,8 +92,8 @@ public class Ransac
 			double parameter1 = 0;
 			double parameter2 = 0;
 
-			if ((inlierNum >= Math.round(inlierRatio * number)) && (inlierNum > bestInNum))
-			{
+			if ((inlierNum >= Math.round(inlierRatio * number)) && (inlierNum > bestInNum)) {
+			
 				bestInNum = inlierNum;
 				parameter1 = (sample_Y.get(1) - sample_Y.get(0)) / (sample_X.get(1) - sample_X.get(0));
 				parameter2 = sample_Y.get(0) - parameter1 * sample_X.get(0);

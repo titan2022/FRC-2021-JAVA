@@ -1,21 +1,5 @@
 package frc.robot.kinematics;
 
-<<<<<<< HEAD
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.Robot;
-import 
-
-public class DifferentialDriveKinematics{
-    double breadth, wheelRadius;
-    public DifferentialDriveKinematics(double breadth, double wheelRadius){
-        this.breadth = breadth;
-        this.wheelRadius = wheelRadius;
-    }
-
-    public jacobian()
-}
-
-=======
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpiutil.math.MatBuilder;
 import edu.wpi.first.wpiutil.math.Matrix;
@@ -97,4 +81,3 @@ public class DifferentialDriveKinematics {
         return DifferentialJacobian.times(P);
     }
 }
->>>>>>> 07a5aacd0b776814c838b455313eb5ed64449fd4

@@ -35,11 +35,17 @@ public class DifferentialDriveDynamics {
     /**
      * 
      * @param torques vector (right torque, left torque)
-     * @return
+     * @return linear velocity of robot
      */
     public double getLinearVelocity(Vector torques){
         return ((1/(m*wR)) * (torques.getX() + torques.getY()));
     }
+
+    /**
+     * 
+     * @param torques vector (right torque, left torque)
+     * @return rotational velocity of robot
+     */
     public double getRotationalVelocity(Vector torques){
         return (((2*a)/(I*wR)) * (torques.getX() - torques.getY()));
     }

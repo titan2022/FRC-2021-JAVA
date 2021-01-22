@@ -8,7 +8,6 @@
 package frc.robot.commands;
 //package frc.robot.motionGeneration.rmpFlow;
 
-import frc.wpilibjTemp.Field2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.kinematics.DifferentialDriveKinematics;
 
@@ -18,9 +17,9 @@ import java.lang.Math.*;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.wpilibjTemp.Field2d;
 
 /**
  * An example command that uses an example subsystem, like a boss.

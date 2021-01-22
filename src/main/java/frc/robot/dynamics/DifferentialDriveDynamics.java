@@ -1,11 +1,11 @@
-package main.java.frc.robot.dynamics;
+package frc.robot.dynamics;
 
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpiutil.math.MatBuilder;
 import edu.wpi.first.wpiutil.math.Matrix;
 import edu.wpi.first.wpiutil.math.Nat;
 import edu.wpi.first.wpiutil.math.VecBuilder;
-import main.java.frc.robot.Vector;
+import frc.robot.Vector;
 
 /**
  * 

@@ -168,6 +168,17 @@ public class NavigationSubsystem extends SubsystemBase {
 
   }
 
+  /**
+   * Returns the Kalman filter's current state.
+   * 
+   * @return Current Kalman filter state.
+   */
+  public SimpleMatrix getFilterState() {
+
+    return filter.getState();
+
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

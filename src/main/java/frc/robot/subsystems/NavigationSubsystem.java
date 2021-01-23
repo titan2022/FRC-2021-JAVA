@@ -13,6 +13,7 @@ import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -32,6 +33,7 @@ public class NavigationSubsystem extends SubsystemBase {
   private DriveSubsystem drive;
   private CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc]
   private Timer timer;
+  private Field2d fieldSim;
 
   /**
    * Creates a new NavigationSubsystem.
@@ -179,6 +181,18 @@ public class NavigationSubsystem extends SubsystemBase {
 
   }
 
+  /**
+   * Returns an element from the Kalman filter's current state.
+   * @param row - Row of state.
+   * @param column - Row of state.
+   * @return Element from current filter state.
+   */
+  public double getFilterStateElement(int row, int column) {
+
+    return filter.getState().get(row, column);
+
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -191,6 +205,8 @@ public class NavigationSubsystem extends SubsystemBase {
     // TODO: add filter.predictFilter(input (velocity)), bringing input from Xbox controller
     filter.updateFilter(getOdometryMeas());
     filter.updateFilter(getGyroMeas());
+
+    fieldSim.setRobotPose(getFilterStateElement(0, 0), getFilterStateElement(3, 0), Rotation2d.fromDegrees(getHeading()));
 
   }
 

@@ -67,18 +67,30 @@ public class Polygon implements Obstacle {
 
   @Override
   public Set<Point> getEndpoints(Point source, double radius) {
-    Point argmin = null, argmax = null, tangency;
-    double min = 360, max = -360., theta;
+    Point argmin = null, argmax = null;
+    double min = 360, max = -360.;
     for(int i = 0; i < verts.length; i++){
-      tangency = getTangency(i, source, radius);
-      theta = Point.getAngle(interior, source, tangency).getDegrees();
-      if(theta < min){
-        min = theta;
-        argmin = tangency;
+      Rotation2d phi0 = source.minus(verts[i]).getAngle();
+      Rotation2d phi = new Rotation2d(Math.acos(Math.min(radius / verts[i].getDistance(source), 1)));
+      Point tangent1 = verts[i].plus(new Point(radius, phi0.plus(phi)));
+      Point tangent2 = verts[i].plus(new Point(radius, phi0.minus(phi)));
+      double theta1 = Point.getAngle(interior, source, tangent1).getDegrees();
+      double theta2 = Point.getAngle(interior, source, tangent2).getDegrees();
+      if(theta1 < min){
+        min = theta1;
+        argmin = tangent1;
       }
-      if(theta > max){
-        max = theta;
-        argmax = tangency;
+      if(theta1 > max){
+        max = theta1;
+        argmax = tangent1;
+      }
+      if(theta2 < min){
+        min = theta2;
+        argmin = tangent2;
+      }
+      if(theta2 > max){
+        max = theta2;
+        argmax = tangent2;
       }
     }
     Set<Point> endpoints = new LinkedHashSet<Point>(2, 1.0f);

@@ -77,7 +77,7 @@ public class DriveSubsystem extends SubsystemBase
   private Timer simTime;
 
   // Create the simulation model of our drivetrain.
-  private static DifferentialDrivetrainSim driveSim;
+  private DifferentialDrivetrainSim driveSim;
 
   /**
    * Creates a new DriveSubsystem.
@@ -259,6 +259,11 @@ public class DriveSubsystem extends SubsystemBase
     }
   }
 
+  // Simulation Interface Methods
+  public DifferentialDrivetrainSim getDriveSim() { // TODO: throw exception when the driveSubsystem is not being simulated
+    return driveSim;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -272,6 +277,8 @@ public class DriveSubsystem extends SubsystemBase
     // simulation, and write the simulated positions and velocities to our
     // simulated encoder and gyro. We negate the right side so that positive
     // voltages make the right side move forward.
+
+    // TODO: Delete this code when proven correct
     // driveSim.setInputs(
     //     m_leftLeader.get() * RobotController.getInputVoltage(),
     //     -m_rightLeader.get() * RobotController.getInputVoltage());

@@ -5,7 +5,12 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.VecBuilder;
 import frc.robot.subsystems.sim.PhysicsSim;
 
 /**
@@ -13,52 +18,68 @@ import frc.robot.subsystems.sim.PhysicsSim;
  */
 public class DriveSubsystem extends SubsystemBase
 {
-  // TODO: add constants to file later
-  public static final double ROBOT_DIAMETER = 42; // meter //TODO: Ask DI team for distance between wheels
-  public static final double WHEEL_RADIUS = 3; // meters// TODO: Ask DI team for correct wheel radius
-  public static final double METERS_PER_TICK = 0.1;
+  // Physical parameters
+  public static final double ROBOT_TRACK_WIDTH = 42; // meter // TODO: Ask DI team for distance between wheels
+  public static final double WHEEL_RADIUS = 3; // meters // TODO: Ask DI team for correct wheel radius
+  public static final double ENCODER_TICKS = 4096; // TODO: Figure out the number of ticks in our encoders
+  public static final double METERS_PER_TICK = WHEEL_RADIUS*Math.PI/ENCODER_TICKS; // TODO: Recompute using wheel circumference / encoder ticks
 
-  // port numbers to be added later
-  public static final int LEFT_PRIMARY_PORT = 1;
-  public static final int LEFT_SECONDARY_PORT = 2;
-  public static final int RIGHT_PRIMARY_PORT = 3;
-  public static final int RIGHT_SECONDARY_PORT = 4;
+  // Port numbers to be added later
+  private static final int LEFT_PRIMARY_PORT = 1;
+  private static final int LEFT_SECONDARY_PORT = 2;
+  private static final int RIGHT_PRIMARY_PORT = 3;
+  private static final int RIGHT_SECONDARY_PORT = 4;
 
   private static final int ENCODER_PORT = 1;
 
-  // Physical and Simulated Hardware
-  // These talon objects are also simulated
-  public final WPI_TalonSRX leftPrimary = new WPI_TalonSRX(LEFT_PRIMARY_PORT)
-    , leftSecondary =new WPI_TalonSRX(LEFT_SECONDARY_PORT)
-    , rightPrimary = new WPI_TalonSRX(RIGHT_PRIMARY_PORT)
-    , rightSecondary = new WPI_TalonSRX(RIGHT_SECONDARY_PORT);
-  
+  // 
+  private static final boolean LEFT_PRIMARY_INVERTED = false;
+  private static final boolean LEFT_SECONDARY_INVERTED = false;
+  private static final boolean RIGHT_PRIMARY_INVERTED = false;
+  private static final boolean RIGHT_SECONDARY_INVERTED = false;
+  private static final boolean PRIMARY_MOTOR_SENSOR_PHASE = true;
+
+  // Physical limits
   private static final double MAX_SPEED = 10; // meters/sec
   private static final int PEAK_CURRENT_LIMIT = 60;
   private static final int CONTINUOUS_CURRENT_LIMIT = 50;
-  private static final double FULL_ACCEL_TIME = 0.75; // sec
-  private static final double MAX_MOTOR_VEL = 4000; // ticks/ (100ms)
-  private static final boolean PRIMARY_MOTOR_SENSOR_PHASE = true;
 
-  
+  // Phoenix Physics Sim Variables
+  private static final double FULL_ACCEL_TIME = 0.75; // sec
+  private static final double MAX_MOTOR_VEL = 4000; // ticks/(100ms)
+
+  // Physical and Simulated Hardware
+  // These talon objects are also simulated
+  private static final WPI_TalonSRX leftPrimary = new WPI_TalonSRX(LEFT_PRIMARY_PORT)
+    , leftSecondary = new WPI_TalonSRX(LEFT_SECONDARY_PORT)
+    , rightPrimary = new WPI_TalonSRX(RIGHT_PRIMARY_PORT)
+    , rightSecondary = new WPI_TalonSRX(RIGHT_SECONDARY_PORT);
+
+  // Feedforward gain constants (from the characterization tool)
+  static final double KvLinear = 1.98;
+  static final double KaLinear = 0.2;
+  static final double KvAngular = 1.5;
+  static final double KaAngular = 0.3;
+
+  // Create the simulation model of our drivetrain.
+  private static DifferentialDrivetrainSim driveSim;
 
   /**
    * Creates a new DriveSubsystem.
    */
   public DriveSubsystem()
   {
-    // TODO: Remove magic numbers
     // motor configuration block
     leftPrimary.configFactoryDefault();
     leftSecondary.configFactoryDefault();
     rightPrimary.configFactoryDefault();
     rightSecondary.configFactoryDefault();
 
-    rightPrimary.setInverted(false);
-    rightSecondary.setInverted(false);
+    rightPrimary.setInverted(RIGHT_PRIMARY_INVERTED);
+    rightSecondary.setInverted(RIGHT_SECONDARY_INVERTED);
 
-    leftPrimary.setInverted(false);
-    leftSecondary.setInverted(false);
+    leftPrimary.setInverted(LEFT_PRIMARY_INVERTED);
+    leftSecondary.setInverted(LEFT_SECONDARY_INVERTED);
 
     leftSecondary.follow(leftPrimary);
     rightSecondary.follow(rightPrimary);
@@ -110,6 +131,20 @@ public class DriveSubsystem extends SubsystemBase
     PhysicsSim.getInstance().addTalonSRX(rightPrimary, FULL_ACCEL_TIME, MAX_MOTOR_VEL, PRIMARY_MOTOR_SENSOR_PHASE);
     PhysicsSim.getInstance().addTalonSRX(leftSecondary, FULL_ACCEL_TIME, MAX_MOTOR_VEL);
     PhysicsSim.getInstance().addTalonSRX(rightSecondary, FULL_ACCEL_TIME, MAX_MOTOR_VEL);
+
+    driveSim = new DifferentialDrivetrainSim(
+      // Create a linear system from our characterization gains.
+      LinearSystemId.identifyDrivetrainSystem(KvLinear, KaLinear, KvAngular, KaAngular),
+      DCMotor.getNEO(2),       // 2 NEO motors on each side of the drivetrain.  // TODO: Set the correct type of motor
+      7.29,                    // 7.29:1 gearing reduction.                     // TODO: Get the correct gearing ratio
+      ROBOT_TRACK_WIDTH,       // The track width is 0.7112 meters.
+      Units.inchesToMeters(3), // The robot uses 3" radius wheels.
+      VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005));
+      // The standard deviations for measurement noise:
+      // x and y:          0.001 m
+      // heading:          0.001 rad
+      // l and r velocity: 0.1   m/s
+      // l and r position: 0.005 m
   }
 
   /**

@@ -48,30 +48,6 @@ public class NavigationSubsystem extends SubsystemBase {
 
   private final DifferentialDriveKinematics kinematics;
 
-  // Create our feedforward gain constants (from the characterization
-  // tool)
-  static final double KvLinear = 1.98;
-  static final double KaLinear = 0.2;
-  static final double KvAngular = 1.5;
-  static final double KaAngular = 0.3;
-
-  // Create the simulation model of our drivetrain.
-  private DifferentialDrivetrainSim driveSim = new DifferentialDrivetrainSim(
-  // Create a linear system from our characterization gains.
-  LinearSystemId.identifyDrivetrainSystem(KvLinear, KaLinear, KvAngular, KaAngular),
-  
-  DCMotor.getNEO(2),       // 2 NEO motors on each side of the drivetrain.
-  7.29,                    // 7.29:1 gearing reduction.
-  0.7112,                  // The track width is 0.7112 meters.
-  Units.inchesToMeters(3), // The robot uses 3" radius wheels.
-
-  // The standard deviations for measurement noise:
-  // x and y:          0.001 m
-  // heading:          0.001 rad
-  // l and r velocity: 0.1   m/s
-  // l and r position: 0.005 m
-  VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005));
-
   /**
    * Creates a new NavigationSubsystem.
    * 
@@ -91,7 +67,6 @@ public class NavigationSubsystem extends SubsystemBase {
         SimpleMatrix.identity(6));
 
     timer.start();
-
   }
 
   // gyro methods, copied from 2020

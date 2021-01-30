@@ -5,10 +5,10 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.system.plant.LinearSystemId;
-import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.VecBuilder;
 import frc.robot.subsystems.sim.PhysicsSim;
@@ -22,7 +22,7 @@ public class DriveSubsystem extends SubsystemBase
   public static final double ROBOT_TRACK_WIDTH = 42; // meter // TODO: Ask DI team for distance between wheels
   public static final double WHEEL_RADIUS = 3; // meters // TODO: Ask DI team for correct wheel radius
   public static final double ENCODER_TICKS = 4096; // TODO: Figure out the number of ticks in our encoders
-  public static final double METERS_PER_TICK = WHEEL_RADIUS*Math.PI/ENCODER_TICKS; // TODO: Recompute using wheel circumference / encoder ticks
+  public static final double METERS_PER_TICK = WHEEL_RADIUS * Math.PI / ENCODER_TICKS; // TODO: Recompute using wheel circumference / encoder ticks
   public static final double GEARING_REDUCTION = 7.29; // TODO: Get the correct gearing ratio
 
   // Port numbers to be added later
@@ -33,12 +33,13 @@ public class DriveSubsystem extends SubsystemBase
 
   private static final int ENCODER_PORT = 1;
 
-  // 
+  // Motor and sensor inversions
   private static final boolean LEFT_PRIMARY_INVERTED = false;
   private static final boolean LEFT_SECONDARY_INVERTED = false;
   private static final boolean RIGHT_PRIMARY_INVERTED = false;
   private static final boolean RIGHT_SECONDARY_INVERTED = false;
-  private static final boolean PRIMARY_MOTOR_SENSOR_PHASE = true;
+  private static final boolean LEFT_PRIMARY_MOTOR_SENSOR_PHASE = true;
+  private static final boolean RIGHT_PRIMARY_MOTOR_SENSOR_PHASE = true;
 
   // Physical limits
   private static final double MAX_SPEED = 10; // meters/sec
@@ -63,8 +64,7 @@ public class DriveSubsystem extends SubsystemBase
   private static final double KvAngular = 1.5;
   private static final double KaAngular = 0.3;
 
-  // standard deviation for measurement noise
-
+  // Standard deviation for measurement noise
   private static final double X_MEAS_NOISE = 0.001; // meter
   private static final double Y_MEAS_NOISE = 0.001; // meter
   private static final double HEADING_MEAS_NOISE = 0.001; // radian
@@ -72,6 +72,9 @@ public class DriveSubsystem extends SubsystemBase
   private static final double RIGHT_VEL_MEAS_NOISE = 0.1; // meter / second
   private static final double LEFT_POS_MEAS_NOISE = 0.005; // meter
   private static final double RIGHT_POS_MEAS_NOISE = 0.005; // meter
+
+  // Physics timer
+  private Timer simTime;
 
   // Create the simulation model of our drivetrain.
   private static DifferentialDrivetrainSim driveSim;
@@ -97,8 +100,8 @@ public class DriveSubsystem extends SubsystemBase
     rightSecondary.follow(rightPrimary);
 
     // Sets the direction that the talon will turn on the green LED when going 'forward'.
-    leftPrimary.setSensorPhase(true);
-    rightPrimary.setSensorPhase(true);
+    leftPrimary.setSensorPhase(LEFT_PRIMARY_MOTOR_SENSOR_PHASE);
+    rightPrimary.setSensorPhase(RIGHT_PRIMARY_MOTOR_SENSOR_PHASE);
 
     // Current limits in amps
     leftPrimary.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
@@ -139,8 +142,8 @@ public class DriveSubsystem extends SubsystemBase
 
   private void enableSimulation()
   {
-    PhysicsSim.getInstance().addTalonSRX(leftPrimary, FULL_ACCEL_TIME, MAX_MOTOR_VEL, PRIMARY_MOTOR_SENSOR_PHASE);
-    PhysicsSim.getInstance().addTalonSRX(rightPrimary, FULL_ACCEL_TIME, MAX_MOTOR_VEL, PRIMARY_MOTOR_SENSOR_PHASE);
+    PhysicsSim.getInstance().addTalonSRX(leftPrimary, FULL_ACCEL_TIME, MAX_MOTOR_VEL, LEFT_PRIMARY_MOTOR_SENSOR_PHASE);
+    PhysicsSim.getInstance().addTalonSRX(rightPrimary, FULL_ACCEL_TIME, MAX_MOTOR_VEL, RIGHT_PRIMARY_MOTOR_SENSOR_PHASE);
     PhysicsSim.getInstance().addTalonSRX(leftSecondary, FULL_ACCEL_TIME, MAX_MOTOR_VEL);
     PhysicsSim.getInstance().addTalonSRX(rightSecondary, FULL_ACCEL_TIME, MAX_MOTOR_VEL);
 
@@ -152,6 +155,9 @@ public class DriveSubsystem extends SubsystemBase
       ROBOT_TRACK_WIDTH,
       WHEEL_RADIUS,
       VecBuilder.fill(X_MEAS_NOISE, Y_MEAS_NOISE, HEADING_MEAS_NOISE, LEFT_VEL_MEAS_NOISE, RIGHT_VEL_MEAS_NOISE, LEFT_POS_MEAS_NOISE, RIGHT_POS_MEAS_NOISE));
+
+    simTime = new Timer();
+    simTime.start();
   }
 
   /**
@@ -262,19 +268,18 @@ public class DriveSubsystem extends SubsystemBase
   @Override
   public void simulationPeriodic() {
     PhysicsSim.getInstance().run();
-    
     // To update our simulation, we set motor voltage inputs, update the
     // simulation, and write the simulated positions and velocities to our
     // simulated encoder and gyro. We negate the right side so that positive
     // voltages make the right side move forward.
-    driveSim.setInputs(
-        m_leftLeader.get() * RobotController.getInputVoltage(),
-        -m_rightLeader.get() * RobotController.getInputVoltage());
-        driveSim.update(0.02);
+    // driveSim.setInputs(
+    //     m_leftLeader.get() * RobotController.getInputVoltage(),
+    //     -m_rightLeader.get() * RobotController.getInputVoltage());
+    driveSim.setInputs(leftPrimary.getMotorOutputVoltage(), rightPrimary.getMotorOutputVoltage());
+    driveSim.update(simTime.get());
+    simTime.reset();
 
-    drive.leftPrimary.setDistance(driveSim.getLeftPositionMeters());
-    drive.leftPrimary.setRate(driveSim.getLeftVelocityMetersPerSecond());
-    drive.rightPrimary.setDistance(driveSim.getRightPositionMeters());
-    drive.rightPrimary.setRate(driveSim.getRightVelocityMetersPerSecond());
+    leftPrimary.setSelectedSensorPosition(driveSim.getLeftPositionMeters());
+    rightPrimary.setSelectedSensorPosition(driveSim.getRightPositionMeters());
   }
 }

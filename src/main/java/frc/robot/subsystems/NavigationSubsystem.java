@@ -42,7 +42,11 @@ public class NavigationSubsystem extends SubsystemBase
 
   // Simulated components
   // AHRS SimDoubles
-  private SimDouble angle;
+  private SimDouble yaw; // degs
+  private SimDouble rate; // degs / sec
+  private double simDeltaT;
+  private Timer simTimer;
+  private double prevYaw = 0;
 
   // Physics simulation
   private Field2d fieldSim = new Field2d();
@@ -75,8 +79,12 @@ public class NavigationSubsystem extends SubsystemBase
 
   private void enableSimulation()
   {
+
     int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
-    angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
+    yaw = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
+    rate = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Rate"));
+    simTimer = new Timer();
+    simTimer.start();
 
   }
 
@@ -94,13 +102,24 @@ public class NavigationSubsystem extends SubsystemBase
   }
 
   /**
-   * Gets angle computed by AHRS gyro.
+   * Gets yaw computed by AHRS gyro.
    * 
-   * @return Angle (degrees).
+   * @return Yaw (degrees).
    */
-  public double getAngle() {
+  public double getYaw() {
 
-    return gyro.getAngle();
+    return gyro.getYaw();
+
+  }
+
+  /**
+   * Gets yaw computed by driveSim.
+   * 
+   * @return Yaw (degrees).
+   */
+  private double getDriveSimYaw() {
+
+    return drive.getDriveSim().getHeading().getDegrees();
 
   }
 
@@ -111,7 +130,7 @@ public class NavigationSubsystem extends SubsystemBase
    */
   public double getHeading() {
 
-    return -Math.IEEEremainder(getAngle(), 360);
+    return -Math.IEEEremainder(getYaw(), 360);
 
   }
 
@@ -230,8 +249,18 @@ public class NavigationSubsystem extends SubsystemBase
   }
 
   public void simulationPeriodic() {
-    angle.set(-drive.getDriveSim().getHeading().getDegrees());
+
+    simDeltaT = simTimer.get();
+    simTimer.reset();
+    
+    yaw.set(getDriveSimYaw());
+    rate.set((getDriveSimYaw() - prevYaw) / simDeltaT);
+
+    prevYaw = getDriveSimYaw();
 
     fieldSim.setRobotPose(getFilterStateElement(0, 0), getFilterStateElement(3, 0), Rotation2d.fromDegrees(getHeading()));
+
+    // for later purposes
+    // fieldSim.setRobotPose(odometry.getPoseMeters());
   }
 }

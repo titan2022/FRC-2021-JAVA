@@ -82,7 +82,7 @@ public class NavigationSubsystem extends SubsystemBase {
     timer = new Timer();
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
     this.drive = drive;
-    kinematics = new DifferentialDriveKinematics(this.drive.ROBOT_DIAMETER);
+    kinematics = new DifferentialDriveKinematics(DriveSubsystem.ROBOT_TRACK_WIDTH);
 
     filter = new CustomKalmanFilter(new SimpleMatrix(6, 1), SimpleMatrix.identity(6),
         SimpleMatrix.identity(6).scale(Math.pow(STATE_STD_DEV, 2)),

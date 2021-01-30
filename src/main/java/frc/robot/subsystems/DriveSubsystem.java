@@ -23,6 +23,7 @@ public class DriveSubsystem extends SubsystemBase
   public static final double WHEEL_RADIUS = 3; // meters // TODO: Ask DI team for correct wheel radius
   public static final double ENCODER_TICKS = 4096; // TODO: Figure out the number of ticks in our encoders
   public static final double METERS_PER_TICK = WHEEL_RADIUS*Math.PI/ENCODER_TICKS; // TODO: Recompute using wheel circumference / encoder ticks
+  public static final double GEARING_REDUCTION = 7.29; // TODO: Get the correct gearing ratio
 
   // Port numbers to be added later
   private static final int LEFT_PRIMARY_PORT = 1;
@@ -55,11 +56,22 @@ public class DriveSubsystem extends SubsystemBase
     , rightPrimary = new WPI_TalonSRX(RIGHT_PRIMARY_PORT)
     , rightSecondary = new WPI_TalonSRX(RIGHT_SECONDARY_PORT);
 
+  // Physics simulation
   // Feedforward gain constants (from the characterization tool)
-  static final double KvLinear = 1.98;
-  static final double KaLinear = 0.2;
-  static final double KvAngular = 1.5;
-  static final double KaAngular = 0.3;
+  private static final double KvLinear = 1.98;
+  private static final double KaLinear = 0.2;
+  private static final double KvAngular = 1.5;
+  private static final double KaAngular = 0.3;
+
+  // standard deviation for measurement noise
+
+  private static final double X_MEAS_NOISE = 0.001; // meter
+  private static final double Y_MEAS_NOISE = 0.001; // meter
+  private static final double HEADING_MEAS_NOISE = 0.001; // radian
+  private static final double LEFT_VEL_MEAS_NOISE = 0.1; // meter / second
+  private static final double RIGHT_VEL_MEAS_NOISE = 0.1; // meter / second
+  private static final double LEFT_POS_MEAS_NOISE = 0.005; // meter
+  private static final double RIGHT_POS_MEAS_NOISE = 0.005; // meter
 
   // Create the simulation model of our drivetrain.
   private static DifferentialDrivetrainSim driveSim;
@@ -116,13 +128,13 @@ public class DriveSubsystem extends SubsystemBase
   public DriveSubsystem(TalonSRXConfiguration leftConfig, TalonSRXConfiguration rightConfig, boolean simulated)
   {
     this(leftConfig, rightConfig);
-    if(simulated) enableSimulation();
+    if (simulated) enableSimulation();
   }
 
   public DriveSubsystem(boolean simulated)
   {
     this();
-    if(simulated) enableSimulation();
+    if (simulated) enableSimulation();
   }
 
   private void enableSimulation()
@@ -136,15 +148,10 @@ public class DriveSubsystem extends SubsystemBase
       // Create a linear system from our characterization gains.
       LinearSystemId.identifyDrivetrainSystem(KvLinear, KaLinear, KvAngular, KaAngular),
       DCMotor.getNEO(2),       // 2 NEO motors on each side of the drivetrain.  // TODO: Set the correct type of motor
-      7.29,                    // 7.29:1 gearing reduction.                     // TODO: Get the correct gearing ratio
-      ROBOT_TRACK_WIDTH,       // The track width is 0.7112 meters.
-      Units.inchesToMeters(3), // The robot uses 3" radius wheels.
-      VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005));
-      // The standard deviations for measurement noise:
-      // x and y:          0.001 m
-      // heading:          0.001 rad
-      // l and r velocity: 0.1   m/s
-      // l and r position: 0.005 m
+      GEARING_REDUCTION,
+      ROBOT_TRACK_WIDTH,
+      WHEEL_RADIUS,
+      VecBuilder.fill(X_MEAS_NOISE, Y_MEAS_NOISE, HEADING_MEAS_NOISE, LEFT_VEL_MEAS_NOISE, RIGHT_VEL_MEAS_NOISE, LEFT_POS_MEAS_NOISE, RIGHT_POS_MEAS_NOISE));
   }
 
   /**

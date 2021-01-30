@@ -34,7 +34,6 @@ public class NavigationSubsystem extends SubsystemBase
   // Navigation Mathematics system
   private CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc]
   private DifferentialDriveOdometry odometry;
-  private DifferentialDriveKinematics kinematics;
   private Timer timer;
 
   // Physical and Simulated Hardware
@@ -42,6 +41,8 @@ public class NavigationSubsystem extends SubsystemBase
   private DriveSubsystem drive;
 
   // Simulated components
+  // AHRS SimDoubles
+  private SimDouble angle;
 
   // Physics simulation
   private Field2d fieldSim = new Field2d();
@@ -55,7 +56,6 @@ public class NavigationSubsystem extends SubsystemBase
     // TODO: Add switch to set navigation into simulation mode based on the drive subsystem
     this.drive = drive;
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
-    kinematics = new DifferentialDriveKinematics(DriveSubsystem.ROBOT_TRACK_WIDTH);
 
     filter = new CustomKalmanFilter(new SimpleMatrix(6, 1), SimpleMatrix.identity(6),
         SimpleMatrix.identity(6).scale(Math.pow(STATE_STD_DEV, 2)),
@@ -75,6 +75,8 @@ public class NavigationSubsystem extends SubsystemBase
 
   private void enableSimulation()
   {
+    int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
+    angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
 
   }
 
@@ -228,8 +230,6 @@ public class NavigationSubsystem extends SubsystemBase
   }
 
   public void simulationPeriodic() {
-    int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
-    SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
     angle.set(-drive.getDriveSim().getHeading().getDegrees());
 
     fieldSim.setRobotPose(getFilterStateElement(0, 0), getFilterStateElement(3, 0), Rotation2d.fromDegrees(getHeading()));

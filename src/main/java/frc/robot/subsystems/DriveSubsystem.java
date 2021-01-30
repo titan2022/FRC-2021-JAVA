@@ -30,6 +30,11 @@ public class DriveSubsystem extends SubsystemBase
     , rightSecondary = new WPI_TalonSRX(RIGHT_SECONDARY_PORT);
   
   private static final double MAX_SPEED = 10; // meters/sec
+  private static final int PEAK_CURRENT_LIMIT = 60;
+  private static final int CONTINUOUS_CURRENT_LIMIT = 50;
+  private static final double FULL_ACCEL_TIME = 0.75; // sec
+  private static final double MAX_MOTOR_VEL = 4000; // ticks/ (100ms)
+  private static final boolean PRIMARY_MOTOR_SENSOR_PHASE = true;
 
   private static final int ENCODER_PORT = 1;
 
@@ -59,12 +64,12 @@ public class DriveSubsystem extends SubsystemBase
     rightPrimary.setSensorPhase(true);
 
     // Current limits in amps
-    leftPrimary.configPeakCurrentLimit(60);
-    leftPrimary.configContinuousCurrentLimit(50);
+    leftPrimary.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
+    leftPrimary.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
     leftPrimary.enableCurrentLimit(true);
 
-    rightPrimary.configPeakCurrentLimit(60);
-    rightPrimary.configContinuousCurrentLimit(50);
+    rightPrimary.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
+    rightPrimary.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
     rightPrimary.enableCurrentLimit(true);
 
     /* TODO: Deal with motor controller faults once a physical robot is available for testing
@@ -97,10 +102,10 @@ public class DriveSubsystem extends SubsystemBase
 
   private void enableSimulation()
   {
-    PhysicsSim.getInstance().addTalonSRX(leftPrimary, 0.75, 4000, true);
-    PhysicsSim.getInstance().addTalonSRX(rightPrimary, 0.75, 4000, true);
-    PhysicsSim.getInstance().addTalonSRX(leftSecondary, 0.75, 4000);
-    PhysicsSim.getInstance().addTalonSRX(rightSecondary, 0.75, 4000);
+    PhysicsSim.getInstance().addTalonSRX(leftPrimary, FULL_ACCEL_TIME, MAX_MOTOR_VEL, PRIMARY_MOTOR_SENSOR_PHASE);
+    PhysicsSim.getInstance().addTalonSRX(rightPrimary, FULL_ACCEL_TIME, MAX_MOTOR_VEL, PRIMARY_MOTOR_SENSOR_PHASE);
+    PhysicsSim.getInstance().addTalonSRX(leftSecondary, FULL_ACCEL_TIME, MAX_MOTOR_VEL);
+    PhysicsSim.getInstance().addTalonSRX(rightSecondary, FULL_ACCEL_TIME, MAX_MOTOR_VEL);
   }
 
   /**

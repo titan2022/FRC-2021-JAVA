@@ -197,7 +197,7 @@ public class NavigationSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    odometry.update(Rotation2d.fromDegrees(getHeading()), drive.getEncoderDist(true), drive.getEncoderDist(false));
+    updateOdometry();
 
     filter.setA(updateA(timer.get()));
     timer.reset();

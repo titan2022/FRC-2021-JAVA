@@ -11,7 +11,8 @@ public class XboxMap {
   private static final double JOYSTICK_DRIFT = 1e-2;
   private static final double RUMBLE_INTENSITY = 1; //(0,1]
 
-  private static XboxController controller = Robot.oi.ps4;
+  //private static XboxController controller = Robot.oi.ps4;
+  private static XboxController controller = new XboxController(0);
 
   // Driving Controls 
 	public static double left() {

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.ManualDifferentialDriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.NavigationSubsystem;
 
@@ -26,9 +27,9 @@ public class Robot extends TimedRobot {
   public static OI oi;
   private Command m_autonomousCommand;
 
-  private final XboxController m_controller = new XboxController(0);
   private final DriveSubsystem driveSub = new DriveSubsystem(true);
-  private final NavigationSubsystem nav = new NavigationSubsystem(driveSub);
+  private final NavigationSubsystem nav = new NavigationSubsystem(driveSub, true);
+  private ManualDifferentialDriveCommand manDrive = new ManualDifferentialDriveCommand(driveSub);
   
   private RobotContainer m_robotContainer;
 
@@ -56,8 +57,6 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    driveSub.periodic();
-    nav.periodic();
     CommandScheduler.getInstance().run();
   }
 
@@ -101,6 +100,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    manDrive.schedule();
   }
 
   /**
@@ -108,7 +108,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    driveSub.setOutput(ControlMode.PercentOutput, m_controller.getRawAxis(0), m_controller.getRawAxis(1));
+    
   }
 
   @Override

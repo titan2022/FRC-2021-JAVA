@@ -13,9 +13,9 @@ import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.wpilibj.SPI;
@@ -258,9 +258,11 @@ public class NavigationSubsystem extends SubsystemBase
 
     prevYaw = getDriveSimYaw();
 
-    fieldSim.setRobotPose(getFilterStateElement(0, 0), getFilterStateElement(3, 0), Rotation2d.fromDegrees(getHeading()));
+    //fieldSim.setRobotPose(getFilterStateElement(0, 0), getFilterStateElement(3, 0), Rotation2d.fromDegrees(getHeading()));
 
     // for later purposes
-    // fieldSim.setRobotPose(odometry.getPoseMeters());
+    fieldSim.setRobotPose(odometry.getPoseMeters().getX(),odometry.getPoseMeters().getY(),Rotation2d.fromDegrees(getHeading()));
+
+    SmartDashboard.putData("Field", fieldSim);
   }
 }

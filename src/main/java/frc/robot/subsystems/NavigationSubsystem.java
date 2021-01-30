@@ -12,8 +12,19 @@ import com.kauailabs.navx.frc.AHRS;
 import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.VecBuilder;
+import edu.wpi.first.wpiutil.math.numbers.N2;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.system.LinearSystem;
+import edu.wpi.first.wpilibj.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.util.Units;
+import edu.wpi.first.hal.SimDouble;
+import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -28,12 +39,38 @@ public class NavigationSubsystem extends SubsystemBase {
   private static final double STATE_STD_DEV = 0.1; // meters
   private static final double MEAS_STD_DEV = 0.01; // meters
 
-  private AHRS gyro;
+  private AHRS gyro = new AHRS(SPI.Port.kMXP);
   private DifferentialDriveOdometry odometry;
   private DriveSubsystem drive;
   private CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc]
   private Timer timer;
-  private Field2d fieldSim;
+  private Field2d fieldSim = new Field2d();
+
+  private final DifferentialDriveKinematics kinematics;
+
+  // Create our feedforward gain constants (from the characterization
+  // tool)
+  static final double KvLinear = 1.98;
+  static final double KaLinear = 0.2;
+  static final double KvAngular = 1.5;
+  static final double KaAngular = 0.3;
+
+  // Create the simulation model of our drivetrain.
+  private DifferentialDrivetrainSim driveSim = new DifferentialDrivetrainSim(
+  // Create a linear system from our characterization gains.
+  LinearSystemId.identifyDrivetrainSystem(KvLinear, KaLinear, KvAngular, KaAngular),
+  
+  DCMotor.getNEO(2),       // 2 NEO motors on each side of the drivetrain.
+  7.29,                    // 7.29:1 gearing reduction.
+  0.7112,                  // The track width is 0.7112 meters.
+  Units.inchesToMeters(3), // The robot uses 3" radius wheels.
+
+  // The standard deviations for measurement noise:
+  // x and y:          0.001 m
+  // heading:          0.001 rad
+  // l and r velocity: 0.1   m/s
+  // l and r position: 0.005 m
+  VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005));
 
   /**
    * Creates a new NavigationSubsystem.
@@ -41,11 +78,11 @@ public class NavigationSubsystem extends SubsystemBase {
    * @param drive - Drive subsystem with primary motors.
    */
   public NavigationSubsystem(DriveSubsystem drive) {
-
+    // TODO: Add switch to set navigation into simulation mode based on the drive subsystem
     timer = new Timer();
-    gyro = new AHRS(SPI.Port.kMXP);
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
     this.drive = drive;
+    kinematics = new DifferentialDriveKinematics(this.drive.ROBOT_DIAMETER);
 
     filter = new CustomKalmanFilter(new SimpleMatrix(6, 1), SimpleMatrix.identity(6),
         SimpleMatrix.identity(6).scale(Math.pow(STATE_STD_DEV, 2)),
@@ -210,5 +247,9 @@ public class NavigationSubsystem extends SubsystemBase {
 
   }
 
-
+  public void simulationPeriodic() {
+    int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
+    SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
+    angle.set(-driveSim.getHeading().getDegrees());
+  }
 }

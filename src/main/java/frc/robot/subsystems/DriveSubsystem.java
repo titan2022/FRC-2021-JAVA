@@ -24,7 +24,11 @@ public class DriveSubsystem extends SubsystemBase
   public static final int RIGHT_PRIMARY_PORT = 3;
   public static final int RIGHT_SECONDARY_PORT = 4;
 
-  public static final WPI_TalonSRX leftPrimary = new WPI_TalonSRX(LEFT_PRIMARY_PORT)
+  private static final int ENCODER_PORT = 1;
+
+  // Physical and Simulated Hardware
+  // These talon objects are also simulated
+  public final WPI_TalonSRX leftPrimary = new WPI_TalonSRX(LEFT_PRIMARY_PORT)
     , leftSecondary =new WPI_TalonSRX(LEFT_SECONDARY_PORT)
     , rightPrimary = new WPI_TalonSRX(RIGHT_PRIMARY_PORT)
     , rightSecondary = new WPI_TalonSRX(RIGHT_SECONDARY_PORT);
@@ -36,7 +40,7 @@ public class DriveSubsystem extends SubsystemBase
   private static final double MAX_MOTOR_VEL = 4000; // ticks/ (100ms)
   private static final boolean PRIMARY_MOTOR_SENSOR_PHASE = true;
 
-  private static final int ENCODER_PORT = 1;
+  
 
   /**
    * Creates a new DriveSubsystem.
@@ -216,5 +220,19 @@ public class DriveSubsystem extends SubsystemBase
   @Override
   public void simulationPeriodic() {
     PhysicsSim.getInstance().run();
+    
+    // To update our simulation, we set motor voltage inputs, update the
+    // simulation, and write the simulated positions and velocities to our
+    // simulated encoder and gyro. We negate the right side so that positive
+    // voltages make the right side move forward.
+    driveSim.setInputs(
+        m_leftLeader.get() * RobotController.getInputVoltage(),
+        -m_rightLeader.get() * RobotController.getInputVoltage());
+        driveSim.update(0.02);
+
+    drive.leftPrimary.setDistance(driveSim.getLeftPositionMeters());
+    drive.leftPrimary.setRate(driveSim.getLeftVelocityMetersPerSecond());
+    drive.rightPrimary.setDistance(driveSim.getRightPositionMeters());
+    drive.rightPrimary.setRate(driveSim.getRightVelocityMetersPerSecond());
   }
 }

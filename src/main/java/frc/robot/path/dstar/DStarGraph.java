@@ -111,6 +111,11 @@ public class DStarGraph {
         this(map, goal, 0);
     }
 
+    /**
+     * Sets the start position for the algorithm.
+     * 
+     * @param start  The new start position to use.
+     */
     public void setStart(Point position) {
         start.sever();
         start = new DStarNode(position, queue);
@@ -227,10 +232,16 @@ public class DStarGraph {
         dropNode(position, findNode(position));
     }
 
+    /**
+     * Returns the start node of this path planner.
+     */
     public DStarNode getStart() {
         return start;
     }
 
+    /**
+     * Returns the goal node of this path planner.
+     */
     public DStarNode getGoal() {
         return goal;
     }

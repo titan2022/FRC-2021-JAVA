@@ -21,6 +21,7 @@ import frc.robot.mapping.ObstacleMap;
 import frc.robot.mapping.Path;
 import frc.robot.mapping.Point;
 
+/** A D* Lite graph and path planning algorithm. */
 public class DStarGraph {
     private final Queue<DStarNode> queue = new PriorityQueue<DStarNode>();
     private final DStarNode goal;
@@ -29,6 +30,19 @@ public class DStarGraph {
     public final double radius;
     private Map<Obstacle, NavigableMap<Point, DStarNode>> obstacleSets = new HashMap<>();
 
+    /**
+     * Creates a DStarGraph path planner.
+     * 
+     * @param map  The map of the field. Updates to this will be reflected in
+     *  the generated path.
+     * @param start  The initial start point for this path planner. This can be
+     *  updated later through the use of {@link #setStart(Point)}.
+     * @param goal  The target location for this path planner. This cannot be
+     *  changed.
+     * @param radius  the obstacle growth radius to use. This is the minimum
+     *  distance the path must stay away from any obstacles. This cannot be
+     *  changed.
+     */
     public DStarGraph(ObstacleMap map, Translation2d start, Translation2d goal, double radius) {
         this.map = map;
         this.goal = new DStarNode(goal, queue, 0, 0);
@@ -41,12 +55,58 @@ public class DStarGraph {
         for(Obstacle obs : map.getObstacles())
             addObstacle(obs);
     }
+    /**
+     * Creates a DStarGraph path planner.
+     * 
+     * <p>This constructor is equivalent to
+     * {@link #DStarGraph(ObstacleMap, Translation2d, Translation2d, double)},
+     * but assumes the obstacle growth radius is 0.
+     * 
+     * @param map  The map of the field. Updates to this will be reflected in
+     *  the generated path.
+     * @param start  The initial start point for this path planner. This can be
+     *  updated later through the use of {@link #setStart(Point)}.
+     * @param goal  The target location for this path planner. This cannot be
+     *  changed.
+     */
     public DStarGraph(ObstacleMap map, Translation2d start, Translation2d goal) {
         this(map, start, goal, 0);
     }
+    /**
+     * Creates a DStarGraph path planner.
+     * 
+     * <p>This constructor is equivalent to
+     * {@link #DStarGraph(ObstacleMap, Translation2d, Translation2d, double)},
+     * but initializes the start position to be equal to the goal position. The
+     * {@link #setStart(Point)} method can be used to change the start position
+     * after this object is initialized.
+     * 
+     * @param map  The map of the field. Updates to this will be reflected in
+     *  the generated path.
+     * @param goal  The target location for this path planner. This cannot be
+     *  changed.
+     * @param radius  the obstacle growth radius to use. This is the minimum
+     *  distance the path must stay away from any obstacles. This cannot be
+     *  changed.
+     */
     public DStarGraph(ObstacleMap map, Translation2d goal, double radius) {
         this(map, goal, goal, radius);
     }
+    /**
+     * Creates a DStarGraph path planner.
+     * 
+     * <p>This constructor is equivalent to
+     * {@link #DStarGraph(ObstacleMap, Translation2d, Translation2d, double)},
+     * but assumes the obstacle growth radius is 0 and initializes the start
+     * position to be equal to the goal position. The {@link #setStart(Point)}
+     * method can be used to change the start position after this object is
+     * initialized.
+     * 
+     * @param map  The map of the field. Updates to this will be reflected in
+     *  the generated path.
+     * @param goal  The target location for this path planner. This cannot be
+     *  changed.
+     */
     public DStarGraph(ObstacleMap map, Translation2d goal) {
         this(map, goal, 0);
     }

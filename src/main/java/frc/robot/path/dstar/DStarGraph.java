@@ -137,12 +137,25 @@ public class DStarGraph {
         }
     }
 
+    /**
+     * Finds the shortest path from the start to the goal.
+     * 
+     * @return  The first segment of the shortest path from the start position
+     *  to the goal.
+     * @see #getPath()
+     */
     public Path getSegment() {
         while(queue.size() > 0 && (queue.peek().key() < start.key() || !start.isConsistent()))
             queue.poll().rectify();
         return start.getPath();
     }
 
+    /**
+     * Finds the shortest path from the start to the goal.
+     * 
+     * @return  The complete shortest path from the start position to the goal.
+     * @see #getSegment()
+     */
     public CompoundPath getPath() {
         List<Path> parts = new LinkedList<>();
         DStarNode node = start;

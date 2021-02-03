@@ -28,13 +28,12 @@ public class SimulationCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   //MatBuilder DifferentialJacobianBuilder;
   private Matrix DifferentialJacobian;
-  private double vl;
-  private double vr;
+  private double previousTime, currentTime, deltaT;
+  private double vl, vr, newPosX, newPosY;
   private Field2d f;
   private Timer timer;
-  private double previousTime;
   private DifferentialDriveKinematics object;
-  private Rotation2d rotationamount;
+  private Rotation2d newRotation;
   
 
   /**
@@ -55,14 +54,18 @@ public class SimulationCommand extends CommandBase {
     //set up the simulation environment w position
 
     timer = new Timer();
-    f = new Field2d();
     timer.start();
     previousTime = timer.get();
+
+    f = new Field2d();
     f.setRobotPose(7, 3, new Rotation2d(0));
+
     vl = 5;
     vr = 10;
+
     SmartDashboard.putNumber("left", 5);
     SmartDashboard.putNumber("right", 10);
+
     object = new DifferentialDriveKinematics(1, 1);
   }
 
@@ -70,20 +73,26 @@ public class SimulationCommand extends CommandBase {
   @Override
   public void execute() {
     //import my kinematics class and run the kinematics command on the previous position and the given left and right wheel velocities
-    double currentTime = timer.get();
-    double deltat = currentTime - previousTime;
+    currentTime = timer.get();
+    deltaT = currentTime - previousTime;
+
     vl = SmartDashboard.getNumber("left", 5);
     vr = SmartDashboard.getNumber("right", 10);
+
     //use left and right velocity and phi
     DifferentialJacobian = object.getAbsoluteVelocity(vl, vr, f.getRobotPose().getRotation().getRadians());
 
-    
-    rotationamount = new Rotation2d(DifferentialJacobian.get(2,0) * deltat + f.getRobotPose().getRotation().getRadians());
+    //Set new rotation, x position, and y positions using our differential Jacobian.    
+    newRotation = new Rotation2d(DifferentialJacobian.get(2,0) * deltaT + f.getRobotPose().getRotation().getRadians());
+    newPosX = DifferentialJacobian.get(0,0) * deltaT + f.getRobotPose().getTranslation().getX();
+    newPosY = DifferentialJacobian.get(1,0) * deltaT + f.getRobotPose().getTranslation().getY();
 
     //add intgrated values to the current position
-    f.setRobotPose(DifferentialJacobian.get(0,0) * deltat + f.getRobotPose().getTranslation().getX(), DifferentialJacobian.get(1,0) * deltat + f.getRobotPose().getTranslation().getY(), rotationamount);
-    previousTime = currentTime;
+    f.setRobotPose(newPosX, newPosY, newRotation);
     
+    previousTime = currentTime;
+
+    //If the robot goes out of bounds, place the robot back on the field. 
     if(f.getRobotPose().getTranslation().getX() <= 0 || f.getRobotPose().getTranslation().getX() >= 15.98 || f.getRobotPose().getTranslation().getY() <= 0 || f.getRobotPose().getTranslation().getY() >= 8.21)
     {
       f.setRobotPose(7, 3, new Rotation2d(0));

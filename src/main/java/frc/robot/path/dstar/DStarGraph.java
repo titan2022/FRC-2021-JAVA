@@ -210,6 +210,14 @@ public class DStarGraph {
         };
     }
 
+    /**
+     * Adds a node to the graph used by this path planner.
+     * 
+     * @param position  The position of the new node.
+     * @param obstacle  The obstacle to associate the node with.
+     * @return  True, if a new node was added, or false if the node already
+     *  existed in the graph.
+     */
     public boolean addNode(Point position, Obstacle obstacle) {
         NavigableMap<Point, DStarNode> obsSet = obstacleSets.get(obstacle);
         if(position.equals(obsSet.floorKey(position)) || position.equals(obsSet.ceilingKey(position)))
@@ -234,6 +242,15 @@ public class DStarGraph {
         return true;
     }
 
+    /**
+     * Removes a node from the graph used by this path planner.
+     * 
+     * <p>This method will fail if the position and obstacle do not refer to
+     * a valid node in the graph.
+     * 
+     * @param position  The position of the node to remove.
+     * @param obstacle  The obstacle associated with the node.
+     */
     public void dropNode(Point position, Obstacle obstacle) {
         NavigableMap<Point, DStarNode> obsSet = obstacleSets.get(obstacle);
         DStarNode node = getNode(position, obstacle, false);  // TODO: add check for null value
@@ -254,6 +271,15 @@ public class DStarGraph {
             }
         }
     }
+    /**
+     * Removes a node from the graph used by this path planner.
+     * 
+     * <p>This is a convience wrapper for {@link #dropNode(Point, Obstacle)}
+     * when the position of the node to be removed uniquely identifies the node
+     * in this graph.
+     * 
+     * @param position  The position of the node to remove.
+     */
     public void dropNode(Point position) {
         dropNode(position, findNode(position));
     }

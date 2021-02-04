@@ -166,6 +166,12 @@ public class DStarGraph {
         return new CompoundPath(parts.toArray(new Path[0]));
     }
 
+    /**
+     * Returns an iterable over the nodes in the graph of this path planner.
+     * 
+     * @return  An iterable over the nodes contianed in the graph used by
+     *  this D* Lite algorithm instance.
+     */
     public Iterable<DStarNode> getNodes() {
         Set<DStarNode> res = new LinkedHashSet<>();
         res.add(goal);
@@ -175,6 +181,13 @@ public class DStarGraph {
         return res;
     }
 
+    /**
+     * Returns an iterable over the edges in the graph of this path planner.
+     * 
+     * @return  An iterable over the edges contianed in the graph used by
+     *  this D* Lite algorithm instance. Two directed paths are returned for
+     *  every undirected edge in the graph.
+     */
     public Iterable<Path> getEdges() {
         return new Iterable<Path>() {
             @Override

@@ -298,6 +298,12 @@ public class DStarGraph {
         return goal;
     }
 
+    /**
+     * Finds the obstacle associated with a node in this graph.
+     * 
+     * @param position  The position of the node.
+     * @return  The obstacle associated with the specified node in this graph.
+     */
     Obstacle findNode(Point position) {
         for(Map.Entry<Obstacle, NavigableMap<Point, DStarNode>> entry : obstacleSets.entrySet())
             if(position.equals(entry.getValue().floorKey(position)) || position.equals(entry.getValue().ceilingKey(position)))
@@ -305,6 +311,16 @@ public class DStarGraph {
         return null;
     }
 
+    /**
+     * Returns the node associated with a specific location and obstacle.
+     * 
+     * @param position  The position of the node to return.
+     * @param obstacle  The obstacle associated with the node.
+     * @param addIfMissing  Whether to add a node with the specified position
+     *  and associated obstacle if one does not already exist in this graph.
+     *  If true, the added node is returned. If false, null is returned.
+     * @return  Either the specified node or null, if no such node exists.
+     */
     DStarNode getNode(Point position, Obstacle obstacle, boolean addIfMissing) {
         if(addIfMissing)
             addNode(position, obstacle);
@@ -316,9 +332,29 @@ public class DStarGraph {
         else
             return null;
     }
+    /**
+     * Returns the node associated with a specific location and obstacle.
+     * 
+     * <p>This method is identical to {@link #getNode(Point, Obstacle, boolean)}
+     * with addIfMissing assumed to be true. This method will not return null.
+     * 
+     * @param position  The position of the node to return.
+     * @param obstacle  The obstacle associated with the node.
+     * @return  The specified node.
+     */
     DStarNode getNode(Point position, Obstacle obstacle) {
         return getNode(position, obstacle, true);
     }
+    /**
+     * Returns the node associated with a specific location and obstacle.
+     * 
+     * <p>This method will fail if the specified position is not associated
+     * with a node in this graph. See {@link #getNode(Point, Obstacle, boolean)}
+     * or {@link #getNode(Point, Obstacle)} if this is not the desired behavior.
+     * 
+     * @param position  The position of the node to return.
+     * @return  The specified node.
+     */
     DStarNode getNode(Point position) {
         return getNode(position, findNode(position), false);
     }

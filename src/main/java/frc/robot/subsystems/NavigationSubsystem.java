@@ -44,8 +44,8 @@ public class NavigationSubsystem extends SubsystemBase {
   // AHRS SimDoubles
   private SimDouble yaw; // degs
   private SimDouble rate; // degs / sec
-  private double simPrevT;
-  private double prevYaw = 0;
+  private double simPrevT = 0;
+  private double simPrevYaw = 0;
 
   // Physics simulation
   private Field2d fieldSim = new Field2d();
@@ -262,9 +262,9 @@ public class NavigationSubsystem extends SubsystemBase {
 
     yaw.set(getDriveSimYaw());
 
-    rate.set((getDriveSimYaw() - prevYaw) / (getRobotTime() - simPrevT));
+    rate.set((getDriveSimYaw() - simPrevYaw) / (getRobotTime() - simPrevT));
     simPrevT = getRobotTime();
-    prevYaw = getDriveSimYaw();
+    simPrevYaw = getDriveSimYaw();
 
     // fieldSim.setRobotPose(getFilterStateElement(0, 0), getFilterStateElement(3,
     // 0), Rotation2d.fromDegrees(getHeading()));

@@ -5,7 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.system.plant.LinearSystemId;
@@ -74,7 +74,7 @@ public class DriveSubsystem extends SubsystemBase
   private static final double RIGHT_POS_MEAS_NOISE = 0.005; // meter
 
   // Physics timer
-  private Timer simTime;
+  private double simPrevT = 0;
 
   // Create the simulation model of our drivetrain.
   private DifferentialDrivetrainSim driveSim;
@@ -155,9 +155,7 @@ public class DriveSubsystem extends SubsystemBase
       ROBOT_TRACK_WIDTH,
       WHEEL_RADIUS,
       VecBuilder.fill(X_MEAS_NOISE, Y_MEAS_NOISE, HEADING_MEAS_NOISE, LEFT_VEL_MEAS_NOISE, RIGHT_VEL_MEAS_NOISE, LEFT_POS_MEAS_NOISE, RIGHT_POS_MEAS_NOISE));
-
-    simTime = new Timer();
-    simTime.start();
+  
   }
 
   /**
@@ -264,6 +262,17 @@ public class DriveSubsystem extends SubsystemBase
     }
   }
 
+    /**
+   * Gets FPGA time from robot and converts it to seconds.
+   * 
+   * @return FPGA time in seconds.
+   */
+  public double getRobotTime() {
+
+    return RobotController.getFPGATime() / 1e6;
+
+  }
+
   // Simulation Interface Methods
   public DifferentialDrivetrainSim getDriveSim() { // TODO: throw exception when the driveSubsystem is not being simulated
     return driveSim;
@@ -288,8 +297,8 @@ public class DriveSubsystem extends SubsystemBase
     //     m_leftLeader.get() * RobotController.getInputVoltage(),
     //     -m_rightLeader.get() * RobotController.getInputVoltage());
     driveSim.setInputs(leftPrimary.getMotorOutputVoltage(), rightPrimary.getMotorOutputVoltage());
-    driveSim.update(simTime.get());
-    simTime.reset();
+    driveSim.update(getRobotTime() - simPrevT);
+    simPrevT = getRobotTime();
 
     leftPrimary.setSelectedSensorPosition(driveSim.getLeftPositionMeters());
     rightPrimary.setSelectedSensorPosition(driveSim.getRightPositionMeters());

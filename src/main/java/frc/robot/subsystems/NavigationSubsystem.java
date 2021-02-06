@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -25,8 +26,7 @@ import edu.wpi.first.wpilibj.Timer;
 /**
  * Navigation Subsystem using Differential Drive Odometry and Gyro
  */
-public class NavigationSubsystem extends SubsystemBase
-{
+public class NavigationSubsystem extends SubsystemBase {
   // ALL ODOMETRY DONE IN METERS, not imperial
   private static final double STATE_STD_DEV = 0.1; // meters
   private static final double MEAS_STD_DEV = 0.01; // meters
@@ -44,8 +44,7 @@ public class NavigationSubsystem extends SubsystemBase
   // AHRS SimDoubles
   private SimDouble yaw; // degs
   private SimDouble rate; // degs / sec
-  private double simDeltaT;
-  private Timer simTimer;
+  private double simPrevT;
   private double prevYaw = 0;
 
   // Physics simulation
@@ -71,20 +70,17 @@ public class NavigationSubsystem extends SubsystemBase
     timer.start();
   }
 
-  public NavigationSubsystem(DriveSubsystem drive, boolean simulated)
-  {
+  public NavigationSubsystem(DriveSubsystem drive, boolean simulated) {
     this(drive);
-    if(simulated) enableSimulation();
+    if (simulated)
+      enableSimulation();
   }
 
-  private void enableSimulation()
-  {
+  private void enableSimulation() {
 
     int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
     yaw = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
     rate = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Rate"));
-    simTimer = new Timer();
-    simTimer.start();
 
   }
 
@@ -178,6 +174,7 @@ public class NavigationSubsystem extends SubsystemBase
 
   /**
    * Gets filterable vector motion measurement from odometry.
+   * 
    * @return Odometry vector measurement.
    */
   private SimpleMatrix getOdometryMeas() {
@@ -189,6 +186,7 @@ public class NavigationSubsystem extends SubsystemBase
 
   /**
    * Gets filterable vector motion measurement from gyro.
+   * 
    * @return Gyro vector measurement.
    */
   private SimpleMatrix getGyroMeas() {
@@ -225,13 +223,25 @@ public class NavigationSubsystem extends SubsystemBase
 
   /**
    * Returns an element from the Kalman filter's current state.
-   * @param row - Row of state.
+   * 
+   * @param row    - Row of state.
    * @param column - Row of state.
    * @return Element from current filter state.
    */
   public double getFilterStateElement(int row, int column) {
 
     return filter.getState().get(row, column);
+
+  }
+
+  /**
+   * Gets FPGA time from robot and converts it to seconds.
+   * 
+   * @return FPGA time in seconds.
+   */
+  public double getRobotTime() {
+
+    return RobotController.getFPGATime() / 1e6;
 
   }
 
@@ -243,25 +253,25 @@ public class NavigationSubsystem extends SubsystemBase
     filter.setA(updateA(timer.get()));
     timer.reset();
 
-    // TODO: add filter.predictFilter(input (velocity)), bringing input from Xbox controller
+    // TODO: add filter.predictFilter(input(velocity)), bringing input from Xbox controller
     filter.updateFilter(getOdometryMeas());
     filter.updateFilter(getGyroMeas());
   }
 
   public void simulationPeriodic() {
 
-    simDeltaT = simTimer.get();
-    simTimer.reset();
-    
     yaw.set(getDriveSimYaw());
-    rate.set((getDriveSimYaw() - prevYaw) / simDeltaT);
 
+    rate.set((getDriveSimYaw() - prevYaw) / (getRobotTime() - simPrevT));
+    simPrevT = getRobotTime();
     prevYaw = getDriveSimYaw();
 
-    //fieldSim.setRobotPose(getFilterStateElement(0, 0), getFilterStateElement(3, 0), Rotation2d.fromDegrees(getHeading()));
+    // fieldSim.setRobotPose(getFilterStateElement(0, 0), getFilterStateElement(3,
+    // 0), Rotation2d.fromDegrees(getHeading()));
 
     // for later purposes
-    fieldSim.setRobotPose(odometry.getPoseMeters().getX(),odometry.getPoseMeters().getY(),Rotation2d.fromDegrees(getHeading()));
+    fieldSim.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(),
+        Rotation2d.fromDegrees(getHeading()));
 
     SmartDashboard.putData("Field", fieldSim);
   }

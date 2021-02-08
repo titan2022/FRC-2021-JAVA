@@ -359,6 +359,14 @@ public class DStarGraph {
         return getNode(position, findNode(position), false);
     }
 
+    /**
+     * Adds an edge to the graph used by this path planner.
+     * 
+     * @param a  The obstacle associated with the first end of the edge.
+     * @param b  The obstacle associated with the second end of the edge.
+     * @param edge  The path from the first end to the second end of the edge.
+     *  Both this and the reversal of this edge will be added to the graph.
+     */
     void addEdge(Obstacle a, Obstacle b, Path edge) {
         DStarNode beg = getNode(edge.getStart(), a, true);
         DStarNode end = getNode(edge.getEnd(), b, true);
@@ -366,7 +374,15 @@ public class DStarGraph {
         end.connect(beg, edge.reverse());
     }
 
-    void addObstacle(Obstacle obstacle) {
+    /**
+     * Adds an obstacle to the graph used by this path planner.
+     * 
+     * <p>Normally, this method will be called implicitly when an obstacle
+     * is added to the map associated with this path planner.
+     * 
+     * @param obstacle  The obstacle to add.
+     */
+    public void addObstacle(Obstacle obstacle) {
         if(obstacleSets.containsKey(obstacle)) return;
         // Remove blocked connections
 		for(var entry : obstacleSets.entrySet()){
@@ -401,6 +417,14 @@ public class DStarGraph {
         }
     }
 
+    /**
+     * Removes an obstacle from the graph used by this path planner.
+     * 
+     * <p>Normally, this method will be called implicitly when an obstacle
+     * is fromed from the map associated with this path planner.
+     * 
+     * @param obstacle  The obstacle to remove.
+     */
     public void removeObstacle(Obstacle obstacle) {
         for(DStarNode node : new ArrayList<>(obstacleSets.get(obstacle).values()))
             dropNode(node, obstacle);

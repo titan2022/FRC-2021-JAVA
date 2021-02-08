@@ -44,10 +44,16 @@ public class DStarNode extends Point implements Comparable<DStarNode> {
         this.rhs = rhs;
     }
 
+    /**
+     * Returns the next edge on the minimum cost path through this node.
+     */
     public Path getPath() {
         return edges.get(next);
     }
 
+    /**
+     * Returns the next node on the minimum cost path through this node.
+     */
     public DStarNode getNext() {
         return next;
     }
@@ -134,18 +140,34 @@ public class DStarNode extends Point implements Comparable<DStarNode> {
         return edges.size();
     }
 
+    /**
+     * Returns a view of the neighbors of this node.
+     */
     public Collection<DStarNode> getNeighbors() {
         return edges.keySet();
     }
 
+    /**
+     * Returns a view of the edges of this node.
+     */
     public Collection<Path> getEdges() {
         return edges.values();
     }
 
+    /**
+     * Returns a view of the neighbors and edges of this node.
+     * 
+     * @return  A collection of map entries mapping the neighbors of this
+     *  node to the edges associated with them.
+     */
     public Collection<Map.Entry<DStarNode, Path>> getConnections() {
         return edges.entrySet();
     }
 
+    
+    /**
+     * Returns the edge from this node associated with one of its neighbors.
+     */
     public Path getEdge(DStarNode neighbor) {
         return edges.get(neighbor);
     }

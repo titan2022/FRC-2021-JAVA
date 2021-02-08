@@ -148,7 +148,7 @@ public class DStarTester extends CommandBase {
         boolean truth = true;
         boolean allPass = true;
         ObstacleMap map = new ObstacleMap();
-        DStarGraph graph = new DStarGraph(map, new Point(0, 0), new Point(10, 10), 1);
+        DStarLite graph = new DStarLite(map, new Point(0, 0), new Point(10, 10), 1);
         truth = graph.getStart().equals(new Point(0, 0));
         allPass &= truth;
         truth = graph.getGoal().equals(new Point(10, 10));
@@ -178,7 +178,7 @@ public class DStarTester extends CommandBase {
         ObstacleMap map = new ObstacleMap();
         Obstacle first = new Polygon(new Point(1, 4), new Point(4, 1), new Point(2, 2));
         map.addObstacle(first);
-        DStarGraph graph = new DStarGraph(map, new Point(0, 0), new Point(10, 10), 0.1);
+        DStarLite graph = new DStarLite(map, new Point(0, 0), new Point(10, 10), 0.1);
         truth = graph.getStart().getDegree() == 2;
         allPass &= truth;
         truth = graph.getGoal().getDegree() == 2;

@@ -1,322 +1,457 @@
 package frc.robot.path.dstar;
 
-import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+import java.util.TreeMap;
 
-import frc.robot.mapping.Point;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import frc.robot.mapping.CompoundPath;
+import frc.robot.mapping.LinearSegment;
+import frc.robot.mapping.Obstacle;
+import frc.robot.mapping.ObstacleMap;
 import frc.robot.mapping.Path;
+import frc.robot.mapping.Point;
 
-/** An implementation of the D* Lite dynamic path planning algorithm. */
+/** A D* Lite graph and path planning algorithm. */
 public class DStarLite {
-  private Node start;
-  private Node goal;
-  private PriorityQueue<Node> queue = new PriorityQueue<Node>();
-  private Set<Obstacle> map = new LinkedHashSet<Obstacle>();
-  public final double radius;
-  
-  /**
-   * Creates an instance of the D* Lite algorithm.
-   * 
-   * @param start  The start node for the algorithm.
-   *  This will change as the robot moves.
-   * @param goal  The goal node for the algorithm.
-   * @param radius  The obstacle growth radius to use. That is, the minimum
-   *  distance any point on a valid path may be away from the nearest obstacle.
-   * @param obstacles  The obstacles to avoid along the path.
-   */
-  public DStarLite(Node start, Node goal, double radius, Obstacle... obstacles) {
-    this.start = start;
-    this.goal = goal;
-    this.radius = radius;
-    goal.rhs = 0;
-    queue.add(goal);
-    start.edges.add(goal);
-    for(Obstacle obs : obstacles)
-      addObstacle(obs);
-  }
-  /**
-   * Creates an instance of the D* Lite algorithm.
-   * 
-   * <p>This constructor does not allow specification of the obstacle growth
-   * radius to use, instead assuming a radius of 0. See
-   * {@link #DStarLite(Node, Node, double, Obstacle...)} to specify a different
-   * radius.
-   * 
-   * @param start  The start node for the algorithm.
-   *  This will change as the robot moves.
-   * @param goal  The goal node for the algorithm.
-   * @param obstacles  The obstacles to avoid along the path.
-   */
-  public DStarLite(Node start, Node goal, Obstacle... obstacles) {
-    this(start, goal, 0.0, obstacles);
-  }
+    private final Queue<DStarNode> queue = new PriorityQueue<DStarNode>();
+    private final DStarNode goal;
+    private DStarNode start;
+    public final ObstacleMap map;
+    public final double radius;
+    private Map<Obstacle, NavigableMap<Point, DStarNode>> obstacleSets = new HashMap<>();
 
-  /**
-   * Sets the start node for the algorithm.
-   * 
-   * @param start  The new start node to use.
-   */
-  public void setStart(Node start) {
-    remove(this.start);
-    this.start = start;
-    connect(start);
-  }
-
-  /**
-   * Sets the goal node for the algorithm.
-   * 
-   * @param goal  The new goal node to use.
-   */
-  public void setGoal(Node goal) {
-    remove(this.goal);
-    this.goal = goal;
-    goal.rhs = 0;
-    connect(goal);
-  }
-
-  public Node getStart() {
-    return start;
-  }
-  
-  public Node getGoal() {
-    return goal;
-  }
-
-  /**
-   * Computes the shortest to the goal and returns the next node along the path.
-   * 
-   * This method also automatically creates edges to connect nodes to their
-   * relevant neighbors as necessary, so connections between nodes do not have
-   * to be pre-specified.
-   * 
-   * @return  The next node along the shortest path to the goal node.
-   */
-  public Node getPath() {
-    while(queue.size() > 0 && (queue.peek().key() < start.key() || start.g != start.rhs)){
-      Node v = queue.poll();
-      if(v.g > v.rhs){
-        v.g = v.rhs;
-      }
-      else if(v.g < v.rhs){
-        v.g = Double.POSITIVE_INFINITY;
-        updateVertex(v);
-      }
-      if(!v.visited) connect(v);
-      for(Node e: v.edges){
-        updateVertex(e);
-      }
+    /**
+     * Creates a DStarLite path planner.
+     * 
+     * @param map  The map of the field. Updates to this will be reflected in
+     *  the generated path.
+     * @param start  The initial start point for this path planner. This can be
+     *  updated later through the use of {@link #setStart(Point)}.
+     * @param goal  The target location for this path planner. This cannot be
+     *  changed.
+     * @param radius  the obstacle growth radius to use. This is the minimum
+     *  distance the path must stay away from any obstacles. This cannot be
+     *  changed.
+     */
+    public DStarLite(ObstacleMap map, Translation2d start, Translation2d goal, double radius) {
+        this.map = map;
+        this.goal = new DStarNode(goal, queue, 0, 0);
+        this.start = new DStarNode(start, queue);
+        this.radius = radius;
+        this.map.onAddition(this::addObstacle);
+        this.map.onRemoval(this::removeObstacle);
+        this.start.connect(this.goal, new LinearSegment(this.start, this.goal));
+        this.goal.connect(this.start, new LinearSegment(this.goal, this.start));
+        for(Obstacle obs : map.getObstacles())
+            addObstacle(obs);
     }
-    return start.getNext();
-  }
+    /**
+     * Creates a DStarLite path planner.
+     * 
+     * <p>This constructor is equivalent to
+     * {@link #DStarLite(ObstacleMap, Translation2d, Translation2d, double)},
+     * but assumes the obstacle growth radius is 0.
+     * 
+     * @param map  The map of the field. Updates to this will be reflected in
+     *  the generated path.
+     * @param start  The initial start point for this path planner. This can be
+     *  updated later through the use of {@link #setStart(Point)}.
+     * @param goal  The target location for this path planner. This cannot be
+     *  changed.
+     */
+    public DStarLite(ObstacleMap map, Translation2d start, Translation2d goal) {
+        this(map, start, goal, 0);
+    }
+    /**
+     * Creates a DStarLite path planner.
+     * 
+     * <p>This constructor is equivalent to
+     * {@link #DStarLite(ObstacleMap, Translation2d, Translation2d, double)},
+     * but initializes the start position to be equal to the goal position. The
+     * {@link #setStart(Point)} method can be used to change the start position
+     * after this object is initialized.
+     * 
+     * @param map  The map of the field. Updates to this will be reflected in
+     *  the generated path.
+     * @param goal  The target location for this path planner. This cannot be
+     *  changed.
+     * @param radius  the obstacle growth radius to use. This is the minimum
+     *  distance the path must stay away from any obstacles. This cannot be
+     *  changed.
+     */
+    public DStarLite(ObstacleMap map, Translation2d goal, double radius) {
+        this(map, goal, goal, radius);
+    }
+    /**
+     * Creates a DStarLite path planner.
+     * 
+     * <p>This constructor is equivalent to
+     * {@link #DStarLite(ObstacleMap, Translation2d, Translation2d, double)},
+     * but assumes the obstacle growth radius is 0 and initializes the start
+     * position to be equal to the goal position. The {@link #setStart(Point)}
+     * method can be used to change the start position after this object is
+     * initialized.
+     * 
+     * @param map  The map of the field. Updates to this will be reflected in
+     *  the generated path.
+     * @param goal  The target location for this path planner. This cannot be
+     *  changed.
+     */
+    public DStarLite(ObstacleMap map, Translation2d goal) {
+        this(map, goal, 0);
+    }
 
-  /**
-   * Finds the shortest to the goal and returns the next segment along the path.
-   * 
-   * This method automatically creates edges to connect nodes to their relevant
-   * neighbors as necessary, so connections between nodes do not have to be
-   * pre-specified.
-   * 
-   * @return  The next path {@link Segment} along the shortest path to goal with
-   *  the specified obstacle growth radius, or null if the start point is
-   *  already within the specified radius around the goal.
-   */
-  public Path getSegment() {
-    Node target = getPath();
-    if(start.getDistance(goal) <= radius)
-      return null;
-    else if(start.getDistance(target) <= radius)
-      return target.segmentAround(start, target.getNext());
-    else
-      return target.segmentFrom(start, radius);
-  }
-
-  /**
-   * Gets an iterable over the path segments from the start node to the goal.
-   * 
-   * @return An iterable of {@link Segment}s describing the path to the
-   *  goal. If the most recently returned path segment ends at a Node that
-   *  is still a part of the shortest path to goal after the map is
-   *  updated, updates to the map stored in this object will be
-   *  reflected by the iterator if the {@link #getPath()} method of this
-   *  object is called before the next segment is returned from the
-   *  iterator.
-   * @see #getSegment(double)
-   */
-  public Iterable<Path> getSegments() {
-    return new Iterable<Path>() {
-      @Override
-      public Iterator<Path> iterator(){
-        return new Iterator<Path>() {
-          private Node curr = start;
-          private Point pos = start;
-
-          @Override
-          public boolean hasNext() {
-            return pos.getDistance(goal) <= radius;
-          }
-
-          @Override
-          public Path next() {
-            Path path = curr.nextSegment(pos, radius);
-            if(path != null && path.getLength() == 0){
-              curr = curr.getNext();
-              path = curr.nextSegment(pos, radius);
+    /**
+     * Sets the start position for the algorithm.
+     * 
+     * @param start  The new start position to use.
+     */
+    public void setStart(Point position) {
+        start.sever();
+        start = new DStarNode(position, queue);
+        Path goalEdge = new LinearSegment(start, goal);
+        for(Obstacle obs : map.getObstacles()){
+            for(Point endpoint : obs.getEndpoints(start, radius)){
+                if(map.isClear(new LinearSegment(start, endpoint), radius, obs)){
+                    DStarNode vertex = getNode(endpoint, obs, true);
+                    start.connect(vertex, new LinearSegment(position, endpoint));
+                    vertex.connect(start, new LinearSegment(endpoint, position));
+                }
             }
-            pos = path.getEnd();
-            return path;
-          }
-        };
-      }
-    };
-  }
-
-  private void updateVertex(Node v) {
-    if(v != goal){
-      Node next = v.getNext();
-      if(next != null) v.rhs = v.weightTo(next) + next.g;
-    }
-    queue.remove(v);
-    if(v.rhs != v.g) queue.add(v);
-  }
-
-  private void connect(Node v) {
-    for(Node endpoint : endpoints(v)){
-      if(v.isEndpoint(endpoint) && v != endpoint && isClear(v, endpoint)){
-        v.edges.add(endpoint);
-        endpoint.edges.add(v);
-        updateVertex(endpoint);
-      }
-    }
-    updateVertex(v);
-    v.visited = true;
-  }
-
-  private void remove(Node v) {
-    for(Node neighbor : v.edges){
-      neighbor.edges.remove(v);
-      updateVertex(neighbor);
-    }
-    queue.remove(v);
-  }
-
-  /**
-   * Determines if a straight path between two nodes is free of obstacles.
-   * 
-   * @param start  The node at one endpoint of the straight path.
-   * @param end  The node at the other endpoint of the straight path.
-   * @return  Either true, if the path does not pass through the interior of any
-   *  obstacles, or false, otherwise.
-   * @see Obstacle#isClear(Node, Node)
-   */
-  public boolean isClear(Node start, Node end) {
-    Point mid = start.plus(end).div(2);
-    Point a = start.getTangency(mid, radius);
-    Point b = end.getTangency(mid, radius);
-    for(Obstacle obs : map)
-      if(!obs.isClear(a, b))
-        return false;
-    return true;
-  }
-
-  /**
-   * Adds an obstacle to the internal map used to compute the shortest path.
-   * 
-   * This method automatically connects each vertex of the new obstacle to all
-   * relevant neighbors.
-   * 
-   * This can be used along with {@link #deleteObstacle(Obstacle)} to change an
-   * obstacle.
-   * 
-   * @param obstacle  The obstacle to add to the map.
-   */
-  public void addObstacle(Obstacle obstacle) {
-    for(Obstacle obs : map){
-      for(Node v : obs){
-        for(Node u : new LinkedHashSet<Node>(v.edges)){
-          if(!obstacle.isClear(u, v)){
-            u.edges.remove(v);
-            v.edges.remove(u);
-            updateVertex(u);
-            updateVertex(v);
-          }
+            if(goalEdge != null && !obs.isClear(goalEdge, radius))
+                goalEdge = null;
         }
-      }
+        if(goalEdge != null){
+            start.connect(goal, goalEdge);
+            goal.connect(start, goalEdge);
+        }
     }
-    if(!obstacle.isClear(start, goal)){
-      start.edges.remove(goal);
-      goal.edges.remove(start);
-      updateVertex(start);
-      updateVertex(goal);
-    }
-    map.add(obstacle);
-    for(Node node : obstacle){
-      connect(node);
-    }
-  }
 
-  /**
-   * Removes an obstacle from the internal map used to compute the shortest path.
-   * 
-   * This method automatically informs the neighbors of each of the vertexes of
-   * the removed obstacle and severs the relevant edges.
-   * 
-   * This can be used along with {@link #addObstacle(Obstacle)} to change an
-   * obstacle.
-   * 
-   * @param obstacle  The obstacle to remove from the map.
-   */
-  public void deleteObstacle(Obstacle obstacle) {
-    map.remove(obstacle);
-    for(Node vertex : obstacle){
-      remove(vertex);
+    /**
+     * Finds the shortest path from the start to the goal.
+     * 
+     * @return  The first segment of the shortest path from the start position
+     *  to the goal.
+     * @see #getPath()
+     */
+    public Path getSegment() {
+        while(queue.size() > 0 && (queue.peek().key() < start.key() || !start.isConsistent()))
+            queue.poll().rectify();
+        return start.getPath();
     }
-  }
 
-  /**
-   * Returns an iterator over all endpoints visible from a given node.
-   * 
-   * <p>See {@link Obstacle#endpoint(Node)} for more information about endpoints.
-   * The iterator returned by this method considers the start and goal nodes
-   * to be endpoints visible from every location.
-   * 
-   * @param source  The node to find the endpoints from.
-   */
-  public Iterable<Node> endpoints(Node source) {
-    return new Iterable<Node>() {
-      @Override
-      public Iterator<Node> iterator() {
-        return new Iterator<Node>() {
-          private Iterator<Obstacle> mapIter;
-          private Node[] ends;
-          private int idx=0;
+    /**
+     * Finds the shortest path from the start to the goal.
+     * 
+     * @return  The complete shortest path from the start position to the goal.
+     * @see #getSegment()
+     */
+    public CompoundPath getPath() {
+        List<Path> parts = new LinkedList<>();
+        DStarNode node = start;
+        while(node != goal){
+            parts.add(node.getEdge(node.getNext()));
+            node = node.getNext();
+        }
+        return new CompoundPath(parts.toArray(new Path[0]));
+    }
 
-          @Override
-          public Node next() {
-            if(mapIter == null){
-              mapIter = map.iterator();
-              if(mapIter.hasNext()) ends = mapIter.next().endpoints(source);
-              else ends = new Node[]{};
-              return goal;
+    /**
+     * Returns an iterable over the nodes in the graph of this path planner.
+     * 
+     * @return  An iterable over the nodes contianed in the graph used by
+     *  this D* Lite algorithm instance.
+     */
+    public Iterable<DStarNode> getNodes() {
+        Set<DStarNode> res = new LinkedHashSet<>();
+        res.add(goal);
+        res.add(start);
+        for(Map<Point, DStarNode> map : obstacleSets.values())
+            res.addAll(map.values());
+        return res;
+    }
+
+    /**
+     * Returns an iterable over the edges in the graph of this path planner.
+     * 
+     * @return  An iterable over the edges contianed in the graph used by
+     *  this D* Lite algorithm instance. Two directed paths are returned for
+     *  every undirected edge in the graph.
+     */
+    public Iterable<Path> getEdges() {
+        return new Iterable<Path>() {
+            @Override
+            public Iterator<Path> iterator() {
+                return new Iterator<Path>() {
+                    Iterator<DStarNode> nodeIter = getNodes().iterator();
+                    Iterator<Path> edgeIter = null;
+                    @Override
+                    public boolean hasNext() {
+                        return nodeIter.hasNext() || (edgeIter != null && edgeIter.hasNext());
+                    }
+                    @Override
+                    public Path next() {
+                        while(edgeIter == null || !edgeIter.hasNext())
+                            edgeIter = nodeIter.next().getEdges().iterator();
+                        return edgeIter.next();
+                    }
+                };
             }
-            while(idx >= ends.length){
-              if(!mapIter.hasNext()){
-                ends = null;
-                return start;
-              }
-              idx = 0;
-              ends = mapIter.next().endpoints(source);
-            }
-            return ends[idx++];
-          }
-
-          @Override
-          public boolean hasNext() {
-            return ends != null || mapIter == null;
-          }
         };
-      }
-    };
-  }
+    }
+
+    /**
+     * Adds a node to the graph used by this path planner.
+     * 
+     * @param position  The position of the new node.
+     * @param obstacle  The obstacle to associate the node with.
+     * @return  True, if a new node was added, or false if the node already
+     *  existed in the graph.
+     */
+    public boolean addNode(Point position, Obstacle obstacle) {
+        NavigableMap<Point, DStarNode> obsSet = obstacleSets.get(obstacle);
+        if(position.equals(obsSet.floorKey(position)) || position.equals(obsSet.ceilingKey(position)))
+            return false;
+        if(obsSet.putIfAbsent(position, new DStarNode(position, queue)) != null)
+            return false;
+        if(obsSet.size() > 1){
+            DStarNode node = obsSet.get(position);
+            Map.Entry<Point, DStarNode> prevEntry = obsSet.lowerEntry(position);
+            DStarNode prev = (prevEntry == null ? obsSet.lastEntry() : prevEntry).getValue();
+            Map.Entry<Point, DStarNode> nextEntry = obsSet.higherEntry(position);
+            DStarNode next = (nextEntry == null ? obsSet.firstEntry() : nextEntry).getValue();
+            prev.sever(next);
+            next.sever(prev);
+            Path prevEdge = obstacle.edgePath(prev, node, radius);
+            prev.connect(node, prevEdge);
+            node.connect(prev, prevEdge.reverse());
+            Path nextEdge = obstacle.edgePath(node, next, radius);
+            node.connect(next, nextEdge);
+            next.connect(node, nextEdge.reverse());
+        }
+        return true;
+    }
+
+    /**
+     * Removes a node from the graph used by this path planner.
+     * 
+     * <p>This method will fail if the position and obstacle do not refer to
+     * a valid node in the graph.
+     * 
+     * @param position  The position of the node to remove.
+     * @param obstacle  The obstacle associated with the node.
+     */
+    public void dropNode(Point position, Obstacle obstacle) {
+        NavigableMap<Point, DStarNode> obsSet = obstacleSets.get(obstacle);
+        DStarNode node = getNode(position, obstacle, false);  // TODO: add check for null value
+        node.sever();
+        obsSet.remove(position);
+        DStarNode prev, next;
+        if(obsSet.size() > 0){
+            Map.Entry<Point, DStarNode> prevEntry = obsSet.lowerEntry(position);
+            prev = (prevEntry == null ? obsSet.lastEntry() : prevEntry).getValue();
+            Map.Entry<Point, DStarNode> nextEntry = obsSet.higherEntry(position);
+            next = (nextEntry == null ? obsSet.firstEntry() : nextEntry).getValue();
+            node.sever(next);
+            node.sever(prev);
+            if(obsSet.size() > 1){
+                Path edge = obstacle.edgePath(prev, next, radius);
+                prev.connect(next, edge);
+                next.connect(prev, edge.reverse());
+            }
+        }
+    }
+    /**
+     * Removes a node from the graph used by this path planner.
+     * 
+     * <p>This is a convience wrapper for {@link #dropNode(Point, Obstacle)}
+     * when the position of the node to be removed uniquely identifies the node
+     * in this graph.
+     * 
+     * @param position  The position of the node to remove.
+     */
+    public void dropNode(Point position) {
+        dropNode(position, findNode(position));
+    }
+
+    /**
+     * Returns the start node of this path planner.
+     */
+    public DStarNode getStart() {
+        return start;
+    }
+
+    /**
+     * Returns the goal node of this path planner.
+     */
+    public DStarNode getGoal() {
+        return goal;
+    }
+
+    /**
+     * Finds the obstacle associated with a node in this graph.
+     * 
+     * @param position  The position of the node.
+     * @return  The obstacle associated with the specified node in this graph.
+     */
+    Obstacle findNode(Point position) {
+        for(Map.Entry<Obstacle, NavigableMap<Point, DStarNode>> entry : obstacleSets.entrySet())
+            if(position.equals(entry.getValue().floorKey(position)) || position.equals(entry.getValue().ceilingKey(position)))
+                return entry.getKey();
+        return null;
+    }
+
+    /**
+     * Returns the node associated with a specific location and obstacle.
+     * 
+     * @param position  The position of the node to return.
+     * @param obstacle  The obstacle associated with the node.
+     * @param addIfMissing  Whether to add a node with the specified position
+     *  and associated obstacle if one does not already exist in this graph.
+     *  If true, the added node is returned. If false, null is returned.
+     * @return  Either the specified node or null, if no such node exists.
+     */
+    DStarNode getNode(Point position, Obstacle obstacle, boolean addIfMissing) {
+        if(addIfMissing)
+            addNode(position, obstacle);
+        NavigableMap<Point, DStarNode> obsSet = obstacleSets.get(obstacle);
+        if(position.equals(obsSet.floorKey(position)))
+            return obsSet.floorEntry(position).getValue();
+        else if(position.equals(obsSet.ceilingKey(position)))
+            return obsSet.ceilingEntry(position).getValue();
+        else
+            return null;
+    }
+    /**
+     * Returns the node associated with a specific location and obstacle.
+     * 
+     * <p>This method is identical to {@link #getNode(Point, Obstacle, boolean)}
+     * with addIfMissing assumed to be true. This method will not return null.
+     * 
+     * @param position  The position of the node to return.
+     * @param obstacle  The obstacle associated with the node.
+     * @return  The specified node.
+     */
+    DStarNode getNode(Point position, Obstacle obstacle) {
+        return getNode(position, obstacle, true);
+    }
+    /**
+     * Returns the node associated with a specific location and obstacle.
+     * 
+     * <p>This method will fail if the specified position is not associated
+     * with a node in this graph. See {@link #getNode(Point, Obstacle, boolean)}
+     * or {@link #getNode(Point, Obstacle)} if this is not the desired behavior.
+     * 
+     * @param position  The position of the node to return.
+     * @return  The specified node.
+     */
+    DStarNode getNode(Point position) {
+        return getNode(position, findNode(position), false);
+    }
+
+    /**
+     * Adds an edge to the graph used by this path planner.
+     * 
+     * @param a  The obstacle associated with the first end of the edge.
+     * @param b  The obstacle associated with the second end of the edge.
+     * @param edge  The path from the first end to the second end of the edge.
+     *  Both this and the reversal of this edge will be added to the graph.
+     */
+    void addEdge(Obstacle a, Obstacle b, Path edge) {
+        DStarNode beg = getNode(edge.getStart(), a, true);
+        DStarNode end = getNode(edge.getEnd(), b, true);
+        beg.connect(end, edge);
+        end.connect(beg, edge.reverse());
+    }
+
+    /**
+     * Adds an obstacle to the graph used by this path planner.
+     * 
+     * <p>Normally, this method will be called implicitly when an obstacle
+     * is added to the map associated with this path planner.
+     * 
+     * @param obstacle  The obstacle to add.
+     */
+    public void addObstacle(Obstacle obstacle) {
+        if(obstacleSets.containsKey(obstacle)) return;
+        // Remove blocked connections
+		for(var entry : obstacleSets.entrySet()){
+            for(DStarNode node : new ArrayList<DStarNode>(entry.getValue().values())){
+                for(Map.Entry<DStarNode, Path> conn : new ArrayList<>(node.getConnections()))
+                    if(!obstacle.isClear(conn.getValue(), radius))
+                        node.sever(conn.getKey());
+                if(node.getDegree() == 0)
+                    dropNode(node, entry.getKey());
+            }
+        }
+        if(start.getEdge(goal) != null && !obstacle.isClear(start.getEdge(goal), radius))
+            start.sever(goal);
+        obstacleSets.put(obstacle, new TreeMap<>(obstacle));
+        // Connect to other obstacles
+        for(Obstacle b : obstacleSets.keySet())
+            for(LinearSegment edge : obstacle.getTangents(b, radius))
+                if(map.isClear(edge, radius, obstacle, b))
+                    addEdge(obstacle, b, edge);
+        // Connect to start and goal
+        for(Point endpoint : obstacle.getEndpoints(start, radius)){
+            if(map.isClear(new LinearSegment(start, endpoint), radius, obstacle)){
+                start.connect(getNode(endpoint, obstacle, true), new LinearSegment(start, endpoint));
+                getNode(endpoint, obstacle).connect(start, new LinearSegment(endpoint, start));
+            }
+        }
+        for(Point endpoint : obstacle.getEndpoints(goal, radius)){
+            if(map.isClear(new LinearSegment(goal, endpoint), radius, obstacle)){
+                goal.connect(getNode(endpoint, obstacle, true), new LinearSegment(goal, endpoint));
+                getNode(endpoint, obstacle).connect(goal, new LinearSegment(endpoint, goal));
+            }
+        }
+    }
+
+    /**
+     * Removes an obstacle from the graph used by this path planner.
+     * 
+     * <p>Normally, this method will be called implicitly when an obstacle
+     * is fromed from the map associated with this path planner.
+     * 
+     * @param obstacle  The obstacle to remove.
+     */
+    public void removeObstacle(Obstacle obstacle) {
+        for(DStarNode node : new ArrayList<>(obstacleSets.get(obstacle).values()))
+            dropNode(node, obstacle);
+        obstacleSets.remove(obstacle);
+        for(Obstacle a : obstacleSets.keySet()){
+            for(Obstacle b : obstacleSets.keySet()){
+                for(LinearSegment edge : a.getTangents(b, radius)){
+                    if(map.isClear(edge, radius, a, b))
+                        addEdge(a, b, edge);
+                }
+            }
+            for(Point endpoint : a.getEndpoints(start, radius)){
+                if(map.isClear(new LinearSegment(start, endpoint), radius, a)){
+                    start.connect(getNode(endpoint, a, true), new LinearSegment(start, endpoint));
+                    getNode(endpoint, a).connect(start, new LinearSegment(endpoint, start));
+                }
+            }
+            for(Point endpoint : a.getEndpoints(goal, radius)){
+                if(map.isClear(new LinearSegment(goal, endpoint), radius, a)){
+                    goal.connect(getNode(endpoint, a, true), new LinearSegment(goal, endpoint));
+                    getNode(endpoint, a).connect(goal, new LinearSegment(endpoint, goal));
+                }
+            }
+        }
+        if(start.getNext() != goal && map.isClear(new LinearSegment(start, goal), radius)){
+            start.connect(goal, new LinearSegment(start, goal));
+            goal.connect(start, new LinearSegment(goal, start));
+        }
+    }
 }

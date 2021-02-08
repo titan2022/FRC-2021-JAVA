@@ -11,7 +11,7 @@ import frc.robot.mapping.ObstacleMap;
 import frc.robot.mapping.Path;
 
 public class DStarDemoCommand extends CommandBase {
-  DStarGraph planner;
+  DStarLite planner;
   Field2d robot;
   double radius;
   double speed;
@@ -31,7 +31,7 @@ public class DStarDemoCommand extends CommandBase {
     robot = new Field2d();
     SmartDashboard.putData("Field", robot);
     ObstacleMap map = new ObstacleMap();
-    planner = new DStarGraph(map, new Node(0, 0), new Node(6, 8), radius);
+    planner = new DStarLite(map, new Node(0, 0), new Node(6, 8), radius);
     map.addObstacle(new Polygon(new Point(-10, 1), new Point(2, 1), new Point(1, 2)));
     map.addObstacle(new Polygon(
       new Point(3, 5),

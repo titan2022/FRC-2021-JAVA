@@ -103,12 +103,21 @@ public class DStarNode extends Point implements Comparable<DStarNode> {
         }
     }
 
+    /**
+     * Updates the position of this node in the queue.
+     * 
+     * <p>Normally, this method is called during the execution of other node
+     * methods.
+     */
     public void update() {
         queue.remove(this);
         if(!isConsistent())
             queue.add(this);
     }
 
+    /**
+     * Updates the g estimate of the distance of this node from the goal.
+     */
     public void rectify() {
         if(g > rhs)
             g = rhs;
@@ -119,6 +128,12 @@ public class DStarNode extends Point implements Comparable<DStarNode> {
             neighbor.alert(this);
     }
 
+    /**
+     * Updates the rhs estimate of the distance of this node from the goal.
+     * 
+     * @param neighbor  The neighbor of this goal to update the rhs estimate
+     *  in response to.
+     */
     private void alert(DStarNode neighbor) {
         if(neighbor == next){
             if(!edges.containsKey(neighbor) || neighbor.g + edges.get(neighbor).getLength() > rhs){

@@ -58,6 +58,16 @@ public class DStarNode extends Point implements Comparable<DStarNode> {
         return next;
     }
 
+    /**
+     * Connects this node to another,
+     * 
+     * <p>This method does not automatically create the reverse connection.
+     * 
+     * @param neighbor  The new neighbor of this node.
+     * @param edge  The edge conning this node to the new neighbor. If this
+     *  node is already connected to the specified neighbor, this edge is used
+     *  only is it is shorter than the existing edge.
+     */
     public void connect(DStarNode neighbor, Path edge) {
         if(neighbor == this)
             return;
@@ -70,12 +80,22 @@ public class DStarNode extends Point implements Comparable<DStarNode> {
         }
     }
 
+    /**
+     * Severs the edge between this node an one of its neighbors.
+     * 
+     * <p>This method severs edges with the specified node in both directions.
+     * 
+     * @param neighbor  The neighbor to disconnect this node from.
+     */
     public void sever(DStarNode neighbor) {
         edges.remove(neighbor);
         alert(neighbor);
         neighbor.edges.remove(this);
         neighbor.alert(this);
     }
+    /**
+     * Severs all edges to this node.
+     */
     public void sever() {
         for(DStarNode neighbor : edges.keySet()){
             neighbor.edges.remove(this);

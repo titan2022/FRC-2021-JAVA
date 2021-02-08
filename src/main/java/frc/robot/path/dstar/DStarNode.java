@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import frc.robot.mapping.Point;
 import frc.robot.mapping.Path;
 
+/** A node along a possible D* Lite path */
 public class DStarNode extends Point implements Comparable<DStarNode> {
     private final Queue<DStarNode> queue;
     private double g = Double.POSITIVE_INFINITY;
@@ -17,10 +18,26 @@ public class DStarNode extends Point implements Comparable<DStarNode> {
     private final Map<DStarNode, Path> edges = new HashMap<>();
     private DStarNode next = null;
 
+    /**
+     * Creates a node at a specific position.
+     * 
+     * @param position  The position of this node.
+     * @param queue  The queue to associate this node with.
+     */
     DStarNode(Translation2d position, Queue<DStarNode> queue) {
         super(position);
         this.queue = queue;
     }
+    /**
+     * Creates a node at a specific position.
+     * 
+     * @param position  The position of this node.
+     * @param queue  The queue to associate this node with.
+     * @param g  The initial g value of this node.
+     * @param rhs  The initial rhs value of this node.
+     * @see #getG()
+     * @see #getRhs()
+     */
     DStarNode(Translation2d position, Queue<DStarNode> queue, double g, double rhs) {
         this(position, queue);
         this.g = g;

@@ -31,15 +31,15 @@ public class DStarTester extends CommandBase {
     public boolean testNode() {
         boolean truth = true;
         boolean allPass = true;
-        Queue<DStarNode> queue = new PriorityQueue<>();
-        DStarNode a = new DStarNode(new Point(0, 0), queue);
+        Queue<Node> queue = new PriorityQueue<>();
+        Node a = new Node(new Point(0, 0), queue);
         truth = a.getDegree() == 0;
         allPass &= truth;
         truth = a.key() == Double.POSITIVE_INFINITY;
         allPass &= truth;
         truth = a.isConsistent();
         allPass &= truth;
-        DStarNode b = new DStarNode(new Point(1, 0), queue, 0, 0);
+        Node b = new Node(new Point(1, 0), queue, 0, 0);
         truth = b.key() == 0;
         allPass &= truth;
         truth = b.isConsistent();
@@ -67,7 +67,7 @@ public class DStarTester extends CommandBase {
         truth = !queue.contains(b);
         allPass &= truth;
 
-        DStarNode c = new DStarNode(new Point(0, 2), queue, 5, Double.POSITIVE_INFINITY);
+        Node c = new Node(new Point(0, 2), queue, 5, Double.POSITIVE_INFINITY);
         truth = !c.isConsistent();
         allPass &= truth;
         a.connect(c, new LinearSegment(a, c));
@@ -93,8 +93,8 @@ public class DStarTester extends CommandBase {
     public boolean testPrimitives() {
         boolean truth = true;
         boolean allPass = true;
-        Queue<DStarNode> queue = new PriorityQueue<>();
-        DStarNode a = new DStarNode(new Point(1, 1), queue);
+        Queue<Node> queue = new PriorityQueue<>();
+        Node a = new Node(new Point(1, 1), queue);
         a.update();
         truth = queue.size() == 0;
         allPass &= truth;
@@ -106,7 +106,7 @@ public class DStarTester extends CommandBase {
         truth = a.getRhs() == Double.POSITIVE_INFINITY;
         allPass &= truth;
         queue.poll();
-        DStarNode b = new DStarNode(new Point(0, 1), queue, 0, 1);
+        Node b = new Node(new Point(0, 1), queue, 0, 1);
         b.update();
         truth = queue.size() == 1;
         allPass &= truth;
@@ -118,7 +118,7 @@ public class DStarTester extends CommandBase {
         truth = b.getRhs() == 1;
         allPass &= truth;
         queue.poll();
-        DStarNode c = new DStarNode(new Point(1, 0), queue, 1, 0);
+        Node c = new Node(new Point(1, 0), queue, 1, 0);
         c.update();
         truth = queue.size() == 1;
         allPass &= truth;
@@ -130,7 +130,7 @@ public class DStarTester extends CommandBase {
         truth = c.getRhs() == 0;
         allPass &= truth;
         queue.poll();
-        DStarNode d = new DStarNode(new Point(0, 0), queue, 0, 0);
+        Node d = new Node(new Point(0, 0), queue, 0, 0);
         d.update();
         truth = queue.size() == 0;
         allPass &= truth;
@@ -154,7 +154,7 @@ public class DStarTester extends CommandBase {
         truth = graph.getGoal().equals(new Point(10, 10));
         allPass &= truth;
         int n = 0;
-        for(DStarNode node : graph.getNodes())
+        for(Node node : graph.getNodes())
             n += 1;
         truth = n == 2;
         allPass &= truth;
@@ -162,7 +162,7 @@ public class DStarTester extends CommandBase {
         truth = graph.getStart().equals(new Point(1, 1));
         allPass &= truth;
         n = 0;
-        for(DStarNode node : graph.getNodes()){
+        for(Node node : graph.getNodes()){
             n += 1;
             truth = node.getDegree() == 1;
             allPass &= truth;

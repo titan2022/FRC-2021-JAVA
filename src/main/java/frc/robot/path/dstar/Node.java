@@ -1,357 +1,219 @@
 package frc.robot.path.dstar;
 
-import java.util.Set;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Queue;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-
-import java.util.LinkedHashSet;
-import java.util.Comparator;
-import java.util.Collections;
-import java.util.Collection;
 
 import frc.robot.mapping.Point;
 import frc.robot.mapping.Path;
-import frc.robot.mapping.LinearSegment;
-import frc.robot.mapping.CircularArc;
 
-/** A node along a possible path. */
+/** A node along a possible D* Lite path */
 public class Node extends Point implements Comparable<Node> {
-  public Set<Node> edges;
-  public double g = Double.POSITIVE_INFINITY;
-  public double rhs = Double.POSITIVE_INFINITY;
-  public boolean visited = false;
-  public Node next;
-  public Node prev;
-  
-  /**
-   * Creates a node at a specific position.
-   * 
-   * @param x  The x coordinate of this node.
-   * @param y  The y coordinate of this node.
-   * @param prev  The node to link to as the previous vertex of this node's
-   *  parent obstacle. Must not be null.
-   * @param next  The node to link to as the next vertex of this node's  parent
-   *  obstacle. Must not be null
-   * @param edges  The neighbors of this node.
-   * @throws IllegalArgumentException  One or both of the values passed as
-   *  {@code prev} and {@code next} is null.
-   */
-  public Node(double x, double y, Node prev, Node next, Collection<Node> edges)
-      throws IllegalArgumentException {
-    super(x, y);
-    this.edges = new LinkedHashSet<Node>(edges);
-    this.prev = prev;
-    this.next = next;
-  }
-  /**
-   * Creates a node at a specific position.
-   * 
-   * <p>This constructor initializes the edges of this node to an empty set.
-   * Use {@link #Node(double, double, Node, Node, Collection<Node>)} to specify
-   * the neighbors of this node on creation.
-   * 
-   * @param x  The x coordinate of this node.
-   * @param y  The y coordinate of this node.
-   * @param prev  The node to link to as the previous vertex of this node's
-   *  parent obstacle. Must not be null.
-   * @param next  The node to link to as the next vertex of this node's  parent
-   *  obstacle. Must not be null
-   * @throws IllegalArgumentException  One or both of the values passed as
-   *  {@code prev} and {@code next} is null.
-   */
-  public Node(double x, double y, Node prev, Node next)
-      throws IllegalArgumentException {
-    this(x, y, prev, next, new LinkedHashSet<Node>());
-  }
-  /**
-   * Creates a node at a specific position.
-   * 
-   * <p>This constructor links this node to a single other node as both the
-   * previous and next node in this node's parent obstacle. See
-   * {@link #Node(double, double, Node, Node, Collection)} to specify
-   * different previous and next links for this node.
-   * 
-   * @param x  The x coordinate of this node.
-   * @param y  The y coordinate of this node.
-   * @param link  The node to link to as the previous and next node in this
-   *  node's parent obstacle. Must not be null.
-   * @param edges  A list of the neighbors of this node.
-   * @throws IllegalArgumentException  The value passed as {@code link} is null.
-   */
-  public Node(double x, double y, Node link, Collection<Node> edges)
-      throws IllegalArgumentException {
-    this(x, y, link, link, edges);
-  }
-  /**
-   * Creates a node at a specific position.
-   * 
-   * <p>This constructor links this node to a single other node as both the
-   * previous and next node in this node's parent obstacle. It also initializes
-   * the edges of this node as an empty set. See
-   * {@link #Node(double, double, Node, Node, Collection)},
-   * {@link #Node(double, double, Node, Collection)}, and
-   * {@link #Node(double, double, Node, Node)} to specify one or both of these
-   * parameters.
-   * 
-   * @param x  The x coordinate of this node.
-   * @param y  The y coordinate of this node.
-   * @param link  The node to link to as the previous and next node in this
-   *  node's parent obstacle. Must not be null.
-   * @throws IllegalArgumentException  The value passed as {@code link} is null.
-   */
-  public Node(double x, double y, Node link) throws IllegalArgumentException {
-    this(x, y, link, link);
-  }
-  /**
-   * Creates a node at a specific position.
-   * 
-   * <p>This constructor links this node to itself as both the previous and
-   * next node in this node's parent obstacle, effectively making this node its
-   * own obstacle. See {@link #Node(double, double, Node, Node, Collection)} to
-   * specify previous and next links for this node.
-   * 
-   * @param x  The x coordinate of this node.
-   * @param y  The y coordinate of this node.
-   * @param edges  A list of the neighbors of this node.
-   */
-  public Node(double x, double y, Collection<Node> edges) {
-    super(x, y);
-    this.edges = new LinkedHashSet<Node>(edges);
-    this.prev = this;
-    this.next = this;
-  }
-  /**
-   * Creates a node at a specific position.
-   * 
-   * <p>This constructor links this node to itself as both the previous and
-   * next node in this node's parent obstacle, effectively making this node its
-   * own obstacle. This also initializes this node's edges to an empty set. See
-   * {@link #Node(double, double, Node, Node, Collection)} for a full list of
-   * possible parameters.
-   * 
-   * @param x  The x coordinate of this node.
-   * @param y  The y coordinate of this node.
-   */
-  public Node(double x, double y) {
-    super(x, y);
-    this.edges = new LinkedHashSet<Node>();
-    this.prev = this;
-    this.next = this;
-  }
-  /**
-   * Creates a node at a specific position.
-   * 
-   * @param position  The position of this node.
-   * @param prev  The node to link to as the previous vertex of this node's
-   *  parent obstacle. Must not be null.
-   * @param next  The node to link to as the next vertex of this node's  parent
-   *  obstacle. Must not be null
-   */
-  public Node(Translation2d position, Node prev, Node next, Collection<Node> edges) {
-    this(position.getX(), position.getY(), prev, next, edges);
-  }
-  /**
-   * Creates a node at a specific position.
-   * 
-   * <p>This constructor initializes the edges of this node to an empty set.
-   * Use {@link #Node(Translation2d, Node, Node, Collection<Node>)} to specify
-   * the neighbors of this node on creation.
-   * 
-   * @param position  The position of this node.
-   * @param prev  The node to link to as the previous vertex of this node's
-   *  parent obstacle. Must not be null.
-   * @param next  The node to link to as the next vertex of this node's  parent
-   *  obstacle. Must not be null
-   */
-  public Node(Translation2d position, Node prev, Node next) {
-    this(position, prev, next, new LinkedHashSet<Node>());
-  }
-  /**
-   * Creates a node at a specific position.
-   * 
-   * <p>This constructor links this node to a single other node as both the
-   * previous and next node in this node's parent obstacle. See
-   * {@link #Node(Translation2d, Node, Node, Collection<Node>)} to specify different
-   * previous and next links for this node.
-   * 
-   * @param position  The y coordinate of this node.
-   * @param link  The node to link to as the previous and next node in this
-   *  node's parent obstacle. Must not be null.
-   * @param edges  A list of the neighbors of this node.
-   */
-  public Node(Translation2d position, Node link, Collection<Node> edges) {
-    this(position, link, link, edges);
-  }
-  /**
-   * Creates a node at a specific position.
-   * 
-   * <p>This constructor links this node to a single other node as both the
-   * previous and next node in this node's parent obstacle. It also initializes
-   * the edges of this node as an empty set. See
-   * {@link #Node(Translation2d, Node, Node, Collection<Node>)},
-   * {@link #Node(Translation2d, Node, Collection<Node>)}, and
-   * {@link #Node(Translation2d, Node, Node)} to specify one or both of these
-   * parameters.
-   * 
-   * @param position  The position of this node.
-   * @param link  The node to link to as the previous and next node in this
-   *  node's parent obstacle. Must not be null.
-   */
-  public Node(Translation2d position, Node link) {
-    this(position, link, link, new LinkedHashSet<Node>());
-  }
-  /**
-   * Creates a node at a specific position.
-   * 
-   * <p>This constructor links this node to itself as both the previous and
-   * next node in this node's parent obstacle, effectively making this node its
-   * own obstacle. See {@link #Node(Translation2d, Node, Node, Collection<Node>)}
-   * to specify previous and next links for this node.
-   * 
-   * @param position  The position of this node.
-   * @param edges  A list of the neighbors of this node.
-   */
-  public Node(Translation2d position, Collection<Node> edges) {
-    super(position.getX(), position.getY());
-    this.edges = new LinkedHashSet<Node>(edges);
-    next = prev = this;
-  }
-  /**
-   * Creates a node at a specific position.
-   * 
-   * <p>This constructor links this node to itself as both the previous and
-   * next node in this node's parent obstacle, effectively making this node its
-   * own obstacle. This also initializes this node's edges to an empty set. See
-   * {@link #Node(Translation2d, Node, Node, Collection)} for a full list of
-   * possible parameters.
-   * 
-   * @param position  The position of this node.
-   */
-  public Node(Translation2d position) {
-    this(position, new LinkedHashSet<Node>());
-  }
-  
-  /**
-   * Calculates the distance from this node to another node.
-   * 
-   * @param dest  The node to calculate the distance to.
-   * @return  The distance between this node and the specified node.
-   */
-  public double weightTo(Node dest) {
-    return getDistance(dest);
-  }
+    private final Queue<Node> queue;
+    private double g = Double.POSITIVE_INFINITY;
+    private double rhs = Double.POSITIVE_INFINITY;
+    private final Map<Node, Path> edges = new HashMap<>();
+    private Node next = null;
 
-  /** Returns the next node which greedily minimizes the distance to the goal. */
-  public Node getNext() {
-    if(edges.size() == 0) return null;
-    return Collections.min(edges, new Node.GoalDistOrder(this));
-  }
-
-  /**
-   * Determines if this node is an endpoint of its parent obstacle.
-   * 
-   * <p>When a single vertex is in question, this method is faster than comparing
-   * the vertex against the nodes returned form {@link Obstacle#endpoints(Node)}.
-   * 
-   * @param source  The node this obstacle is being viewed from.
-   * @return  Either true, if this node is an endpoint of its parent obstacle as
-   *  seen from the source node, or false, otherwise.
-   */
-  public boolean isEndpoint(Node source) {
-    double theta_next = getAngle(this, source, next).getRadians();
-    double theta_prev = getAngle(this, source, prev).getRadians();
-    if(source == next || source == prev) return true;
-    else if(theta_next * theta_prev < 0) return false;
-    else if(theta_next * theta_prev > 0) return true;
-    else if(theta_next == 0 && source.getDistance(next) < source.getDistance(this)) return false;
-    else if(theta_prev == 0 && source.getDistance(prev) < source.getDistance(this)) return false;
-    else return true;
-  }
-
-  /** Calculates the key of this node used in the D* Lite algorithm.
-   * 
-   * @return  The minimum of the g and rhs values of this node.
-   */
-  public double key() {
-    return Math.min(g, rhs);
-  }
-
-  /** Compares this node to another by D* Lite key value. */
-  @Override
-  public int compareTo(Node o) {
-    return (int) Math.signum(key() - o.key());
-  }
-
-  private class GoalDistOrder implements Comparator<Node> {
-    Node from;
-    GoalDistOrder(Node from) {
-      this.from = from;
+    /**
+     * Creates a node at a specific position.
+     * 
+     * @param position  The position of this node.
+     * @param queue  The queue to associate this node with.
+     */
+    Node(Translation2d position, Queue<Node> queue) {
+        super(position);
+        this.queue = queue;
     }
+    /**
+     * Creates a node at a specific position.
+     * 
+     * @param position  The position of this node.
+     * @param queue  The queue to associate this node with.
+     * @param g  The initial g value of this node.
+     * @param rhs  The initial rhs value of this node.
+     * @see #getG()
+     * @see #getRhs()
+     */
+    Node(Translation2d position, Queue<Node> queue, double g, double rhs) {
+        this(position, queue);
+        this.g = g;
+        this.rhs = rhs;
+    }
+
+    /**
+     * Returns the next edge on the minimum cost path through this node.
+     */
+    public Path getPath() {
+        return edges.get(next);
+    }
+
+    /**
+     * Returns the next node on the minimum cost path through this node.
+     */
+    public Node getNext() {
+        return next;
+    }
+
+    /**
+     * Connects this node to another,
+     * 
+     * <p>This method does not automatically create the reverse connection.
+     * 
+     * @param neighbor  The new neighbor of this node.
+     * @param edge  The edge conning this node to the new neighbor. If this
+     *  node is already connected to the specified neighbor, this edge is used
+     *  only is it is shorter than the existing edge.
+     */
+    public void connect(Node neighbor, Path edge) {
+        if(neighbor == this)
+            return;
+        if(edges.putIfAbsent(neighbor, edge) != null && edge.getLength() < edges.get(neighbor).getLength())
+            edges.put(neighbor, edge);
+        if(neighbor.g + edges.get(neighbor).getLength() < rhs){
+            next = neighbor;
+            rhs = neighbor.g + edge.getLength();
+            update();
+        }
+    }
+
+    /**
+     * Severs the edge between this node an one of its neighbors.
+     * 
+     * <p>This method severs edges with the specified node in both directions.
+     * 
+     * @param neighbor  The neighbor to disconnect this node from.
+     */
+    public void sever(Node neighbor) {
+        edges.remove(neighbor);
+        alert(neighbor);
+        neighbor.edges.remove(this);
+        neighbor.alert(this);
+    }
+    /**
+     * Severs all edges to this node.
+     */
+    public void sever() {
+        for(Node neighbor : edges.keySet()){
+            neighbor.edges.remove(this);
+            neighbor.alert(this);
+        }
+    }
+
+    /**
+     * Updates the position of this node in the queue.
+     * 
+     * <p>Normally, this method is called during the execution of other node
+     * methods.
+     */
+    public void update() {
+        queue.remove(this);
+        if(!isConsistent())
+            queue.add(this);
+    }
+
+    /**
+     * Updates the g estimate of the distance of this node from the goal.
+     */
+    public void rectify() {
+        if(g > rhs)
+            g = rhs;
+        else if(g < rhs)
+            g = Double.POSITIVE_INFINITY;
+        update();
+        for(Node neighbor : edges.keySet())
+            neighbor.alert(this);
+    }
+
+    /**
+     * Updates the rhs estimate of the distance of this node from the goal.
+     * 
+     * @param neighbor  The neighbor of this goal to update the rhs estimate
+     *  in response to.
+     */
+    private void alert(Node neighbor) {
+        if(neighbor == next){
+            if(!edges.containsKey(neighbor) || neighbor.g + edges.get(neighbor).getLength() > rhs){
+                rhs = Double.POSITIVE_INFINITY;
+                next = null;
+                for(Map.Entry<Node, Path> entry : edges.entrySet()){
+                    if(entry.getKey().g + entry.getValue().getLength() < rhs){
+                        next = entry.getKey();
+                        rhs = entry.getKey().g + entry.getValue().getLength();
+                    }
+                }
+                update();
+            }
+        }
+        else if(edges.containsKey(neighbor) && neighbor.g + edges.get(neighbor).getLength() < rhs){
+            next = neighbor;
+            rhs = next.g + edges.get(neighbor).getLength();
+            update();
+        }
+    }
+
+    /** Returns the minimum of the g and rhs values of this node. */
+    public double key() {
+        return Math.min(g, rhs);
+    }
+
+    /** Checks if the r and rhs values of this node are consistent. */
+    public boolean isConsistent() {
+        return g == rhs;
+    }
+
+    /** Returns the g estimate of the distance from this node to the goal. */
+    public double getG() {
+        return g;
+    }
+
+    /** Returns the rhs estimate of the distance from this node to the goal. */
+    public double getRhs() {
+        return rhs;
+    }
+
+    /** Returns the number of edges from this node. */
+    public int getDegree() {
+        return edges.size();
+    }
+
+    /**
+     * Returns a view of the neighbors of this node.
+     */
+    public Collection<Node> getNeighbors() {
+        return edges.keySet();
+    }
+
+    /**
+     * Returns a view of the edges of this node.
+     */
+    public Collection<Path> getEdges() {
+        return edges.values();
+    }
+
+    /**
+     * Returns a view of the neighbors and edges of this node.
+     * 
+     * @return  A collection of map entries mapping the neighbors of this
+     *  node to the edges associated with them.
+     */
+    public Collection<Map.Entry<Node, Path>> getConnections() {
+        return edges.entrySet();
+    }
+
     
-    @Override
-    public int compare(Node o1, Node o2) {
-      return (int) Math.signum(from.weightTo(o1) + o1.g - from.weightTo(o2) - o2.g);
+    /**
+     * Returns the edge from this node associated with one of its neighbors.
+     */
+    public Path getEdge(Node neighbor) {
+        return edges.get(neighbor);
     }
-  }
 
-  /**
-   * Returns the next segment towards the goal from a point near this Node.
-   * 
-   * @param start  The starting point of the segment to find.
-   * @param radius  The obstacle growth radius to use when generating the path.
-   * @return The next {@code Segment} on the path to the goal, or null if no
-   *  such path exists.
-   */
-  public Path nextSegment(Point start, double radius){
-    if(edges.size() == 0)
-      return null;
-    else if(getDistance(start) <= radius)
-      return segmentAround(start, getNext());
-    else
-      return segmentFrom(start, radius);
-  }
-
-  /**
-   * Get a linear path from a Point to this Node with obstacle growth.
-   * 
-   * @param from  The point to get a path from.
-   * @param radius  The radius around this point to avoid. The returned
-   *  path will end this many units from this Node.
-   * @return A LinearSegment tangent to the circle centered at this Node
-   *  with the specified radius. The segment will start at the point
-   *  {@code from} and will end at the point of tangency. 
-   */
-  public Path segmentFrom(Point from, double radius) {
-    return new LinearSegment(from, getTangency(from, radius));
-  }
-
-  /**
-   * Gets the point of tangency from a point to a circle around this Node.
-   * 
-   * @param from  The point to get the point of tangency from.
-   * @param radius  The radius of the circle around this Node.
-   * @return The point of tangency of a line from {@code from} to a
-   *  circle around this Node with the specified radius.
-   */
-  public Point getTangency(Point from, double radius) {
-    Rotation2d theta = new Rotation2d(Math.acos(radius / getDistance(from)))
-        .times(Math.signum(Point.getAngle(next, this, from).getRadians()));
-    Point offset = new Point(radius, theta.plus(from.minus(this).getAngle()));
-    return plus(offset);
-  }
-
-  /**
-   * Gets a path from a Point around this Node to face another Point.
-   * 
-   * @param start  The starting point of the path.
-   * @param target  The point the path should end facing towards.
-   * @return A CircularArc segment starting at the specified start Point
-   *  and ending the same distance from this Node, facing towards the
-   *  specified target Point.
-   */
-  public Path segmentAround(Point start, Point target) {
-    double radius = start.getDistance(this);
-    return new CircularArc(this, start, getTangency(target, radius));
-  }
+    @Override
+    public int compareTo(Node other) {
+        return (int) Math.signum(key() - other.key());
+    }
 }

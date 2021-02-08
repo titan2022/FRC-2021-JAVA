@@ -23,12 +23,12 @@ import frc.robot.mapping.Point;
 
 /** A D* Lite graph and path planning algorithm. */
 public class DStarLite {
-    private final Queue<DStarNode> queue = new PriorityQueue<DStarNode>();
-    private final DStarNode goal;
-    private DStarNode start;
+    private final Queue<Node> queue = new PriorityQueue<Node>();
+    private final Node goal;
+    private Node start;
     public final ObstacleMap map;
     public final double radius;
-    private Map<Obstacle, NavigableMap<Point, DStarNode>> obstacleSets = new HashMap<>();
+    private Map<Obstacle, NavigableMap<Point, Node>> obstacleSets = new HashMap<>();
 
     /**
      * Creates a DStarLite path planner.
@@ -45,8 +45,8 @@ public class DStarLite {
      */
     public DStarLite(ObstacleMap map, Translation2d start, Translation2d goal, double radius) {
         this.map = map;
-        this.goal = new DStarNode(goal, queue, 0, 0);
-        this.start = new DStarNode(start, queue);
+        this.goal = new Node(goal, queue, 0, 0);
+        this.start = new Node(start, queue);
         this.radius = radius;
         this.map.onAddition(this::addObstacle);
         this.map.onRemoval(this::removeObstacle);
@@ -118,12 +118,12 @@ public class DStarLite {
      */
     public void setStart(Point position) {
         start.sever();
-        start = new DStarNode(position, queue);
+        start = new Node(position, queue);
         Path goalEdge = new LinearSegment(start, goal);
         for(Obstacle obs : map.getObstacles()){
             for(Point endpoint : obs.getEndpoints(start, radius)){
                 if(map.isClear(new LinearSegment(start, endpoint), radius, obs)){
-                    DStarNode vertex = getNode(endpoint, obs, true);
+                    Node vertex = getNode(endpoint, obs, true);
                     start.connect(vertex, new LinearSegment(position, endpoint));
                     vertex.connect(start, new LinearSegment(endpoint, position));
                 }
@@ -158,7 +158,7 @@ public class DStarLite {
      */
     public CompoundPath getPath() {
         List<Path> parts = new LinkedList<>();
-        DStarNode node = start;
+        Node node = start;
         while(node != goal){
             parts.add(node.getEdge(node.getNext()));
             node = node.getNext();
@@ -172,11 +172,11 @@ public class DStarLite {
      * @return  An iterable over the nodes contianed in the graph used by
      *  this D* Lite algorithm instance.
      */
-    public Iterable<DStarNode> getNodes() {
-        Set<DStarNode> res = new LinkedHashSet<>();
+    public Iterable<Node> getNodes() {
+        Set<Node> res = new LinkedHashSet<>();
         res.add(goal);
         res.add(start);
-        for(Map<Point, DStarNode> map : obstacleSets.values())
+        for(Map<Point, Node> map : obstacleSets.values())
             res.addAll(map.values());
         return res;
     }
@@ -193,7 +193,7 @@ public class DStarLite {
             @Override
             public Iterator<Path> iterator() {
                 return new Iterator<Path>() {
-                    Iterator<DStarNode> nodeIter = getNodes().iterator();
+                    Iterator<Node> nodeIter = getNodes().iterator();
                     Iterator<Path> edgeIter = null;
                     @Override
                     public boolean hasNext() {
@@ -219,17 +219,17 @@ public class DStarLite {
      *  existed in the graph.
      */
     public boolean addNode(Point position, Obstacle obstacle) {
-        NavigableMap<Point, DStarNode> obsSet = obstacleSets.get(obstacle);
+        NavigableMap<Point, Node> obsSet = obstacleSets.get(obstacle);
         if(position.equals(obsSet.floorKey(position)) || position.equals(obsSet.ceilingKey(position)))
             return false;
-        if(obsSet.putIfAbsent(position, new DStarNode(position, queue)) != null)
+        if(obsSet.putIfAbsent(position, new Node(position, queue)) != null)
             return false;
         if(obsSet.size() > 1){
-            DStarNode node = obsSet.get(position);
-            Map.Entry<Point, DStarNode> prevEntry = obsSet.lowerEntry(position);
-            DStarNode prev = (prevEntry == null ? obsSet.lastEntry() : prevEntry).getValue();
-            Map.Entry<Point, DStarNode> nextEntry = obsSet.higherEntry(position);
-            DStarNode next = (nextEntry == null ? obsSet.firstEntry() : nextEntry).getValue();
+            Node node = obsSet.get(position);
+            Map.Entry<Point, Node> prevEntry = obsSet.lowerEntry(position);
+            Node prev = (prevEntry == null ? obsSet.lastEntry() : prevEntry).getValue();
+            Map.Entry<Point, Node> nextEntry = obsSet.higherEntry(position);
+            Node next = (nextEntry == null ? obsSet.firstEntry() : nextEntry).getValue();
             prev.sever(next);
             next.sever(prev);
             Path prevEdge = obstacle.edgePath(prev, node, radius);
@@ -252,15 +252,15 @@ public class DStarLite {
      * @param obstacle  The obstacle associated with the node.
      */
     public void dropNode(Point position, Obstacle obstacle) {
-        NavigableMap<Point, DStarNode> obsSet = obstacleSets.get(obstacle);
-        DStarNode node = getNode(position, obstacle, false);  // TODO: add check for null value
+        NavigableMap<Point, Node> obsSet = obstacleSets.get(obstacle);
+        Node node = getNode(position, obstacle, false);  // TODO: add check for null value
         node.sever();
         obsSet.remove(position);
-        DStarNode prev, next;
+        Node prev, next;
         if(obsSet.size() > 0){
-            Map.Entry<Point, DStarNode> prevEntry = obsSet.lowerEntry(position);
+            Map.Entry<Point, Node> prevEntry = obsSet.lowerEntry(position);
             prev = (prevEntry == null ? obsSet.lastEntry() : prevEntry).getValue();
-            Map.Entry<Point, DStarNode> nextEntry = obsSet.higherEntry(position);
+            Map.Entry<Point, Node> nextEntry = obsSet.higherEntry(position);
             next = (nextEntry == null ? obsSet.firstEntry() : nextEntry).getValue();
             node.sever(next);
             node.sever(prev);
@@ -287,14 +287,14 @@ public class DStarLite {
     /**
      * Returns the start node of this path planner.
      */
-    public DStarNode getStart() {
+    public Node getStart() {
         return start;
     }
 
     /**
      * Returns the goal node of this path planner.
      */
-    public DStarNode getGoal() {
+    public Node getGoal() {
         return goal;
     }
 
@@ -305,7 +305,7 @@ public class DStarLite {
      * @return  The obstacle associated with the specified node in this graph.
      */
     Obstacle findNode(Point position) {
-        for(Map.Entry<Obstacle, NavigableMap<Point, DStarNode>> entry : obstacleSets.entrySet())
+        for(Map.Entry<Obstacle, NavigableMap<Point, Node>> entry : obstacleSets.entrySet())
             if(position.equals(entry.getValue().floorKey(position)) || position.equals(entry.getValue().ceilingKey(position)))
                 return entry.getKey();
         return null;
@@ -321,10 +321,10 @@ public class DStarLite {
      *  If true, the added node is returned. If false, null is returned.
      * @return  Either the specified node or null, if no such node exists.
      */
-    DStarNode getNode(Point position, Obstacle obstacle, boolean addIfMissing) {
+    Node getNode(Point position, Obstacle obstacle, boolean addIfMissing) {
         if(addIfMissing)
             addNode(position, obstacle);
-        NavigableMap<Point, DStarNode> obsSet = obstacleSets.get(obstacle);
+        NavigableMap<Point, Node> obsSet = obstacleSets.get(obstacle);
         if(position.equals(obsSet.floorKey(position)))
             return obsSet.floorEntry(position).getValue();
         else if(position.equals(obsSet.ceilingKey(position)))
@@ -342,7 +342,7 @@ public class DStarLite {
      * @param obstacle  The obstacle associated with the node.
      * @return  The specified node.
      */
-    DStarNode getNode(Point position, Obstacle obstacle) {
+    Node getNode(Point position, Obstacle obstacle) {
         return getNode(position, obstacle, true);
     }
     /**
@@ -355,7 +355,7 @@ public class DStarLite {
      * @param position  The position of the node to return.
      * @return  The specified node.
      */
-    DStarNode getNode(Point position) {
+    Node getNode(Point position) {
         return getNode(position, findNode(position), false);
     }
 
@@ -368,8 +368,8 @@ public class DStarLite {
      *  Both this and the reversal of this edge will be added to the graph.
      */
     void addEdge(Obstacle a, Obstacle b, Path edge) {
-        DStarNode beg = getNode(edge.getStart(), a, true);
-        DStarNode end = getNode(edge.getEnd(), b, true);
+        Node beg = getNode(edge.getStart(), a, true);
+        Node end = getNode(edge.getEnd(), b, true);
         beg.connect(end, edge);
         end.connect(beg, edge.reverse());
     }
@@ -386,8 +386,8 @@ public class DStarLite {
         if(obstacleSets.containsKey(obstacle)) return;
         // Remove blocked connections
 		for(var entry : obstacleSets.entrySet()){
-            for(DStarNode node : new ArrayList<DStarNode>(entry.getValue().values())){
-                for(Map.Entry<DStarNode, Path> conn : new ArrayList<>(node.getConnections()))
+            for(Node node : new ArrayList<Node>(entry.getValue().values())){
+                for(Map.Entry<Node, Path> conn : new ArrayList<>(node.getConnections()))
                     if(!obstacle.isClear(conn.getValue(), radius))
                         node.sever(conn.getKey());
                 if(node.getDegree() == 0)
@@ -426,7 +426,7 @@ public class DStarLite {
      * @param obstacle  The obstacle to remove.
      */
     public void removeObstacle(Obstacle obstacle) {
-        for(DStarNode node : new ArrayList<>(obstacleSets.get(obstacle).values()))
+        for(Node node : new ArrayList<>(obstacleSets.get(obstacle).values()))
             dropNode(node, obstacle);
         obstacleSets.remove(obstacle);
         for(Obstacle a : obstacleSets.keySet()){

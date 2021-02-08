@@ -155,22 +155,27 @@ public class DStarNode extends Point implements Comparable<DStarNode> {
         }
     }
 
+    /** Returns the minimum of the g and rhs values of this node. */
     public double key() {
         return Math.min(g, rhs);
     }
 
+    /** Checks if the r and rhs values of this node are consistent. */
     public boolean isConsistent() {
         return g == rhs;
     }
 
+    /** Returns the g estimate of the distance from this node to the goal. */
     public double getG() {
         return g;
     }
 
+    /** Returns the rhs estimate of the distance from this node to the goal. */
     public double getRhs() {
         return rhs;
     }
 
+    /** Returns the number of edges from this node. */
     public int getDegree() {
         return edges.size();
     }

@@ -4,23 +4,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+
 public class LinearSegmentTest {
     @Test
-    public void getLengthTest()
-    {
-        LinearSegment seg = new LinearSegment( new Point(1, 0), new Point(1, 2));
-        double length = seg.getLength();
-        double trueLength = Math.sqrt((1-1) * (1-1) + 2 * 2);
-        assertEquals(length, trueLength);
+    
+    public void translateByTest() {
+        LinearSegment seg3 = new LinearSegment( new Point(1, 0), new Point(1, 1));
+        LinearSegment translate = seg3.translateBy(new Translation2d(4,5));
+        LinearSegment trueTranslate = new LinearSegment( new Point(1+4, 0+5), new Point(1+4, 1+5));
+        assertEquals(translate, trueTranslate);
     }
-
-    public void getPosTest()
-    {
-        Point one = new Point (0.5, 0.5*Math.sqrt(3));
-        Point two = new Point (0,0);
-        LinearSegment seg2 = new LinearSegment( two, one);
-        Point truPosition = new Point(5, one.minus(two).getAngle());
-        Point position = seg2.getPos(5.0);
-        assertEquals(position, truPosition);
+    public void rotateByTest() {
+        LinearSegment seg4 = new LinearSegment( new Point(1, 0), new Point(1, 1));
+        LinearSegment rotate = seg4.rotateBy(new Rotation2d(30));
+        LinearSegment trueRotate = new LinearSegment( new Point(0,0), new Point(.5,.5*Math.sqrt(3)));
+        assertEquals(rotate, trueRotate);
     }
 }

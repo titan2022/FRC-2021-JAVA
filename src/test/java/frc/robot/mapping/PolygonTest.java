@@ -22,4 +22,24 @@ public class PolygonTest {
         
         assertEquals(1, trueComp);
     }
+    @Test
+    public void getPerimeterTest() {
+
+    }
+    @Test
+    public void getBoundaryTest() {
+        
+    }
+    @Test
+    public void getTangentsTest() {
+        
+    }
+    @Test
+    public void rotateByTest() {
+        
+    }
+    @Test
+    public void translateByTest() {
+        
+    }
 }

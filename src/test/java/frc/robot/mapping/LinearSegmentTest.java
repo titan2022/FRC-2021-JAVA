@@ -23,4 +23,42 @@ public class LinearSegmentTest {
         Point position = seg2.getPos(5.0);
         assertEquals(position, truPosition);
     }
+
+    public void getRotationTest()
+    {
+
+    }
+
+    public void getAngularVelocityTest() {
+
+    }
+
+    public void translateByTest() {
+
+    }
+
+    public void rotateByTest() {
+
+    }
+
+    public void getDistanceTest() {
+
+    }
+
+    public void getNearestTest() {
+
+    }
+
+    public void intersectsTest() {
+
+    }
+
+    public void getDistanceTest1() {
+
+    }
+
+    public void reverseTest()
+    {
+        
+    }
 }

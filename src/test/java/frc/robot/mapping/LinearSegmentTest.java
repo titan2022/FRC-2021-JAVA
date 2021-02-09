@@ -22,4 +22,42 @@ public class LinearSegmentTest {
         LinearSegment trueRotate = new LinearSegment( new Point(0,0), new Point(.5,.5*Math.sqrt(3)));
         assertEquals(rotate, trueRotate);
     }
+
+    public void getRotationTest()
+    {
+
+    }
+
+    public void getAngularVelocityTest() {
+
+    }
+
+    public void translateByTest() {
+
+    }
+
+    public void rotateByTest() {
+
+    }
+
+    public void getDistanceTest() {
+
+    }
+
+    public void getNearestTest() {
+
+    }
+
+    public void intersectsTest() {
+
+    }
+
+    public void getDistanceTest1() {
+
+    }
+
+    public void reverseTest()
+    {
+        
+    }
 }

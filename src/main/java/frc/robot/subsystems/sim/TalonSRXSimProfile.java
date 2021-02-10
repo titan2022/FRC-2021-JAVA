@@ -5,6 +5,8 @@ import static frc.robot.subsystems.sim.PhysicsSim.*; // random()
 
 import com.ctre.phoenix.motorcontrol.can.*;
 
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+
 /**
  * Holds information about a simulated TalonSRX.
  */
@@ -71,7 +73,7 @@ class TalonSRXSimProfile extends SimProfile {
 
         /// SET SIM PHYSICS INPUTS
 
-        _talon.getSimCollection().addQuadraturePosition((int)(_vel * period / 100));
+        //_talon.getSimCollection().addQuadraturePosition((int)(_vel * period / 100));
         _talon.getSimCollection().setQuadratureVelocity((int)_vel);
 
         double supplyCurrent = Math.abs(outPerc) * 30 * random(0.95, 1.05);
@@ -79,6 +81,7 @@ class TalonSRXSimProfile extends SimProfile {
         _talon.getSimCollection().setSupplyCurrent(supplyCurrent);
         _talon.getSimCollection().setStatorCurrent(statorCurrent);
 
-        _talon.getSimCollection().setBusVoltage(12 - outPerc * outPerc * 3/4 * random(0.95, 1.05));
+        double busVoltage = 12 - outPerc * outPerc * 3/4 * random(0.95, 1.05);
+        _talon.getSimCollection().setBusVoltage(busVoltage);
     }
 }

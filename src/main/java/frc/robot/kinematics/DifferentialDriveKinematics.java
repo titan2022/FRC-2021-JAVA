@@ -7,7 +7,7 @@ import edu.wpi.first.wpiutil.math.Nat;
 import edu.wpi.first.wpiutil.math.VecBuilder;
 
 /**
- * 
+ * This class simulates the kinematics of a differential drive system. Using linear algebra, we can find the forward and reverse kinematics given their respective parameters. 
  */
 public class DifferentialDriveKinematics {
     private double wR, a;
@@ -36,7 +36,7 @@ public class DifferentialDriveKinematics {
      * @param vL - the rotational velocity of the left wheel
      * @param vR - the rotational velocity of the right wheel
      * @param phi - the absolute rotational pose of the robot chassis in radians
-     * @return
+     * @return - returns a matrix which contains translational velocity of x and y position as well as new rotation
      */
     public Matrix getAbsoluteVelocity(double vL, double vR, double phi){
         Q = QBuilder.fill(vR, vL);
@@ -50,7 +50,7 @@ public class DifferentialDriveKinematics {
      * 
      * @param chassisSpeeds an object that encapsulates vx, vy, and rotational velocity
      * @param phi the absolute heading of the robot
-     * @return
+     * @return returns a matrix of the wheel velocities and pose
      */
     public Matrix getWheelVelocity(ChassisSpeeds chassisSpeeds, double phi)
     {
@@ -66,11 +66,11 @@ public class DifferentialDriveKinematics {
 
     /**
      * 
-     * @param vX
-     * @param vY
-     * @param dPhi
-     * @param phi
-     * @return
+     * @param vX velocity in x direction
+     * @param vY velocity in y direction
+     * @param dPhi rotational velocity
+     * @param phi initial angle of robot
+     * @return returns a matrix of the wheel velocities and pose
      */
     public Matrix getWheelVelocity(double vX, double vY, double dPhi, double phi)
     {

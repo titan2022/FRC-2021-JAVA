@@ -7,14 +7,12 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.ManualDifferentialDriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.NavigationSubsystem;
 
 /**
@@ -24,15 +22,20 @@ import frc.robot.subsystems.NavigationSubsystem;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static OI oi;
+  public static OI oi = new OI();
   private Command m_autonomousCommand;
 
   private final DriveSubsystem driveSub = new DriveSubsystem(true);
   private final NavigationSubsystem nav = new NavigationSubsystem(driveSub, true);
   private ManualDifferentialDriveCommand manDrive = new ManualDifferentialDriveCommand(driveSub);
+  //private DriveTrain m_drive = new DriveTrain(); //uncomment this for simple differential drive train sim example
   
   private RobotContainer m_robotContainer;
 
+  public Robot()
+  {
+    super(.02); // Default period is .02 seconds
+  }
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -108,7 +111,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    
+    double xSpeed = XboxMap.left() * DriveTrain.kMaxSpeed;
+
+    // Get the rate of angular rotation. We are inverting this because we want a
+    // positive value when we pull to the left (remember, CCW is positive in
+    // mathematics). Xbox controllers return positive values when you pull to
+    // the right by default.
+    double rot = XboxMap.right() * DriveTrain.kMaxAngularSpeed;
+    //m_drive.drive(xSpeed, rot); //uncomment to enable this and line 31 for differential drive train sim example
   }
 
   @Override
@@ -134,7 +144,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void simulationPeriodic() {
-    nav.simulationPeriodic();
-    driveSub.simulationPeriodic();
+    //nav.simulationPeriodic();
+    //driveSub.simulationPeriodic();
+    //m_drive.simulationPeriodic();
   }
 }

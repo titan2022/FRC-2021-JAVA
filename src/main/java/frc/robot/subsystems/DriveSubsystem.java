@@ -19,10 +19,10 @@ import frc.robot.subsystems.sim.PhysicsSim;
 public class DriveSubsystem extends SubsystemBase
 {
   // Physical parameters
-  public static final double ROBOT_TRACK_WIDTH = 42; // meter // TODO: Ask DI team for distance between wheels
-  public static final double WHEEL_RADIUS = 3; // meters // TODO: Ask DI team for correct wheel radius
-  public static final double ENCODER_TICKS = 4096; // TODO: Figure out the number of ticks in our encoders
-  public static final double METERS_PER_TICK = WHEEL_RADIUS * Math.PI / ENCODER_TICKS; // TODO: Recompute using wheel circumference / encoder ticks
+  public static final double ROBOT_TRACK_WIDTH = 26.75/39.37; // meter
+  public static final double WHEEL_RADIUS = 6/39.37; // meters
+  public static final double ENCODER_TICKS = 4096; // Ticks/rotation of CTREMagEncoder
+  public static final double METERS_PER_TICK = WHEEL_RADIUS * 2 * Math.PI / ENCODER_TICKS;
   public static final double GEARING_REDUCTION = 7.29; // TODO: Get the correct gearing ratio
 
   // Port numbers to be added later
@@ -38,8 +38,8 @@ public class DriveSubsystem extends SubsystemBase
   private static final boolean LEFT_SECONDARY_INVERTED = false;
   private static final boolean RIGHT_PRIMARY_INVERTED = false;
   private static final boolean RIGHT_SECONDARY_INVERTED = false;
-  private static final boolean LEFT_PRIMARY_MOTOR_SENSOR_PHASE = true;
-  private static final boolean RIGHT_PRIMARY_MOTOR_SENSOR_PHASE = true;
+  private static final boolean LEFT_PRIMARY_MOTOR_SENSOR_PHASE = false;
+  private static final boolean RIGHT_PRIMARY_MOTOR_SENSOR_PHASE = false;
 
   // Physical limits
   private static final double MAX_SPEED = 10; // meters/sec
@@ -150,7 +150,7 @@ public class DriveSubsystem extends SubsystemBase
     driveSim = new DifferentialDrivetrainSim(
       // Create a linear system from our characterization gains.
       LinearSystemId.identifyDrivetrainSystem(KvLinear, KaLinear, KvAngular, KaAngular),
-      DCMotor.getNEO(2),       // 2 NEO motors on each side of the drivetrain.  // TODO: Set the correct type of motor
+      DCMotor.getFalcon500(2),       // 2 Falcon500 motors on each side of the drivetrain.  // TODO: Set the correct type of motor
       GEARING_REDUCTION,
       ROBOT_TRACK_WIDTH,
       WHEEL_RADIUS,
@@ -254,11 +254,11 @@ public class DriveSubsystem extends SubsystemBase
   public double getEncoderVelocity(boolean useLeft) {
     if (useLeft)
     {
-      return leftPrimary.getSelectedSensorVelocity(0) * METERS_PER_TICK;
+      return leftPrimary.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK;
     }
     else
     {
-      return rightPrimary.getSelectedSensorVelocity(0) * METERS_PER_TICK;
+      return rightPrimary.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK;
     }
   }
 
@@ -300,7 +300,7 @@ public class DriveSubsystem extends SubsystemBase
     driveSim.update(getRobotTime() - simPrevT);
     simPrevT = getRobotTime();
 
-    leftPrimary.setSelectedSensorPosition(driveSim.getLeftPositionMeters());
-    rightPrimary.setSelectedSensorPosition(driveSim.getRightPositionMeters());
+    leftPrimary.setSelectedSensorPosition(driveSim.getLeftPositionMeters() / METERS_PER_TICK);
+    rightPrimary.setSelectedSensorPosition(driveSim.getRightPositionMeters() / METERS_PER_TICK);
   }
 }

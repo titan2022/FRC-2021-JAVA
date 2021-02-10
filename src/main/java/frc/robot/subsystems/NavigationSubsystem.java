@@ -126,7 +126,7 @@ public class NavigationSubsystem extends SubsystemBase {
    */
   public double getHeading() {
 
-    return -Math.IEEEremainder(getYaw(), 360);
+    return Math.IEEEremainder(getYaw(), 360);
 
   }
 
@@ -259,19 +259,15 @@ public class NavigationSubsystem extends SubsystemBase {
   }
 
   public void simulationPeriodic() {
-
     yaw.set(getDriveSimYaw());
 
     rate.set((getDriveSimYaw() - simPrevYaw) / (getRobotTime() - simPrevT));
     simPrevT = getRobotTime();
     simPrevYaw = getDriveSimYaw();
 
-    // fieldSim.setRobotPose(getFilterStateElement(0, 0), getFilterStateElement(3,
-    // 0), Rotation2d.fromDegrees(getHeading()));
+    //fieldSim.setRobotPose(getFilterStateElement(0, 0), getFilterStateElement(3, 0), Rotation2d.fromDegrees(getHeading())); // TODO: Debug
 
-    // for later purposes
-    fieldSim.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(),
-        Rotation2d.fromDegrees(getHeading()));
+    fieldSim.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), Rotation2d.fromDegrees(getHeading()));
 
     SmartDashboard.putData("Field", fieldSim);
   }

@@ -28,4 +28,18 @@ public class DifferentialDriveKinematicsTest {
         assertEquals(trueThetaVelocity, testThetaVelocity);
     }
 
+    @Test
+    public void TestGetWheelVelocity()
+    {
+        DifferentialDriveKinematics x = new DifferentialDriveKinematics(1, 1);
+        double testVL = x.getWheelVelocity(1, 0, 0, 0).get(0, 0);
+        double testVR = x.getWheelVelocity(1, 0, 0, 0).get(1, 0);
+
+        double trueVL = 1;
+        double trueVR = 1;
+
+        assertEquals(testVL, trueVL);
+        assertEquals(testVR, trueVR);
+    }
+
 }

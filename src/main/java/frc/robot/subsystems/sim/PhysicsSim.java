@@ -3,6 +3,8 @@ package frc.robot.subsystems.sim;
 import java.util.*;
 import com.ctre.phoenix.motorcontrol.can.*;
 
+import edu.wpi.first.wpilibj.RobotController;
+
 /**
  * Manages physics simulation for CTRE products.
  */
@@ -104,12 +106,12 @@ public class PhysicsSim {
         protected double getPeriod() {
             // set the start time if not yet running
             if (!_running) {
-                _lastTime = System.nanoTime();
+                _lastTime = RobotController.getFPGATime()/1000;;
                 _running = true;
             }
             
-            long now = System.nanoTime();
-            final double period = (now - _lastTime) / 1000000.;
+            long now = RobotController.getFPGATime()/1000;
+            final double period = (now - _lastTime);
             _lastTime = now;
 
             return period;

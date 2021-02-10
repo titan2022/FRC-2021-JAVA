@@ -15,7 +15,7 @@ public class CircularArcTest {
         double trueLength = Math.sqrt(1) * 3.14;
         assertEquals(length, trueLength);
     }
-
+    @Test
     public void getPosTest() 
     {
         CircularArc arc = new CircularArc(new Point(0,1), new Point(0,0), 3.14);

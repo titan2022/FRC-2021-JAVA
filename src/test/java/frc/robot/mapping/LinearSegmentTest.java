@@ -25,7 +25,7 @@ public class LinearSegmentTest {
 
     public void getRotationTest()
     {
-
+        
     }
 
     public void getAngularVelocityTest() {

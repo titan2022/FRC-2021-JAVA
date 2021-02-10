@@ -22,7 +22,7 @@ public abstract class RMPNode {
 	{
 		this.name = name;
 		this.parent = parent;
-		if(parent != null)
+		if(parent != null) // TODO: Throw null pointer if parent doesn't exist
 			parent.addChild(this);
 		this.x = null;
 		this.x_dot = null;

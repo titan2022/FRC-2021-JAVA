@@ -14,6 +14,20 @@ public class PointTest {
         Rotation2d timTrue = new Rotation2d(Math.PI/3);
         assertEquals(tim, timTrue);
     }
+    @Test
+    public void unaryMinusTest() {
+        Point pt = new Point (1,5);
+        Point tim = pt.unaryMinus();
+        Point timTrue = new Point (-1, -5);
+        assertEquals(tim, timTrue);
+    }
+    @Test
+    public void rotateByTest() {
+        Point pt = new Point (0,1);
+        Point tim = pt.rotateBy(new Rotation2d(.5, .5*Math.sqrt(3)));
+        Point timTrue = new Point (-0.5*Math.sqrt(3),.5);
+        assertEquals(tim, timTrue);
+    }
     @Test 
     public void plusTest() {
         Point pt = new Point (1,1);

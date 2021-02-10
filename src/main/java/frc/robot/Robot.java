@@ -14,6 +14,8 @@ import frc.robot.commands.ManualDifferentialDriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.NavigationSubsystem;
+import frc.robot.path.dstar.DStarDemoCommand;
+import frc.robot.path.dstar.DStarTester;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -85,6 +87,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    new DStarTester().schedule();
+    new DStarDemoCommand().schedule();
   }
 
   /**

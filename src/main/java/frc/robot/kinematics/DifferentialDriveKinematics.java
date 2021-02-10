@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpiutil.math.MatBuilder;
 import edu.wpi.first.wpiutil.math.Matrix;
 import edu.wpi.first.wpiutil.math.Nat;
-import edu.wpi.first.wpiutil.math.Num;
 import edu.wpi.first.wpiutil.math.VecBuilder;
 
 /**

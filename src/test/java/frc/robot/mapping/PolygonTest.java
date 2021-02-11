@@ -4,7 +4,13 @@ package frc.robot.mapping;
 import org.junit.jupiter.api.Test;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 public class PolygonTest {
     @Test
     public void CompareTest() {
@@ -33,22 +39,29 @@ public class PolygonTest {
     @Test
     public void getBoundaryTest() {
         Polygon poly = new Polygon(new Point(-1,-1), new Point (-1,1), new Point (1,1), new Point(1,-1));
-        Path boundary = poly.getBoundary(2.0);
-        Path[] segTrue = new Path[8];
-        for(int i=0; i<4; i++){
-            segTrue[i*2] = new CircularArc(new Point(0,0), poly.verts[i],  poly.verts[i].plus(new Point(2,0)));
-            segTrue[i*2+1] = new LinearSegment(new Point(2,2),new Point (2,0));
-        }
-        Path boundTrue = new CompoundPath(new Path[1]);
-        assertEquals(boundary, boundTrue);
+        Path boundary = poly.getBoundary(0);
+        double len = boundary.getLength();
+        double lenTrue = 8;
+        assertEquals(len, lenTrue);
     }
     @Test
     public void getTangentsTest() {
-        
+        Polygon poly = new Polygon(new Point(-1,-1), new Point (-1,0), new Point (0,0), new Point(0,-1));
+        Polygon poly2 = new Polygon(new Point(0,0), new Point (0,1), new Point (1,0), new Point(1,1));
+        Iterable<LinearSegment> tan = poly.getTangents(poly2);
+        LinearSegment tan1 = new LinearSegment(new Point(-1,0), new Point(0,1));
+        LinearSegment tan2 = new LinearSegment(new Point(0,-1), new Point(0,1));
+        List<LinearSegment> truTan = new ArrayList<LinearSegment>(2);
+        truTan.add(tan1);
+        truTan.add(tan2);
+        assertEquals(tan, truTan);
     }
     @Test
     public void rotateByTest() {
-        
+        Polygon poly = new Polygon(new Point(-1,-1), new Point (-1,1), new Point (1,1), new Point(1,-1));
+        Polygon rotation = poly.rotateBy(new Rotation2d(0,1));
+        Polygon truRotation = new Polygon(new Point(1,-1), new Point(-1,-1), new Point (-1,1), new Point (1,1));
+        assertEquals(rotation.verts, truRotation.verts); 
     }
     @Test
     public void translateByTest() {
@@ -62,5 +75,10 @@ public class PolygonTest {
         assertEquals(transl2[1], trueTransl2[1]);
         assertEquals(transl2[2], trueTransl2[2]);
         assertEquals(transl2[3], trueTransl2[3]);
+    }
+    @Test
+    public void edgePathTest() {
+        Polygon poly = new Polygon(new Point(-1,-1), new Point (-1,1), new Point (1,1), new Point(1,-1));
+         
     }
 }

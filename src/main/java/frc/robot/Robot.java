@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.vision.demos.LimelightDataDemo;
 
+import frc.robot.path.dstar.DStarDemoCommand;
+import frc.robot.path.dstar.DStarTester;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -78,6 +80,8 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
 
+    new DStarTester().schedule();
+    new DStarDemoCommand().schedule();
   }
 
   /**

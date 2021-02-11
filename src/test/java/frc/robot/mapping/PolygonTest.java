@@ -78,7 +78,9 @@ public class PolygonTest {
     }
     @Test
     public void edgePathTest() {
-        Polygon poly = new Polygon(new Point(-1,-1), new Point (-1,1), new Point (1,1), new Point(1,-1));
+        Polygon poly = new Polygon(new Point(-1,-1), new Point (-1,0), new Point (0,0), new Point(0,-1));
+        Path edgePath = poly.edgePath(new Point(-1,-2), new Point(0,2),0);
+        assertEquals(edgePath.getLength(), 5);
          
     }
 }

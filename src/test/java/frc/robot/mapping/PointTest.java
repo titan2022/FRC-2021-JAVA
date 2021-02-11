@@ -13,7 +13,7 @@ public class PointTest {
         Rotation2d tim = pt.getAngle();
         Rotation2d timTrue = new Rotation2d(Math.PI/3);
         assertEquals(tim, timTrue);
-    }
+    } 
     @Test
     public void unaryMinusTest() {
         Point pt = new Point (1,5);

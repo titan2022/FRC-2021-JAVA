@@ -8,20 +8,22 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
  * Xbox button logic definitions
  */
 public class XboxMap {
-  private static final double JOYSTICK_DRIFT = 1e-2;
-  private static final double RUMBLE_INTENSITY = 1; //(0,1]
+  private static final double JOYSTICK_DRIFT = .09;
+  private static final double RUMBLE_INTENSITY = 1; // [0,1]
 
-  private static XboxController controller = Robot.oi.ps4;
+  // Main Driver and Auxilliary Driver
+  private static final XboxController controller = Robot.oi.ps4;
+  private static final XboxController auxController = Robot.oi.xbox;
 
   // Driving Controls 
 	public static double left() {
-    double value = controller.getY(Hand.kLeft);
-    return (Math.abs(value) < JOYSTICK_DRIFT) ? 0 : value;
+    double value = -controller.getY(Hand.kLeft);
+    return applyDeadband(value, JOYSTICK_DRIFT);
   }
     
 	public static double right() {
-    double value = controller.getY(Hand.kRight);
-    return (Math.abs(value) < JOYSTICK_DRIFT) ? 0 : value;
+    double value = -controller.getY(Hand.kRight);
+    return applyDeadband(value, JOYSTICK_DRIFT);
   }
 
   public static boolean toggleBrakes() {
@@ -36,6 +38,24 @@ public class XboxMap {
 	public static void stopRumble() {
 		controller.setRumble(RumbleType.kLeftRumble, 0);
 		controller.setRumble(RumbleType.kRightRumble, 0);
-	}
-
+  }
+  
+  /**
+   * Returns 0.0 if the given value is within the specified range around zero. The remaining range
+   * between the deadband and 1.0 is scaled from 0.0 to 1.0.
+   *
+   * @param value value to clip
+   * @param deadband range around zero
+   */
+  public static double applyDeadband(double value, double deadband) {
+    if (Math.abs(value) > deadband) {
+      if (value > 0.0) {
+        return (value - deadband) / (1.0 - deadband);
+      } else {
+        return (value + deadband) / (1.0 - deadband);
+      }
+    } else {
+      return 0.0;
+    }
+  }
 }

@@ -4,6 +4,7 @@ import org.ejml.simple.SimpleMatrix;
 
 /**
  * A leaf node with no children that contains an RMP.
+ * Includes implementation as described in the <a href="https://arxiv.org/abs/1811.07049">RMPFlow Section 3.5</a>.
  */
 public abstract class RMPLeaf extends RMPNode{
 	/**
@@ -36,7 +37,7 @@ public abstract class RMPLeaf extends RMPNode{
 	 * @param size the numbers of rows for a square matrix
 	 * @return A diagonal matrix of 1s.
 	 */
-	public static SimpleMatrix eye(int size)
+	public static SimpleMatrix eye(int size) // TODO: Move to a matrix utilities class
 	{
 		SimpleMatrix eye = new SimpleMatrix(size, size);
 		for(int i = 0; i < size; i++)
@@ -49,14 +50,18 @@ public abstract class RMPLeaf extends RMPNode{
 	/**
 	 * Solves for F
 	 * , where F is the motion policy that describes the dynamical system as a second-order differential equation that uses position and velocity.
-	 * @return F 
+	 * @param x The RMPLeaf state in task space
+	 * @param x_dot The RMPLeaf differentiated state in task space
+	 * @return F, the force motion policy
 	 */
 	protected abstract SimpleMatrix solveF(SimpleMatrix x, SimpleMatrix x_dot);
 	
 	/**
 	 * Solves for M
 	 * , where M is the canonical version of the Riemannian metric A
-	 * @return M
+	 * @param x The RMPLeaf state in task space
+	 * @param x_dot The RMPLeaf differentiated state in task space
+	 * @return M, the inertia matrix
 	 */
 	protected abstract SimpleMatrix solveM(SimpleMatrix x, SimpleMatrix x_dot);
 }

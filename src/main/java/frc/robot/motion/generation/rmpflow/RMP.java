@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import org.ejml.simple.SimpleMatrix;
 
 /**
- * A wrapper class that allows Lambda function to be used with
+ * A wrapper class that allows Lambda function to be used with RMPFlow
  */
 public class RMP extends RMPLeaf {
     private Function<SimpleMatrix, SimpleMatrix> phi, j;
@@ -25,52 +25,31 @@ public class RMP extends RMPLeaf {
         this.j_dot = j_dot;
     }
 
-    /**
-	 * Differentiable task map that relates the configuration space to the task space.
-	 * @param q is the configuration space
-	 * @return the task space
-	 */
+	@Override
 	public SimpleMatrix phi(SimpleMatrix q)
 	{
 		return phi.apply(q);
 	}
 
-	/**
-	 * Jacobian of the task map phi
-	 * @param q is the configuration space
-	 * @return
-	 */
+	@Override
 	public SimpleMatrix j(SimpleMatrix q)
 	{
 		return j.apply(q);
 	}
 
-	/**
-	 * Second derivative Jacobian of the task map phi
-	 * @param q is the configuration space
-	 * @param q_dot is the configuration space
-	 * @return differentiated Jacobian of configuration space to task space 
-	 */
+	@Override
 	public SimpleMatrix j_dot(SimpleMatrix q, SimpleMatrix q_dot)
 	{
-		return j_dot.apply(q, q_dot);//TODO decide if to implement like goal Attractor J_dot
+		return j_dot.apply(q, q_dot);
     }
     
-    /**
-	 * Solves for F
-	 * , where F is the motion policy that describes the dynamical system as a second-order differential equation that uses position and velocity.
-	 * @return F 
-	 */
+	@Override
     protected SimpleMatrix solveF(SimpleMatrix x, SimpleMatrix x_dot)
     {
         return f.get();
     }
 	
-	/**
-	 * Solves for M
-	 * , where M is the canonical version of the Riemannian metric A
-	 * @return M
-	 */
+	@Override
     protected SimpleMatrix solveM(SimpleMatrix x, SimpleMatrix x_dot)
     {
         return m.get();

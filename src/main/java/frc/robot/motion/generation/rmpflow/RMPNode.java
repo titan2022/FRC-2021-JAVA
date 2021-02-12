@@ -138,57 +138,57 @@ public abstract class RMPNode {
 	}
 
 	/**
-	 * Returns current state
-	 * @return x
+	 * Returns the RMP's current task space state
+	 * @return x The RMP's current task space state
 	 */
 	public SimpleMatrix getX() {return x;}
 
 	/**
-	 * Sets the current state
-	 * @param x
+	 * Sets the RMP's current task space state
+	 * @param x The RMP's current task space state
 	 */
 	public void setX(SimpleMatrix x) {this.x = x;}
 
 	/**
-	 * Gets the current derivative of the state
-	 * @return first order of system
+	 * Gets the RMP's current task space derivative state
+	 * @return RMP's current task space derivative state
 	 */
 	public SimpleMatrix getXdot() {return x_dot;}
 
 	/**
-	 * Sets the current first order state
-	 * @param xdot is the first order of the system
+	 * Sets the RMP's current task space derivative state
+	 * @param xdot The RMP's current task space derivative state
 	 */
 	public void setXdot(SimpleMatrix xdot) {this.x_dot = xdot;}
 
 	/**
-	 * Returns acceleration motion policy
-	 * @return f
+	 * Returns the force motion policy
+	 * @return f The force motion policy
 	 */
 	public SimpleMatrix getF() {return f;}
 
 	/**
-	 * Sets acceleration motion policy
-	 * @param f
+	 * Sets the force motion policy
+	 * @param f The force motion policy
 	 */
 	public void setF(SimpleMatrix f) {this.f = f;}
 
 	/**
-	 * Returns riemannian metric
-	 * @return M
+	 * Returns inertia matrix
+	 * @return M The inertia matrix
 	 */
 	public SimpleMatrix getM() {return m;}
 
 	/**
-	 * Sets riemannian metric
-	 * @param m
+	 * Sets inertia matrix
+	 * @param m The inertia matrix
 	 */
 	public void setM(SimpleMatrix m) {this.m = m;}
 
 	/**
 	 * Computes and returns motion policy as a = M†f.
 	 * † denotes Moore-Penrose inverse.
-	 * @return A
+	 * @return A the desired acceleration which is a(x, x_dot)
 	 */
 	public SimpleMatrix getA() {return m.pseudoInverse().mult(f);}
 }

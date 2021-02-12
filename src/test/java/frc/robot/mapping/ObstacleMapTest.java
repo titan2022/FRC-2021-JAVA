@@ -3,6 +3,9 @@ package frc.robot.mapping;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+/* 
+@author Irene Liu
+*/
 public class ObstacleMapTest {
     @Test
     public void isClearTest() {
@@ -20,7 +23,7 @@ public class ObstacleMapTest {
         ObstacleMap map = new ObstacleMap();
         map.addObstacle(poly);
         Iterable<Obstacle> obs = map.getObstacles();
-        assertEquals(obs, poly);
+        assertEquals(obs.iterator().next(), poly);
     }
     boolean bool = false;
     void myMethod(Obstacle o) {

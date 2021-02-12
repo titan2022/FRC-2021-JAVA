@@ -11,6 +11,9 @@ import java.util.Set;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+/* 
+@author Irene Liu
+*/
 public class PolygonTest {
     @Test
     public void CompareTest() {
@@ -54,7 +57,7 @@ public class PolygonTest {
         List<LinearSegment> truTan = new ArrayList<LinearSegment>(2);
         truTan.add(tan1);
         truTan.add(tan2);
-        assertEquals(tan, truTan);
+        assertEquals(tan.iterator().next().getLength(), truTan.get(0).getLength());
     }
     @Test
     public void rotateByTest() {

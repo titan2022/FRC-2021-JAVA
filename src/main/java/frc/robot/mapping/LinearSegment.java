@@ -58,7 +58,7 @@ public class LinearSegment implements Path {
         Rotation2d theta = Point.getAngle(end, start, from);
         double startDist = start.getDistance(from);
         if(theta.getCos() >= 0 && theta.getCos() * startDist < getLength())
-            return theta.getSin() * startDist;
+            return Math.abs(theta.getSin() * startDist);
         return Math.min(startDist, end.getDistance(from));
     }
 
@@ -88,10 +88,10 @@ public class LinearSegment implements Path {
      */
     public boolean intersects(LinearSegment other) {
         double abx, aby, xya, xyb;
-        abx = Point.getAngle(start, end, other.start).getCos();
-        aby = Point.getAngle(start, end, other.end).getCos();
-        xya = Point.getAngle(other.start, other.end, start).getCos();
-        xyb = Point.getAngle(other.start, other.end, end).getCos();
+        abx = Point.getAngle(start, end, other.start).getSin();
+        aby = Point.getAngle(start, end, other.end).getSin();
+        xya = Point.getAngle(other.start, other.end, start).getSin();
+        xyb = Point.getAngle(other.start, other.end, end).getSin();
         if(abx * aby <= 0 && xya * xyb <= 0) return true;
         else return false;
     }
@@ -114,5 +114,11 @@ public class LinearSegment implements Path {
     @Override
     public LinearSegment reverse() {
         return new LinearSegment(end, start);
+    }
+
+    @Override
+    public double getDistance(Path other) {
+        if(other instanceof LinearSegment) return getDistance((LinearSegment) other);
+        else return other.getDistance((LinearSegment) this);
     }
 }

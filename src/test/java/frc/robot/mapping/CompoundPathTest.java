@@ -7,6 +7,9 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * @Author Abhi Vinnakota
+ */
 public class CompoundPathTest {
     @Test
     public void getLengthTest() 

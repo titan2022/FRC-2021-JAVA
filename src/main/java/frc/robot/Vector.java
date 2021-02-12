@@ -1,7 +1,5 @@
 package frc.robot;
 
-import java.util.ArrayList;
-
 public class Vector {
     private double x,y;
     public Vector(){

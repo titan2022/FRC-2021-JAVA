@@ -12,7 +12,8 @@ import edu.wpi.first.wpiutil.math.VecBuilder;
  */
 public class DifferentialDriveKinematics {
     private double wR, a;
-    private MatBuilder DifferentialJacobianBuilder, InverseDifferentialJacobianBuilder;
+    private MatBuilder DifferentialJacobianBuilder;
+    private MatBuilder InverseDifferentialJacobianBuilder;
     private Matrix DifferentialJacobian;
     private VecBuilder QBuilder, PBuilder;
     private Matrix Q, P;
@@ -40,7 +41,7 @@ public class DifferentialDriveKinematics {
      * @return
      */
     public Matrix getAbsoluteVelocity(double vL, double vR, double phi){
-        Q = QBuilder.fill(vR, vL);
+        Q = VecBuilder.fill(vR, vL);
         DifferentialJacobian = DifferentialJacobianBuilder.fill((wR/2)*Math.cos(phi),(wR/2)*Math.cos(phi)
                                                                 ,(wR/2)*Math.sin(phi),(wR/2)*Math.sin(phi)
                                                                 ,wR/(2*a)            ,-wR/(2*a));
@@ -55,14 +56,7 @@ public class DifferentialDriveKinematics {
      */
     public Matrix getWheelVelocity(ChassisSpeeds chassisSpeeds, double phi)
     {
-        double vX = chassisSpeeds.vxMetersPerSecond;
-        double vY = chassisSpeeds.vyMetersPerSecond;
-        double dPhi = chassisSpeeds.omegaRadiansPerSecond;
-        P = PBuilder.fill(vX, vY, dPhi);
-        DifferentialJacobian = InverseDifferentialJacobianBuilder.fill(Math.cos(phi), Math.sin(phi), a,
-                                                                        Math.cos(phi), Math.sin(phi), -a);
-        DifferentialJacobian = DifferentialJacobian.times(1.0/wR);
-        return DifferentialJacobian.times(P);
+        return getWheelVelocity(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond, phi);
     }
 
     /**
@@ -75,7 +69,7 @@ public class DifferentialDriveKinematics {
      */
     public Matrix getWheelVelocity(double vX, double vY, double dPhi, double phi)
     {
-        P = PBuilder.fill(vX, vY, dPhi);
+        P = VecBuilder.fill(vX, vY, dPhi);
         DifferentialJacobian = InverseDifferentialJacobianBuilder.fill(Math.cos(phi), Math.sin(phi), a,
                                                                         Math.cos(phi), Math.sin(phi), -a);
         DifferentialJacobian = DifferentialJacobian.times(1.0/wR);

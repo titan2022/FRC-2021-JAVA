@@ -4,21 +4,26 @@ import java.util.ArrayList;
 import org.ejml.simple.SimpleMatrix;
 
 /**
- * Represents a single node and its connections in an Riemannian Motion Policies Tree.
- * Includes implementation as described in the RMPFlow algorithm.
+ * Represents a single node and its connections in a Riemannian Motion Policies Tree.
+ * Includes implementation as described in the <a href="https://arxiv.org/abs/1811.07049">RMPFlow</a> algorithm.
  */
 public abstract class RMPNode {
-	private String name;
-	private RMPNode parent;
-	private ArrayList<RMPNode> children = new ArrayList<RMPNode>();
+	private String name; // Name of RMP
+	private RMPNode parent; // Parent node
+	private ArrayList<RMPNode> children = new ArrayList<RMPNode>(); // All child nodes
 	private SimpleMatrix x, x_dot, f, m;
+	// See <a href="https://arxiv.org/abs/1811.07049">RMPFlow Section 3.2</a>
+	// x: current state
+	// x_dot: derivative of current state
+	// f: desired force map
+	// m: inertia matrix 
 	
 	/**
 	 * A node for an tree that contains mappings and functions for Riemannian Motion Policies.
 	 * @param name of RMP node
 	 * @param parent of RMP node
 	 */
-	public RMPNode(String name, RMPNode parent)
+	protected RMPNode(String name, RMPNode parent)
 	{
 		this.name = name;
 		this.parent = parent;
@@ -32,8 +37,9 @@ public abstract class RMPNode {
 
 	/**
 	 * Differentiable task map that relates the configuration space to the task space.
-	 * @param q is the configuration space
-	 * @return the task space
+	 * Ψ : C -> T
+	 * @param q The configuration space
+	 * @return The task space
 	 */
 	public SimpleMatrix psi(SimpleMatrix q)
 	{
@@ -42,24 +48,24 @@ public abstract class RMPNode {
 
 	/**
 	 * Jacobian of the task map psi
-	 * @param q is the configuration space
-	 * @return
+	 * @param q The configuration space
+	 * @return A transformation via Jacobian of the task map psi
 	 */
 	public SimpleMatrix j(SimpleMatrix q)
 	{
 		return q;
-	};
+	}
 
 	/**
 	 * Second derivative Jacobian of the task map psi
-	 * @param q is the configuration space
-	 * @param q_dot is the configuration space
-	 * @return differentiated Jacobian of configuration space to task space 
+	 * @param q The configuration space
+	 * @param q_dot The configuration space
+	 * @return A transformation via second-order Jacobian of the task map psi 
 	 */
 	public SimpleMatrix j_dot(SimpleMatrix q, SimpleMatrix q_dot)
 	{
-		return q_dot;//TODO decide if to implement like goal Attractor J_dot
-	};
+		return q_dot;// TODO decide if to implement like goal Attractor J_dot
+	}
 	
 	/**
 	 * Adds a node as a child to the implicit node.
@@ -117,7 +123,7 @@ public abstract class RMPNode {
 		for(int i = 0; i < children.size(); i++)
 		{
 			RMPNode child = children.get(i);
-			SimpleMatrix J_child = child.j(x);//child's Jacobian of x
+			SimpleMatrix J_child = child.j(x);// child's Jacobian of x
 			SimpleMatrix J_dot_child = child.j_dot(x, x_dot);
 			
 			if(child.f != null && child.name != null)

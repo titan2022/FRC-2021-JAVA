@@ -1,6 +1,8 @@
 package frc.robot.mapping;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
 import org.junit.jupiter.api.Test;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -47,16 +49,16 @@ public class CircularArcTest {
     {
         CircularArc arc = new CircularArc(new Point(0,1), new Point(0,0), 3.14);
         CircularArc translate = arc.translateBy(new Translation2d(2, 3.14));
-        CircularArc trueTranslate = new CircularArc(new Point(0,3), new Point(0,2), 0);
-        assertEquals(translate, trueTranslate);
+        CircularArc trueTranslate = new CircularArc(new Point(0,3), new Point(2,3.14), 0);
+        assertEquals(translate.getPos(0), trueTranslate.getPos(0));
     }
     @Test
     public void rotateByTest() 
     {
         CircularArc arc = new CircularArc(new Point(0,1), new Point(0,0), 3.14);
         CircularArc rotate = arc.rotateBy(new Rotation2d(2, 3.14));
-        CircularArc trueRotate = new CircularArc(new Point(0,3), new Point(0,2), 0);
-        assertEquals(rotate, trueRotate); 
+        CircularArc trueRotate = new CircularArc(new Point(0,3), new Point(0,0), 0);
+        assertEquals(rotate.getPos(0), trueRotate.getPos(0)); 
     }
     @Test
     public void reverseTest()
@@ -64,7 +66,7 @@ public class CircularArcTest {
         CircularArc arc = new CircularArc(new Point(0,0), 3.14, new Point(0,2));
         CircularArc reverse = arc.reverse();
         CircularArc trueReverse = new CircularArc(new Point(0,0), -3.14, new Point(0,2).rotateBy(new Rotation2d(3.14)));
-        assertEquals(reverse, trueReverse);
+        assertEquals(reverse.getPos(0), trueReverse.getPos(0));
     }
     @Test
     public void getDistanceTest() 

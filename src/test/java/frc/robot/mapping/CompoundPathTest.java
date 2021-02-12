@@ -58,7 +58,7 @@ public class CompoundPathTest {
         CompoundPath path = new CompoundPath(new LinearSegment(new Point(0,0), new Point(1,0)));
         CompoundPath translation = path.translateBy(new Translation2d(0,1));
         CompoundPath trueTranslation = new CompoundPath(new LinearSegment(new Point(0,1), new Point(1,1)));
-        assertEquals(translation, trueTranslation);
+        assertEquals(translation.getPos(0), trueTranslation.getPos(0));
 
     }
     @Test
@@ -66,8 +66,8 @@ public class CompoundPathTest {
     {
         CompoundPath path = new CompoundPath(new LinearSegment(new Point(0,0), new Point(1,0)));
         CompoundPath rotation = path.rotateBy(new Rotation2d(0,1));
-        CompoundPath trueRotation = new CompoundPath(new LinearSegment(new Point(0,1), new Point(1,1)));
-        assertEquals(rotation, trueRotation);
+        CompoundPath trueRotation = new CompoundPath(new LinearSegment(new Point(0,0), new Point(1,1)));
+        assertEquals(rotation.getPos(0), trueRotation.getPos(0));
     }
     @Test
     public void reverseTest() 
@@ -75,7 +75,7 @@ public class CompoundPathTest {
         CompoundPath path = new CompoundPath(new LinearSegment(new Point(0,0), new Point(1,0)));
         CompoundPath reverse = path.reverse();
         CompoundPath trueReverse = new CompoundPath(new LinearSegment(new Point(1,0), new Point(0,0)));
-        assertEquals(reverse, trueReverse);
+        assertEquals(reverse.getPos(0), trueReverse.getPos(0));
     }
     @Test
     public void getDistanceTest() 

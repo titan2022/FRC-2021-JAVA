@@ -54,16 +54,16 @@ public class LinearSegmentTest {
         LinearSegment seg3 = new LinearSegment( new Point(0, 0), new Point(1, 0));
         LinearSegment translate = seg3.translateBy(new Translation2d(1,0));
         LinearSegment trueTranslate = new LinearSegment( new Point(0+1, 0), new Point(1+1, 0));
-        assertEquals(translate, trueTranslate);
+        assertEquals(translate.getPos(0), trueTranslate.getPos(0));
     }
 
     @Test
     public void rotateByTest() 
     {
         LinearSegment seg4 = new LinearSegment( new Point(1, 0), new Point(1, 1));
-        LinearSegment rotate = seg4.rotateBy(new Rotation2d(30));
-        LinearSegment trueRotate = new LinearSegment( new Point(0,0), new Point(.5,.5*Math.sqrt(3)));
-        assertEquals(rotate, trueRotate);
+        LinearSegment rotate = seg4.rotateBy(new Rotation2d(0, 1));
+        LinearSegment trueRotate = new LinearSegment( new Point(0, 1), new Point(1,1));
+        assertEquals(rotate.getPos(0), trueRotate.getPos(0));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class LinearSegmentTest {
         LinearSegment line = new LinearSegment(start, end);
         LinearSegment reverse = line.reverse();
         LinearSegment trueReverse = new LinearSegment(end, start);
-        assertEquals(reverse, trueReverse);
+        assertEquals(reverse.getPos(0), trueReverse.getPos(0));
     }
 
     @Test

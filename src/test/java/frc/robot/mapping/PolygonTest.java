@@ -61,7 +61,13 @@ public class PolygonTest {
         Polygon poly = new Polygon(new Point(-1,-1), new Point (-1,1), new Point (1,1), new Point(1,-1));
         Polygon rotation = poly.rotateBy(new Rotation2d(0,1));
         Polygon truRotation = new Polygon(new Point(1,-1), new Point(-1,-1), new Point (-1,1), new Point (1,1));
-        assertEquals(rotation.verts, truRotation.verts); 
+        boolean works = true;
+        for (int i = 0; i<4;i++){
+            if (rotation.verts[i].equals(truRotation.verts[i]) == false) {
+                works = false;
+            }
+        }
+        assertEquals(works,true); 
     }
     @Test
     public void translateByTest() {

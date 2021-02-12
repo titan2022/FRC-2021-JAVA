@@ -2,15 +2,16 @@ package frc.robot.mapping;
 
 
 import org.junit.jupiter.api.Test;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ObstacleMapTest {
     @Test
     public void isClearTest() {
+        Obstacle poly = new Polygon(new Point(-2,-2), new Point (-2,2), new Point (2,2), new Point(2,-2));
+        ObstacleMap map = new ObstacleMap();
+        map.addObstacle(poly);
+        LinearSegment p = new LinearSegment(new Point(-3,0), new Point(0,4)); 
+        boolean clear = map.isClear(p,2.0);
+        assertEquals(clear, false);
     }
     @Test
     public void getObstaclesTest()

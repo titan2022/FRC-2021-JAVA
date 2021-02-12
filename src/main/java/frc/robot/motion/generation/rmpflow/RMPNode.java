@@ -88,7 +88,7 @@ public abstract class RMPNode {
 	/**
 	 * 	The operator to forward propagate the state from a parent node to its child nodes.
 	 *  I.e. Transform an RMP from the domain of a task map to its co-domain.
-	 * 	Equation 12 in Riemannian Motion Policies.
+	 * 	Equation 12 in <a href="https://arxiv.org/abs/1801.02854">Riemannian Motion Policies Section IV</a>.
 	 */
 	public void pushforward()
 	{
@@ -103,7 +103,7 @@ public abstract class RMPNode {
 	/**
 	 * The operator to backward propagate the natural-formed RMPs from the child nodes to the parent node.
 	 * I.e update parent states
-	 * Equation 11 in Riemannian Motion Policies
+	 * Equation 11 in <a href="https://arxiv.org/abs/1801.02854">Riemannian Motion Policies Section IV</a>.
 	 */
 	public void pullback()
 	{
@@ -188,6 +188,7 @@ public abstract class RMPNode {
 	/**
 	 * Computes and returns motion policy as a = M†f.
 	 * † denotes Moore-Penrose inverse.
+	 * Implementation from operator 3 in <a href="https://arxiv.org/abs/1811.07049">RMPFlow Section 3.4</a>.
 	 * @return A the desired acceleration which is a(x, x_dot)
 	 */
 	public SimpleMatrix getA() {return m.pseudoInverse().mult(f);} // TODO: Check for exception if inversion fails and return entire RMP tree in exception throw

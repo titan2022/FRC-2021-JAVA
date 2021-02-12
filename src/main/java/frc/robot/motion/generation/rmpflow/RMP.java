@@ -10,25 +10,25 @@ import org.ejml.simple.SimpleMatrix;
  * A wrapper class that allows Lambda function to be used with RMPFlow
  */
 public class RMP extends RMPLeaf {
-    private Function<SimpleMatrix, SimpleMatrix> phi, j;
+    private Function<SimpleMatrix, SimpleMatrix> psi, j;
     private BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> j_dot;
     private Supplier<SimpleMatrix> f, m;
 
 	public RMP(String name, RMPNode parent
-				, Function<SimpleMatrix, SimpleMatrix> phi, Function<SimpleMatrix, SimpleMatrix> j
+				, Function<SimpleMatrix, SimpleMatrix> psi, Function<SimpleMatrix, SimpleMatrix> j
 				, BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> j_dot
 				, Supplier<SimpleMatrix> f, Supplier<SimpleMatrix> m)
     {
         super(name, parent);
-        this.phi = phi;
+        this.psi = psi;
         this.j = j;
         this.j_dot = j_dot;
     }
 
 	@Override
-	public SimpleMatrix phi(SimpleMatrix q)
+	public SimpleMatrix psi(SimpleMatrix q)
 	{
-		return phi.apply(q);
+		return psi.apply(q);
 	}
 
 	@Override

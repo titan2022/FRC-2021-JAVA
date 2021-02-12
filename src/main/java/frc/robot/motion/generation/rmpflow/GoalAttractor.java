@@ -38,7 +38,7 @@ public class GoalAttractor extends RMPLeaf {
 		jeye = eye(goalSize);
 	}
 
-	public SimpleMatrix phi(SimpleMatrix q)
+	public SimpleMatrix psi(SimpleMatrix q)
 	{
 		return q.minus(goal);
 	}

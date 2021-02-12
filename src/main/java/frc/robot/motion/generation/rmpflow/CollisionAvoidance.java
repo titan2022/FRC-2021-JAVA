@@ -32,7 +32,7 @@ public class CollisionAvoidance extends RMPLeaf {
 		this.center = new SimpleMatrix(1, 2,  false, new double[] {center.getX(), center.getY()});
 	}
 
-	public SimpleMatrix phi(SimpleMatrix q)
+	public SimpleMatrix psi(SimpleMatrix q)
 	{
 		return new SimpleMatrix(1, 1, false, new double[] {q.minus(center).normF() / r - 1}).transpose();
 	}

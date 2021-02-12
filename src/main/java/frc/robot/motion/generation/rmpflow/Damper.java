@@ -12,7 +12,7 @@ public class Damper extends RMPLeaf{
         this.w = w;
     }
          
-    public SimpleMatrix phi(SimpleMatrix q)
+    public SimpleMatrix psi(SimpleMatrix q)
 	{
 		return q;
 	}

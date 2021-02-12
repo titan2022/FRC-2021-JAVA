@@ -35,13 +35,13 @@ public abstract class RMPNode {
 	 * @param q is the configuration space
 	 * @return the task space
 	 */
-	public SimpleMatrix phi(SimpleMatrix q)
+	public SimpleMatrix psi(SimpleMatrix q)
 	{
 		return q;
 	}
 
 	/**
-	 * Jacobian of the task map phi
+	 * Jacobian of the task map psi
 	 * @param q is the configuration space
 	 * @return
 	 */
@@ -51,7 +51,7 @@ public abstract class RMPNode {
 	};
 
 	/**
-	 * Second derivative Jacobian of the task map phi
+	 * Second derivative Jacobian of the task map psi
 	 * @param q is the configuration space
 	 * @param q_dot is the configuration space
 	 * @return differentiated Jacobian of configuration space to task space 
@@ -88,7 +88,7 @@ public abstract class RMPNode {
 	{
 		//In the case that an RMP node does not have a psi or j function implement psi and j to return the input.
 		//TODO: Figure out above case
-		x = phi(parent.x);//psi(x)
+		x = psi(parent.x);//psi(x)
 		x_dot = j(parent.x).mult(parent.x_dot);//j(x) * x_dot
 		
 		for(int i = 0; i < children.size(); i++)

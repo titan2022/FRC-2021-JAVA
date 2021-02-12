@@ -190,5 +190,5 @@ public abstract class RMPNode {
 	 * † denotes Moore-Penrose inverse.
 	 * @return A the desired acceleration which is a(x, x_dot)
 	 */
-	public SimpleMatrix getA() {return m.pseudoInverse().mult(f);}
+	public SimpleMatrix getA() {return m.pseudoInverse().mult(f);} // TODO: Check for exception if inversion fails and return entire RMP tree in exception throw
 }

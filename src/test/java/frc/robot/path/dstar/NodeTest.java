@@ -80,6 +80,8 @@ public class NodeTest {
         Queue<Node> queue = new PriorityQueue<>();
         Node a = new Node(new Point(0, 0), queue);
         Node b = new Node(new Point(1, 0), queue, 0, 0);
+        a.connect(b, new LinearSegment(a, b));
+        b.connect(a, new LinearSegment(b, a));
         double aRHS = a.getRhs();
         double bRHS = b.getRhs();
         double aTrueRHS = 1;
@@ -87,6 +89,8 @@ public class NodeTest {
         assertEquals(aTrueRHS, aRHS);
         assertEquals(bTrueRHS, bRHS);
         Node c = new Node(new Point(0, 2), queue, 5, Double.POSITIVE_INFINITY);
+        a.connect(c, new LinearSegment(a, c));
+        c.connect(a, new LinearSegment(c, a));
         double cRHS = c.getRhs();
         double cTrueRHS = a.getG()+2;
         assertEquals(cTrueRHS, cRHS);
@@ -104,6 +108,8 @@ public class NodeTest {
         Queue<Node> queue = new PriorityQueue<>();
         Node a = new Node(new Point(0, 0), queue);
         Node b = new Node(new Point(1, 0), queue, 0, 0);
+        a.connect(b, new LinearSegment(a, b));
+        b.connect(a, new LinearSegment(b, a));
         Node aNext = a.getNext();
         Node bNext = b.getNext();
         Node aTrueNext = b;

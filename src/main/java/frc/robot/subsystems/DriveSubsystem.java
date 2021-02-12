@@ -31,7 +31,7 @@ public class DriveSubsystem extends SubsystemBase
   private static final int RIGHT_PRIMARY_PORT = 3;
   private static final int RIGHT_SECONDARY_PORT = 4;
 
-  private static final int ENCODER_PORT = 1;
+  private static final int ENCODER_PORT = 0;
 
   // Motor and sensor inversions
   private static final boolean LEFT_PRIMARY_INVERTED = false;

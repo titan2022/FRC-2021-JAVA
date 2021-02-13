@@ -15,14 +15,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /** Add your docs here. */
 public class DifferentialDriveOdometryTest {
 
-@Test
-public void TestOdometry()
+    @Test
+    public void MovingInXDirectionOdometryTest()
     {
-    DifferentialDriveOdometry x = new DifferentialDriveOdometry(1, 1, 7, 4, 0);
-    Pose2d pose = x.getPosition(5, 1.0, 1.0);
+        DifferentialDriveOdometry x = new DifferentialDriveOdometry(1, 1, 7, 4, 0);
+        Pose2d pose = x.getPosition(5, 1.0, 1.0);
 
-    Pose2d truePose = new Pose2d(12, 4, new Rotation2d(0));
+        Pose2d truePose = new Pose2d(12, 4, new Rotation2d(0));
 
-    assertEquals(pose, truePose);
+        assertEquals(pose, truePose);
+    }
+
+    @Test
+    public void MovingInYDirectionOdometryTest()
+    {
+        DifferentialDriveOdometry x = new DifferentialDriveOdometry(1, 1, 7, 4, Math.PI/2);
+        Pose2d pose = x.getPosition(5, 1.0, 1.0);
+
+        Pose2d truePose = new Pose2d(7, 9, new Rotation2d(Math.PI/2));
+
+        assertEquals(pose, truePose);
     }
 }

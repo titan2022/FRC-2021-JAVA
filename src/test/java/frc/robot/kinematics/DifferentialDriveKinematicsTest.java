@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DifferentialDriveKinematicsTest {
 
     @Test
-    public void TestGetAbsoluteVelocity()
+    public void GetAbsoluteVelocityTest()
     {
         DifferentialDriveKinematics x = new DifferentialDriveKinematics(1, 1);
         double testXVelocity = x.getAbsoluteVelocity(1, 1, 0).get(0, 0);
@@ -29,7 +29,7 @@ public class DifferentialDriveKinematicsTest {
     }
 
     @Test
-    public void TestGetWheelVelocity()
+    public void GetWheelVelocityTest()
     {
         DifferentialDriveKinematics x = new DifferentialDriveKinematics(1, 1);
         double testVL = x.getWheelVelocity(1, 0, 0, 0).get(0, 0);
@@ -42,4 +42,19 @@ public class DifferentialDriveKinematicsTest {
         assertEquals(testVR, trueVR);
     }
 
+    @Test
+    public void ChassisGetWheelVelocityTest()
+    {
+        DifferentialDriveKinematics x = new DifferentialDriveKinematics(1, 1);
+        ChassisSpeeds chassis = new ChassisSpeeds(1, 0, 0);
+
+        double testVL = x.getWheelVelocity(chassis, 0).get(0, 0);
+        double testVR = x.getWheelVelocity(chassis, 0).get(1, 0);
+
+        double trueVL = 1;
+        double trueVR = 1;
+
+        assertEquals(testVL, trueVL);
+        assertEquals(testVR, trueVR);
+    }
 }

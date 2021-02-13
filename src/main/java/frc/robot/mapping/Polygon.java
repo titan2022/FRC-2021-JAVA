@@ -37,8 +37,8 @@ public class Polygon implements Obstacle {
     if(Point.getAngle(verts[0], interior, verts[verts.length-1]).getSin() > 0){
       for(int i=0; i<verts.length/2; i++){
         Point tmp = verts[i];
-        verts[i] = verts[verts.length-i];
-        verts[verts.length-1] = tmp;
+        verts[i] = verts[verts.length-i-1];
+        verts[verts.length-i-1] = tmp;
       }
     }
   }
@@ -62,23 +62,35 @@ public class Polygon implements Obstacle {
     double cos = radius / vertex.getDistance(from);
     if(cos > 1) return from;
     double theta = Math.copySign(Math.acos(cos), Point.getAngle(interior, vertex, from).getSin());
-    return vertex.plus(new Point(radius, new Rotation2d(theta)));
+    return vertex.plus(new Point(radius, new Rotation2d(theta).plus(from.minus(vertex).getAngle())));
   }
 
   @Override
   public Set<Point> getEndpoints(Point source, double radius) {
-    Point argmin = null, argmax = null, tangency;
-    double min = 360, max = -360., theta;
+    Point argmin = null, argmax = null;
+    double min = 360, max = -360.;
     for(int i = 0; i < verts.length; i++){
-      tangency = getTangency(i, source, radius);
-      theta = Point.getAngle(interior, source, tangency).getDegrees();
-      if(theta < min){
-        min = theta;
-        argmin = tangency;
+      Rotation2d phi0 = source.minus(verts[i]).getAngle();
+      Rotation2d phi = new Rotation2d(Math.acos(Math.min(radius / verts[i].getDistance(source), 1)));
+      Point tangent1 = verts[i].plus(new Point(radius, phi0.plus(phi)));
+      Point tangent2 = verts[i].plus(new Point(radius, phi0.minus(phi)));
+      double theta1 = Point.getAngle(interior, source, tangent1).getDegrees();
+      double theta2 = Point.getAngle(interior, source, tangent2).getDegrees();
+      if(theta1 < min){
+        min = theta1;
+        argmin = tangent1;
       }
-      if(theta > max){
-        max = theta;
-        argmax = tangency;
+      if(theta1 > max){
+        max = theta1;
+        argmax = tangent1;
+      }
+      if(theta2 < min){
+        min = theta2;
+        argmin = tangent2;
+      }
+      if(theta2 > max){
+        max = theta2;
+        argmax = tangent2;
       }
     }
     Set<Point> endpoints = new LinkedHashSet<Point>(2, 1.0f);
@@ -133,8 +145,8 @@ public class Polygon implements Obstacle {
       Point thisNext = verts[(i+1)%verts.length];
       Point otherPrev = other.verts[other.verts.length-1];
       for(int j=0; j<other.verts.length; j++){
-        Point otherCurr = other.verts[i];
-        Point otherNext = other.verts[(i+1)%other.verts.length];
+        Point otherCurr = other.verts[j];
+        Point otherNext = other.verts[(j+1)%other.verts.length];
         oca = Point.getAngle(otherCurr, thisCurr, thisPrev);
         ocb = Point.getAngle(otherCurr, thisCurr, thisNext);
         cox = Point.getAngle(thisCurr, otherCurr, otherPrev);
@@ -157,66 +169,142 @@ public class Polygon implements Obstacle {
   }
 
   @Override
+  public Iterable<LinearSegment> getTangents(Obstacle other, double radius) {
+    if(other instanceof Polygon)
+      return getTangents((Polygon) other, radius);
+    else
+      return other.getTangents((Polygon) this, radius);
+  }
+
+  @Override
   public double getPerimeter(double radius) {
     return basePerimeter + radius * (verts.length-2) * Math.PI;
   }
 
   @Override
   public Path edgePath(Point a, Point b, double radius) {
-    Point end = null, curr = null, mid;  // end point; end of accumulated path
-    List<Path> segments = new ArrayList<>();  // accumulated path
-    Rotation2d theta = new Rotation2d(Math.PI/2);
-    int i = -1, ctr = 0;
-    while(ctr < verts.length){
-      Point vertex = verts[(++i)%verts.length];
-      Point vNext = verts[(i+1)%verts.length];
+    List<Path> suffix = new ArrayList<>();
+    List<Path> prefix = new ArrayList<>();
+    List<Path> complete = new ArrayList<>();  // accumulated path
+    List<Path> running = suffix;
+    Rotation2d theta = new Rotation2d(-Math.PI/2);
+    Point seeking = null;
+    Point alpha, beta;
+    for(int i=0; i<verts.length; i++){
+      Point vertex = verts[i];
+      Point vNext = verts[i+1 == verts.length ? 0 : i+1];
       Point offset = new Point(radius, vNext.minus(vertex).getAngle().plus(theta));
-      if(curr == null && vertex.getDistance(a) == radius){
-        end = b;
-        curr = a;
-        ctr = 0;
+      
+      // Linear case
+      alpha = vertex.plus(offset);
+      beta = vNext.plus(offset);
+      boolean aPres = Point.getAngle(beta, alpha, a).getCos() == 1;
+      boolean bPres = Point.getAngle(beta, alpha, b).getCos() == 1;
+      if(aPres && bPres){
+        return new LinearSegment(a, b);
       }
-      else if(curr == null && vertex.getDistance(b) == radius){
-        end = a;
-        curr = b;
-        ctr = 0;
-      }
-      if(curr != null){
-        if(vertex.getDistance(end) == radius){
-          segments.add(new CircularArc(curr, vertex, end));
-          break;
+      if(seeking == null){
+        if(aPres){
+          suffix.add(new LinearSegment(alpha, a));
+          running = complete;
+          alpha = a;
+          seeking = b;
         }
-        mid = vertex.plus(offset);
-        segments.add(new CircularArc(curr, vertex, mid));
-        curr = mid;
-      }
-      if(curr == null && Point.getAngle(vNext, vertex, a).getCos() == 1){
-        end = b;
-        curr = a;
-        ctr = 0;
-      }
-      else if(curr == null && Point.getAngle(vNext, vertex, b).getCos() == 1){
-        end = a;
-        curr = b;
-        ctr = 0;
-      }
-      if(curr != null){
-        if(Point.getAngle(vNext, vertex, end).getCos() == 1){
-          segments.add(new LinearSegment(curr, end));
-          break;
+        else if(bPres){
+          suffix.add(new LinearSegment(alpha, b));
+          running = complete;
+          alpha = b;
+          seeking = a;
         }
-        mid = vNext.plus(offset);
-        segments.add(new LinearSegment(curr, mid));
-        curr = mid;
       }
-      ctr++;
+      if(seeking == b && bPres){
+        running.add(new LinearSegment(alpha, b));
+        running = prefix;
+        alpha = b;
+        seeking = a;
+      }
+      if(seeking == a && aPres){
+        running.add(new LinearSegment(alpha, a));
+        running = prefix;
+        alpha = a;
+        seeking = b;
+      }
+      if(seeking != null){
+        running.add(new LinearSegment(alpha, beta));
+      }
+      else{
+        suffix.add(new LinearSegment(alpha, beta));
+      }
+
+      // Circular Case
+      Point vNextNext = verts[i+2 >= verts.length ? i+2-verts.length : i+2];
+      alpha = beta;
+      beta = new Point(radius, beta.minus(vNext).getAngle().plus(
+        new Rotation2d(Math.PI).minus(Point.getAngle(vNextNext, vNext, vertex))
+      )).plus(vNext);
+      //aPres = vNext.getDistance(a) <= radius + 0.001;
+      //bPres = vNext.getDistance(b) <= radius + 0.001;
+      aPres = Point.getAngle(alpha, vNext, a).getSin() >= 0 && Point.getAngle(a, vNext, beta).getSin() > 0;
+      bPres = Point.getAngle(alpha, vNext, b).getSin() >= 0 && Point.getAngle(b, vNext, beta).getSin() > 0;
+      if(aPres && bPres){
+        return new CircularArc(a, vNext, b);
+      }
+      if(seeking == null){
+        if(aPres){
+          suffix.add(new CircularArc(alpha, vNext, a));
+          running = complete;
+          alpha = a;
+          seeking = b;
+        }
+        else if(bPres){
+          suffix.add(new CircularArc(alpha, vNext, b));
+          running = complete;
+          alpha = b;
+          seeking = a;
+        }
+      }
+      if(seeking == b && bPres){
+        running.add(new CircularArc(alpha, vNext, b));
+        running = prefix;
+        alpha = b;
+        seeking = a;
+      }
+      if(seeking == a && aPres){
+        running.add(new CircularArc(alpha, vNext, a));
+        running = prefix;
+        alpha = a;
+        seeking = b;
+      }
+      if(seeking != null){
+        running.add(new CircularArc(alpha, vNext, beta));
+      }
+      else{
+        suffix.add(new CircularArc(alpha, vNext, beta));
+      }
     }
-    return new CompoundPath(segments.toArray(new Path[0]));
+    double fullSum = 0, splitSum = 0;
+    for(Path path : complete)
+      fullSum += path.getLength();
+    for(Path path : prefix)
+      splitSum += path.getLength();
+    for(Path path : suffix)
+      splitSum += path.getLength();
+    Path res;
+    if(splitSum < fullSum){
+      prefix.addAll(suffix);
+      res = new CompoundPath(prefix.toArray(new Path[0]));
+      if(seeking == a) res = res.reverse();
+    }
+    else{
+      res = new CompoundPath(complete.toArray(new Path[0]));
+      if(seeking == b) res = res.reverse();
+    }
+    return res;
   }
 
   public Path getBoundary(double radius) {
     Path[] segments = new Path[verts.length*2];
-    Rotation2d theta = new Rotation2d(Math.PI/2);
+    Rotation2d theta = new Rotation2d(-Math.PI/2);
     Point prev = verts[0].plus(new Point(radius,
         verts[verts.length-1].minus(verts[0]).getAngle().minus(theta)));
     Point mid, offset, vNext;

@@ -35,7 +35,7 @@ public interface Obstacle extends Comparator<Point> {
      * @return True if the path is clear of this obstacle, or false, otherwise.
      */
     default public boolean isClear(Path path, double radius) {
-        throw new UnsupportedOperationException();
+        return !getBoundary(radius).intersects(path);
     }
     /**
      * Determines whether a path is obstructed by this obstacle.

@@ -7,7 +7,8 @@ import edu.wpi.first.wpiutil.math.Nat;
 import edu.wpi.first.wpiutil.math.VecBuilder;
 
 /**
- * 
+ * This class uses linear algebra and MVC to go from rotational wheel velocities to linear translational velocities and 
+ * the rotational velocity of the entire robot.
  */
 public class DifferentialDriveKinematics {
     private double wR, a;
@@ -18,9 +19,9 @@ public class DifferentialDriveKinematics {
     private Matrix Q, P;
 
     /**
-     * 
-     * @param wheelRadius
-     * @param robotWidth
+     * Constructor of a differential drive robot with a given wheel radius and width. 
+     * @param wheelRadius radius of a wheel
+     * @param robotWidth width of the robot
      */
     public DifferentialDriveKinematics(double wheelRadius, double robotWidth){
         wR = wheelRadius;
@@ -33,7 +34,7 @@ public class DifferentialDriveKinematics {
     }
 
     /**
-     * 
+     * Using a differential jacobian, 
      * @param vL - the rotational velocity of the left wheel
      * @param vR - the rotational velocity of the right wheel
      * @param phi - the absolute rotational pose of the robot chassis in radians

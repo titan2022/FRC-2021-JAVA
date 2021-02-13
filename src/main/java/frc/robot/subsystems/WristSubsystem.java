@@ -2,43 +2,70 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class WristSubsystem extends SubsystemBase {
     
-    public static final int WRIST_PORT = 1;
-    public static final int WRIST_PORT2 = 2;
-    private TalonSRX wrist;
-    private TalonSRX followingWrist; //like a left wrist
+    public static final int PRIMARY_WRIST_PORT = 3;
+    public static final int SECONDARY_WRIST_PORT = 1;
 
-    private double angleLimit;
-    public int currentLimit = 10; 
+    public static final boolean PRIMARY_WRIST_PORT_INVERTED = false;
+    public static final boolean SECONARDY_WRIST_PORT_INVERTED = false;
 
-    public double wristAngle, wristSpeed;
+    private static final boolean PRIMARY_WRIST_SENSOR_PHASE = false;
 
+    private static final int ENCODER_PORT = 0;
+    
+    private static final double ANGLE_LOWER_LIMIT = 10; // TODO: Get from DI Team
+    private static final double ANGLE_UPPER_LIMIT = 60; // TODO: Get from DI Team
+    private static final int PEAK_CURRENT_LIMIT = 60;
+    private static final int CONTINUOUS_CURRENT_LIMIT = 50;
+
+    // Motion Magic Constants
+    // PID Constants
+    private static final double WRIST_KP = 2;
+    private static final double WRIST_KI = .5;
+
+    private static final WPI_TalonSRX wrist = new WPI_TalonSRX(PRIMARY_WRIST_PORT);;
+    private static final WPI_TalonSRX followingWrist = new WPI_TalonSRX(SECONDARY_WRIST_PORT); //like a left wrist
+
+    private double wristAngle, wristSpeed;
+
+
+    /**
+     * 
+     */
     public WristSubsystem() {
-        wrist = new TalonSRX(WRIST_PORT);
-        followingWrist = new TalonSRX(WRIST_PORT2);
         setupWrist();
-
     }
+
+    /**
+     * 
+     */
     public void setupWrist() {
-        followingWrist.setInverted(true); 
-        followingWrist.follow(wrist); //copies wrist
+        wrist.setInverted(PRIMARY_WRIST_PORT_INVERTED);
+        followingWrist.setInverted(PRIMARY_WRIST_PORT_INVERTED);
+
+        followingWrist.follow(wrist);
         
-        wrist.configContinuousCurrentLimit(currentLimit); //limits current from going over limit
-        wrist.configPeakCurrentLimit(currentLimit);
-        wrist.configPeakCurrentDuration(10); 
+        wrist.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
+        wrist.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
+        //wrist.configPeakCurrentDuration(10); 
         wrist.enableCurrentLimit(true);
     }
     
-    //speed
+    /**
+     * Returns the linear speed of the write // TODO: Check if wrist speed is angular are linear
+     * @return The wrist speed in meter / s
+     */
     public double getWristSpeed() {
         return wristSpeed;
     }
-    public double getMaxSpeed() {
-        return currentLimit;
-    }
+    
+    /**
+     * 
+     * @param speed
+     */
     public void setWristSpeed(double speed) {
         wrist.set(ControlMode.PercentOutput, speed); //makes wrist speed desired speed
     }
@@ -65,4 +92,9 @@ public class WristSubsystem extends SubsystemBase {
 
     }
     
+    @Override
+    public void periodic()
+    {
+
+    }
 }

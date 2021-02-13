@@ -1,12 +1,7 @@
 package frc.robot.dynamics;
 
-import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpiutil.math.MatBuilder;
-import edu.wpi.first.wpiutil.math.Matrix;
-import edu.wpi.first.wpiutil.math.Nat;
-import edu.wpi.first.wpiutil.math.VecBuilder;
 import frc.robot.Vector;
-
+import org.ejml.simple.*;
 /**
  * 
  */
@@ -35,18 +30,20 @@ public class DifferentialDriveDynamics {
     /**
      * 
      * @param torques vector (right torque, left torque)
-     * @return linear velocity of robot
+     * @return linear acceleration of robot
      */
-    public double getLinearVelocity(Vector torques){
+    public double getLinearAcceleration(Vector torques){
+        //Lagrange model
         return ((1/(m*wR)) * (torques.getX() + torques.getY()));
     }
 
     /**
      * 
      * @param torques vector (right torque, left torque)
-     * @return rotational velocity of robot
+     * @return rotational acceleration of robot
      */
-    public double getRotationalVelocity(Vector torques){
+    public double getRotationalAcceleration(Vector torques){
+        //Lagrange model
         return (((2*a)/(I*wR)) * (torques.getX() - torques.getY()));
     }
 }

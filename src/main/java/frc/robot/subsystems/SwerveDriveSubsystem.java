@@ -212,7 +212,7 @@ public class SwerveDriveSubsystem extends SubsystemBase
    * @param leftOutputValue  left side output value for ControlMode
    * @param rightOutputValue right side output value for ControlMode
    */
-  public void setOutput(ControlMode mode, double Omega, double XVelocity, double YVelocity) {
+  public void setOutput(double omega, double XVelocity, double YVelocity) {
     double leftPrimaryOutput, leftSecondaryOutput, leftPrimaryRotatorSetpoint, leftSecondaryRotatorSetpoint,
       rightPrimaryOutput, rightSecondaryOutput, rightPrimaryRotatorSetpoint, rightSecondaryRotatorSetpoint;
     // TODO: if check the current usage from Power Subsystem to restrict overcurrent
@@ -221,25 +221,26 @@ public class SwerveDriveSubsystem extends SubsystemBase
 
     double A, B, C, D;
 
-    A=XVelocity-(Omega * (ROBOT_LENGTH/2));
-    B=XVelocity+(Omega * (ROBOT_LENGTH/2));
-    C=XVelocity-(Omega * (ROBOT_TRACK_WIDTH/2));
-    D=XVelocity+(Omega * (ROBOT_TRACK_WIDTH/2));
+    A=XVelocity-(omega * (ROBOT_LENGTH/2));
+    B=XVelocity+(omega * (ROBOT_LENGTH/2));
+    C=XVelocity-(omega * (ROBOT_TRACK_WIDTH/2));
+    D=XVelocity+(omega * (ROBOT_TRACK_WIDTH/2));
 
     leftPrimaryOutput = Math.sqrt((B*B)+(D*D));
     rightPrimaryOutput = Math.sqrt((B*B)+(C*C));
     leftSecondaryOutput = Math.sqrt((A*A)+(D*D));
     rightSecondaryOutput = Math.sqrt((A*A)+(C*C));
 
-    leftPrimaryRotatorSetpoint = Math.atan2(B, D)*(180/Math.PI);
-    rightPrimaryRotatorSetpoint = Math.atan2(B, C)*(180/Math.PI);
-    leftSecondaryRotatorSetpoint = Math.atan2(A, D)*(180/Math.PI);
-    rightSecondaryRotatorSetpoint = Math.atan2(A, C)*(180/Math.PI);
+    //outputs angles, 0 is dead ahead, values go from -180 to 180
+    leftPrimaryRotatorSetpoint = Math.atan2(B, D)*(ENCODER_TICKS/(2*Math.PI));
+    rightPrimaryRotatorSetpoint = Math.atan2(B, C)*(ENCODER_TICKS/(2*Math.PI));
+    leftSecondaryRotatorSetpoint = Math.atan2(A, D)*(ENCODER_TICKS/(2*Math.PI));
+    rightSecondaryRotatorSetpoint = Math.atan2(A, C)*(ENCODER_TICKS/(2*Math.PI));
 
-    leftPrimary.set(mode, leftPrimaryOutput);
-    rightPrimary.set(mode, rightPrimaryOutput);
-    leftSecondary.set(mode, leftSecondaryOutput);
-    rightSecondary.set(mode, rightSecondaryOutput);
+    leftPrimary.set(ControlMode.Position, leftPrimaryOutput/METERS_PER_TICK);
+    rightPrimary.set(ControlMode.Position, rightPrimaryOutput/METERS_PER_TICK);
+    leftSecondary.set(ControlMode.Position, leftSecondaryOutput/METERS_PER_TICK);
+    rightSecondary.set(ControlMode.Position, rightSecondaryOutput/METERS_PER_TICK);
 
     leftPrimaryRotator.set(ControlMode.MotionMagic, leftPrimaryRotatorSetpoint);
     rightPrimaryRotator.set(ControlMode.MotionMagic, rightPrimaryRotatorSetpoint);

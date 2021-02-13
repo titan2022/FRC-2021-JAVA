@@ -2,12 +2,32 @@ package frc.robot.motion.generation.rmpflow;
 
 import org.ejml.simple.SimpleMatrix;
 
-import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 
+/**
+ * A 1-d distance subtask space collision avoidance between two points.
+ * Implementation of Section 3.1 Pairwise Collision Avoidance from <a href="https://arxiv.org/abs/1902.05177">Multi-Objective Policy Generation for Multi-Robot Systems Using Riemannian Motion Policies</a>
+ * 
+ * @implNote There is no orientation component only R2
+ */
 public class CollisionAvoidance extends RMPLeaf {
+	// r(dS): a minimum safety distance between points
+	// alpha(α): positive potenial function scalar
+	// eta(η): positive damping matrix scalar
+	// epsilon(ɛ): small positive scalar for avoidance metric
 	private double r, alpha, eta, epsilon;
-	private SimpleMatrix center;
+	private SimpleMatrix center; // location of center of circular obstacle
 	
+	/**
+	 * A 1-d distance subtask space collision avoidance RMP Node between obstacle with radius r.
+	 * @param name The name of the motion policy.
+	 * @param parent The parent node of current RMP Node.
+	 * @param center The location of the center of the circular obstacle.
+	 * @param r The radius of the obstacle.
+	 * @param epsilon The positive damping matrix scalar
+	 * @param alpha The positive potenial function scalar
+	 * @param eta A small positive scalar for avoidance metric
+	 */
 	public CollisionAvoidance(String name, RMPNode parent, SimpleMatrix center, double r, double epsilon, double alpha, double eta)
 	{
 		super(name, parent);
@@ -22,21 +42,41 @@ public class CollisionAvoidance extends RMPLeaf {
 			this.center = center;
 	}
 
-	public CollisionAvoidance(String name, RMPNode parent, Translation2d center, double r, double epsilon, double alpha, double eta)
+	/**
+	 * A 1-d distance subtask space collision avoidance RMP Node between obstacle with radius r.
+	 * @param name The name of the motion policy.
+	 * @param parent The parent node of current RMP Node.
+	 * @param center The location of the center of the circular obstacle.
+	 * @param r The radius of the obstacle.
+	 * @param epsilon The positive damping matrix scalar
+	 * @param alpha The positive potenial function scalar
+	 * @param eta A small positive scalar for avoidance metric
+	 */
+	public CollisionAvoidance(String name, RMPNode parent, Pose2d center, double r, double epsilon, double alpha, double eta)
 	{
-		super(name, parent);
-		this.r = r;
-		this.alpha = alpha;
-		this.eta = eta;
-		this.epsilon = epsilon;
-		this.center = new SimpleMatrix(1, 2,  false, new double[] {center.getX(), center.getY()});
+		this(name, parent, new SimpleMatrix(1, 2,  false, new double[] {center.getX(), center.getY()}), r, epsilon, alpha, eta);
 	}
 
+	/**
+	 * R^N to R Task Map
+	 * 
+	 * z = psi(q,center) = ||q - center|| / r - 1
+	 * 
+	 * @param q The R^N dimensional point
+	 * @return 1-d matrix
+	 */
 	public SimpleMatrix psi(SimpleMatrix q)
 	{
 		return new SimpleMatrix(1, 1, false, new double[] {q.minus(center).normF() / r - 1}).transpose();
 	}
 
+	/**
+	 * Jacobian of psi
+	 * (q - center) / center * ||1 / (q - center)|| 
+	 * 
+	 * @param q The R^N dimensional point
+	 * @return // TODO: Describe what a jacobian is.
+	 */
 	public SimpleMatrix j(SimpleMatrix q)
 	{
 		double scale = 1/q.minus(center).normF();

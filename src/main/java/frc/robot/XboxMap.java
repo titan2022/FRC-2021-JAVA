@@ -20,6 +20,16 @@ public class XboxMap {
     double value = -controller.getY(Hand.kLeft);
     return applyDeadband(value, JOYSTICK_DRIFT);
   }
+
+  public static double leftX() {
+    double value = controller.getX(Hand.kLeft);
+    return applyDeadband(value, JOYSTICK_DRIFT);
+  }
+
+  public static double leftY() {
+    return left();
+  }
+
     
 	public static double right() {
     double value = -controller.getY(Hand.kRight);

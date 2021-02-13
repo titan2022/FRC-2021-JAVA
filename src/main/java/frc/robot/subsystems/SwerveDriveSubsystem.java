@@ -254,6 +254,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
   public void enableBrakes() {
     leftPrimary.setNeutralMode(NeutralMode.Brake);
     rightPrimary.setNeutralMode(NeutralMode.Brake);
+    leftSecondary.setNeutralMode(NeutralMode.Brake);
+    rightSecondary.setNeutralMode(NeutralMode.Brake);
   }
 
   /**
@@ -268,8 +270,10 @@ public class SwerveDriveSubsystem extends SubsystemBase
    * Enables brake for rotator motors.
    */
   public void enableRotatorBrakes() {
-    leftPrimaryRotator.setNeutralMode(NeutralMode.Brake);
-    rightPrimaryRotator.setNeutralMode(NeutralMode.Brake);
+    leftSecondaryRotator.setNeutralMode(NeutralMode.Brake);
+    rightSecondaryRotator.setNeutralMode(NeutralMode.Brake);
+    leftSecondaryRotator.setNeutralMode(NeutralMode.Brake);
+    rightSecondaryRotator.setNeutralMode(NeutralMode.Brake);
   }
 
   /**

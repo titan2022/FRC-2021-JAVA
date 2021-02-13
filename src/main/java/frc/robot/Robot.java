@@ -8,12 +8,14 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.ManualDifferentialDriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.NavigationSubsystem;
+import frc.robot.motion.generation.rmpflow.demos.RMPDemoCommand;
 import frc.robot.path.dstar.DStarDemoCommand;
 import frc.robot.path.dstar.DStarTester;
 
@@ -26,6 +28,7 @@ import frc.robot.path.dstar.DStarTester;
 public class Robot extends TimedRobot {
   public static OI oi = new OI();
   private Command m_autonomousCommand;
+  private Command rmpDemoRun;
 
   private final DriveSubsystem driveSub = new DriveSubsystem(true);
   private final NavigationSubsystem nav = new NavigationSubsystem(driveSub, true);
@@ -87,6 +90,10 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    //rmpDemoRun = m_robotContainer.getRMPDemoCommand();
+    //rmpDemoRun.schedule();
+    new RMPDemoCommand().schedule();
     new DStarTester().schedule();
     new DStarDemoCommand().schedule();
   }
@@ -129,6 +136,11 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    //RMPFlowTester test = new RMPFlowTester();
+    new RMPDemoCommand().schedule();
+    rmpDemoRun.schedule();
+    //SmartDashboard.putNumber("Time (s)", 10);
+    System.out.println("Hello 2");
   }
 
   /**
@@ -136,6 +148,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    CommandScheduler.getInstance().run();
+    System.out.println("Hello");
   }
 
   @Override
@@ -151,5 +165,6 @@ public class Robot extends TimedRobot {
     //nav.simulationPeriodic();
     //driveSub.simulationPeriodic();
     //m_drive.simulationPeriodic();
+    //CommandScheduler.getInstance().run();
   }
 }

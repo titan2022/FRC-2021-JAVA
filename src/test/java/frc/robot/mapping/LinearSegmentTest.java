@@ -73,6 +73,16 @@ public class LinearSegmentTest {
         double distance = line.getDistance(new Point(-1,0));
         double trueDistance = 1.0;
         assertEquals(distance, trueDistance);
+
+        LinearSegment line1 = new LinearSegment(new Point(0,0), new Point(1,0));
+        double distance1 = line1.getDistance(new LinearSegment(new Point(-2,0), new Point(-1,0)));
+        double trueDistance1 = 1.0;
+        assertEquals(distance1, trueDistance1);
+
+        LinearSegment line2 = new LinearSegment(new Point(0,0), new Point(1,0));
+        double distance2 = line2.getDistance(new LinearSegment(new Point(-2,0), new Point(-1,0)));
+        double trueDistance2 = 1.0;
+        assertEquals(distance2, trueDistance2);
     }
 
     @Test
@@ -94,15 +104,6 @@ public class LinearSegmentTest {
     }
 
     @Test
-    public void getDistanceTest1() 
-    {
-        LinearSegment line = new LinearSegment(new Point(0,0), new Point(1,0));
-        double distance = line.getDistance(new LinearSegment(new Point(-2,0), new Point(-1,0)));
-        double trueDistance = 1.0;
-        assertEquals(distance, trueDistance);
-    }
-
-    @Test
     public void reverseTest()
     {
         Point start = new Point(0,0);
@@ -111,15 +112,5 @@ public class LinearSegmentTest {
         LinearSegment reverse = line.reverse();
         LinearSegment trueReverse = new LinearSegment(end, start);
         assertEquals(reverse.getPos(0), trueReverse.getPos(0));
-    }
-
-    @Test
-    public void getDistanceTest2()
-    {
-        LinearSegment line = new LinearSegment(new Point(0,0), new Point(1,0));
-        double distance = line.getDistance(new LinearSegment(new Point(-2,0), new Point(-1,0)));
-        double trueDistance = 1.0;
-        assertEquals(distance, trueDistance);
-
     }
 }

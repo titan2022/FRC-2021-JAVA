@@ -269,6 +269,11 @@ public class SwerveDriveSubsystem extends SubsystemBase
     rightSecondaryRotator.set(ControlMode.MotionMagic, modules[3].angle.getDegrees()*(4096/360));
   } 
 
+  public void setOutput(double omega, double XVelocity, double YVelocity)
+  {
+    setOutput(new ChassisSpeeds(XVelocity, YVelocity, omega));
+  }
+
   /**
    * Enables brake.
    */

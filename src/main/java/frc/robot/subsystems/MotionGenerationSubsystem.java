@@ -60,7 +60,7 @@ public class MotionGenerationSubsystem extends SubsystemBase {
 
   /**
    * Sets new ArrayList of RMP GoalAttractor objects. Replaces previous GoalAttractors.
-   * @param collisionAvoiders - ArrayList of RMP GoalAttractor objects.
+   * @param goalAttractors - ArrayList of RMP GoalAttractor objects.
    */
   public void setGoalAttractors(ArrayList<GoalAttractor> goalAttractors) {
 
@@ -90,7 +90,7 @@ public class MotionGenerationSubsystem extends SubsystemBase {
 
   /**
    * Adds to ArrayList of RMP GoalAttactor objects.
-   * @param goalAttractor
+   * @param goalAttractor - RMP GoalAttractor object.
    */
   public void addGoalAttractor(GoalAttractor goalAttractor) {
 
@@ -98,21 +98,57 @@ public class MotionGenerationSubsystem extends SubsystemBase {
 
   }
 
+  /**
+   * Adds to ArrayList of RMP CollisionAvoidance objects.
+   * @param collisionAvoider - RMP CollisionAvoidance object.
+   */
   public void addCollisionAvoider(CollisionAvoidance collisionAvoider) {
 
     collisionAvoiders.add(collisionAvoider);
   
   }
 
+  /**
+   * Removes RMP CollisionAvoidance object from ArrayList with specified index.
+   * @param index - Index of RMP CollisionAvoidance object.
+   * @return Removed RMP CollisionAvoidance object.
+   */
   public CollisionAvoidance removeCollisionAvoider(int index) {
 
     return collisionAvoiders.remove(index);
 
   }
 
+  /**
+   * Removes RMP GoalAttractor object from ArrayList with specified index.
+   * @param index - Index of RMP GoalAttractor object.
+   * @return Removed RMP GoalAttractor object.
+   */
   public GoalAttractor removeGoalAttractor(int index) {
 
     return goalAttractors.remove(index);
+
+  }
+
+  /**
+   * Removes specified RMP CollisionAvoidance object from ArrayList.
+   * @param collisionAvoider - RMP CollisionAvoidance object to be removed.
+   * @return If RMP CollisionAvoidance object was removed (boolean).
+   */
+  public boolean removeCollisionAvoider(CollisionAvoidance collisionAvoider) {
+
+    return collisionAvoiders.remove(collisionAvoider);
+
+  }
+
+  /**
+   * Removes specified RMP GoalAttractor object from ArrayList.
+   * @param goalAttractor - RMP GoalAttractor object to be removed.
+   * @return If RMP GoalAttractor object was removed (boolean).
+   */
+  public boolean removeGoalAttractor(GoalAttractor goalAttractor) {
+
+    return goalAttractors.remove(goalAttractor);
 
   }
 

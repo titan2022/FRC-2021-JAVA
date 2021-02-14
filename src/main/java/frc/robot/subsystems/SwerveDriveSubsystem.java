@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -119,14 +121,30 @@ public class SwerveDriveSubsystem extends SubsystemBase
 
     // Current limits in amps
     // TODO: Find equivalent method names for FX stuff
-    leftPrimary.configSet(currLimitConfigsToFill);
-    leftPrimary.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
-    leftPrimary.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
-    leftPrimary.enableCurrentLimit(true);
+    leftPrimary.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
+    leftPrimary.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
 
-    rightPrimary.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
-    rightPrimary.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
-    rightPrimary.enableCurrentLimit(true);
+    rightPrimary.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
+    rightPrimary.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+
+    leftPrimaryRotator.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
+    leftPrimaryRotator.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+
+    leftSecondaryRotator.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
+    leftSecondaryRotator.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+
+    leftSecondary.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
+    leftSecondary.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+
+    rightPrimaryRotator.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
+    rightPrimaryRotator.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+
+    rightSecondary.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
+    rightSecondary.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+
+    rightSecondaryRotator.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
+    rightSecondaryRotator.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+
     // Might need more for rotator motors
 
     /* TODO: Deal with motor controller faults once a physical robot is available for testing

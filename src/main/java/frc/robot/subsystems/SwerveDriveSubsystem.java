@@ -111,12 +111,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
 
 
 
-  /**
-   * Creates a new SwerveSubsystem.
-   */
-  public SwerveDriveSubsystem() 
-  {
-    // motor configuration block
+  private void SwerveDriveSubsystemSetup() {
+        // motor configuration block
     leftPrimary.configFactoryDefault();
     leftSecondary.configFactoryDefault();
     rightPrimary.configFactoryDefault();
@@ -206,17 +202,24 @@ public class SwerveDriveSubsystem extends SubsystemBase
     rightBack = new Translation2d(RIGHT_BACK_X, RIGHT_BACK_Y);
     kinematics = new SwerveDriveKinematics(leftFront, leftBack, rightFront, rightBack);
   }
+  /**
+   * Creates a new SwerveSubsystem.
+   */
+  public SwerveDriveSubsystem() 
+  {
+    SwerveDriveSubsystemSetup();
+  }
 
   //Might need extra parameters for rotator motors
   //Make like differential drive subsystem constructor
   public SwerveDriveSubsystem(TalonFXConfiguration leftConfig, TalonFXConfiguration rightConfig)
   {
-    this();
-
     leftPrimary.configAllSettings(leftConfig);
     leftSecondary.configAllSettings(leftConfig);
     rightPrimary.configAllSettings(rightConfig);
     rightSecondary.configAllSettings(rightConfig);
+
+    SwerveDriveSubsystemSetup();
   }
 
   /**

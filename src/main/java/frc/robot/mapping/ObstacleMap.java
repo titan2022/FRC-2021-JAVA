@@ -42,34 +42,42 @@ public class ObstacleMap {
     }
 
     /**
-     * Determines whether a path is clear of all obstacles in this map.
+     * Determines whether a path is clear of obstacles in this map.
      * 
      * @param path  The path to test.
      * @param radius  The obstacle growth radius to use. That is, the minimum
      *  distance the path must stay away from this obstacle to be considered
      *  clear of this obstacle.
-     * @return  True, if the path is clear of all obstacles, or false,
+     * @param ignore  Obstacles to be ignored. These obstacles will not be
+     *  considered when determining whether a path is clear.
+     * @return  True, if the path is clear of all considered obstacles, or false,
      *  otherwise.
      * @see Obstacle#isClear(Path, double)
      */
-    public boolean isClear(Path path, double radius) {
+    public boolean isClear(Path path, double radius, Obstacle... ignore) {
+        Set<Obstacle> ignoreSet = Set.of(ignore);
         for(Obstacle obstacle : obstacles)
-            if(!obstacle.isClear(path, radius)) return false;
+            if(!(ignoreSet.contains(obstacle ) || obstacle.isClear(path, radius)))
+                return false;
         return true;
     }
     /**
-     * Determines whether a path is clear of all obstacles in this map.
+     * Determines whether a path is clear of obstacles in this map.
      * 
      * <p>This method is equivalent to {@link #isClear(Path, double)} with a
      * radius of 0.
      * 
      * @param path  The path to test.
+     * @param ignore  Obstacles to be ignored. These obstacles will not be
+     *  considered when determining whether a path is clear.
      * @return True if the path is clear of this obstacle, or false, otherwise.
      * @see Obstacle#isClear(Path)
      */
-    public boolean isClear(Path path) {
+    public boolean isClear(Path path, Obstacle... ignore) {
+        Set<Obstacle> ignoreSet = Set.of(ignore);
         for(Obstacle obstacle : obstacles)
-            if(!obstacle.isClear(path)) return false;
+            if(!(ignoreSet.contains(obstacle ) || obstacle.isClear(path)))
+                return false;
         return true;
     }
 

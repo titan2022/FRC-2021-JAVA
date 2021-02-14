@@ -62,7 +62,7 @@ public class CollisionAvoidance extends RMPLeaf {
 	 * 
 	 * z = psi(q,center) = ||q - center|| / r - 1
 	 * 
-	 * @param q The R^N dimensional point
+	 * @param q An R^N dimensional state
 	 * @return 1-d matrix
 	 */
 	public SimpleMatrix psi(SimpleMatrix q)
@@ -71,26 +71,68 @@ public class CollisionAvoidance extends RMPLeaf {
 	}
 
 	/**
-	 * Jacobian of psi
-	 * (q - center) / center * ||1 / (q - center)|| 
+	 * Jacobian of psi:
+	 * ((q - center) / r) * 1 / ||q - center|| 
 	 * 
-	 * @param q The R^N dimensional point
-	 * @return // TODO: Describe what a jacobian is.
+	 * @param q An R^N dimensional state
+	 * @return // TODO: Describe what a jacobian respresents in this instance
 	 */
 	public SimpleMatrix j(SimpleMatrix q)
 	{
 		double scale = 1/q.minus(center).normF();
 		return q.minus(center).transpose().divide(r).scale(scale);
-	};
+	}
 
+	/**
+	 * Derivative of Jacobian of psi:
+	 * <p>
+	 * T is transpose
+	 * <p>
+	 * I is a diagonal identity matrix with the same dimensions as center
+	 * <p>
+	 * a = ((q - center) * (q - center))T
+	 * <p>
+	 * b = a + I * (1 / ||q - center||)
+	 * <p>
+	 * j_dot(q, q_dot) = q_dotT * b / r
+	 * 
+	 * @param q An R^N dimensional state
+	 * @param q_dot The derivative of an R^N dimensional state
+	 * @return // TODO: Describe what the derivative of a jacobian respresents in this instance
+	 */
 	public SimpleMatrix j_dot(SimpleMatrix q, SimpleMatrix q_dot)
 	{
 		SimpleMatrix a = q.minus(center).mult(q.minus(center).transpose())
 						  	  .scale(-1 / Math.pow(q.minus(center).normF(), 3));
 		SimpleMatrix b = a.plus(eye(center.getNumElements()).scale(1 / q.minus(center).normF()));
-		return q_dot.transpose().mult(b).divide(this.r);
-	};
+		return q_dot.transpose().mult(b).divide(r);
+	}
 	
+	/**
+	 * Implementation of a barrier-type potential from Section 3.1 Pairwise Collision Avoidance from <a href="https://arxiv.org/abs/1902.05177">Multi-Objective Policy Generation for Multi-Robot Systems Using Riemannian Motion Policies</a>
+	 * <p>
+	 * G(x, x_dot) = w(x) * u(x_dot)
+	 * <p>
+	 * w(x) = 1 / x ^ 4
+	 * <p>
+	 * u(x_dot) = ɛ + min(0, x_dot) * x_dot
+	 * <p>
+	 * This means that the collision avoidance RMP dominates when robots
+	 * are close to each other or moving fast towards each other.
+	 * <p>
+	 * Φ(x) = .5 * α * w(x)^2
+	 * <p>
+	 * The GDS defined as a potential function phi.
+	 * <p>
+	 * B(x, x_dot) = η * G(x, x_dot)
+	 * <p>
+	 * This is a dampening matrix.
+	 * <p>
+	 * 
+	 * @param x The subtask space state
+	 * @param x_dot The subtask space derivative
+	 * @return The acceleration motion policy denoted F
+	 */
 	public SimpleMatrix solveF(SimpleMatrix x, SimpleMatrix x_dot)
 	{
 		double w;
@@ -119,6 +161,25 @@ public class CollisionAvoidance extends RMPLeaf {
 
 	}
 	
+	/**
+	 * Implementation from  <a href="https://github.com/gtrll/multi-robot-rmpflow/blob/master/rmp_leaf.py">Multi-Objective Policy Generation for Multi-Robot Systems Using Riemannian Motion Policies</a>
+	 * <p>
+	 * G(x, x_dot) = w(x) * u(x_dot)
+	 * <p>
+	 * w(x) = 1 / x ^ 4
+	 * <p>
+	 * u(x_dot) = ɛ + min(0, x_dot) * x_dot
+	 * <p>
+	 * This means that the collision avoidance RMP dominates when robots
+	 * are close to each other or moving fast towards each other.
+	 * <p>
+	 * M = G(x, x_dot) * .5 * x_dot * w * grad_u
+	 * <p>
+	 * 
+	 * @param x The subtask space state
+	 * @param x_dot The subtask space derivative
+	 * @return The inertia matrix denoted M
+	 */
 	public SimpleMatrix solveM(SimpleMatrix x, SimpleMatrix x_dot)
 	{
 		double w;
@@ -140,10 +201,19 @@ public class CollisionAvoidance extends RMPLeaf {
 		return new SimpleMatrix(1, 1, false, new double[] {Math.min(Math.max(-1e5, m_double), 1e5)});
 	}
 	
+	/**
+	 * Returns radius of the obstacle
+	 * @return The radius of obstacle.
+	 */
 	public double getRadius()
 	{
 		return r;
 	}
+
+	/**
+	 * Returns the center of the obstacle
+	 * @return The center of the obstacle
+	 */
 	public SimpleMatrix getCenter()
 	{
 		return center;

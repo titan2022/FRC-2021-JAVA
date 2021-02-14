@@ -6,29 +6,39 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 
+import org.ejml.simple.SimpleMatrix;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.motion.generation.rmpflow.CollisionAvoidance;
 import frc.robot.motion.generation.rmpflow.GoalAttractor;
 import frc.robot.motion.generation.rmpflow.RMPRoot;
 
-public class GenerationSubsystem extends SubsystemBase {
+public class MotionGenerationSubsystem extends SubsystemBase {
 
-  private RMPRoot root = new RMPRoot("root");
+  private RMPRoot root;
   private ArrayList<CollisionAvoidance> collisionAvoiders;
   private ArrayList<GoalAttractor> goalAttractors;
+  // private SimpleMatrix x;
+  // private SimpleMatrix x_dot;
 
   /** Creates a new GenerationSubsystem. */
-  public GenerationSubsystem() {
+  public MotionGenerationSubsystem() {
 
     collisionAvoiders = new ArrayList<CollisionAvoidance>();
     goalAttractors = new ArrayList<GoalAttractor>();
+    root = new RMPRoot("root");
+    // x = new SimpleMatrix(1, 2);
+    // x_dot = new SimpleMatrix(1, 2);
     
   }
 
-  public GenerationSubsystem(ArrayList<CollisionAvoidance> collisionAvoiders, ArrayList<GoalAttractor> goalAttractors) {
+  public MotionGenerationSubsystem(ArrayList<CollisionAvoidance> collisionAvoiders, ArrayList<GoalAttractor> goalAttractors, RMPRoot root) {
 
     setCollisionAvoiders(collisionAvoiders);
     setGoalAttractors(goalAttractors);
+    this.root = root;
+    // setX(x);
+    // setXDot(x_dot);
 
   }
 
@@ -44,6 +54,18 @@ public class GenerationSubsystem extends SubsystemBase {
 
   }
 
+  public ArrayList<CollisionAvoidance> getCollisionAvoiders() {
+
+    return collisionAvoiders;
+
+  }
+
+  public ArrayList<GoalAttractor> getGoalAttractors() {
+
+    return goalAttractors;
+
+  }
+
   public void addGoalAttractor(GoalAttractor goalAttractor) {
 
     goalAttractors.add(goalAttractor);
@@ -54,6 +76,48 @@ public class GenerationSubsystem extends SubsystemBase {
 
     collisionAvoiders.add(collisionAvoider);
   
+  }
+
+  public CollisionAvoidance removeCollisionAvoider(int index) {
+
+    return collisionAvoiders.remove(index);
+
+  }
+
+  public GoalAttractor removeGoalAttractor(int index) {
+
+    return goalAttractors.remove(index);
+
+  }
+
+  // public SimpleMatrix getX() {
+
+  //   return x;
+
+  // }
+
+  // public SimpleMatrix getXDot() {
+
+  //   return x_dot;
+
+  // }
+
+  // public void setX(SimpleMatrix x) {
+
+  //   this.x = x;
+
+  // }
+
+  // public void setXDot(SimpleMatrix x_dot) {
+
+  //   this.x_dot = x_dot;
+
+  // }
+
+  public SimpleMatrix rootSolve(SimpleMatrix x, SimpleMatrix x_dot) {
+
+    return root.solve(x, x_dot);
+
   }
 
   @Override

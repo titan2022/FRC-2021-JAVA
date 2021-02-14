@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 public class WristSubsystem extends SubsystemBase {
     
@@ -22,19 +23,24 @@ public class WristSubsystem extends SubsystemBase {
     private static final int PEAK_CURRENT_LIMIT = 60;
     private static final int CONTINUOUS_CURRENT_LIMIT = 50;
 
-    // Motion Magic Constants
     // PID Constants
     private static final double WRIST_KP = 2;
     private static final double WRIST_KI = .5;
+    private static final double WRIST_KD = 1;
+    private static final double WRIST_KF = 0;
 
     private static final WPI_TalonSRX wrist = new WPI_TalonSRX(PRIMARY_WRIST_PORT);;
     private static final WPI_TalonSRX followingWrist = new WPI_TalonSRX(SECONDARY_WRIST_PORT); //like a left wrist
 
-    private double wristAngle, wristSpeed;
-
+    
+    public void setMotorFactoryConfig()
+    {
+        wrist.configFactoryDefault();
+        followingWrist.configFactoryDefault();
+    }
 
     /**
-     * 
+     * @param motorConfig - specific configurations for wrist 
      */
     public WristSubsystem(TalonSRXConfiguration motorConfig) {
         setMotorFactoryConfig();
@@ -57,69 +63,44 @@ public class WristSubsystem extends SubsystemBase {
         followingWrist.follow(wrist);
 
         //Encoder configs
+        wrist.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        
     }
 
     public WristSubsystem()
     {
         this(null);
     }
-    public void setMotorFactoryConfig()
-    {
-        wrist.configFactoryDefault();
-        followingWrist.configFactoryDefault();
-    }
-    
-    public void setWristPosition(double angles)
-    {
-        
-    }
 
-
-
-
-
-
-    /**
-     * Returns the linear speed of the write // TODO: Check if wrist speed is angular are linear
-     * @return The wrist speed in meter / s
-     */
-    public double getWristSpeed() {
-        return wristSpeed;
-    }
-    
     /**
      * 
-     * @param speed
+     * @param angle desired angle to turn (in degrees)
      */
-    public void setWristSpeed(double speed) {
-        wrist.set(ControlMode.PercentOutput, speed); //makes wrist speed desired speed
+    public void setWristPosition(double angle)
+    {
+        wrist.set(angle);
     }
-
-    //angle
+    /**
+     * 
+     * @return current angle of wrist
+     */
     public double getWristAngle() {
-        return wristAngle;
+        return wrist.getSelectedSensorPosition();
     }
-    public void rotateUp(double degrees) {
-        wrist.set(ControlMode.MotionMagic, degrees); //rotates the amount of degrees specifed
-    }
-
-    public void rotateDown(double degrees) {
-        wrist.set(ControlMode.MotionMagic, degrees); //rotates the amount of degrees specifed
-    }
-    public void checkAngle() {
-        if(wristAngle > angleLimit) {
-            wrist.set(ControlMode.MotionMagic, angleLimit-1);
+    public void checkWristLimits() {
+        if (getWristAngle() < ANGLE_LOWER_LIMIT) {
+            setWristPosition(ANGLE_LOWER_LIMIT);
+        }
+                
+        if (getWristAngle() > ANGLE_UPPER_LIMIT) {
+            setWristPosition(ANGLE_UPPER_LIMIT);
         }
     }
 
-    public void stop() {
-        wrist.set(ControlMode.PercentOutput, 0); //stops the wrist from moving
-
-    }
-    
     @Override
     public void periodic()
     {
-
+        getWristAngle();
+        checkWristLimits();
     }
 }

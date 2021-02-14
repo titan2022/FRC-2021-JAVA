@@ -14,14 +14,17 @@ import frc.robot.subsystems.MotionGenerationSubsystem;
 import frc.robot.subsystems.NavigationSubsystem;
 
 public class PathCommand extends CommandBase {
-    final NavigationSubsystem nav;
-    final DStarLite planner;
-    final MotionGenerationSubsystem rmp;
-    final GoalAttractor goal;
+    public final NavigationSubsystem nav;
+    public final DStarLite planner;
+    public final MotionGenerationSubsystem rmp;
+    public final GoalAttractor goal;
 
     public PathCommand(Point target, ObstacleMap map, NavigationSubsystem nav, MotionGenerationSubsystem rmp, double radius) {
+        this(target, map, nav, rmp, radius, null);
+    }
+    public PathCommand(Point target, ObstacleMap map, NavigationSubsystem nav, MotionGenerationSubsystem rmp, double radius, DStarLite planner) {
         this.nav = nav;
-        this.planner = new DStarLite(map, target, radius);
+        this.planner = planner == null ? new DStarLite(map, target, radius) : planner;
         this.rmp = rmp;
         SimpleMatrix pos = new SimpleMatrix(new double[][]{{target.getX()}, {target.getY()}});
         this.goal = new GoalAttractor("Path step", rmp.getRoot(), pos, 10, 1, 10, 1, 2, 2, 0.005);

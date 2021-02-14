@@ -18,17 +18,13 @@ public class MotionGenerationSubsystem extends SubsystemBase {
   private final RMPRoot root;
   private ArrayList<CollisionAvoidance> collisionAvoiders;
   private ArrayList<GoalAttractor> goalAttractors;
-  // private SimpleMatrix x;
-  // private SimpleMatrix x_dot;
-
+  
   /** Creates a new MotionGenerationSubsystem. */
   public MotionGenerationSubsystem() {
 
     collisionAvoiders = new ArrayList<CollisionAvoidance>();
     goalAttractors = new ArrayList<GoalAttractor>();
     root = new RMPRoot("root");
-    // x = new SimpleMatrix(1, 2);
-    // x_dot = new SimpleMatrix(1, 2);
     
   }
 
@@ -43,8 +39,6 @@ public class MotionGenerationSubsystem extends SubsystemBase {
     setCollisionAvoiders(collisionAvoiders);
     setGoalAttractors(goalAttractors);
     this.root = root;
-    // setX(x);
-    // setXDot(x_dot);
 
   }
 
@@ -161,30 +155,6 @@ public class MotionGenerationSubsystem extends SubsystemBase {
     return root;
 
   }
-
-  // public SimpleMatrix getX() {
-
-  //   return x;
-
-  // }
-
-  // public SimpleMatrix getXDot() {
-
-  //   return x_dot;
-
-  // }
-
-  // public void setX(SimpleMatrix x) {
-
-  //   this.x = x;
-
-  // }
-
-  // public void setXDot(SimpleMatrix x_dot) {
-
-  //   this.x_dot = x_dot;
-
-  // }
 
   public SimpleMatrix rootSolve(SimpleMatrix x, SimpleMatrix x_dot) {
 

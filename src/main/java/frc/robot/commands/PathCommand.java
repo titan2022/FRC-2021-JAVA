@@ -25,6 +25,8 @@ public class PathCommand extends CommandBase {
     public PathCommand(Point target, ObstacleMap map, NavigationSubsystem nav, MotionGenerationSubsystem rmp, double radius, DStarLite planner) {
         this.nav = nav;
         this.planner = planner == null ? new DStarLite(map, target, radius) : planner;
+        if(this.planner.getGoal().getDistance(target) > 0.01)
+            this.planner.setTarget(target);
         this.rmp = rmp;
         SimpleMatrix pos = new SimpleMatrix(new double[][]{{target.getX()}, {target.getY()}});
         this.goal = new GoalAttractor("Path step", rmp.getRoot(), pos, 10, 1, 10, 1, 2, 2, 0.005);

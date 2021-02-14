@@ -1,5 +1,6 @@
 package frc.robot.mapping;
 
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
@@ -114,5 +115,9 @@ public class CompoundPath implements Path {
         for(int i=0; i<segments.length; i++)
             minDist = Math.min(minDist, segments[i].getDistance(other));
         return minDist;
+    }
+
+    public Iterable<Path> getSegments() {
+        return List.of(segments);
     }
 }

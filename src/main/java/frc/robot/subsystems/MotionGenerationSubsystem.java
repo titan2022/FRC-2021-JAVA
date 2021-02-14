@@ -152,6 +152,16 @@ public class MotionGenerationSubsystem extends SubsystemBase {
 
   }
 
+  /**
+   * Gets RMP Root object.
+   * @return RMP Root object.
+   */
+  public RMPRoot getRoot() {
+
+    return root;
+
+  }
+
   // public SimpleMatrix getX() {
 
   //   return x;

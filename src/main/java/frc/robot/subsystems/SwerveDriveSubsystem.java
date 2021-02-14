@@ -9,7 +9,11 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwerveDriveSubsystem extends SubsystemBase
@@ -86,6 +90,18 @@ public class SwerveDriveSubsystem extends SubsystemBase
   private static final double MAIN_MOTOR_KP = 0.02;
   private static final double MAIN_MOTOR_KI = 0;
   private static final double MAIN_MOTOR_KD = 0.01;
+
+  //Kinematics
+  SwerveDriveKinematics kinematics;
+  Translation2d leftFront, leftBack, rightFront, rightBack;
+  private static final double LEFT_FRONT_X = 0.25;
+  private static final double LEFT_FRONT_Y = 0.25;
+  private static final double LEFT_BACK_X = 0.25;
+  private static final double LEFT_BACK_Y = 0.25;
+  private static final double RIGHT_FRONT_X = 0.25;
+  private static final double RIGHT_FRONT_Y = 0.25;
+  private static final double RIGHT_BACK_X = 0.25;
+  private static final double RIGHT_BACK_Y = 0.25;
 
 
 
@@ -175,6 +191,14 @@ public class SwerveDriveSubsystem extends SubsystemBase
     rightSecondaryRotator.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
     rightSecondaryRotator.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
     rightSecondaryRotator.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
+
+    //Kinematics
+    //order is leftfront, leftback, rightfront, rightback
+    leftFront = new Translation2d(LEFT_FRONT_X, LEFT_FRONT_Y);
+    leftBack = new Translation2d(LEFT_BACK_X, LEFT_BACK_Y);
+    rightFront = new Translation2d(RIGHT_FRONT_X, RIGHT_FRONT_Y);
+    rightBack = new Translation2d(RIGHT_BACK_X, RIGHT_BACK_Y);
+    kinematics = new SwerveDriveKinematics(leftFront, leftBack, rightFront, rightBack);
   }
 
   //Might need extra parameters for rotator motors
@@ -208,40 +232,41 @@ public class SwerveDriveSubsystem extends SubsystemBase
    * @param leftOutputValue  left side output value for ControlMode
    * @param rightOutputValue right side output value for ControlMode
    */
-  public void setOutput(double omega, double XVelocity, double YVelocity) {
-    double leftPrimaryOutput, leftSecondaryOutput, leftPrimaryRotatorSetpoint, leftSecondaryRotatorSetpoint,
-      rightPrimaryOutput, rightSecondaryOutput, rightPrimaryRotatorSetpoint, rightSecondaryRotatorSetpoint;
+  public void setOutput(ChassisSpeeds inputChassisSpeeds) {
     // TODO: if check the current usage from Power Subsystem to restrict overcurrent
     // TODO: make this not fucking suck lol
     // TODO: make the controlmode output correspond to actual wheel velocity in m/s
 
-    double A, B, C, D;
+    // double A, B, C, D;
 
-    A=XVelocity-(omega * (ROBOT_LENGTH/2));
-    B=XVelocity+(omega * (ROBOT_LENGTH/2));
-    C=XVelocity-(omega * (ROBOT_TRACK_WIDTH/2));
-    D=XVelocity+(omega * (ROBOT_TRACK_WIDTH/2));
+    // A=XVelocity-(omega * (ROBOT_LENGTH/2));
+    // B=XVelocity+(omega * (ROBOT_LENGTH/2));
+    // C=XVelocity-(omega * (ROBOT_TRACK_WIDTH/2));
+    // D=XVelocity+(omega * (ROBOT_TRACK_WIDTH/2));
 
-    leftPrimaryOutput = Math.sqrt((B*B)+(D*D));
-    rightPrimaryOutput = Math.sqrt((B*B)+(C*C));
-    leftSecondaryOutput = Math.sqrt((A*A)+(D*D));
-    rightSecondaryOutput = Math.sqrt((A*A)+(C*C));
+    // leftPrimaryOutput = Math.sqrt((B*B)+(D*D));
+    // rightPrimaryOutput = Math.sqrt((B*B)+(C*C));
+    // leftSecondaryOutput = Math.sqrt((A*A)+(D*D));
+    // rightSecondaryOutput = Math.sqrt((A*A)+(C*C));
 
-    //outputs angles, 0 is dead ahead, values go from -180 to 180
-    leftPrimaryRotatorSetpoint = Math.atan2(B, D)*(ENCODER_TICKS/(2*Math.PI));
-    rightPrimaryRotatorSetpoint = Math.atan2(B, C)*(ENCODER_TICKS/(2*Math.PI));
-    leftSecondaryRotatorSetpoint = Math.atan2(A, D)*(ENCODER_TICKS/(2*Math.PI));
-    rightSecondaryRotatorSetpoint = Math.atan2(A, C)*(ENCODER_TICKS/(2*Math.PI));
+    // //outputs angles, 0 is dead ahead, values go from -180 to 180
+    // leftPrimaryRotatorSetpoint = Math.atan2(B, D)*(ENCODER_TICKS/(2*Math.PI));
+    // rightPrimaryRotatorSetpoint = Math.atan2(B, C)*(ENCODER_TICKS/(2*Math.PI));
+    // leftSecondaryRotatorSetpoint = Math.atan2(A, D)*(ENCODER_TICKS/(2*Math.PI));
+    // rightSecondaryRotatorSetpoint = Math.atan2(A, C)*(ENCODER_TICKS/(2*Math.PI));
 
-    leftPrimary.set(ControlMode.Position, leftPrimaryOutput/METERS_PER_TICK);
-    rightPrimary.set(ControlMode.Position, rightPrimaryOutput/METERS_PER_TICK);
-    leftSecondary.set(ControlMode.Position, leftSecondaryOutput/METERS_PER_TICK);
-    rightSecondary.set(ControlMode.Position, rightSecondaryOutput/METERS_PER_TICK);
+    SwerveModuleState[] modules = kinematics.toSwerveModuleStates(inputChassisSpeeds);
 
-    leftPrimaryRotator.set(ControlMode.MotionMagic, leftPrimaryRotatorSetpoint);
-    rightPrimaryRotator.set(ControlMode.MotionMagic, rightPrimaryRotatorSetpoint);
-    leftSecondaryRotator.set(ControlMode.MotionMagic, leftSecondaryRotatorSetpoint);
-    rightSecondaryRotator.set(ControlMode.MotionMagic, rightSecondaryRotatorSetpoint);
+
+    leftPrimary.set(ControlMode.Position, modules[0].speedMetersPerSecond/METERS_PER_TICK);
+    leftSecondary.set(ControlMode.Position, modules[1].speedMetersPerSecond/METERS_PER_TICK);
+    rightPrimary.set(ControlMode.Position, modules[2].speedMetersPerSecond/METERS_PER_TICK);
+    rightSecondary.set(ControlMode.Position, modules[3].speedMetersPerSecond/METERS_PER_TICK);
+
+    leftPrimaryRotator.set(ControlMode.MotionMagic, modules[0].angle.getDegrees()*(4096/360));
+    leftSecondaryRotator.set(ControlMode.MotionMagic, modules[1].angle.getDegrees()*(4096/360));
+    rightPrimaryRotator.set(ControlMode.MotionMagic, modules[2].angle.getDegrees()*(4096/360));
+    rightSecondaryRotator.set(ControlMode.MotionMagic, modules[3].angle.getDegrees()*(4096/360));
   } 
 
   /**

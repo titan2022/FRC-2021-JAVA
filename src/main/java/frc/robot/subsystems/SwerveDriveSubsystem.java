@@ -69,14 +69,14 @@ public class SwerveDriveSubsystem extends SubsystemBase
   
   // Physical and Simulated Hardware
   // These talon objects are also simulated
-  private static final WPI_TalonFX leftPrimary = new WPI_TalonFX(LEFT_FRONT_MOTOR_PORT)
-    , leftSecondary = new WPI_TalonFX(LEFT_BACK_MOTOR_PORT)
-    , rightPrimary = new WPI_TalonFX(RIGHT_FRONT_MOTOR_PORT)
-    , rightSecondary = new WPI_TalonFX(RIGHT_BACK_MOTOR_PORT)
-    , leftPrimaryRotator = new WPI_TalonFX(LEFT_FRONT_MOTOR_ROTATOR_PORT)
-    , leftSecondaryRotator = new WPI_TalonFX(LEFT_BACK_MOTOR_ROTATOR_PORT)
-    , rightPrimaryRotator = new WPI_TalonFX(RIGHT_FRONT_MOTOR_ROTATOR_PORT)
-    , rightSecondaryRotator = new WPI_TalonFX(RIGHT_BACK_MOTOR_ROTATOR_PORT);
+  private static final WPI_TalonFX leftFrontMotor = new WPI_TalonFX(LEFT_FRONT_MOTOR_PORT)
+    , leftBackMotor = new WPI_TalonFX(LEFT_BACK_MOTOR_PORT)
+    , rightFrontMotor = new WPI_TalonFX(RIGHT_FRONT_MOTOR_PORT)
+    , rightBackMotor = new WPI_TalonFX(RIGHT_BACK_MOTOR_PORT)
+    , leftFrontRotatorMotor = new WPI_TalonFX(LEFT_FRONT_MOTOR_ROTATOR_PORT)
+    , leftBackRotatorMotor = new WPI_TalonFX(LEFT_BACK_MOTOR_ROTATOR_PORT)
+    , rightFrontRotatorMotor = new WPI_TalonFX(RIGHT_FRONT_MOTOR_ROTATOR_PORT)
+    , rightBackRotatorMotor = new WPI_TalonFX(RIGHT_BACK_MOTOR_ROTATOR_PORT);
 
   //PID for rotators
   // One slot and one PID_IDX
@@ -113,55 +113,55 @@ public class SwerveDriveSubsystem extends SubsystemBase
 
   private void SwerveDriveSubsystemSetup() {
         // motor configuration block
-    leftPrimary.configFactoryDefault();
-    leftSecondary.configFactoryDefault();
-    rightPrimary.configFactoryDefault();
-    rightSecondary.configFactoryDefault();
-    leftPrimaryRotator.configFactoryDefault();
-    leftSecondaryRotator.configFactoryDefault();
-    rightPrimaryRotator.configFactoryDefault();
-    rightSecondaryRotator.configFactoryDefault();
+    leftFrontMotor.configFactoryDefault();
+    leftBackMotor.configFactoryDefault();
+    rightFrontMotor.configFactoryDefault();
+    rightBackMotor.configFactoryDefault();
+    leftFrontRotatorMotor.configFactoryDefault();
+    leftBackRotatorMotor.configFactoryDefault();
+    rightFrontRotatorMotor.configFactoryDefault();
+    rightBackRotatorMotor.configFactoryDefault();
 
-    rightPrimary.setInverted(RIGHT_FRONT_MOTOR_INVERTED);
-    rightSecondary.setInverted(RIGHT_BACK_MOTOR_INVERTED);
-    rightPrimaryRotator.setInverted(RIGHT_FRONT_MOTOR_ROTATOR_INVERTED);
-    rightSecondaryRotator.setInverted(RIGHT_BACK_MOTOR_ROTATOR_INVERTED);
+    rightFrontMotor.setInverted(RIGHT_FRONT_MOTOR_INVERTED);
+    rightBackMotor.setInverted(RIGHT_BACK_MOTOR_INVERTED);
+    rightFrontRotatorMotor.setInverted(RIGHT_FRONT_MOTOR_ROTATOR_INVERTED);
+    rightBackRotatorMotor.setInverted(RIGHT_BACK_MOTOR_ROTATOR_INVERTED);
 
-    leftPrimary.setInverted(LEFT_FRONT_MOTOR_INVERTED);
-    leftSecondary.setInverted(LEFT_BACK_MOTOR_INVERTED);
-    leftPrimaryRotator.setInverted(LEFT_FRONT_MOTOR_ROTATOR_INVERTED);
-    leftSecondaryRotator.setInverted(LEFT_BACK_MOTOR_ROTATOR_INVERTED);
+    leftFrontMotor.setInverted(LEFT_FRONT_MOTOR_INVERTED);
+    leftBackMotor.setInverted(LEFT_BACK_MOTOR_INVERTED);
+    leftFrontRotatorMotor.setInverted(LEFT_FRONT_MOTOR_ROTATOR_INVERTED);
+    leftBackRotatorMotor.setInverted(LEFT_BACK_MOTOR_ROTATOR_INVERTED);
 
     // Sets the direction that the talon will turn on the green LED when going 'forward'.
-    leftPrimary.setSensorPhase(LEFT_FRONT_MOTOR_SENSOR_PHASE);
-    rightPrimary.setSensorPhase(RIGHT_FRONT_MOTOR_SENSOR_PHASE);
+    leftFrontMotor.setSensorPhase(LEFT_FRONT_MOTOR_SENSOR_PHASE);
+    rightFrontMotor.setSensorPhase(RIGHT_FRONT_MOTOR_SENSOR_PHASE);
     //Might need to add more for rotator motors. 
 
     // Current limits in amps
     // TODO: Find equivalent method names for FX stuff
-    leftPrimary.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
-    leftPrimary.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+    leftFrontMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
+    leftFrontMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
 
-    rightPrimary.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
-    rightPrimary.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+    rightFrontMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
+    rightFrontMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
 
-    leftPrimaryRotator.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
-    leftPrimaryRotator.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+    leftFrontRotatorMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
+    leftFrontRotatorMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
 
-    leftSecondaryRotator.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
-    leftSecondaryRotator.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+    leftBackRotatorMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
+    leftBackRotatorMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
 
-    leftSecondary.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
-    leftSecondary.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+    leftBackMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
+    leftBackMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
 
-    rightPrimaryRotator.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
-    rightPrimaryRotator.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+    rightFrontRotatorMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
+    rightFrontRotatorMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
 
-    rightSecondary.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
-    rightSecondary.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+    rightBackMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
+    rightBackMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
 
-    rightSecondaryRotator.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
-    rightSecondaryRotator.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+    rightBackRotatorMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
+    rightBackRotatorMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
 
     // Might need more for rotator motors
 
@@ -170,29 +170,29 @@ public class SwerveDriveSubsystem extends SubsystemBase
     Faults _faults_R = new Faults();
     */
 
-    leftPrimaryRotator.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
-    leftPrimaryRotator.config_kF(ROTATOR_SLOT_IDX, ROTATOR_KF);
-    leftPrimaryRotator.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
-    leftPrimaryRotator.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
-    leftPrimaryRotator.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
+    leftFrontRotatorMotor.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
+    leftFrontRotatorMotor.config_kF(ROTATOR_SLOT_IDX, ROTATOR_KF);
+    leftFrontRotatorMotor.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
+    leftFrontRotatorMotor.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
+    leftFrontRotatorMotor.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
 
-    rightPrimaryRotator.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
-    rightPrimaryRotator.config_kF(ROTATOR_SLOT_IDX, ROTATOR_KF);
-    rightPrimaryRotator.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
-    rightPrimaryRotator.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
-    rightPrimaryRotator.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
+    rightFrontRotatorMotor.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
+    rightFrontRotatorMotor.config_kF(ROTATOR_SLOT_IDX, ROTATOR_KF);
+    rightFrontRotatorMotor.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
+    rightFrontRotatorMotor.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
+    rightFrontRotatorMotor.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
 
-    leftSecondaryRotator.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
-    leftSecondaryRotator.config_kF(ROTATOR_SLOT_IDX, ROTATOR_KF);
-    leftSecondaryRotator.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
-    leftSecondaryRotator.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
-    leftSecondaryRotator.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
+    leftBackRotatorMotor.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
+    leftBackRotatorMotor.config_kF(ROTATOR_SLOT_IDX, ROTATOR_KF);
+    leftBackRotatorMotor.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
+    leftBackRotatorMotor.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
+    leftBackRotatorMotor.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
 
-    rightSecondaryRotator.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
-    rightSecondaryRotator.config_kF(ROTATOR_SLOT_IDX, ROTATOR_KF);
-    rightSecondaryRotator.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
-    rightSecondaryRotator.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
-    rightSecondaryRotator.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
+    rightBackRotatorMotor.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
+    rightBackRotatorMotor.config_kF(ROTATOR_SLOT_IDX, ROTATOR_KF);
+    rightBackRotatorMotor.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
+    rightBackRotatorMotor.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
+    rightBackRotatorMotor.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
 
     //Kinematics
     //order is leftfront, leftback, rightfront, rightback
@@ -214,10 +214,10 @@ public class SwerveDriveSubsystem extends SubsystemBase
   //Make like differential drive subsystem constructor
   public SwerveDriveSubsystem(TalonFXConfiguration leftConfig, TalonFXConfiguration rightConfig)
   {
-    leftPrimary.configAllSettings(leftConfig);
-    leftSecondary.configAllSettings(leftConfig);
-    rightPrimary.configAllSettings(rightConfig);
-    rightSecondary.configAllSettings(rightConfig);
+    leftFrontMotor.configAllSettings(leftConfig);
+    leftBackMotor.configAllSettings(leftConfig);
+    rightFrontMotor.configAllSettings(rightConfig);
+    rightBackMotor.configAllSettings(rightConfig);
 
     SwerveDriveSubsystemSetup();
   }
@@ -267,15 +267,15 @@ public class SwerveDriveSubsystem extends SubsystemBase
     SwerveModuleState[] modules = kinematics.toSwerveModuleStates(inputChassisSpeeds);
 
 
-    leftPrimary.set(ControlMode.Position, modules[0].speedMetersPerSecond/METERS_PER_TICK);
-    leftSecondary.set(ControlMode.Position, modules[1].speedMetersPerSecond/METERS_PER_TICK);
-    rightPrimary.set(ControlMode.Position, modules[2].speedMetersPerSecond/METERS_PER_TICK);
-    rightSecondary.set(ControlMode.Position, modules[3].speedMetersPerSecond/METERS_PER_TICK);
+    leftFrontMotor.set(ControlMode.Position, modules[0].speedMetersPerSecond/METERS_PER_TICK);
+    leftBackMotor.set(ControlMode.Position, modules[1].speedMetersPerSecond/METERS_PER_TICK);
+    rightFrontMotor.set(ControlMode.Position, modules[2].speedMetersPerSecond/METERS_PER_TICK);
+    rightBackMotor.set(ControlMode.Position, modules[3].speedMetersPerSecond/METERS_PER_TICK);
 
-    leftPrimaryRotator.set(ControlMode.MotionMagic, modules[0].angle.getDegrees()*(4096/360));
-    leftSecondaryRotator.set(ControlMode.MotionMagic, modules[1].angle.getDegrees()*(4096/360));
-    rightPrimaryRotator.set(ControlMode.MotionMagic, modules[2].angle.getDegrees()*(4096/360));
-    rightSecondaryRotator.set(ControlMode.MotionMagic, modules[3].angle.getDegrees()*(4096/360));
+    leftFrontRotatorMotor.set(ControlMode.MotionMagic, modules[0].angle.getDegrees()*(4096/360));
+    leftBackRotatorMotor.set(ControlMode.MotionMagic, modules[1].angle.getDegrees()*(4096/360));
+    rightFrontRotatorMotor.set(ControlMode.MotionMagic, modules[2].angle.getDegrees()*(4096/360));
+    rightBackRotatorMotor.set(ControlMode.MotionMagic, modules[3].angle.getDegrees()*(4096/360));
   } 
 
   public void setOutput(double omega, double XVelocity, double YVelocity)
@@ -287,52 +287,52 @@ public class SwerveDriveSubsystem extends SubsystemBase
    * Enables brake.
    */
   public void enableBrakes() {
-    leftPrimary.setNeutralMode(NeutralMode.Brake);
-    rightPrimary.setNeutralMode(NeutralMode.Brake);
-    leftSecondary.setNeutralMode(NeutralMode.Brake);
-    rightSecondary.setNeutralMode(NeutralMode.Brake);
+    leftFrontMotor.setNeutralMode(NeutralMode.Brake);
+    rightFrontMotor.setNeutralMode(NeutralMode.Brake);
+    leftBackMotor.setNeutralMode(NeutralMode.Brake);
+    rightBackMotor.setNeutralMode(NeutralMode.Brake);
   }
 
   /**
    * Disables brake.
    */
   public void disableBrakes() {
-    leftPrimary.setNeutralMode(NeutralMode.Coast);
-    rightPrimary.setNeutralMode(NeutralMode.Coast);
+    leftFrontMotor.setNeutralMode(NeutralMode.Coast);
+    rightFrontMotor.setNeutralMode(NeutralMode.Coast);
   }
 
   /**
    * Enables brake for rotator motors.
    */
   public void enableRotatorBrakes() {
-    leftSecondaryRotator.setNeutralMode(NeutralMode.Brake);
-    rightSecondaryRotator.setNeutralMode(NeutralMode.Brake);
-    leftSecondaryRotator.setNeutralMode(NeutralMode.Brake);
-    rightSecondaryRotator.setNeutralMode(NeutralMode.Brake);
+    leftBackRotatorMotor.setNeutralMode(NeutralMode.Brake);
+    rightBackRotatorMotor.setNeutralMode(NeutralMode.Brake);
+    leftBackRotatorMotor.setNeutralMode(NeutralMode.Brake);
+    rightBackRotatorMotor.setNeutralMode(NeutralMode.Brake);
   }
 
   /**
    * Disables brake for rotator motors.
    */
   public void disableRotatorBrakes() {
-    leftPrimaryRotator.setNeutralMode(NeutralMode.Coast);
-    rightPrimaryRotator.setNeutralMode(NeutralMode.Coast);
+    leftFrontRotatorMotor.setNeutralMode(NeutralMode.Coast);
+    rightFrontRotatorMotor.setNeutralMode(NeutralMode.Coast);
   }
 
   /**
    * Stops the motors.
    */
   public void stop() {
-    leftPrimary.set(ControlMode.PercentOutput, 0);
-    rightPrimary.set(ControlMode.PercentOutput, 0);
+    leftFrontMotor.set(ControlMode.PercentOutput, 0);
+    rightFrontMotor.set(ControlMode.PercentOutput, 0);
   }
 
   /**
    * Stops the rotator motors.
    */
   public void stopRotators() {
-    leftPrimaryRotator.set(ControlMode.PercentOutput, 0);
-    rightPrimaryRotator.set(ControlMode.PercentOutput, 0);
+    leftFrontRotatorMotor.set(ControlMode.PercentOutput, 0);
+    rightFrontRotatorMotor.set(ControlMode.PercentOutput, 0);
   }
 
   // encoder methods
@@ -346,11 +346,11 @@ public class SwerveDriveSubsystem extends SubsystemBase
   {
     if (useLeft)
     {
-      return leftPrimary.getSelectedSensorPosition(ENCODER_PORT);
+      return leftFrontMotor.getSelectedSensorPosition(ENCODER_PORT);
     }
     else
     {
-      return rightPrimary.getSelectedSensorPosition(ENCODER_PORT);
+      return rightFrontMotor.getSelectedSensorPosition(ENCODER_PORT);
     }
   }
 
@@ -365,11 +365,11 @@ public class SwerveDriveSubsystem extends SubsystemBase
   {
     if (useLeft)
     {
-      return leftPrimaryRotator.getSelectedSensorPosition(ENCODER_PORT);
+      return leftFrontRotatorMotor.getSelectedSensorPosition(ENCODER_PORT);
     }
     else
     {
-      return rightPrimaryRotator.getSelectedSensorPosition(ENCODER_PORT);
+      return rightFrontRotatorMotor.getSelectedSensorPosition(ENCODER_PORT);
     }
   }
 
@@ -399,11 +399,11 @@ public class SwerveDriveSubsystem extends SubsystemBase
   public double getEncoderVelocity(boolean useLeft) {
     if (useLeft)
     {
-      return leftPrimary.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK;
+      return leftFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK;
     }
     else
     {
-      return rightPrimary.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK;
+      return rightFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK;
     }
   }
 
@@ -415,11 +415,11 @@ public class SwerveDriveSubsystem extends SubsystemBase
   public double getRotatorEncoderVelocity(boolean useLeft) {
     if (useLeft)
     {
-      return leftPrimary.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK / WHEEL_RADIUS;
+      return leftFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK / WHEEL_RADIUS;
     }
     else
     {
-      return rightPrimary.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK / WHEEL_RADIUS;
+      return rightFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK / WHEEL_RADIUS;
     }
   }
 

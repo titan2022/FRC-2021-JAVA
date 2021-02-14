@@ -79,16 +79,17 @@ public class DifferentialDriveSubsystem extends SubsystemBase
   // Create the simulation model of our drivetrain.
   private DifferentialDrivetrainSim driveSim;
 
-  /**
-   * Creates a new DifferentialDriveSubsystem.
-   */
-  public DifferentialDriveSubsystem()
+  public DifferentialDriveSubsystem(TalonSRXConfiguration leftConfig, TalonSRXConfiguration rightConfig, boolean simulated)
   {
-    // motor configuration block
-    leftPrimary.configFactoryDefault();
-    leftSecondary.configFactoryDefault();
-    rightPrimary.configFactoryDefault();
-    rightSecondary.configFactoryDefault();
+    setFactoryMotorConfig();
+
+    if(leftConfig != null && rightConfig != null)
+    {
+      leftPrimary.configAllSettings(leftConfig);
+      leftSecondary.configAllSettings(leftConfig);
+      rightPrimary.configAllSettings(rightConfig);
+      rightSecondary.configAllSettings(rightConfig);
+    }
 
     rightPrimary.setInverted(RIGHT_PRIMARY_INVERTED);
     rightSecondary.setInverted(RIGHT_SECONDARY_INVERTED);
@@ -116,28 +117,33 @@ public class DifferentialDriveSubsystem extends SubsystemBase
     Faults _faults_L = new Faults();
     Faults _faults_R = new Faults();
     */
+    if (simulated) enableSimulation();
+  }
+
+  /**
+   * Creates a new DifferentialDriveSubsystem.
+   */
+  public DifferentialDriveSubsystem()
+  {
+    this(null, null, false);
   }
 
   public DifferentialDriveSubsystem(TalonSRXConfiguration leftConfig, TalonSRXConfiguration rightConfig)
   {
-    this();
-
-    leftPrimary.configAllSettings(leftConfig);
-    leftSecondary.configAllSettings(leftConfig);
-    rightPrimary.configAllSettings(rightConfig);
-    rightSecondary.configAllSettings(rightConfig);
-  }
-
-  public DifferentialDriveSubsystem(TalonSRXConfiguration leftConfig, TalonSRXConfiguration rightConfig, boolean simulated)
-  {
-    this(leftConfig, rightConfig);
-    if (simulated) enableSimulation();
+    this(leftConfig, rightConfig, false);
   }
 
   public DifferentialDriveSubsystem(boolean simulated)
   {
-    this();
-    if (simulated) enableSimulation();
+    this(null, null, simulated);
+  }
+
+  private void setFactoryMotorConfig()
+  {
+    leftPrimary.configFactoryDefault();
+    leftSecondary.configFactoryDefault();
+    rightPrimary.configFactoryDefault();
+    rightSecondary.configFactoryDefault();
   }
 
   private void enableSimulation()

@@ -216,4 +216,10 @@ public class Node extends Point implements Comparable<Node> {
     public int compareTo(Node other) {
         return (int) Math.signum(key() - other.key());
     }
+
+    /**  Resets the g and rhs values of this node to infinity. */
+    void reset() {
+        g = Double.POSITIVE_INFINITY;
+        rhs = Double.POSITIVE_INFINITY;
+    }
 }

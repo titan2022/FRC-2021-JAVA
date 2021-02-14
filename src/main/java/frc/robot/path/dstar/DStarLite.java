@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.mapping.CompoundPath;
 import frc.robot.mapping.LinearSegment;
 import frc.robot.mapping.Obstacle;
@@ -22,9 +23,9 @@ import frc.robot.mapping.Path;
 import frc.robot.mapping.Point;
 
 /** A D* Lite graph and path planning algorithm. */
-public class DStarLite {
-    private final Queue<Node> queue = new PriorityQueue<Node>();
-    private final Node goal;
+public class DStarLite extends SubsystemBase {
+    private Queue<Node> queue = new PriorityQueue<Node>();
+    private Node goal;
     private Node start;
     public final ObstacleMap map;
     public final double radius;
@@ -135,6 +136,37 @@ public class DStarLite {
             start.connect(goal, goalEdge);
             goal.connect(start, goalEdge);
         }
+    }
+
+    /**
+     * Sets the target position for this algorithm.
+     * 
+     * @param target  The new target position.
+     */
+    public void setTarget(Point target) {
+        goal.sever();
+        goal = new Node(target, queue, 0, 0);
+        LinearSegment startEdge = new LinearSegment(start, goal);
+        for(Obstacle obs : map.getObstacles()){
+            for(Point endpoint : obs.getEndpoints(goal, radius)){
+                if(map.isClear(new LinearSegment(goal, endpoint), radius, obs)){
+                    Node vertex = getNode(endpoint, obs, true);
+                    goal.connect(vertex, new LinearSegment(target, endpoint));
+                    vertex.connect(goal, new LinearSegment(endpoint, target));
+                }
+            }
+            if(startEdge != null && !obs.isClear(startEdge, radius))
+                startEdge = null;
+        }
+        if(startEdge != null){
+            start.connect(goal, startEdge);
+            goal.connect(start, startEdge);
+        }
+        for(Node node : getNodes())
+            node.reset();
+        while(!queue.isEmpty())
+            queue.poll();
+        queue.add(goal);
     }
 
     /**

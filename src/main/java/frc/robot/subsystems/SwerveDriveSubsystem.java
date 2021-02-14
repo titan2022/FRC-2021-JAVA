@@ -134,29 +134,29 @@ public class SwerveDriveSubsystem extends SubsystemBase
     Faults _faults_R = new Faults();
     */
 
-    leftPrimaryRotator.selectProfileSlot(LEFT_PRIMARY_ROTATOR_SLOT_IDX, LEFT_PRIMARY_ROTATOR_PID_IDX);
-    leftPrimaryRotator.config_kF(LEFT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KF);
-    leftPrimaryRotator.config_kP(LEFT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KP);
-    leftPrimaryRotator.config_kI(LEFT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KI);
-    leftPrimaryRotator.config_kD(LEFT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KD);
+    leftPrimaryRotator.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
+    leftPrimaryRotator.config_kF(ROTATOR_SLOT_IDX, ROTATOR_KF);
+    leftPrimaryRotator.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
+    leftPrimaryRotator.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
+    leftPrimaryRotator.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
 
-    rightPrimaryRotator.selectProfileSlot(RIGHT_PRIMARY_ROTATOR_SLOT_IDX, RIGHT_PRIMARY_ROTATOR_PID_IDX);
-    rightPrimaryRotator.config_kF(RIGHT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KF);
-    rightPrimaryRotator.config_kP(RIGHT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KP);
-    rightPrimaryRotator.config_kI(RIGHT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KI);
-    rightPrimaryRotator.config_kD(RIGHT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KD);
+    rightPrimaryRotator.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
+    rightPrimaryRotator.config_kF(ROTATOR_SLOT_IDX, ROTATOR_KF);
+    rightPrimaryRotator.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
+    rightPrimaryRotator.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
+    rightPrimaryRotator.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
 
-    leftSecondaryRotator.selectProfileSlot(LEFT_SECONDARY_ROTATOR_SLOT_IDX, LEFT_SECONDARY_ROTATOR_PID_IDX);
-    leftSecondaryRotator.config_kF(LEFT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KF);
-    leftSecondaryRotator.config_kP(LEFT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KP);
-    leftSecondaryRotator.config_kI(LEFT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KI);
-    leftSecondaryRotator.config_kD(LEFT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KD);
+    leftSecondaryRotator.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
+    leftSecondaryRotator.config_kF(ROTATOR_SLOT_IDX, ROTATOR_KF);
+    leftSecondaryRotator.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
+    leftSecondaryRotator.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
+    leftSecondaryRotator.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
 
-    rightSecondaryRotator.selectProfileSlot(RIGHT_SECONDARY_ROTATOR_SLOT_IDX, RIGHT_SECONDARY_ROTATOR_PID_IDX);
-    rightSecondaryRotator.config_kF(RIGHT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KF);
-    rightSecondaryRotator.config_kP(RIGHT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KP);
-    rightSecondaryRotator.config_kI(RIGHT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KI);
-    rightSecondaryRotator.config_kD(RIGHT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KD);
+    rightSecondaryRotator.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
+    rightSecondaryRotator.config_kF(ROTATOR_SLOT_IDX, ROTATOR_KF);
+    rightSecondaryRotator.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
+    rightSecondaryRotator.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
+    rightSecondaryRotator.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
   }
 
   //Might need extra parameters for rotator motors

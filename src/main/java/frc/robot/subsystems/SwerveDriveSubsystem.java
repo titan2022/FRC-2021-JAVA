@@ -212,12 +212,17 @@ public class SwerveDriveSubsystem extends SubsystemBase
 
   //Might need extra parameters for rotator motors
   //Make like differential drive subsystem constructor
-  public SwerveDriveSubsystem(TalonFXConfiguration leftConfig, TalonFXConfiguration rightConfig)
+  public SwerveDriveSubsystem(TalonFXConfiguration mainConfig, TalonFXConfiguration rotatorConfig)
   {
-    leftFrontMotor.configAllSettings(leftConfig);
-    leftBackMotor.configAllSettings(leftConfig);
-    rightFrontMotor.configAllSettings(rightConfig);
-    rightBackMotor.configAllSettings(rightConfig);
+    leftFrontMotor.configAllSettings(mainConfig);
+    leftBackMotor.configAllSettings(mainConfig);
+    rightFrontMotor.configAllSettings(mainConfig);
+    rightBackMotor.configAllSettings(mainConfig);
+
+    leftFrontRotatorMotor.configAllSettings(rotatorConfig);
+    leftBackRotatorMotor.configAllSettings(rotatorConfig);
+    rightFrontRotatorMotor.configAllSettings(rotatorConfig);
+    rightBackRotatorMotor.configAllSettings(rotatorConfig);
 
     SwerveDriveSubsystemSetup();
   }

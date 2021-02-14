@@ -15,7 +15,7 @@ import frc.robot.motion.generation.rmpflow.RMPRoot;
 
 public class MotionGenerationSubsystem extends SubsystemBase {
 
-  private RMPRoot root;
+  private final RMPRoot root;
   private ArrayList<CollisionAvoidance> collisionAvoiders;
   private ArrayList<GoalAttractor> goalAttractors;
   // private SimpleMatrix x;

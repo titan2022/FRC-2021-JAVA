@@ -32,14 +32,14 @@ public class NavigationSubsystem extends SubsystemBase {
   private static final double MEAS_STD_DEV = 0.01; // meters
 
   // Navigation Mathematics system
-  private CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc]
-  private DifferentialDriveOdometry odometry;
-  private Timer timer;
+  private final CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc]
+  private final DifferentialDriveOdometry odometry;
+  private final Timer timer = new Timer();;
   private boolean simulated;
 
   // Physical and Simulated Hardware
-  private AHRS gyro = new AHRS(SPI.Port.kMXP, (byte) 50);
-  private DriveSubsystem drive;
+  private final AHRS gyro = new AHRS(SPI.Port.kMXP, (byte) 50);
+  private final DriveSubsystem drive;
 
   // Simulated components
   // AHRS SimDoubles
@@ -49,7 +49,7 @@ public class NavigationSubsystem extends SubsystemBase {
   private double simPrevYaw = 0;
 
   // Physics simulation
-  private Field2d fieldSim = new Field2d();
+  private final Field2d fieldSim = new Field2d();
 
   /**
    * Creates a new NavigationSubsystem.
@@ -67,7 +67,6 @@ public class NavigationSubsystem extends SubsystemBase {
         new SimpleMatrix(new double[][] { { 0, 0 }, { 1, 0 }, { 0, 0 }, { 0, 0 }, { 0, 1 }, { 0, 0 } }),
         SimpleMatrix.identity(6));
 
-    timer = new Timer();
     timer.start();
   }
 

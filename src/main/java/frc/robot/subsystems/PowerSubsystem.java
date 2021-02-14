@@ -16,7 +16,7 @@ public class PowerSubsystem extends SubsystemBase {
   // private final static PowerSubsystem POWER_SUBSYSTEM = new PowerSubsystem();
   
   private final static int PDP_PORT = 5;
-  private PowerDistributionPanel pdp;
+  private final PowerDistributionPanel pdp;
 
   private final static double BROWNOUT_VOLTS = 9;
   private final static double BLACKOUT_VOLTS = 1;

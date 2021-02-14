@@ -23,5 +23,11 @@ pluginManagement {
             name 'frcHome'
             url frcHomeMaven
         }
+
+        // Shuffleboard Repository for Plugins
+        mavenCentral()
+        maven { 
+            url "https://frcmaven.wpi.edu:443/artifactory/release"
+        }
     }
 }

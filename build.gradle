@@ -72,6 +72,11 @@ dependencies {
 
     // Bag file reader
     compile group: 'com.github.swri-robotics', name: 'bag-reader-java', version: '1.10.3'
+
+    // Custom Shuffleboard Plugins API
+    // https://frcmaven.wpi.edu/artifactory/release/edu/wpi/first/shuffleboard/
+    compileOnly 'edu.wpi.first.shuffleboard:api:2021.+'
+    compileOnly 'edu.wpi.first.shuffleboard.plugin:networktables:2020.+'
 }
 
 // Definition for JUnit5 testing platform

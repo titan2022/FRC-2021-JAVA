@@ -84,6 +84,15 @@ public abstract class RMPNode {
 	{
 		return children;
 	}
+
+	/**
+	 * Returns parent node.
+	 * @return Parent node.
+	 */
+	public RMPNode getParent()
+	{
+		return parent;
+	}
 	
 	/**
 	 * 	The operator to forward propagate the state from a parent node to its child nodes.

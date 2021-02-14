@@ -6,6 +6,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.system.plant.LinearSystemId;
@@ -16,7 +19,7 @@ import frc.robot.subsystems.sim.PhysicsSim;
 /**
  * Differential Drive Subsystem
  */
-public class DifferentialDriveSubsystem extends SubsystemBase
+public class DifferentialDriveSubsystem extends SubsystemBase implements DriveSubsystem
 {
   // Physical parameters
   public static final double ROBOT_TRACK_WIDTH = 26.75/39.37; // meter
@@ -56,6 +59,9 @@ public class DifferentialDriveSubsystem extends SubsystemBase
     , leftSecondary = new WPI_TalonSRX(LEFT_SECONDARY_PORT)
     , rightPrimary = new WPI_TalonSRX(RIGHT_PRIMARY_PORT)
     , rightSecondary = new WPI_TalonSRX(RIGHT_SECONDARY_PORT);
+
+  // Kinematics
+  private static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(ROBOT_TRACK_WIDTH);
 
   // Physics simulation
   // Feedforward gain constants (from the characterization tool)
@@ -180,6 +186,7 @@ public class DifferentialDriveSubsystem extends SubsystemBase
    * @param mode             a ControlMode enum
    * @param leftOutputValue  left side output value for ControlMode
    * @param rightOutputValue right side output value for ControlMode
+   * @implNote Velocity, Motion Magic, Motion Profile, and Position control modes use native sensor units
    */
   public void setOutput(ControlMode mode, double leftOutputValue, double rightOutputValue) {
 
@@ -198,6 +205,12 @@ public class DifferentialDriveSubsystem extends SubsystemBase
     // TODO: is check the current usage from Power Subsystem to restrict overcurrent
     leftPrimary.set(mode, leftOutputValue);
     rightPrimary.set(mode, rightOutputValue);
+  }
+
+  @Override
+  public void setVelocities(ChassisSpeeds velocities) {
+    DifferentialDriveWheelSpeeds leftRightSpeeds = kinematics.toWheelSpeeds(velocities);
+    setOutput(ControlMode.Velocity, leftRightSpeeds.leftMetersPerSecond / METERS_PER_TICK, leftRightSpeeds.rightMetersPerSecond / METERS_PER_TICK);
   }
 
   /**

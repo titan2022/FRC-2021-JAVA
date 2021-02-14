@@ -20,12 +20,12 @@ public class Damper extends RMPLeaf{
 	public SimpleMatrix j(SimpleMatrix q)
 	{
 		return eye(2);
-	};
+	}
 
 	public SimpleMatrix j_dot(SimpleMatrix q, SimpleMatrix q_dot)
 	{
 		return new SimpleMatrix(2, 2);
-	};
+	}
 
 
     public SimpleMatrix solveF(SimpleMatrix x, SimpleMatrix x_dot){

@@ -42,12 +42,12 @@ public class GoalAttractor extends RMPLeaf {
 	public SimpleMatrix j(SimpleMatrix q)
 	{
 		return jeye;
-	};
+	}
 
 	public SimpleMatrix j_dot(SimpleMatrix q, SimpleMatrix q_dot)
 	{
 		return new SimpleMatrix(goalSize, goalSize);
-	};
+	}
 	
 	public SimpleMatrix solveF(SimpleMatrix x, SimpleMatrix x_dot)
 	{

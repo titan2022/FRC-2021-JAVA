@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.numbers.N2;
 
 @SuppressWarnings("PMD.TooManyFields")
-public class DriveTrain extends SubsystemBase { // TODO: DELETE THIS FILE once the code in driveSubsystem starts working
+public class DriveTrain extends SubsystemBase { // TODO: DELETE THIS FILE once the code in DifferentialDriveSubsystem starts working
   // 3 meters per second.
   public static final double kMaxSpeed = 3.0;
   // 1/2 rotation per second.

@@ -104,7 +104,7 @@ public class CollisionAvoidance extends RMPLeaf {
 	{
 		SimpleMatrix a = q.minus(center).mult(q.minus(center).transpose())
 						  	  .scale(-1 / Math.pow(q.minus(center).normF(), 3));
-		SimpleMatrix b = a.plus(eye(center.getNumElements()).scale(1 / q.minus(center).normF()));
+		SimpleMatrix b = a.plus(SimpleMatrix.identity(center.getNumElements()).scale(1 / q.minus(center).normF()));
 		return q_dot.transpose().mult(b).divide(r);
 	}
 	

@@ -19,7 +19,7 @@ public class Damper extends RMPLeaf{
 
 	public SimpleMatrix j(SimpleMatrix q)
 	{
-		return eye(2);
+		return SimpleMatrix.identity(2);
 	};
 
 	public SimpleMatrix j_dot(SimpleMatrix q, SimpleMatrix q_dot)

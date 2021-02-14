@@ -31,21 +31,6 @@ public abstract class RMPLeaf extends RMPNode{
 		setM(solveM(getX(), getXdot()));
 		setF(solveF(getX(), getXdot()));
 	}
-	
-	/**
-	 * Creates a square matrix with diagonals of 1s from top left to bottom right.
-	 * @param size the numbers of rows for a square matrix
-	 * @return A diagonal matrix of 1s.
-	 */
-	public static SimpleMatrix eye(int size) // TODO: Move to a matrix utilities class
-	{
-		SimpleMatrix eye = new SimpleMatrix(size, size);
-		for(int i = 0; i < size; i++)
-		{
-			eye.set(i , i, 1);
-		}
-		return eye;
-	}
 
 	/**
 	 * Solves for F

@@ -31,7 +31,7 @@ public class GoalAttractor extends RMPLeaf {
 		
 		updateGoal(this.goal);
 		goalSize = this.goal.numCols() * this.goal.numRows();
-		jeye = eye(goalSize);
+		jeye = SimpleMatrix.identity(goalSize);
 	}
 
 	public SimpleMatrix psi(SimpleMatrix q)
@@ -78,7 +78,7 @@ public class GoalAttractor extends RMPLeaf {
 		double beta = Math.exp(- Math.pow(x_norm, 2) / 2 / Math.pow(sigma, 2));
 		double w = (w_u - w_l) * beta + w_l;
 		
-		SimpleMatrix G = eye(this.goal.numCols() * this.goal.numRows()).scale(w);
+		SimpleMatrix G = SimpleMatrix.identity(this.goal.numCols() * this.goal.numRows()).scale(w);
 
 		return G;
 	}

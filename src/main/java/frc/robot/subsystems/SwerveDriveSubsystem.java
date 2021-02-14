@@ -99,7 +99,7 @@ public class SwerveDriveSubsystem extends SubsystemBase
 
   //Kinematics
   SwerveDriveKinematics kinematics;
-  Translation2d leftFront, leftBack, rightFront, rightBack;
+  Translation2d leftFrontPosition, leftBackPosition, rightFrontPosition, rightBackPosition;
   private static final double LEFT_FRONT_X = 0.25;
   private static final double LEFT_FRONT_Y = 0.25;
   private static final double LEFT_BACK_X = 0.25;
@@ -196,11 +196,11 @@ public class SwerveDriveSubsystem extends SubsystemBase
 
     //Kinematics
     //order is leftfront, leftback, rightfront, rightback
-    leftFront = new Translation2d(LEFT_FRONT_X, LEFT_FRONT_Y);
-    leftBack = new Translation2d(LEFT_BACK_X, LEFT_BACK_Y);
-    rightFront = new Translation2d(RIGHT_FRONT_X, RIGHT_FRONT_Y);
-    rightBack = new Translation2d(RIGHT_BACK_X, RIGHT_BACK_Y);
-    kinematics = new SwerveDriveKinematics(leftFront, leftBack, rightFront, rightBack);
+    leftFrontPosition = new Translation2d(LEFT_FRONT_X, LEFT_FRONT_Y);
+    leftBackPosition = new Translation2d(LEFT_BACK_X, LEFT_BACK_Y);
+    rightFrontPosition = new Translation2d(RIGHT_FRONT_X, RIGHT_FRONT_Y);
+    rightBackPosition = new Translation2d(RIGHT_BACK_X, RIGHT_BACK_Y);
+    kinematics = new SwerveDriveKinematics(leftFrontPosition, leftBackPosition, rightFrontPosition, rightBackPosition);
   }
   /**
    * Creates a new SwerveSubsystem.

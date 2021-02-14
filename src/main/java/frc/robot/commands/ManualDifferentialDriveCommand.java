@@ -8,20 +8,20 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.XboxMap;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.DifferentialDriveSubsystem;
 
 /**
  * 
  */
 public class ManualDifferentialDriveCommand extends CommandBase {
-  private static DriveSubsystem driveSubsystem;
+  private static DifferentialDriveSubsystem DifferentialDriveSubsystem;
   private boolean brakeState = false;
 
   /** Creates a new ManualDifferentialDriveCommand. */
-  public ManualDifferentialDriveCommand(DriveSubsystem differentialDrive) {
+  public ManualDifferentialDriveCommand(DifferentialDriveSubsystem differentialDrive) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(differentialDrive);
-    driveSubsystem = differentialDrive;
+    DifferentialDriveSubsystem = differentialDrive;
   }
 
   // Called when the command is initially scheduled.
@@ -36,18 +36,18 @@ public class ManualDifferentialDriveCommand extends CommandBase {
     if (XboxMap.toggleBrakes()) { brakeState = !brakeState; } // TODO: Change to ternary operator
 
     if (brakeState) {
-      driveSubsystem.enableBrakes();
+      DifferentialDriveSubsystem.enableBrakes();
     }
     else { 
-      driveSubsystem.disableBrakes();
-      driveSubsystem.setOutput(ControlMode.PercentOutput, XboxMap.left(), XboxMap.right());
+      DifferentialDriveSubsystem.disableBrakes();
+      DifferentialDriveSubsystem.setOutput(ControlMode.PercentOutput, XboxMap.left(), XboxMap.right());
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveSubsystem.stop();
+    DifferentialDriveSubsystem.stop();
 		System.out.println("Manual Differential Drive Command Stopped");
   }
 

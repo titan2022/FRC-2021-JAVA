@@ -16,7 +16,7 @@ import frc.robot.subsystems.sim.PhysicsSim;
 /**
  * Differential Drive Subsystem
  */
-public class DriveSubsystem extends SubsystemBase
+public class DifferentialDriveSubsystem extends SubsystemBase
 {
   // Physical parameters
   public static final double ROBOT_TRACK_WIDTH = 26.75/39.37; // meter
@@ -80,9 +80,9 @@ public class DriveSubsystem extends SubsystemBase
   private DifferentialDrivetrainSim driveSim;
 
   /**
-   * Creates a new DriveSubsystem.
+   * Creates a new DifferentialDriveSubsystem.
    */
-  public DriveSubsystem()
+  public DifferentialDriveSubsystem()
   {
     // motor configuration block
     leftPrimary.configFactoryDefault();
@@ -118,7 +118,7 @@ public class DriveSubsystem extends SubsystemBase
     */
   }
 
-  public DriveSubsystem(TalonSRXConfiguration leftConfig, TalonSRXConfiguration rightConfig)
+  public DifferentialDriveSubsystem(TalonSRXConfiguration leftConfig, TalonSRXConfiguration rightConfig)
   {
     this();
 
@@ -128,13 +128,13 @@ public class DriveSubsystem extends SubsystemBase
     rightSecondary.configAllSettings(rightConfig);
   }
 
-  public DriveSubsystem(TalonSRXConfiguration leftConfig, TalonSRXConfiguration rightConfig, boolean simulated)
+  public DifferentialDriveSubsystem(TalonSRXConfiguration leftConfig, TalonSRXConfiguration rightConfig, boolean simulated)
   {
     this(leftConfig, rightConfig);
     if (simulated) enableSimulation();
   }
 
-  public DriveSubsystem(boolean simulated)
+  public DifferentialDriveSubsystem(boolean simulated)
   {
     this();
     if (simulated) enableSimulation();
@@ -274,7 +274,7 @@ public class DriveSubsystem extends SubsystemBase
   }
 
   // Simulation Interface Methods
-  public DifferentialDrivetrainSim getDriveSim() { // TODO: throw exception when the driveSubsystem is not being simulated
+  public DifferentialDrivetrainSim getDriveSim() { // TODO: throw exception when the DifferentialDriveSubsystem is not being simulated
     return driveSim;
   }
 

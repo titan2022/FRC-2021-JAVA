@@ -39,7 +39,7 @@ public class NavigationSubsystem extends SubsystemBase {
 
   // Physical and Simulated Hardware
   private AHRS gyro = new AHRS(SPI.Port.kMXP, (byte) 50);
-  private DriveSubsystem drive;
+  private DifferentialDriveSubsystem drive;
 
   // Simulated components
   // AHRS SimDoubles
@@ -56,7 +56,7 @@ public class NavigationSubsystem extends SubsystemBase {
    * 
    * @param drive - Drive subsystem with primary motors.
    */
-  public NavigationSubsystem(DriveSubsystem drive) {
+  public NavigationSubsystem(DifferentialDriveSubsystem drive) {
     // TODO: Add switch to set navigation into simulation mode based on the drive subsystem
     this.drive = drive;
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
@@ -71,7 +71,7 @@ public class NavigationSubsystem extends SubsystemBase {
     timer.start();
   }
 
-  public NavigationSubsystem(DriveSubsystem drive, boolean simulated) {
+  public NavigationSubsystem(DifferentialDriveSubsystem drive, boolean simulated) {
     this(drive);
 
     this.simulated = simulated;

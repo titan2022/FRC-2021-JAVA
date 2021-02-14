@@ -21,7 +21,7 @@ public class MotionGenerationSubsystem extends SubsystemBase {
   // private SimpleMatrix x;
   // private SimpleMatrix x_dot;
 
-  /** Creates a new GenerationSubsystem. */
+  /** Creates a new MotionGenerationSubsystem. */
   public MotionGenerationSubsystem() {
 
     collisionAvoiders = new ArrayList<CollisionAvoidance>();
@@ -32,6 +32,12 @@ public class MotionGenerationSubsystem extends SubsystemBase {
     
   }
 
+  /**
+   * Creates a new MotionGenerationSubsystem.
+   * @param collisionAvoiders - ArrayList of RMP CollisionAvoidance objects.
+   * @param goalAttractors - ArrayList of RMP GoalAttractor objects.
+   * @param root - RMP Root object.
+   */
   public MotionGenerationSubsystem(ArrayList<CollisionAvoidance> collisionAvoiders, ArrayList<GoalAttractor> goalAttractors, RMPRoot root) {
 
     setCollisionAvoiders(collisionAvoiders);
@@ -42,30 +48,50 @@ public class MotionGenerationSubsystem extends SubsystemBase {
 
   }
 
+  /**
+   * Sets new ArrayList of RMP CollisionAvoidance objects. Replaces previous CollisionAvoidances.
+   * @param collisionAvoiders - ArrayList of RMP CollisionAvoidance objects.
+   */
   public void setCollisionAvoiders(ArrayList<CollisionAvoidance> collisionAvoiders) {
 
     this.collisionAvoiders = collisionAvoiders;
 
   }
 
+  /**
+   * Sets new ArrayList of RMP GoalAttractor objects. Replaces previous GoalAttractors.
+   * @param collisionAvoiders - ArrayList of RMP GoalAttractor objects.
+   */
   public void setGoalAttractors(ArrayList<GoalAttractor> goalAttractors) {
 
     this.goalAttractors = goalAttractors;
 
   }
 
+  /**
+   * Gets ArrayList of RMP CollisionAvoidance objects.
+   * @return ArrayList of RMP CollisionAvoidance objects.
+   */
   public ArrayList<CollisionAvoidance> getCollisionAvoiders() {
 
     return collisionAvoiders;
 
   }
 
+  /**
+   * Gets ArrayList of RMP GoalAttractor objects.
+   * @return ArrayList of RMP GoalAttractor objects.
+   */
   public ArrayList<GoalAttractor> getGoalAttractors() {
 
     return goalAttractors;
 
   }
 
+  /**
+   * Adds to ArrayList of RMP GoalAttactor objects.
+   * @param goalAttractor
+   */
   public void addGoalAttractor(GoalAttractor goalAttractor) {
 
     goalAttractors.add(goalAttractor);

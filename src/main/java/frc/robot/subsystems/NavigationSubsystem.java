@@ -248,6 +248,18 @@ public class NavigationSubsystem extends SubsystemBase {
 
   }
 
+  public double getUnfilteredX() {
+
+    return odometry.getPoseMeters().getX();
+
+  }
+
+  public double getUnfilteredY() {
+
+    return odometry.getPoseMeters().getY();
+
+  }
+
   /**
    * Gets FPGA time from robot and converts it to seconds.
    * 

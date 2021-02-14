@@ -1,29 +1,24 @@
 package frc.robot.subsystems;
 
-import java.util.ResourceBundle.Control;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
-import edu.wpi.first.wpilibj.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpiutil.math.VecBuilder;
-import frc.robot.subsystems.sim.PhysicsSim;
 
 public class SwerveDriveSubsystem extends SubsystemBase
 {
   // Physical parameters
   public static final double ROBOT_TRACK_WIDTH = 26.75/39.37; // meter
+  public static final double ROBOT_LENGTH = 0.5; // meter 
   public static final double WHEEL_RADIUS = 6/39.37; // meters
   public static final double ENCODER_TICKS = 4096; // Ticks/rotation of CTREMagEncoder
   public static final double METERS_PER_TICK = WHEEL_RADIUS * 2 * Math.PI / ENCODER_TICKS;
-  public static final double GEARING_REDUCTION = 7.29; // TODO: Get the correct gearing ratio
-  public static final double ROBOT_LENGTH = 0.5;
+  
     
   // Port numbers to be added later
   private static final int LEFT_PRIMARY_PORT = 1;
@@ -38,15 +33,17 @@ public class SwerveDriveSubsystem extends SubsystemBase
   private static final int ENCODER_PORT = 1;
 
   // Motor and sensor inversions
+  // TODO: Rename primary and secondary to front and back. Need inversion variable for ever single motor.
   private static final boolean LEFT_PRIMARY_INVERTED = false;
   private static final boolean LEFT_SECONDARY_INVERTED = false;
   private static final boolean LEFT_PRIMARY_ROTATOR_INVERTED = false;
-  private static final boolean LEFT_SECONDARY_ROTATOR_ARY_INVERTED = false;
+  private static final boolean LEFT_SECONDARY_ROTATOR_INVERTED = false;
   private static final boolean RIGHT_PRIMARY_INVERTED = false;
   private static final boolean RIGHT_SECONDARY_INVERTED = false;
   private static final boolean RIGHT_PRIMARY_ROTATOR_INVERTED = false;
   private static final boolean RIGHT_SECONDARY_ROTATOR_INVERTED = false;
 
+  // TODO: Need variables for all the sensor phases. Rename primary and secondary to front and back. 
   private static final boolean LEFT_PRIMARY_MOTOR_SENSOR_PHASE = false;
   private static final boolean RIGHT_PRIMARY_MOTOR_SENSOR_PHASE = false;
 
@@ -55,62 +52,38 @@ public class SwerveDriveSubsystem extends SubsystemBase
   private static final int PEAK_CURRENT_LIMIT = 60;
   private static final int CONTINUOUS_CURRENT_LIMIT = 50;
 
-  // Physical limits of motors that rotate the wheel
-  //private static final double MAX_SPEED = 10; // meters/sec
-  //private static final int PEAK_CURRENT_LIMIT = 60;
-  //private static final int CONTINUOUS_CURRENT_LIMIT = 50;
-
-  // Phoenix Physics Sim Variables for motors that create translational motion
-  private static final double FULL_ACCEL_TIME = 0.75; // sec
-  private static final double MAX_MOTOR_VEL = 4000; // ticks/(100ms)
-
-  // Phoenix Physics Sim Variables for motors that rotate wheels
-  //private static final double FULL_ACCEL_TIME = 0.75; // sec
-  //private static final double MAX_MOTOR_VEL = 4000; // ticks/(100ms)
+  // Physical limits of motors that rotate the wheel. Change to radians.
+  private static final double MAX_ROTATIONAL_SPEED = 10; // radians/sec
   
   // Physical and Simulated Hardware
   // These talon objects are also simulated
-  private static final WPI_TalonSRX leftPrimary = new WPI_TalonSRX(LEFT_PRIMARY_PORT)
-    , leftSecondary = new WPI_TalonSRX(LEFT_SECONDARY_PORT)
-    , rightPrimary = new WPI_TalonSRX(RIGHT_PRIMARY_PORT)
-    , rightSecondary = new WPI_TalonSRX(RIGHT_SECONDARY_PORT)
-    , leftPrimaryRotator = new WPI_TalonSRX(LEFT_PRIMARY_ROTATOR_PORT)
-    , leftSecondaryRotator = new WPI_TalonSRX(LEFT_SECONDARY_ROTATOR_PORT)
-    , rightPrimaryRotator = new WPI_TalonSRX(RIGHT_PRIMARY_ROTATOR_PORT)
-    , rightSecondaryRotator = new WPI_TalonSRX(RIGHT_SECONDARY_ROTATOR_PORT);
-
-  // Physics simulation
-  // Feedforward gain constants (from the characterization tool)
-  private static final double KvLinear = 1.98;
-  private static final double KaLinear = 0.2;
-  private static final double KvAngular = 1.5;
-  private static final double KaAngular = 0.3;
-
-  // Standard deviation for measurement noise
-  private static final double X_MEAS_NOISE = 0.001; // meter
-  private static final double Y_MEAS_NOISE = 0.001; // meter
-  private static final double HEADING_MEAS_NOISE = 0.001; // radian
-  private static final double LEFT_VEL_MEAS_NOISE = 0.1; // meter / second
-  private static final double RIGHT_VEL_MEAS_NOISE = 0.1; // meter / second
-  private static final double LEFT_POS_MEAS_NOISE = 0.005; // meter
-  private static final double RIGHT_POS_MEAS_NOISE = 0.005; // meter
+  private static final WPI_TalonFX leftPrimary = new WPI_TalonFX(LEFT_PRIMARY_PORT)
+    , leftSecondary = new WPI_TalonFX(LEFT_SECONDARY_PORT)
+    , rightPrimary = new WPI_TalonFX(RIGHT_PRIMARY_PORT)
+    , rightSecondary = new WPI_TalonFX(RIGHT_SECONDARY_PORT)
+    , leftPrimaryRotator = new WPI_TalonFX(LEFT_PRIMARY_ROTATOR_PORT)
+    , leftSecondaryRotator = new WPI_TalonFX(LEFT_SECONDARY_ROTATOR_PORT)
+    , rightPrimaryRotator = new WPI_TalonFX(RIGHT_PRIMARY_ROTATOR_PORT)
+    , rightSecondaryRotator = new WPI_TalonFX(RIGHT_SECONDARY_ROTATOR_PORT);
 
   //PID for rotators
+  // One slot and one PID_IDX
   private static final int ROTATOR_TIMEOUT = 30; //ms
-  private static final double ROTATOR_VELOCITY = 1000;
-  private static final double ROTATOR_ACCELERATION = 1000;
-  private static final int LEFT_PRIMARY_ROTATOR_SLOT_IDX = 0;
-  private static final int LEFT_PRIMARY_ROTATOR_PID_IDX = 0;
-  private static final int RIGHT_PRIMARY_ROTATOR_SLOT_IDX = 0;
-  private static final int RIGHT_PRIMARY_ROTATOR_PID_IDX = 0;
-  private static final int LEFT_SECONDARY_ROTATOR_SLOT_IDX = 0;
-  private static final int LEFT_SECONDARY_ROTATOR_PID_IDX = 0;
-  private static final int RIGHT_SECONDARY_ROTATOR_SLOT_IDX = 0;
-  private static final int RIGHT_SECONDARY_ROTATOR_PID_IDX = 0;
+  private static final int ROTATOR_SLOT_IDX = 0;
+  private static final int ROTATOR_PID_IDX = 0;
   private static final double ROTATOR_KF = 0.5;
   private static final double ROTATOR_KP = 0.02;
   private static final double ROTATOR_KI = 0;
   private static final double ROTATOR_KD = 0.01;
+
+  //PID for main motors
+  private static final int MAIN_MOTOR_TIMEOUT = 30; //ms
+  private static final int MAIN_MOTOR_SLOT_IDX = 0;
+  private static final int MAIN_MOTOR_PID_IDX = 0;
+  private static final double MAIN_MOTOR_KF = 0.5;
+  private static final double MAIN_MOTOR_KP = 0.02;
+  private static final double MAIN_MOTOR_KI = 0;
+  private static final double MAIN_MOTOR_KD = 0.01;
 
 
 
@@ -137,7 +110,7 @@ public class SwerveDriveSubsystem extends SubsystemBase
     leftPrimary.setInverted(LEFT_PRIMARY_INVERTED);
     leftSecondary.setInverted(LEFT_SECONDARY_INVERTED);
     leftPrimaryRotator.setInverted(LEFT_PRIMARY_ROTATOR_INVERTED);
-    leftSecondaryRotator.setInverted(LEFT_SECONDARY_ROTATOR_ARY_INVERTED);
+    leftSecondaryRotator.setInverted(LEFT_SECONDARY_ROTATOR_INVERTED);
 
     // Sets the direction that the talon will turn on the green LED when going 'forward'.
     leftPrimary.setSensorPhase(LEFT_PRIMARY_MOTOR_SENSOR_PHASE);
@@ -145,6 +118,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
     //Might need to add more for rotator motors. 
 
     // Current limits in amps
+    // TODO: Find equivalent method names for FX stuff
+    leftPrimary.configSet(currLimitConfigsToFill);
     leftPrimary.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
     leftPrimary.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
     leftPrimary.enableCurrentLimit(true);
@@ -160,32 +135,33 @@ public class SwerveDriveSubsystem extends SubsystemBase
     */
 
     leftPrimaryRotator.selectProfileSlot(LEFT_PRIMARY_ROTATOR_SLOT_IDX, LEFT_PRIMARY_ROTATOR_PID_IDX);
-    leftPrimaryRotator.config_kF(LEFT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KF, ROTATOR_TIMEOUT);
-    leftPrimaryRotator.config_kP(LEFT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KP, ROTATOR_TIMEOUT);
-    leftPrimaryRotator.config_kI(LEFT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KI, ROTATOR_TIMEOUT);
-    leftPrimaryRotator.config_kD(LEFT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KD, ROTATOR_TIMEOUT);
+    leftPrimaryRotator.config_kF(LEFT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KF);
+    leftPrimaryRotator.config_kP(LEFT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KP);
+    leftPrimaryRotator.config_kI(LEFT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KI);
+    leftPrimaryRotator.config_kD(LEFT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KD);
 
     rightPrimaryRotator.selectProfileSlot(RIGHT_PRIMARY_ROTATOR_SLOT_IDX, RIGHT_PRIMARY_ROTATOR_PID_IDX);
-    rightPrimaryRotator.config_kF(RIGHT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KF, ROTATOR_TIMEOUT);
-    rightPrimaryRotator.config_kP(RIGHT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KP, ROTATOR_TIMEOUT);
-    rightPrimaryRotator.config_kI(RIGHT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KI, ROTATOR_TIMEOUT);
-    rightPrimaryRotator.config_kD(RIGHT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KD, ROTATOR_TIMEOUT);
+    rightPrimaryRotator.config_kF(RIGHT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KF);
+    rightPrimaryRotator.config_kP(RIGHT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KP);
+    rightPrimaryRotator.config_kI(RIGHT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KI);
+    rightPrimaryRotator.config_kD(RIGHT_PRIMARY_ROTATOR_SLOT_IDX, ROTATOR_KD);
 
     leftSecondaryRotator.selectProfileSlot(LEFT_SECONDARY_ROTATOR_SLOT_IDX, LEFT_SECONDARY_ROTATOR_PID_IDX);
-    leftSecondaryRotator.config_kF(LEFT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KF, ROTATOR_TIMEOUT);
-    leftSecondaryRotator.config_kP(LEFT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KP, ROTATOR_TIMEOUT);
-    leftSecondaryRotator.config_kI(LEFT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KI, ROTATOR_TIMEOUT);
-    leftSecondaryRotator.config_kD(LEFT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KD, ROTATOR_TIMEOUT);
+    leftSecondaryRotator.config_kF(LEFT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KF);
+    leftSecondaryRotator.config_kP(LEFT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KP);
+    leftSecondaryRotator.config_kI(LEFT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KI);
+    leftSecondaryRotator.config_kD(LEFT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KD);
 
     rightSecondaryRotator.selectProfileSlot(RIGHT_SECONDARY_ROTATOR_SLOT_IDX, RIGHT_SECONDARY_ROTATOR_PID_IDX);
-    rightSecondaryRotator.config_kF(RIGHT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KF, ROTATOR_TIMEOUT);
-    rightSecondaryRotator.config_kP(RIGHT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KP, ROTATOR_TIMEOUT);
-    rightSecondaryRotator.config_kI(RIGHT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KI, ROTATOR_TIMEOUT);
-    rightSecondaryRotator.config_kD(RIGHT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KD, ROTATOR_TIMEOUT);
+    rightSecondaryRotator.config_kF(RIGHT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KF);
+    rightSecondaryRotator.config_kP(RIGHT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KP);
+    rightSecondaryRotator.config_kI(RIGHT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KI);
+    rightSecondaryRotator.config_kD(RIGHT_SECONDARY_ROTATOR_SLOT_IDX, ROTATOR_KD);
   }
 
   //Might need extra parameters for rotator motors
-  public SwerveDriveSubsystem(TalonSRXConfiguration leftConfig, TalonSRXConfiguration rightConfig)
+  //Make like differential drive subsystem constructor
+  public SwerveDriveSubsystem(TalonFXConfiguration leftConfig, TalonFXConfiguration rightConfig)
   {
     this();
 
@@ -207,6 +183,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
 
   /**
    * Sets motor outputs using specified control mode
+   * 
+   * TODO: Swerve drive modules
    * 
    * @param mode             a ControlMode enum
    * @param leftOutputValue  left side output value for ControlMode

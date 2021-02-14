@@ -19,7 +19,7 @@ public class Shooter extends SubsystemBase{
     private double targetZCoord; 
     private double exitAngle;
     private TalonSRX talon;
-    private VictorSPX victory;
+    private VictorSPX victor;
     private double radius;
    
     //First set the speed of the motor and then calculate the rpm and acceleration of the wheel.

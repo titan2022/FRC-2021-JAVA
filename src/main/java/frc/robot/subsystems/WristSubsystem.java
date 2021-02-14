@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class WristSubsystem extends SubsystemBase {
@@ -35,25 +36,49 @@ public class WristSubsystem extends SubsystemBase {
     /**
      * 
      */
-    public WristSubsystem() {
-        setupWrist();
-    }
+    public WristSubsystem(TalonSRXConfiguration motorConfig) {
+        setMotorFactoryConfig();
 
-    /**
-     * 
-     */
-    public void setupWrist() {
+        if(motorConfig != null)
+        {
+            wrist.configAllSettings(motorConfig);
+            followingWrist.configAllSettings(motorConfig);
+        }
+
+        // Motor configs
         wrist.setInverted(PRIMARY_WRIST_PORT_INVERTED);
         followingWrist.setInverted(PRIMARY_WRIST_PORT_INVERTED);
 
-        followingWrist.follow(wrist);
-        
         wrist.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
         wrist.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
         //wrist.configPeakCurrentDuration(10); 
         wrist.enableCurrentLimit(true);
+
+        followingWrist.follow(wrist);
+
+        //Encoder configs
+    }
+
+    public WristSubsystem()
+    {
+        this(null);
+    }
+    public void setMotorFactoryConfig()
+    {
+        wrist.configFactoryDefault();
+        followingWrist.configFactoryDefault();
     }
     
+    public void setWristPosition(double angles)
+    {
+        
+    }
+
+
+
+
+
+
     /**
      * Returns the linear speed of the write // TODO: Check if wrist speed is angular are linear
      * @return The wrist speed in meter / s

@@ -27,31 +27,37 @@ public class SwerveDriveSubsystem extends SubsystemBase
   
     
   // Port numbers to be added later
-  private static final int LEFT_PRIMARY_PORT = 1;
-  private static final int LEFT_SECONDARY_PORT = 2;
-  private static final int RIGHT_PRIMARY_PORT = 3;
-  private static final int RIGHT_SECONDARY_PORT = 4;
-  private static final int LEFT_PRIMARY_ROTATOR_PORT = 5;
-  private static final int LEFT_SECONDARY_ROTATOR_PORT = 6;
-  private static final int RIGHT_PRIMARY_ROTATOR_PORT = 7;
-  private static final int RIGHT_SECONDARY_ROTATOR_PORT = 8;
+  private static final int LEFT_FRONT_MOTOR_PORT = 1;
+  private static final int LEFT_BACK_MOTOR_PORT = 2;
+  private static final int RIGHT_FRONT_MOTOR_PORT = 3;
+  private static final int RIGHT_BACK_MOTOR_PORT = 4;
+  private static final int LEFT_FRONT_MOTOR_ROTATOR_PORT = 5;
+  private static final int LEFT_BACK_MOTOR_ROTATOR_PORT = 6;
+  private static final int RIGHT_FRONT_MOTOR_ROTATOR_PORT = 7;
+  private static final int RIGHT_BACK_MOTOR_ROTATOR_PORT = 8;
 
   private static final int ENCODER_PORT = 1;
 
   // Motor and sensor inversions
   // TODO: Rename primary and secondary to front and back. Need inversion variable for ever single motor.
-  private static final boolean LEFT_PRIMARY_INVERTED = false;
-  private static final boolean LEFT_SECONDARY_INVERTED = false;
-  private static final boolean LEFT_PRIMARY_ROTATOR_INVERTED = false;
-  private static final boolean LEFT_SECONDARY_ROTATOR_INVERTED = false;
-  private static final boolean RIGHT_PRIMARY_INVERTED = false;
-  private static final boolean RIGHT_SECONDARY_INVERTED = false;
-  private static final boolean RIGHT_PRIMARY_ROTATOR_INVERTED = false;
-  private static final boolean RIGHT_SECONDARY_ROTATOR_INVERTED = false;
+  private static final boolean LEFT_FRONT_MOTOR_INVERTED = false;
+  private static final boolean LEFT_BACK_MOTOR_INVERTED = false;
+  private static final boolean LEFT_FRONT_MOTOR_ROTATOR_INVERTED = false;
+  private static final boolean LEFT_BACK_MOTOR_ROTATOR_INVERTED = false;
+  private static final boolean RIGHT_FRONT_MOTOR_INVERTED = false;
+  private static final boolean RIGHT_BACK_MOTOR_INVERTED = false;
+  private static final boolean RIGHT_FRONT_MOTOR_ROTATOR_INVERTED = false;
+  private static final boolean RIGHT_BACK_MOTOR_ROTATOR_INVERTED = false;
 
   // TODO: Need variables for all the sensor phases. Rename primary and secondary to front and back. 
-  private static final boolean LEFT_PRIMARY_MOTOR_SENSOR_PHASE = false;
-  private static final boolean RIGHT_PRIMARY_MOTOR_SENSOR_PHASE = false;
+  private static final boolean LEFT_FRONT_MOTOR_SENSOR_PHASE = false;
+  private static final boolean RIGHT_FRONT_MOTOR_SENSOR_PHASE = false;
+  private static final boolean LEFT_BACK_MOTOR_SENSOR_PHASE = false;
+  private static final boolean RIGHT_BACK_MOTOR_SENSOR_PHASE = false;
+  private static final boolean LEFT_FRONT_MOTOR_ROTATOR_SENSOR_PHASE = false;
+  private static final boolean RIGHT_FRONT_MOTOR_ROTATOR_SENSOR_PHASE = false;
+  private static final boolean LEFT_BACK_MOTOR__ROTATOR_SENSOR_PHASE = false;
+  private static final boolean RIGHT_BACK_MOTOR_ROTATOR_SENSOR_PHASE = false;
 
   // Physical limits of motors that create translational motion
   private static final double MAX_SPEED = 10; // meters/sec
@@ -63,14 +69,14 @@ public class SwerveDriveSubsystem extends SubsystemBase
   
   // Physical and Simulated Hardware
   // These talon objects are also simulated
-  private static final WPI_TalonFX leftPrimary = new WPI_TalonFX(LEFT_PRIMARY_PORT)
-    , leftSecondary = new WPI_TalonFX(LEFT_SECONDARY_PORT)
-    , rightPrimary = new WPI_TalonFX(RIGHT_PRIMARY_PORT)
-    , rightSecondary = new WPI_TalonFX(RIGHT_SECONDARY_PORT)
-    , leftPrimaryRotator = new WPI_TalonFX(LEFT_PRIMARY_ROTATOR_PORT)
-    , leftSecondaryRotator = new WPI_TalonFX(LEFT_SECONDARY_ROTATOR_PORT)
-    , rightPrimaryRotator = new WPI_TalonFX(RIGHT_PRIMARY_ROTATOR_PORT)
-    , rightSecondaryRotator = new WPI_TalonFX(RIGHT_SECONDARY_ROTATOR_PORT);
+  private static final WPI_TalonFX leftPrimary = new WPI_TalonFX(LEFT_FRONT_MOTOR_PORT)
+    , leftSecondary = new WPI_TalonFX(LEFT_BACK_MOTOR_PORT)
+    , rightPrimary = new WPI_TalonFX(RIGHT_FRONT_MOTOR_PORT)
+    , rightSecondary = new WPI_TalonFX(RIGHT_BACK_MOTOR_PORT)
+    , leftPrimaryRotator = new WPI_TalonFX(LEFT_FRONT_MOTOR_ROTATOR_PORT)
+    , leftSecondaryRotator = new WPI_TalonFX(LEFT_BACK_MOTOR_ROTATOR_PORT)
+    , rightPrimaryRotator = new WPI_TalonFX(RIGHT_FRONT_MOTOR_ROTATOR_PORT)
+    , rightSecondaryRotator = new WPI_TalonFX(RIGHT_BACK_MOTOR_ROTATOR_PORT);
 
   //PID for rotators
   // One slot and one PID_IDX
@@ -120,19 +126,19 @@ public class SwerveDriveSubsystem extends SubsystemBase
     rightPrimaryRotator.configFactoryDefault();
     rightSecondaryRotator.configFactoryDefault();
 
-    rightPrimary.setInverted(RIGHT_PRIMARY_INVERTED);
-    rightSecondary.setInverted(RIGHT_SECONDARY_INVERTED);
-    rightPrimaryRotator.setInverted(RIGHT_PRIMARY_ROTATOR_INVERTED);
-    rightSecondaryRotator.setInverted(RIGHT_SECONDARY_ROTATOR_INVERTED);
+    rightPrimary.setInverted(RIGHT_FRONT_MOTOR_INVERTED);
+    rightSecondary.setInverted(RIGHT_BACK_MOTOR_INVERTED);
+    rightPrimaryRotator.setInverted(RIGHT_FRONT_MOTOR_ROTATOR_INVERTED);
+    rightSecondaryRotator.setInverted(RIGHT_BACK_MOTOR_ROTATOR_INVERTED);
 
-    leftPrimary.setInverted(LEFT_PRIMARY_INVERTED);
-    leftSecondary.setInverted(LEFT_SECONDARY_INVERTED);
-    leftPrimaryRotator.setInverted(LEFT_PRIMARY_ROTATOR_INVERTED);
-    leftSecondaryRotator.setInverted(LEFT_SECONDARY_ROTATOR_INVERTED);
+    leftPrimary.setInverted(LEFT_FRONT_MOTOR_INVERTED);
+    leftSecondary.setInverted(LEFT_BACK_MOTOR_INVERTED);
+    leftPrimaryRotator.setInverted(LEFT_FRONT_MOTOR_ROTATOR_INVERTED);
+    leftSecondaryRotator.setInverted(LEFT_BACK_MOTOR_ROTATOR_INVERTED);
 
     // Sets the direction that the talon will turn on the green LED when going 'forward'.
-    leftPrimary.setSensorPhase(LEFT_PRIMARY_MOTOR_SENSOR_PHASE);
-    rightPrimary.setSensorPhase(RIGHT_PRIMARY_MOTOR_SENSOR_PHASE);
+    leftPrimary.setSensorPhase(LEFT_FRONT_MOTOR_SENSOR_PHASE);
+    rightPrimary.setSensorPhase(RIGHT_FRONT_MOTOR_SENSOR_PHASE);
     //Might need to add more for rotator motors. 
 
     // Current limits in amps

@@ -5,7 +5,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-
+/**
+ * @author Irene
+ */
 public class WristSubsystem extends SubsystemBase {
     
     public static final int PRIMARY_WRIST_PORT = 3;
@@ -87,6 +89,7 @@ public class WristSubsystem extends SubsystemBase {
     public double getWristAngle() {
         return wrist.getSelectedSensorPosition();
     }
+    
     public void checkWristLimits() {
         if (getWristAngle() < ANGLE_LOWER_LIMIT) {
             setWristPosition(ANGLE_LOWER_LIMIT);
@@ -96,7 +99,9 @@ public class WristSubsystem extends SubsystemBase {
             setWristPosition(ANGLE_UPPER_LIMIT);
         }
     }
-
+    public void stop() {
+        wrist.set(ControlMode.PercentOutput, 0);
+    }
     @Override
     public void periodic()
     {

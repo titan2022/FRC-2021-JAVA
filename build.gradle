@@ -1,12 +1,17 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2021.2.2"
+
+    id 'java-library' // Added for Shuffleboard plugins
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
+
+// For Shuffleboard plugins folder location variable
+ext.FRC_YEAR = "2021"
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
@@ -37,6 +42,40 @@ deploy {
     }
 }
 
+// Custom Shuffleboard Plugin Deployment Task
+def getFrcToolsRoot ()
+{
+    if (true) //OperatingSystem.current ().isWindows () ) // This should only be run on windows
+    {
+        String pubFolder = System.getenv("PUBLIC")
+        if (pubFolder == null)
+        {
+               pubFolder = "C:\\Users\\Public"
+        }
+            return pubFolder + "\\wpilib\\${FRC_YEAR}" 
+    }
+    else
+    {
+        return System.getProperty ("user.home") + "\\frc${FRC_YEAR}"
+    }
+}
+
+def getDeployDest ()
+{
+    return System.getProperty ("user.home") + "\\Shuffleboard\\plugins"
+}
+
+def getShuffleboardJar ()
+{
+    return files(getFrcToolsRoot() + "\\tools\\shuffleboard.jar")
+}
+
+task deployWidget (type: Copy, group: "Shuffleboard Widget", description: "Copy the widget jar into the Shuffleboard plugin folder", dependsOn: "build") {
+    from "build/libs"
+    into getDeployDest ()
+    include "*.jar"
+}
+    
 // Set this to true to enable desktop support.
 def includeDesktopSupport = true
 
@@ -75,8 +114,10 @@ dependencies {
 
     // Custom Shuffleboard Plugins API
     // https://frcmaven.wpi.edu/artifactory/release/edu/wpi/first/shuffleboard/
-    compileOnly 'edu.wpi.first.shuffleboard:api:2021.+'
-    compileOnly 'edu.wpi.first.shuffleboard.plugin:networktables:2020.+'
+    compileOnly 'edu.wpi.first.shuffleboard:api:2021.2.2'
+    compileOnly 'edu.wpi.first.shuffleboard.plugin:networktables:2020.3.2'
+    // Installed FRC Shuffleboard jar. Keep this so it knows how to resolve the shuffleboard dependencies
+    api getShuffleboardJar ()
 }
 
 // Definition for JUnit5 testing platform

@@ -114,12 +114,12 @@ dependencies {
 
     // Custom Shuffleboard Plugins API
     // https://frcmaven.wpi.edu/artifactory/release/edu/wpi/first/shuffleboard/
-    compileOnly 'edu.wpi.first.shuffleboard:api:2021.2.2'
-    compileOnly 'edu.wpi.first.shuffleboard.plugin:networktables:2020.3.2'
+    //compileOnly 'edu.wpi.first.shuffleboard:api:2021.2.2'
+    //compileOnly 'edu.wpi.first.shuffleboard.plugin:networktables:2020.3.2'
     // Installed FRC Shuffleboard jar. Keep this so it knows how to resolve the shuffleboard dependencies
-    api getShuffleboardJar ()
+    // api getShuffleboardJar ()
     // Han Solo Gauge library dependency
-    compile 'eu.hansolo:Medusa:8.3'
+    //compile 'eu.hansolo:Medusa:8.3'
 }
 
 // Definition for JUnit5 testing platform

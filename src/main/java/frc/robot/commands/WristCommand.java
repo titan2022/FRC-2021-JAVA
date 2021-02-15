@@ -11,7 +11,6 @@ public class WristCommand extends CommandBase {
     private static WristSubsystem wristSubsystem; 
   
     /**
-     * Creates a new ExampleCommand.
      *
      * @param subsystem The subsystem used by this command.
      */

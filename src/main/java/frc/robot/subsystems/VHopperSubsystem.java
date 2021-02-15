@@ -7,8 +7,8 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.subsystems.sim.PhysicsSim;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
+//import frc.robot.subsystems.sim.PhysicsSim;
+//import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -64,6 +64,11 @@ public class VHopperSubsystem extends SubsystemBase {
   }
 
   /**
+   * Following methods are modulated for now to make heuristics easier. Their
+   * conglomeration will eventually just be getMinimumMotorPower()
+   */
+
+  /**
    * Returns belt speed in FPM based on given RPM of tail pulley motors
    */
   public double getBeltSpeedAtRPM(double tailPulleyRPM) {
@@ -72,13 +77,14 @@ public class VHopperSubsystem extends SubsystemBase {
 
   //returns  belt tension from the aggregate of factors(Newtons)
   public double getBeltTension () {
-    return 1.37 * BELT_LENGTH * 9.81 + ((2 * BELT_LOAD + BALL_LOAD) * Math.cos(INCLINE_ANGLE)) + (BELT_HEIGHT * 9.81 * BALL_LOAD); //TODO Access Physics constants: G and coefficent of friction
+    return 1.37 * BELT_LENGTH *  9.81 + ((2 * BELT_LOAD + BALL_LOAD) * Math.cos(INCLINE_ANGLE)) + (BELT_HEIGHT * 9.81 * BALL_LOAD); //TODO Access Physics constants: G (replace with 9.81) and coefficent of friction
   }
 
   //returns the power needed for the drive pulley
   public double getPowerAtDrive (double tailPulleyRPM) {
     return (getBeltTension() * getBeltSpeedAtRPM(tailPulleyRPM) / 1000 );
   }
+
    /**
    * Returns the minimum motor power needed for Drive pulley (hp)
    */
@@ -88,6 +94,7 @@ public class VHopperSubsystem extends SubsystemBase {
   }
  
   
+
     /**
    * Stops the motors.
    */

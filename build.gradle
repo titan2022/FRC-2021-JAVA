@@ -118,6 +118,8 @@ dependencies {
     compileOnly 'edu.wpi.first.shuffleboard.plugin:networktables:2020.3.2'
     // Installed FRC Shuffleboard jar. Keep this so it knows how to resolve the shuffleboard dependencies
     api getShuffleboardJar ()
+    // Han Solo Gauge library dependency
+    compile 'eu.hansolo:Medusa:8.3'
 }
 
 // Definition for JUnit5 testing platform

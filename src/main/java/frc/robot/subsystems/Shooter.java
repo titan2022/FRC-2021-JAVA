@@ -16,6 +16,7 @@ import edu.wpi.first.wpiutil.math.VecBuilder;
 import frc.robot.subsystems.sim.PhysicsSim;
 
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -75,38 +76,43 @@ public class Shooter extends SubsystemBase{
     private double radius;
    
     //First set the speed of the motor and then calculate the rpm and acceleration of the wheel.
-    private double calcRPM()
+    public double calcRPM()
     {
-
-        return 0;
+        double speed = 8.0;
+        leftPrimary.set(speed);
+        leftSecondary.set(speed);
+        rightPrimary.set(speed);
+        rightSecondary.set(speed);
+        rpm = speed / 60 / radius / (2 * Math.PI);
+        return rpm;
     }
 
     //gets the angle of the hood
-    private void getHoodAngle()
+    public void getHoodAngle()
     {
 
     }
 
     //Finds the exitAngle of the ball based on the angle of the hood.
-    private double getExitAngle()
+    public double getExitAngle()
     {
         return 0;
     }
     
     //Finds the targetCoords based on the positioning of the shooter. 
-    private void targetCoords()
+    public void targetCoords()
     {
 
     }
 
     //Find the trajectory of the ball based on the initial and final coords.
-    private void findTrajectory()
+    public void findTrajectory()
     {
 
     }
 
     //Shoots the ball
-    private void shoot()
+    public void shoot()
     {
 
     }

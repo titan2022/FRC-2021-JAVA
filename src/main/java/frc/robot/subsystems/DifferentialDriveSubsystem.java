@@ -84,6 +84,7 @@ public class DifferentialDriveSubsystem extends SubsystemBase implements DriveSu
 
   // Create the simulation model of our drivetrain.
   private DifferentialDrivetrainSim driveSim;
+  private boolean isSimulated;
 
   public DifferentialDriveSubsystem(TalonSRXConfiguration leftConfig, TalonSRXConfiguration rightConfig, boolean simulated)
   {
@@ -123,7 +124,9 @@ public class DifferentialDriveSubsystem extends SubsystemBase implements DriveSu
     Faults _faults_L = new Faults();
     Faults _faults_R = new Faults();
     */
-    if (simulated) enableSimulation();
+
+    this.isSimulated = simulated;
+    if (isSimulated) enableSimulation();
   }
 
   /**
@@ -162,12 +165,20 @@ public class DifferentialDriveSubsystem extends SubsystemBase implements DriveSu
     driveSim = new DifferentialDrivetrainSim(
       // Create a linear system from our characterization gains.
       LinearSystemId.identifyDrivetrainSystem(KvLinear, KaLinear, KvAngular, KaAngular),
-      DCMotor.getFalcon500(2),       // 2 Falcon500 motors on each side of the drivetrain.  // TODO: Set the correct type of motor
+      DCMotor.getFalcon500(2),       // 2 Falcon500 motors on each side of the drivetrain.
       GEARING_REDUCTION,
       ROBOT_TRACK_WIDTH,
       WHEEL_RADIUS,
       VecBuilder.fill(X_MEAS_NOISE, Y_MEAS_NOISE, HEADING_MEAS_NOISE, LEFT_VEL_MEAS_NOISE, RIGHT_VEL_MEAS_NOISE, LEFT_POS_MEAS_NOISE, RIGHT_POS_MEAS_NOISE));
-  
+  }
+
+  /**
+   * If the subsystem was configured to be simulated
+   * @return
+   */
+  public boolean isSimulated()
+  {
+    return isSimulated;
   }
 
   /**
@@ -305,16 +316,12 @@ public class DifferentialDriveSubsystem extends SubsystemBase implements DriveSu
 
   @Override
   public void simulationPeriodic() {
-    PhysicsSim.getInstance().run();
+    PhysicsSim.getInstance().run(); // TODO: Fix the velocity simulation method in talonSRX
+
     // To update our simulation, we set motor voltage inputs, update the
     // simulation, and write the simulated positions and velocities to our
     // simulated encoder and gyro. We negate the right side so that positive
     // voltages make the right side move forward.
-
-    // TODO: Delete this code when proven correct
-    // driveSim.setInputs(
-    //     m_leftLeader.get() * RobotController.getInputVoltage(),
-    //     -m_rightLeader.get() * RobotController.getInputVoltage());
     driveSim.setInputs(leftPrimary.getMotorOutputVoltage(), rightPrimary.getMotorOutputVoltage());
     driveSim.update(getRobotTime() - simPrevT);
     simPrevT = getRobotTime();

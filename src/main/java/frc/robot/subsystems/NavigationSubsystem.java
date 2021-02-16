@@ -53,11 +53,13 @@ public class NavigationSubsystem extends SubsystemBase {
 
   /**
    * Creates a new NavigationSubsystem.
-   * 
    * @param drive - Drive subsystem with primary motors.
    */
   public NavigationSubsystem(DifferentialDriveSubsystem drive) {
-    // TODO: Add switch to set navigation into simulation mode based on the drive subsystem
+    this.simulated = drive.isSimulated();
+
+    if (simulated) enableSimulation();
+
     this.drive = drive;
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
@@ -69,15 +71,6 @@ public class NavigationSubsystem extends SubsystemBase {
 
     timer = new Timer();
     timer.start();
-  }
-
-  public NavigationSubsystem(DifferentialDriveSubsystem drive, boolean simulated) {
-    this(drive);
-
-    this.simulated = simulated;
-
-    if (simulated)
-      enableSimulation();
   }
 
   private void enableSimulation() {

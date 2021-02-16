@@ -10,9 +10,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.ManualDifferentialDriveCommand;
-import frc.robot.subsystems.DifferentialDriveSubsystem;
-import frc.robot.subsystems.NavigationSubsystem;
+import frc.robot.config.DifferentialDriveContainer;
+import frc.robot.config.RobotContainer;
 import frc.robot.path.dstar.DStarDemoCommand;
 import frc.robot.path.dstar.DStarTester;
 
@@ -23,18 +22,16 @@ import frc.robot.path.dstar.DStarTester;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static OI oi = new OI();
-  private Command m_autonomousCommand;
+  private final RobotContainer robotContainer;
 
-  private final DifferentialDriveSubsystem driveSub = new DifferentialDriveSubsystem(true);
-  private final NavigationSubsystem nav = new NavigationSubsystem(driveSub, true);
-  private ManualDifferentialDriveCommand manDrive = new ManualDifferentialDriveCommand(driveSub);
-
-  private RobotContainer m_robotContainer;
+  private final Command autoCommandEntryPoint, teleopCommandEntryPoint;
 
   public Robot()
   {
-    super(.02); // Default period is .02 seconds
+    super(.02); // Default period is .02 seconds = 50 hz
+    robotContainer = new DifferentialDriveContainer(isSimulation());
+    autoCommandEntryPoint = robotContainer.getAutonomousCommand();
+    teleopCommandEntryPoint = robotContainer.getTeleopCommand();
   }
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -44,7 +41,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    
   }
 
   /**
@@ -79,12 +76,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    if (autoCommandEntryPoint != null) {
+      autoCommandEntryPoint.schedule();
     }
+
     new DStarTester().schedule();
     new DStarDemoCommand().schedule();
   }
@@ -102,10 +98,11 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    if (autoCommandEntryPoint != null) {
+      autoCommandEntryPoint.cancel(); //TODO: figure out how to cancel all commands that are recursive.
     }
-    manDrive.schedule();
+
+    teleopCommandEntryPoint.schedule();
   }
 
   /**
@@ -139,7 +136,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void simulationPeriodic() {
-    //nav.simulationPeriodic();
-    //driveSub.simulationPeriodic();
+
   }
 }

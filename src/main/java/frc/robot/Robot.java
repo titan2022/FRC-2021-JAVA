@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.ManualDifferentialDriveCommand;
 import frc.robot.subsystems.DifferentialDriveSubsystem;
-import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.NavigationSubsystem;
 import frc.robot.path.dstar.DStarDemoCommand;
 import frc.robot.path.dstar.DStarTester;

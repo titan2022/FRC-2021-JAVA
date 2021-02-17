@@ -46,9 +46,6 @@ public class NavigationSubsystem extends SubsystemBase {
   private double simPrevT = 0;
   private double simPrevYaw = 0;
 
-  // Physics simulation
-  private Field2d fieldSim = new Field2d();
-
   /**
    * Creates a new NavigationSubsystem.
    * @param drive - Drive subsystem with primary motors.
@@ -150,20 +147,7 @@ public class NavigationSubsystem extends SubsystemBase {
 
   }
 
-
   // filter methods
-
-  /**
-   * Gets filterable vector motion measurement from odometry.
-   * 
-   * @return Odometry vector measurement.
-   */
-  private SimpleMatrix getOdometryMeas() {
-
-    return new SimpleMatrix(new double[][] { { odometry.getPoseMeters().getX() }, { 0 }, { 0 },
-        { odometry.getPoseMeters().getY() }, { 0 }, { 0 } });
-
-  }
 
   /**
    * Gets filterable vector motion measurement from gyro.
@@ -247,8 +231,5 @@ public class NavigationSubsystem extends SubsystemBase {
 
     //fieldSim.setRobotPose(getFilterStateElement(0, 0), getFilterStateElement(3, 0), Rotation2d.fromDegrees(getHeading())); // TODO: Debug
 
-    fieldSim.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), Rotation2d.fromDegrees(getHeading()));
-
-    SmartDashboard.putData("Field", fieldSim);
   }
 }

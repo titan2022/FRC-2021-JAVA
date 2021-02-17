@@ -8,6 +8,8 @@
 package frc.robot.subsystems;
 
 import frc.robot.motion.control.CustomKalmanFilter;
+import frc.robot.subsystems.sim.PhysicsSim;
+
 import com.kauailabs.navx.frc.AHRS;
 import org.ejml.simple.SimpleMatrix;
 
@@ -199,16 +201,7 @@ public class NavigationSubsystem extends SubsystemBase {
 
   }
 
-  /**
-   * Gets FPGA time from robot and converts it to seconds.
-   * 
-   * @return FPGA time in seconds.
-   */
-  public double getRobotTime() {
 
-    return RobotController.getFPGATime() / 1e6;
-
-  }
 
   @Override
   public void periodic() {
@@ -225,8 +218,8 @@ public class NavigationSubsystem extends SubsystemBase {
   public void simulationPeriodic() {
     yaw.set(getDriveSimYaw());
 
-    rate.set((getDriveSimYaw() - simPrevYaw) / (getRobotTime() - simPrevT));
-    simPrevT = getRobotTime();
+    rate.set((getDriveSimYaw() - simPrevYaw) / (PhysicsSim.getFPGATime() - simPrevT));
+    simPrevT = PhysicsSim.getFPGATime();
     simPrevYaw = getDriveSimYaw();
 
     //fieldSim.setRobotPose(getFilterStateElement(0, 0), getFilterStateElement(3, 0), Rotation2d.fromDegrees(getHeading())); // TODO: Debug

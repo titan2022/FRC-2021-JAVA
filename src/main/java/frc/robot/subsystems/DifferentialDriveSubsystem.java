@@ -292,17 +292,6 @@ public class DifferentialDriveSubsystem extends SubsystemBase implements DriveSu
     }
   }
 
-    /**
-   * Gets FPGA time from robot and converts it to seconds.
-   * 
-   * @return FPGA time in seconds.
-   */
-  public double getRobotTime() {
-
-    return RobotController.getFPGATime() / 1e6;
-
-  }
-
   // Simulation Methods
   // TODO: throw exception when the DifferentialDriveSubsystem is not being simulated
   public DifferentialDrivetrainSim getDriveSim() { 
@@ -335,8 +324,8 @@ public class DifferentialDriveSubsystem extends SubsystemBase implements DriveSu
     // simulated encoder and gyro. We negate the right side so that positive
     // voltages make the right side move forward.
     driveSim.setInputs(leftPrimary.getMotorOutputVoltage(), rightPrimary.getMotorOutputVoltage());
-    driveSim.update(getRobotTime() - simPrevT);
-    simPrevT = getRobotTime();
+    driveSim.update(PhysicsSim.getFPGATime() - simPrevT);
+    simPrevT = PhysicsSim.getFPGATime();
 
     leftPrimary.setSelectedSensorPosition(driveSim.getLeftPositionMeters() / METERS_PER_TICK);
     rightPrimary.setSelectedSensorPosition(driveSim.getRightPositionMeters() / METERS_PER_TICK);

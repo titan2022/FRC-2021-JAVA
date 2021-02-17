@@ -303,9 +303,21 @@ public class DifferentialDriveSubsystem extends SubsystemBase implements DriveSu
 
   }
 
-  // Simulation Interface Methods
-  public DifferentialDrivetrainSim getDriveSim() { // TODO: throw exception when the DifferentialDriveSubsystem is not being simulated
+  // Simulation Methods
+  // TODO: throw exception when the DifferentialDriveSubsystem is not being simulated
+  public DifferentialDrivetrainSim getDriveSim() { 
     return driveSim;
+  }
+
+  /**
+   * Gets yaw computed by driveSim.
+   * 
+   * @return Yaw (degrees).
+   */
+  public double getDriveSimYaw() {
+
+    return driveSim.getHeading().getDegrees();
+
   }
 
   @Override

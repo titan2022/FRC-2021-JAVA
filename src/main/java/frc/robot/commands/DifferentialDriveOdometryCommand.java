@@ -4,21 +4,19 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DifferentialDriveSubsystem;
 import frc.robot.subsystems.NavigationSubsystem;
 
-public class OdometryCommand extends CommandBase {
+public class DifferentialDriveOdometryCommand extends CommandBase {
 
   private final DifferentialDriveSubsystem driveSub;
   private final NavigationSubsystem navSub;
   private final DifferentialDriveOdometry odometry;
 
   /** Creates a new OdometryCommand. */
-  public OdometryCommand(DifferentialDriveSubsystem driveSub, NavigationSubsystem navSub) {
+  public DifferentialDriveOdometryCommand(DifferentialDriveSubsystem driveSub, NavigationSubsystem navSub) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     addRequirements(driveSub, navSub);
@@ -76,5 +74,7 @@ public class OdometryCommand extends CommandBase {
     odometry.update(navSub.getHeadingRotation(), driveSub.getEncoderDist(true), driveSub.getEncoderDist(false));
 
   }
+
+  // simulation methods
 
 }

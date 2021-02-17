@@ -33,13 +33,11 @@ public class NavigationSubsystem extends SubsystemBase {
 
   // Navigation Mathematics system
   private CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc]
-  private DifferentialDriveOdometry odometry;
   private Timer timer;
   private boolean simulated;
 
   // Physical and Simulated Hardware
   private AHRS gyro = new AHRS(SPI.Port.kMXP, (byte) 50);
-  private DifferentialDriveSubsystem drive;
 
   // Simulated components
   // AHRS SimDoubles
@@ -59,9 +57,6 @@ public class NavigationSubsystem extends SubsystemBase {
     this.simulated = drive.isSimulated();
 
     if (simulated) enableSimulation();
-
-    this.drive = drive;
-    odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
     filter = new CustomKalmanFilter(new SimpleMatrix(6, 1), SimpleMatrix.identity(6),
         SimpleMatrix.identity(6).scale(Math.pow(STATE_STD_DEV, 2)),
@@ -116,22 +111,11 @@ public class NavigationSubsystem extends SubsystemBase {
   }
 
   /**
-   * Gets yaw computed by driveSim.
-   * 
-   * @return Yaw (degrees).
-   */
-  private double getDriveSimYaw() {
-
-    return drive.getDriveSim().getHeading().getDegrees();
-
-  }
-
-  /**
    * Gets heading computed by AHRS gyro.
    * 
    * @return Heading (degrees).
    */
-  public double getHeading() {
+  public double getHeadingDegrees() {
 
     return Math.IEEEremainder(getYaw(), 360);
 
@@ -144,7 +128,7 @@ public class NavigationSubsystem extends SubsystemBase {
    */
   public Rotation2d getHeadingRotation() {
 
-    return Rotation2d.fromDegrees(getHeading());
+    return Rotation2d.fromDegrees(getHeadingDegrees());
 
   }
 

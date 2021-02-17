@@ -27,7 +27,7 @@ public class DifferentialDriveContainer implements RobotContainer {
     public DifferentialDriveContainer(boolean isSimulated) {
         // Initialize Subsystems
         diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), isSimulated);
-        navigationSub = new NavigationSubsystem(diffDriveSub);
+        navigationSub = new NavigationSubsystem(diffDriveSub, true);
 
         // Initialize Commands
         manualDrive = new ManualDifferentialDriveCommand(diffDriveSub);

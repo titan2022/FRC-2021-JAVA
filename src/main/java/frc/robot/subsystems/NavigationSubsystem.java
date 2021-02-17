@@ -138,6 +138,17 @@ public class NavigationSubsystem extends SubsystemBase {
   }
 
   /**
+   * Gets Rotation2d object representing heading computed by AHRS gyro.
+   * 
+   * @return Heading (Rotation2d object).
+   */
+  public Rotation2d getHeadingRotation() {
+
+    return Rotation2d.fromDegrees(getHeading());
+
+  }
+
+  /**
    * Resets AHRS gyro.
    */
   public void resetGyro() {
@@ -155,27 +166,6 @@ public class NavigationSubsystem extends SubsystemBase {
 
   }
 
-  // odometry methods
-
-  /**
-   * Gets current DifferentialDriveOdometry.
-   * 
-   * @return Differential drive odometry.
-   */
-  public DifferentialDriveOdometry getOdometry() {
-
-    return odometry;
-
-  }
-
-  /**
-   * Updates differential drive odometry.
-   */
-  public void updateOdometry() {
-
-    odometry.update(Rotation2d.fromDegrees(getHeading()), drive.getEncoderDist(true), drive.getEncoderDist(false));
-
-  }
 
   // filter methods
 
@@ -255,7 +245,6 @@ public class NavigationSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    updateOdometry();
 
     filter.setA(updateA(timer.get()));
     timer.reset();

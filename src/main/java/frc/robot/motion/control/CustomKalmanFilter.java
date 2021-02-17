@@ -1,4 +1,4 @@
-package frc.robot.motioncontrol;
+package frc.robot.motion.control;
 
 import org.ejml.simple.SimpleMatrix;
 

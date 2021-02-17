@@ -7,7 +7,7 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.motioncontrol.CustomKalmanFilter;
+import frc.robot.motion.control.CustomKalmanFilter;
 import com.kauailabs.navx.frc.AHRS;
 import org.ejml.simple.SimpleMatrix;
 

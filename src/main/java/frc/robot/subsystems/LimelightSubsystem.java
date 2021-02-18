@@ -25,15 +25,17 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   /**
-   * 
+   * Changes pipeline based on enum value
+   * @return
    */
   public void setPipeline(LimelightEnum i)
   {
     table.getEntry("getPipe").setNumber(i.ordinal());
   }
 
+  
   /**
-   * Changes pipeline based on enum value
+   * Returns current pipeline as string
    * @return
    */
   public String getPipeline()
@@ -44,7 +46,7 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   /**
-   * Returns current pipeline as string
+   *  Checks for valid reflective target
    * @return
    */
   public boolean validTarget()
@@ -59,8 +61,9 @@ public class LimelightSubsystem extends SubsystemBase {
     }
   }
 
-  /**
-   *  Checks for valid reflective target
+
+    /**
+   * Returns X distance to reflective target
    * @return
    */
   public double getX()
@@ -68,8 +71,9 @@ public class LimelightSubsystem extends SubsystemBase {
     return table.getEntry("tx").getDouble(0);
   }
 
-  /**
-   * Returns X distance to reflective target
+
+   /**
+   * Returns Y distance to reflective target
    * @return
    */
   public double getY()
@@ -77,8 +81,9 @@ public class LimelightSubsystem extends SubsystemBase {
     return table.getEntry("ty").getDouble(0);
   }
 
-  /**
-   * Returns Y distance to reflective target
+ 
+   /**
+   * Returns 3D cam pose relative to target
    * @return
    */
   public double[] getCamPose()
@@ -86,18 +91,16 @@ public class LimelightSubsystem extends SubsystemBase {
     return table.getEntry("camtran").getDoubleArray(new double[]{});
   }
 
+ 
   /**
-   * Returns 3D cam pose relative to target
+   * Returns current camera latency
    * @return
    */
   public double getLatency()
   {
     return table.getEntry("tl").getDouble(0);
   }
-    /**
-   * Returns current camera latency
-   * @return
-   */
+    
   @Override
   public void periodic() {
     table = NetworkTableInstance.getDefault().getTable("limelight");

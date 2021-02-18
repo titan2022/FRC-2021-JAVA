@@ -22,17 +22,20 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
   private Field2d fieldSim;
 
   /** Creates a new OdometryCommand. */
-  public DifferentialDriveOdometryCommand(DifferentialDriveSubsystem driveSub, NavigationSubsystem navSub, Field2d fieldSim) {
+  public DifferentialDriveOdometryCommand(DifferentialDriveSubsystem driveSub, NavigationSubsystem navSub) {
+    
     // Use addRequirements() here to declare subsystem dependencies.
-
-    // addRequirements(driveSub, navSub);
-
     this.driveSub = driveSub;
     this.navSub = navSub;
     odometry = new DifferentialDriveOdometry(navSub.getHeadingRotation());
     simulated = driveSub.isSimulated();
 
-    if (simulated) this.fieldSim = fieldSim;
+  }
+
+  public DifferentialDriveOdometryCommand(DifferentialDriveSubsystem driveSub, NavigationSubsystem navSub, Field2d fieldSim) {
+
+    this(driveSub, navSub);
+    this.fieldSim = fieldSim;
 
   }
 
@@ -40,7 +43,9 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
   @Override
   public void initialize() {
 
-    System.out.println("Odometry command initialized.");
+    System.out.println("Odometry command initialized");
+
+    if (simulated) System.out.println("in simulated mode");
 
   }
 

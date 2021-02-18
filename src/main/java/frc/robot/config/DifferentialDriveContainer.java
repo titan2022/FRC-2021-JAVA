@@ -18,32 +18,38 @@ import frc.robot.subsystems.NavigationSubsystem;
  * commands, and button mappings) should be declared here.
  */
 public class DifferentialDriveContainer implements RobotContainer {
-    
-    // Simulation
-
-    private final Field2d fieldSim = new Field2d();
-    
+      
     // Subsystems
+
     private final DifferentialDriveSubsystem diffDriveSub;
     private final NavigationSubsystem navigationSub;
 
-    // Commands
-    private final ManualDifferentialDriveCommand manualDrive;
-    private final DifferentialDriveOdometryCommand diffOdometry;
+    // Command Groups
+
+    private final ParallelCommandGroup autoGroup;
+    private final ParallelCommandGroup teleopGroup;
+
+    // Simulation variables
+
+    private final Field2d fieldSim = new Field2d();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public DifferentialDriveContainer(boolean isSimulated) {
+        
         // Initialize Subsystems
+
         diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), isSimulated);
         navigationSub = new NavigationSubsystem(diffDriveSub);
 
-        // Initialize Commands
-        manualDrive = new ManualDifferentialDriveCommand(diffDriveSub);
-        diffOdometry = new DifferentialDriveOdometryCommand(diffDriveSub, navigationSub, fieldSim);
+        // Initialize Command Groups
+
+        autoGroup = new ParallelCommandGroup(getDriveOdometry());
+        teleopGroup = new ParallelCommandGroup(getDriveOdometry(), getManualDrive());
 
         // Configure the button bindings
+
         configureButtonBindings();
     }
 
@@ -59,12 +65,12 @@ public class DifferentialDriveContainer implements RobotContainer {
 
     @Override
     public Command getAutonomousCommand() {
-        return null;
+        return autoGroup;
     }
 
     @Override
     public Command getTeleopCommand() {
-        return manualDrive;
+        return teleopGroup;
     }
 
     /**
@@ -89,5 +95,25 @@ public class DifferentialDriveContainer implements RobotContainer {
         // Add configs here:
 
         return talon;
+    }
+
+    /**
+     * Creates a manual differential drive command (configure here).
+     * @return Manual differential drive command (configured).
+     */
+    private ManualDifferentialDriveCommand getManualDrive() {
+
+        return new ManualDifferentialDriveCommand(diffDriveSub);
+
+    }
+
+    /**
+     * Creates a differential drive odometry command (configure here).
+     * @return Differential odometry drive command (configured).
+     */
+    private DifferentialDriveOdometryCommand getDriveOdometry() {
+
+        return new DifferentialDriveOdometryCommand(diffDriveSub, navigationSub, fieldSim);
+
     }
 }

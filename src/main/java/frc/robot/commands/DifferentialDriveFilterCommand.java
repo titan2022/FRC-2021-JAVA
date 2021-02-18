@@ -23,7 +23,9 @@ public class DifferentialDriveFilterCommand extends CommandBase {
   private boolean useOdometryCommand;
   private boolean useNavSub;
 
-  /** Creates a new DifferentialDriveFilterCommand. */
+  /**
+   * Creates a new DifferentialDriveFilterCommand.
+   */
   private DifferentialDriveFilterCommand() {
 
     // Use addRequirements() here to declare subsystem dependencies. 
@@ -36,6 +38,10 @@ public class DifferentialDriveFilterCommand extends CommandBase {
 
   }
 
+  /**
+   * Creates a new DifferentialDriveFilterCommand with odometry.
+   * @param odometryCommand - Odometry for robot.
+   */
   public DifferentialDriveFilterCommand(DifferentialDriveOdometryCommand odometryCommand) {
 
     this();
@@ -45,6 +51,10 @@ public class DifferentialDriveFilterCommand extends CommandBase {
 
   }
 
+  /**
+   * Creates a new DifferentialDriveFilterCommand with navigation.
+   * @param navSub - Navigation subsystem.
+   */
   public DifferentialDriveFilterCommand(NavigationSubsystem navSub) {
 
     this();
@@ -54,6 +64,11 @@ public class DifferentialDriveFilterCommand extends CommandBase {
 
   } 
 
+  /**
+   * Creates a new DifferentialDriveFilterCommand with odometry and navigation.
+   * @param odometryCommand - Odometry for robot.
+   * @param navSub - Navigation subsystem.
+   */
   public DifferentialDriveFilterCommand(DifferentialDriveOdometryCommand odometryCommand, NavigationSubsystem navSub) {
 
     this(odometryCommand);
@@ -107,6 +122,10 @@ public class DifferentialDriveFilterCommand extends CommandBase {
 
   }
 
+  /**
+   * Gets the Kalman filter.
+   * @return Kalman filter.
+   */
   public CustomKalmanFilter getFilter() {
 
     return filter;

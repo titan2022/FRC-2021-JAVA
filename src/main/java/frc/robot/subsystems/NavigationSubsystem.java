@@ -27,14 +27,13 @@ public class NavigationSubsystem extends SubsystemBase {
 
   // Physical and Simulated Hardware
   private final AHRS gyro = new AHRS(SPI.Port.kMXP, (byte) 50);
-  private DifferentialDriveSubsystem simulatedDriveSub;
 
   // Simulated components
-  // AHRS SimDoubles
+  private DifferentialDriveSubsystem simulatedDriveSub;
   private SimDouble yaw; // degs
   private SimDouble rate; // degs / sec
-  private double simPrevT = 0;
-  private double simPrevYaw = 0;
+  private double prevT;
+  private double prevYaw;
 
   /**
    * Creates a new (non-simulated) NavigationSubsystem.
@@ -58,19 +57,16 @@ public class NavigationSubsystem extends SubsystemBase {
 
     if (simulated) {
       
-      enableSimulation();
       this.simulatedDriveSub = simulatedDriveSub;
 
+      int deviceHandle = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
+      yaw = new SimDouble(SimDeviceDataJNI.getSimValueHandle(deviceHandle, "Yaw"));
+      rate = new SimDouble(SimDeviceDataJNI.getSimValueHandle(deviceHandle, "Rate"));
+
+      prevT = PhysicsSim.getFPGATime();
+      prevYaw = simulatedDriveSub.getDriveSimYaw();
+
     }
-    
-
-  }
-
-  private void enableSimulation() {
-
-    int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
-    yaw = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
-    rate = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Rate"));
 
   }
 
@@ -94,17 +90,18 @@ public class NavigationSubsystem extends SubsystemBase {
    */
   public double getYaw() {
 
-    // return gyro.getYaw();
+    return (simulated) ? yaw.get() : gyro.getYaw();
 
-    if (simulated) {
+  }
 
-      return yaw.get();
+  /**
+   * Gets yaw rate computed by AHRS gyro.
+   * 
+   * @return Yaw rate (degrees/sec).
+   */
+  public double getYawRate() {
 
-    } else {
-
-      return gyro.getYaw();
-
-    }
+    return (simulated) ? rate.get() : gyro.getRate();
 
   }
 
@@ -168,14 +165,14 @@ public class NavigationSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+  @Override
   public void simulationPeriodic() {
+    
     yaw.set(simulatedDriveSub.getDriveSimYaw());
+    rate.set((simulatedDriveSub.getDriveSimYaw() - prevYaw) / (PhysicsSim.getFPGATime() - prevT));
 
-    rate.set((simulatedDriveSub.getDriveSimYaw() - simPrevYaw) / (PhysicsSim.getFPGATime() - simPrevT));
-    simPrevT = PhysicsSim.getFPGATime();
-    simPrevYaw = simulatedDriveSub.getDriveSimYaw();
-
-    //fieldSim.setRobotPose(getFilterStateElement(0, 0), getFilterStateElement(3, 0), Rotation2d.fromDegrees(getHeading())); // TODO: Debug
+    prevT = PhysicsSim.getFPGATime();
+    prevYaw = simulatedDriveSub.getDriveSimYaw();
 
   }
 }

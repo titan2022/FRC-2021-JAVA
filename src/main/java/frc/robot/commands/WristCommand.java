@@ -31,12 +31,16 @@ public class WristCommand extends CommandBase {
     public void execute() {
         wristSubsystem.setWristPosition(XboxMap.spinWrist());
             
-        if (XboxMap.goWristUp()) {
-            wristSubsystem.setWristVel(90);
-        }
-        if (XboxMap.goWristDown()) {
-            wristSubsystem.setWristVel(-90);
-        }
+        //if (XboxMap.goWristUp()) {
+            //wristSubsystem.setWristVel(90);
+            
+        //}
+        //else if (XboxMap.goWristDown()) {
+          // wristSubsystem.setWristVel(-90);
+        //}
+        //else {
+            // wristSubsystem.setWristVel(0);
+        //}
         
     }
   

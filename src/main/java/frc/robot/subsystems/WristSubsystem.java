@@ -57,6 +57,12 @@ public class WristSubsystem extends SubsystemBase {
         wrist.config_kI(0, WRIST_KI);
         wrist.config_kD(0, WRIST_KD);
         wrist.config_kF(0, WRIST_KF);
+        followingWrist.config_kP(0, WRIST_KP);
+        followingWrist.config_kI(0, WRIST_KI);
+        followingWrist.config_kD(0, WRIST_KD);
+        followingWrist.config_kF(0, WRIST_KF);
+        wrist.setSensorPhase(PRIMARY_WRIST_SENSOR_PHASE);
+        followingWrist.setSensorPhase(PRIMARY_WRIST_SENSOR_PHASE);
 
         wrist.setInverted(PRIMARY_WRIST_PORT_INVERTED);
         followingWrist.setInverted(PRIMARY_WRIST_PORT_INVERTED);
@@ -87,7 +93,7 @@ public class WristSubsystem extends SubsystemBase {
     {
         wrist.set(angle);
     }
-    public void setWristVel(int Velocity)
+    public void setWristVel(double Velocity)
     {
         wrist.set(ControlMode.Velocity, Velocity);
     }

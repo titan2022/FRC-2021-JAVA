@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 /**
  * @author Irene
  */
@@ -24,6 +25,8 @@ public class WristSubsystem extends SubsystemBase {
     private static final double ANGLE_UPPER_LIMIT = 60; // TODO: Get from DI Team
     private static final int PEAK_CURRENT_LIMIT = 60;
     private static final int CONTINUOUS_CURRENT_LIMIT = 50;
+    public static final double ENCODER_TICKS = 4096; 
+    public static final double ANGLE_TO_TICK =  1 / (360 * ENCODER_TICKS);
 
     // PID Constants
     private static final double WRIST_KP = 2;
@@ -69,14 +72,14 @@ public class WristSubsystem extends SubsystemBase {
 
         wrist.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
         wrist.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
-        //wrist.configPeakCurrentDuration(10); 
+        wrist.configPeakCurrentDuration(10); 
         wrist.enableCurrentLimit(true);
 
         followingWrist.follow(wrist);
         
 
         //Encoder configs
-        wrist.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+        wrist.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
         
     }
 
@@ -91,12 +94,25 @@ public class WristSubsystem extends SubsystemBase {
      */
     public void setWristPosition(double angle)
     {
-        wrist.set(angle);
+        wrist.set(ControlMode.MotionProfile, angle * ANGLE_TO_TICK);
     }
+    /**
+     * 
+     * @param Velocity desired velocity to turn at
+     */
     public void setWristVel(double Velocity)
     {
-        wrist.set(ControlMode.Velocity, Velocity);
+        wrist.set(ControlMode.Velocity, Velocity * ANGLE_TO_TICK);
     }
+    /**
+     * 
+     * @param percentOut desired percent output (between -1 and 1)
+     */
+    public void setPercentOutput(double percentOut) {
+        
+        wrist.set(ControlMode.PercentOutput, percentOut);
+    }
+
     /**
      * 
      * @return current angle of wrist
@@ -120,7 +136,6 @@ public class WristSubsystem extends SubsystemBase {
     @Override
     public void periodic()
     {
-        getWristAngle();
         checkWristLimits();
     }
 }

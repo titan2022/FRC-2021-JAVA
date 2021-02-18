@@ -22,10 +22,10 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 
 /**
- * Navigation Subsystem using Differential Drive Odometry and Gyro
+ * Navigation Subsystem using AHRS Gyro
  */
 public class NavigationSubsystem extends SubsystemBase {
-  // ALL ODOMETRY DONE IN METERS, not imperial
+  
   private static final double STATE_STD_DEV = 0.1; // meters
   private static final double MEAS_STD_DEV = 0.01; // meters
 
@@ -33,7 +33,7 @@ public class NavigationSubsystem extends SubsystemBase {
   private CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc]
   private Timer timer;
   private boolean simulated;
-  private DifferentialDriveSubsystem driveSub;
+  private DifferentialDriveSubsystem simulatedDriveSub;
 
   // Physical and Simulated Hardware
   private final AHRS gyro = new AHRS(SPI.Port.kMXP, (byte) 50);
@@ -47,7 +47,6 @@ public class NavigationSubsystem extends SubsystemBase {
 
   /**
    * Creates a new (non-simulated) NavigationSubsystem.
-   * @param drive - Drive subsystem with primary motors.
    */
   public NavigationSubsystem() {
 
@@ -64,6 +63,10 @@ public class NavigationSubsystem extends SubsystemBase {
 
   // TEMPORARY CONSTRUCTOR to deal with simulation of navX-Sensor
   // TODO: Remove coupling between DifferentialDriveSubsystem and NavigationSubsystem
+  /**
+   * Creates a new (simulated) NavigationSubsystem.
+   * @param simulatedDriveSub - Drive subsystem with primary motors.
+   */
   public NavigationSubsystem(DifferentialDriveSubsystem simulatedDriveSub) {
 
     this();
@@ -72,7 +75,7 @@ public class NavigationSubsystem extends SubsystemBase {
     if (simulated) {
       
       enableSimulation();
-      this.driveSub = simulatedDriveSub;
+      this.simulatedDriveSub = simulatedDriveSub;
 
     }
     
@@ -228,11 +231,11 @@ public class NavigationSubsystem extends SubsystemBase {
   }
 
   public void simulationPeriodic() {
-    yaw.set(driveSub.getDriveSimYaw());
+    yaw.set(simulatedDriveSub.getDriveSimYaw());
 
-    rate.set((driveSub.getDriveSimYaw() - simPrevYaw) / (PhysicsSim.getFPGATime() - simPrevT));
+    rate.set((simulatedDriveSub.getDriveSimYaw() - simPrevYaw) / (PhysicsSim.getFPGATime() - simPrevT));
     simPrevT = PhysicsSim.getFPGATime();
-    simPrevYaw = driveSub.getDriveSimYaw();
+    simPrevYaw = simulatedDriveSub.getDriveSimYaw();
 
     //fieldSim.setRobotPose(getFilterStateElement(0, 0), getFilterStateElement(3, 0), Rotation2d.fromDegrees(getHeading())); // TODO: Debug
 

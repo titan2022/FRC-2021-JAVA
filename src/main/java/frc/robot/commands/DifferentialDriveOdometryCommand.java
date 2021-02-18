@@ -16,37 +16,50 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DifferentialDriveOdometryCommand extends CommandBase {
 
+  // ALL ODOMETRY DONE IN METERS, not imperial
+
   private final DifferentialDriveSubsystem driveSub;
   private final NavigationSubsystem navSub;
   private final DifferentialDriveOdometry odometry;
-  private final boolean simulated;
+  private boolean useFieldSim;
   private Field2d fieldSim;
 
-  /** Creates a new OdometryCommand. */
+  /**
+   * Creates a new OdometryCommand without a field simulation.
+   * 
+   * @param driveSub - Differential drive subsystem.
+   * @param navSub   - Navigation subsystem.
+   */
   public DifferentialDriveOdometryCommand(DifferentialDriveSubsystem driveSub, NavigationSubsystem navSub) {
     
     // Use addRequirements() here to declare subsystem dependencies.
     this.driveSub = driveSub;
     this.navSub = navSub;
     odometry = new DifferentialDriveOdometry(navSub.getHeadingRotation());
-    simulated = driveSub.isSimulated();
+    useFieldSim = false;
 
   }
 
+  /**
+   * Creates a new OdometryCommand with a field simulation.
+   * 
+   * @param driveSub - Differential drive subsystem.
+   * @param navSub   - Navigation subsystem.
+   * @param fieldSim - Field2d to be simulated.
+   */
   public DifferentialDriveOdometryCommand(DifferentialDriveSubsystem driveSub, NavigationSubsystem navSub, Field2d fieldSim) {
 
     this(driveSub, navSub);
     this.fieldSim = fieldSim;
-
+    useFieldSim = true;
+    
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
 
-    System.out.println("Odometry command initialized");
-
-    if (simulated) System.out.println("in simulated mode");
+    System.out.println("Differential drive odometry command initialized.");
 
   }
 
@@ -56,7 +69,7 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
 
     updateOdometry();
 
-    if (simulated) updateFieldSim();
+    if (useFieldSim) updateFieldSim();
 
   }
 
@@ -123,7 +136,7 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
 
   }
 
-    /**
+  /**
    * Gets filterable vector motion measurement from odometry.
    * 
    * @return Odometry vector measurement.
@@ -136,6 +149,9 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
 
   // simulation methods
 
+  /**
+   * Updates field simulation
+   */
   private void updateFieldSim() {
 
     fieldSim.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), navSub.getHeadingRotation());

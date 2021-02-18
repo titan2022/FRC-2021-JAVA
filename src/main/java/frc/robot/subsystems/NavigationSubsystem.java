@@ -7,36 +7,27 @@
 
 package frc.robot.subsystems;
 
-import frc.robot.motion.control.CustomKalmanFilter;
 import frc.robot.subsystems.sim.PhysicsSim;
 
 import com.kauailabs.navx.frc.AHRS;
 import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.Timer;
 
 /**
  * Navigation Subsystem using AHRS Gyro
  */
 public class NavigationSubsystem extends SubsystemBase {
   
-  private static final double STATE_STD_DEV = 0.1; // meters
-  private static final double MEAS_STD_DEV = 0.01; // meters
-
-  // Navigation Mathematics system
-  private CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc]
-  private Timer timer;
   private boolean simulated;
-  private DifferentialDriveSubsystem simulatedDriveSub;
 
   // Physical and Simulated Hardware
   private final AHRS gyro = new AHRS(SPI.Port.kMXP, (byte) 50);
+  private DifferentialDriveSubsystem simulatedDriveSub;
 
   // Simulated components
   // AHRS SimDoubles
@@ -50,15 +41,8 @@ public class NavigationSubsystem extends SubsystemBase {
    */
   public NavigationSubsystem() {
 
-    filter = new CustomKalmanFilter(new SimpleMatrix(6, 1), SimpleMatrix.identity(6),
-        SimpleMatrix.identity(6).scale(Math.pow(STATE_STD_DEV, 2)),
-        SimpleMatrix.identity(6).scale(Math.pow(MEAS_STD_DEV, 2)), updateA(0),
-        new SimpleMatrix(new double[][] { { 0, 0 }, { 1, 0 }, { 0, 0 }, { 0, 0 }, { 0, 1 }, { 0, 0 } }),
-        SimpleMatrix.identity(6));
-
     simulated = false;
-    timer = new Timer();
-    timer.start();
+
   }
 
   // TEMPORARY CONSTRUCTOR to deal with simulation of navX-Sensor
@@ -171,7 +155,7 @@ public class NavigationSubsystem extends SubsystemBase {
    * 
    * @return Gyro vector measurement.
    */
-  private SimpleMatrix getGyroMeas() {
+  public SimpleMatrix getGyroVector() {
 
     return new SimpleMatrix(
         new double[][] { { gyro.getDisplacementX() }, { gyro.getVelocityX() }, { gyro.getWorldLinearAccelX() },
@@ -179,55 +163,9 @@ public class NavigationSubsystem extends SubsystemBase {
 
   }
 
-  /**
-   * Updates A matrix for specific time.
-   * 
-   * @param t - Time between filter runs.
-   * @return Updated A matrix.
-   */
-  private SimpleMatrix updateA(double t) {
-
-    return new SimpleMatrix(new double[][] { { 1, t, Math.pow(t, 2) / 2, 0, 0, 0 }, { 0, 1, t, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 1, t, Math.pow(t, 2) / 2 }, { 0, 0, 0, 0, 1, t }, { 0, 0, 0, 0, 0, 0 } });
-
-  }
-
-  /**
-   * Returns the Kalman filter's current state.
-   * 
-   * @return Current Kalman filter state.
-   */
-  public SimpleMatrix getFilterState() {
-
-    return filter.getState();
-
-  }
-
-  /**
-   * Returns an element from the Kalman filter's current state.
-   * 
-   * @param row    - Row of state.
-   * @param column - Row of state.
-   * @return Element from current filter state.
-   */
-  public double getFilterStateElement(int row, int column) {
-
-    return filter.getState().get(row, column);
-
-  }
-
-
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-    filter.setA(updateA(timer.get()));
-    timer.reset();
-
-    // TODO: add filter.predictFilter(input(velocity)), bringing input from Xbox controller
-    // filter.updateFilter(getOdometryMeas());
-    filter.updateFilter(getGyroMeas());
   }
 
   public void simulationPeriodic() {

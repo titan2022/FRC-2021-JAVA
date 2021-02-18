@@ -33,7 +33,7 @@ public class DifferentialDriveSubsystem extends SubsystemBase implements DriveSu
   private static final int RIGHT_PRIMARY_PORT = 3;
   private static final int RIGHT_SECONDARY_PORT = 4;
 
-  private static final int ENCODER_PORT = 0;
+  private static final int ENCODER_PIDIDX = 0;
 
   // Motor and sensor inversions
   private static final boolean LEFT_PRIMARY_INVERTED = false;
@@ -258,11 +258,11 @@ public class DifferentialDriveSubsystem extends SubsystemBase implements DriveSu
   {
     if (useLeft)
     {
-      return leftPrimary.getSelectedSensorPosition(ENCODER_PORT);
+      return leftPrimary.getSelectedSensorPosition(ENCODER_PIDIDX);
     }
     else
     {
-      return rightPrimary.getSelectedSensorPosition(ENCODER_PORT);
+      return rightPrimary.getSelectedSensorPosition(ENCODER_PIDIDX);
     }
   }
 
@@ -283,11 +283,11 @@ public class DifferentialDriveSubsystem extends SubsystemBase implements DriveSu
   public double getEncoderVelocity(boolean useLeft) {
     if (useLeft)
     {
-      return leftPrimary.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK;
+      return leftPrimary.getSelectedSensorVelocity(ENCODER_PIDIDX) * METERS_PER_TICK;
     }
     else
     {
-      return rightPrimary.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK;
+      return rightPrimary.getSelectedSensorVelocity(ENCODER_PIDIDX) * METERS_PER_TICK;
     }
   }
 

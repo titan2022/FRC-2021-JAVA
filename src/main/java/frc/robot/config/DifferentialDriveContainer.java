@@ -19,34 +19,39 @@ import frc.robot.subsystems.NavigationSubsystem;
  */
 public class DifferentialDriveContainer implements RobotContainer {
       
+    // Simulation Variables
+
+    private Field2d fieldSim;
+    
     // Subsystems
 
     private final DifferentialDriveSubsystem diffDriveSub;
-    private final NavigationSubsystem navigationSub;
+    private final NavigationSubsystem navSub;
 
     // Command Groups
 
     private final ParallelCommandGroup autoGroup;
     private final ParallelCommandGroup teleopGroup;
 
-    // Simulation variables
-
-    private final Field2d fieldSim = new Field2d();
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
-    public DifferentialDriveContainer(boolean isSimulated) {
+    public DifferentialDriveContainer(boolean simulated) {
         
+        // Initialize Simulation Variables
+
+        if (simulated) fieldSim = new Field2d();
+
         // Initialize Subsystems
 
-        diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), isSimulated);
-        navigationSub = new NavigationSubsystem(diffDriveSub);
+        diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), simulated);
+        navSub = new NavigationSubsystem(diffDriveSub);
 
         // Initialize Command Groups
 
-        autoGroup = new ParallelCommandGroup(getDriveOdometry());
-        teleopGroup = new ParallelCommandGroup(getDriveOdometry(), getManualDrive());
+        autoGroup = new ParallelCommandGroup(getDriveOdometry(simulated));
+        teleopGroup = new ParallelCommandGroup(getDriveOdometry(simulated), getManualDrive());
 
         // Configure the button bindings
 
@@ -111,9 +116,9 @@ public class DifferentialDriveContainer implements RobotContainer {
      * Creates a differential drive odometry command (configure here).
      * @return Differential odometry drive command (configured).
      */
-    private DifferentialDriveOdometryCommand getDriveOdometry() {
+    private DifferentialDriveOdometryCommand getDriveOdometry(boolean simulated) {
 
-        return new DifferentialDriveOdometryCommand(diffDriveSub, navigationSub, fieldSim);
+        return (simulated) ? new DifferentialDriveOdometryCommand(diffDriveSub, navSub, fieldSim) : new DifferentialDriveOdometryCommand(diffDriveSub, navSub);
 
     }
 }

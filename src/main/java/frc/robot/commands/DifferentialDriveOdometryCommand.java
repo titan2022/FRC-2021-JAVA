@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import org.ejml.simple.SimpleMatrix;
 
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -87,9 +88,38 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
   /**
    * Updates differential drive odometry.
    */
-  public void updateOdometry() {
+  private void updateOdometry() {
 
     odometry.update(navSub.getHeadingRotation(), driveSub.getEncoderDist(true), driveSub.getEncoderDist(false));
+
+  }
+
+  /**
+   * Resets differential drive odometry.
+   */
+  public void resetOdometry() {
+
+    odometry.resetPosition(new Pose2d(getX(), getY(), navSub.getHeadingRotation()), navSub.getHeadingRotation());
+
+  }
+
+  /**
+   * Gets odometry x measurement (meters).
+   * @return X (meters).
+   */
+  public double getX() {
+
+    return odometry.getPoseMeters().getX();
+
+  }
+
+  /**
+   * Gets odometry y measurement (meters).
+   * @return Y (meters).
+   */
+  public double getY() {
+
+    return odometry.getPoseMeters().getY();
 
   }
 
@@ -100,17 +130,15 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
    */
   public SimpleMatrix getOdometryVector() {
 
-    return new SimpleMatrix(new double[][] { { odometry.getPoseMeters().getX() }, { 0 }, { 0 },
-        { odometry.getPoseMeters().getY() }, { 0 }, { 0 } });
+    return new SimpleMatrix(new double[][] { { getX() }, { 0 }, { 0 }, { getY() }, { 0 }, { 0 } });
 
   }
 
   // simulation methods
 
-  public void updateFieldSim() {
+  private void updateFieldSim() {
 
     fieldSim.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), navSub.getHeadingRotation());
-
     SmartDashboard.putData("Field", fieldSim);
 
   }

@@ -2,7 +2,10 @@ package frc.robot.config;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.commands.DifferentialDriveOdometryCommand;
 import frc.robot.commands.ManualDifferentialDriveCommand;
 import frc.robot.subsystems.DifferentialDriveSubsystem;
 import frc.robot.subsystems.NavigationSubsystem;
@@ -15,22 +18,30 @@ import frc.robot.subsystems.NavigationSubsystem;
  * commands, and button mappings) should be declared here.
  */
 public class DifferentialDriveContainer implements RobotContainer {
+    
+    // Simulation
+
+    private final Field2d fieldSim = new Field2d();
+    
     // Subsystems
     private final DifferentialDriveSubsystem diffDriveSub;
     private final NavigationSubsystem navigationSub;
 
     // Commands
     private final ManualDifferentialDriveCommand manualDrive;
+    private final DifferentialDriveOdometryCommand diffOdometry;
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public DifferentialDriveContainer(boolean isSimulated) {
         // Initialize Subsystems
         diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), isSimulated);
-        navigationSub = new NavigationSubsystem(diffDriveSub, true);
+        navigationSub = new NavigationSubsystem(diffDriveSub);
 
         // Initialize Commands
         manualDrive = new ManualDifferentialDriveCommand(diffDriveSub);
+        diffOdometry = new DifferentialDriveOdometryCommand(diffDriveSub, navigationSub, fieldSim);
 
         // Configure the button bindings
         configureButtonBindings();

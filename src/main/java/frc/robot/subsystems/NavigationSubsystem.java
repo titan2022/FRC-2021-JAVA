@@ -40,7 +40,7 @@ public class NavigationSubsystem extends SubsystemBase {
   private DifferentialDriveSubsystem driveSub;
 
   // Physical and Simulated Hardware
-  private AHRS gyro = new AHRS(SPI.Port.kMXP, (byte) 50);
+  private final AHRS gyro = new AHRS(SPI.Port.kMXP, (byte) 50);
 
   // Simulated components
   // AHRS SimDoubles
@@ -61,21 +61,22 @@ public class NavigationSubsystem extends SubsystemBase {
         new SimpleMatrix(new double[][] { { 0, 0 }, { 1, 0 }, { 0, 0 }, { 0, 0 }, { 0, 1 }, { 0, 0 } }),
         SimpleMatrix.identity(6));
 
+    simulated = false;
     timer = new Timer();
     timer.start();
   }
 
   // TEMPORARY CONSTRUCTOR to deal with simulation of navX-Sensor
   // TODO: Remove coupling between DifferentialDriveSubsystem and NavigationSubsystem
-  public NavigationSubsystem(DifferentialDriveSubsystem driveSub, boolean simulated) {
+  public NavigationSubsystem(DifferentialDriveSubsystem simulatedDriveSub) {
 
     this();
-    this.simulated = simulated;
+    simulated = simulatedDriveSub.isSimulated();
 
     if (simulated) {
       
       enableSimulation();
-      this.driveSub = driveSub;
+      this.driveSub = simulatedDriveSub;
 
     }
     

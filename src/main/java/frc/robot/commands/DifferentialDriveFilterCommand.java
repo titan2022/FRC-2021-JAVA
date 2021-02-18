@@ -16,23 +16,49 @@ public class DifferentialDriveFilterCommand extends CommandBase {
   private static final double STATE_STD_DEV = 0.1; // meters
   private static final double MEAS_STD_DEV = 0.01; // meters
   
-  private final DifferentialDriveOdometryCommand odometryCommand;
-  private final NavigationSubsystem navSub;
   private final CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc]
+  private DifferentialDriveOdometryCommand odometryCommand;
+  private NavigationSubsystem navSub;
   private double prevT;
+  private boolean useOdometryCommand;
+  private boolean useNavSub;
 
   /** Creates a new DifferentialDriveFilterCommand. */
-  public DifferentialDriveFilterCommand(DifferentialDriveOdometryCommand odometryCommand, NavigationSubsystem navSub) {
-    // Use addRequirements() here to declare subsystem dependencies.
+  private DifferentialDriveFilterCommand() {
 
-    this.odometryCommand = odometryCommand;
-    this.navSub = navSub;
+    // Use addRequirements() here to declare subsystem dependencies. 
 
     filter = new CustomKalmanFilter(new SimpleMatrix(6, 1), SimpleMatrix.identity(6),
         SimpleMatrix.identity(6).scale(Math.pow(STATE_STD_DEV, 2)),
         SimpleMatrix.identity(6).scale(Math.pow(MEAS_STD_DEV, 2)), updateA(0),
         new SimpleMatrix(new double[][] { { 0, 0 }, { 1, 0 }, { 0, 0 }, { 0, 0 }, { 0, 1 }, { 0, 0 } }),
         SimpleMatrix.identity(6));
+
+  }
+
+  public DifferentialDriveFilterCommand(DifferentialDriveOdometryCommand odometryCommand) {
+
+    this();
+    this.odometryCommand = odometryCommand;
+    useOdometryCommand = true;
+    useNavSub = false;
+
+  }
+
+  public DifferentialDriveFilterCommand(NavigationSubsystem navSub) {
+
+    this();
+    this.navSub = navSub;
+    useOdometryCommand = false;
+    useNavSub = true;
+
+  } 
+
+  public DifferentialDriveFilterCommand(DifferentialDriveOdometryCommand odometryCommand, NavigationSubsystem navSub) {
+
+    this(odometryCommand);
+    this.navSub = navSub;
+    useNavSub = true;
 
   }
 
@@ -52,8 +78,9 @@ public class DifferentialDriveFilterCommand extends CommandBase {
     prevT = PhysicsSim.getFPGATime();
 
     // TODO: add filter.predictFilter(input(velocity)), bringing input from Xbox controller
-    filter.updateFilter(odometryCommand.getOdometryVector());
-    filter.updateFilter(navSub.getGyroVector());
+
+    if (useOdometryCommand) filter.updateFilter(odometryCommand.getOdometryVector());
+    if (useNavSub) filter.updateFilter(navSub.getGyroVector());
 
   }
 

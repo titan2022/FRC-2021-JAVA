@@ -37,11 +37,9 @@ public class XboxMap {
   public static boolean goWristDown() {
     return controller.getAButtonPressed();
   }
-  public static boolean stopWristUp() {
-    return controller.getAButtonReleased();
-  }
-  public static boolean stopWristDown() {
-    return controller.getAButtonReleased();
+  public static double spinWrist() {
+    double value = -controller.getX(Hand.kLeft);
+    return applyDeadband(value, JOYSTICK_DRIFT);
   }
     
   public static void startRumble() {

@@ -46,7 +46,6 @@ public class WristSubsystem extends SubsystemBase {
      */
     public WristSubsystem(TalonSRXConfiguration motorConfig) {
         setMotorFactoryConfig();
-
         if(motorConfig != null)
         {
             wrist.configAllSettings(motorConfig);
@@ -54,6 +53,11 @@ public class WristSubsystem extends SubsystemBase {
         }
 
         // Motor configs
+        wrist.config_kP(0, WRIST_KP);
+        wrist.config_kI(0, WRIST_KI);
+        wrist.config_kD(0, WRIST_KD);
+        wrist.config_kF(0, WRIST_KF);
+
         wrist.setInverted(PRIMARY_WRIST_PORT_INVERTED);
         followingWrist.setInverted(PRIMARY_WRIST_PORT_INVERTED);
 
@@ -63,6 +67,7 @@ public class WristSubsystem extends SubsystemBase {
         wrist.enableCurrentLimit(true);
 
         followingWrist.follow(wrist);
+        
 
         //Encoder configs
         wrist.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
@@ -81,6 +86,10 @@ public class WristSubsystem extends SubsystemBase {
     public void setWristPosition(double angle)
     {
         wrist.set(angle);
+    }
+    public void setWristVel(int Velocity)
+    {
+        wrist.set(ControlMode.Velocity, Velocity);
     }
     /**
      * 

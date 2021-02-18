@@ -29,17 +29,13 @@ public class WristCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        wristSubsystem.setWristPosition(XboxMap.spinWrist());
+            
         if (XboxMap.goWristUp()) {
-            wristSubsystem.setWristPosition(90);
-            if (XboxMap.stopWristUp()) {
-                wristSubsystem.stop();
-            }
+            wristSubsystem.setWristVel(90);
         }
         if (XboxMap.goWristDown()) {
-            wristSubsystem.setWristPosition(0);
-            if (XboxMap.stopWristDown()) {
-                wristSubsystem.stop();
-            }
+            wristSubsystem.setWristVel(-90);
         }
         
     }

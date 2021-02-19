@@ -42,7 +42,7 @@ public class DifferentialDriveContainer implements RobotContainer {
 
         // Initialize Auto Commands
 
-        FieldDisplayCommand autoFieldDisplayCommand = new FieldDisplayCommand();
+        FieldDisplayCommand autoFieldDisplayCommand = new FieldDisplayCommand("Auto Field");
         DifferentialDriveOdometryCommand autoOdometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, autoFieldDisplayCommand);
         DifferentialDriveFilterCommand autoFilterCommand = new DifferentialDriveFilterCommand(autoOdometryCommand, navSub);
 

@@ -118,9 +118,9 @@ public class NavigationSubsystem extends SubsystemBase {
    * @return Gyro vector measurement.
    */
   public SimpleMatrix getGyroVector() {
-    return new SimpleMatrix(
-        new double[][] { { gyro.getDisplacementX() }, { gyro.getVelocityX() }, { gyro.getWorldLinearAccelX() },
-            { gyro.getDisplacementZ() }, { gyro.getVelocityZ() }, { gyro.getWorldLinearAccelZ() } });
+    return new SimpleMatrix(new double[][] { { gyro.getDisplacementX() }, { gyro.getVelocityX() },
+        { gyro.getWorldLinearAccelX() }, { gyro.getDisplacementZ() }, { gyro.getVelocityZ() },
+        { gyro.getWorldLinearAccelZ() }, { getYaw() }, { getYawRate() }, { 0 } });
   }
 
   @Override

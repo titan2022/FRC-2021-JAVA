@@ -35,7 +35,7 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     this.driveSub = driveSub;
     this.navSub = navSub;
-    odometry = new DifferentialDriveOdometry(navSub.getHeadingRotation());
+    odometry = new DifferentialDriveOdometry(navSub.getHeadingRotation2d());
     useFieldSim = false;
 
   }
@@ -103,7 +103,7 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
    */
   private void updateOdometry() {
 
-    odometry.update(navSub.getHeadingRotation(), driveSub.getEncoderDist(true), driveSub.getEncoderDist(false));
+    odometry.update(navSub.getHeadingRotation2d(), driveSub.getEncoderDist(true), driveSub.getEncoderDist(false));
 
   }
 
@@ -112,7 +112,7 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
    */
   public void resetOdometry() {
 
-    odometry.resetPosition(new Pose2d(getX(), getY(), navSub.getHeadingRotation()), navSub.getHeadingRotation());
+    odometry.resetPosition(new Pose2d(getX(), getY(), navSub.getHeadingRotation2d()), navSub.getHeadingRotation2d());
 
   }
 
@@ -154,7 +154,7 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
    */
   private void updateFieldSim() {
 
-    fieldSim.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), navSub.getHeadingRotation());
+    fieldSim.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), navSub.getHeadingRotation2d());
     SmartDashboard.putData("Field", fieldSim);
 
   }

@@ -2,10 +2,11 @@ package frc.robot.config;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.commands.DifferentialDriveFilterCommand;
 import frc.robot.commands.DifferentialDriveOdometryCommand;
+import frc.robot.commands.FieldDisplayCommand;
 import frc.robot.commands.ManualDifferentialDriveCommand;
 import frc.robot.subsystems.DifferentialDriveSubsystem;
 import frc.robot.subsystems.NavigationSubsystem;
@@ -39,10 +40,17 @@ public class DifferentialDriveContainer implements RobotContainer {
         diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), simulated);
         navSub = new NavigationSubsystem(diffDriveSub);
 
+        // Initialize Commands
+
+        FieldDisplayCommand fieldDisplayCommand = new FieldDisplayCommand();
+        DifferentialDriveOdometryCommand odometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, fieldDisplayCommand);
+        DifferentialDriveFilterCommand filterCommand = new DifferentialDriveFilterCommand(odometryCommand, navSub);
+        ManualDifferentialDriveCommand manualDriveCommand = new ManualDifferentialDriveCommand(diffDriveSub);
+
         // Initialize Command Groups
 
-        autoGroup = new ParallelCommandGroup(getDriveOdometry(simulated));
-        teleopGroup = new ParallelCommandGroup(getDriveOdometry(simulated), getManualDrive());
+        autoGroup = new ParallelCommandGroup(fieldDisplayCommand, odometryCommand, filterCommand);
+        teleopGroup = new ParallelCommandGroup(fieldDisplayCommand, odometryCommand, filterCommand, manualDriveCommand);
 
         // Configure the button bindings
 
@@ -91,25 +99,5 @@ public class DifferentialDriveContainer implements RobotContainer {
         // Add configs here:
 
         return talon;
-    }
-
-    /**
-     * Creates a manual differential drive command (configure here).
-     * @return Manual differential drive command (configured).
-     */
-    private ManualDifferentialDriveCommand getManualDrive() {
-
-        return new ManualDifferentialDriveCommand(diffDriveSub);
-
-    }
-
-    /**
-     * Creates a differential drive odometry command (configure here).
-     * @return Differential odometry drive command (configured).
-     */
-    private DifferentialDriveOdometryCommand getDriveOdometry(boolean simulated) {
-
-        return (simulated) ? new DifferentialDriveOdometryCommand(diffDriveSub, navSub, fieldSim) : new DifferentialDriveOdometryCommand(diffDriveSub, navSub);
-
     }
 }

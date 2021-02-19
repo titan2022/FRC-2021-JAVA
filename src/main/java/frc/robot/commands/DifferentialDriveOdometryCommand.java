@@ -8,9 +8,7 @@ import org.ejml.simple.SimpleMatrix;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * 
@@ -21,7 +19,7 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
   private final NavigationSubsystem navSub;
   private final DifferentialDriveOdometry odometry;
 
-  private FieldDisplayCommand fieldDisplay;
+  private FieldDisplayCommand fieldDisplayCommand;
   private boolean useFieldDisplay;
 
   /**
@@ -42,9 +40,9 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
    * @param navSub   - Navigation subsystem.
    * @param fieldDisplay - Field display command.
    */
-  public DifferentialDriveOdometryCommand(DifferentialDriveSubsystem driveSub, NavigationSubsystem navSub, FieldDisplayCommand fieldDisplay) {
+  public DifferentialDriveOdometryCommand(DifferentialDriveSubsystem driveSub, NavigationSubsystem navSub, FieldDisplayCommand fieldDisplayCommand) {
     this(driveSub, navSub);    
-    this.fieldDisplay = fieldDisplay;
+    this.fieldDisplayCommand = fieldDisplayCommand;
     useFieldDisplay = true;
   }
 
@@ -98,7 +96,7 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
    * @return X (meters).
    */
   public double getX() {
-    return odometry.getPoseMeters().getX();
+    return getPose().getX();
   }
 
   /**
@@ -106,7 +104,15 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
    * @return Y (meters).
    */
   public double getY() {
-    return odometry.getPoseMeters().getY();
+    return getPose().getY();
+  }
+
+  /**
+   * Gets odometry theta measurement (degrees).
+   * @return Theta (degrees).
+   */
+  public double getTheta() {
+    return getPose().getRotation().getDegrees();
   }
 
   /**
@@ -119,10 +125,10 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
 
   /**
    * Gets filterable vector motion measurement from odometry.
-   * @return Odometry vector measurement.
+   * @return Odometry vector measurement (x, y, theta).
    */
   public SimpleMatrix getOdometryVector() {
-    return new SimpleMatrix(new double[][] { { getX() }, { 0 }, { 0 }, { getY() }, { 0 }, { 0 } }); // TODO: remove the velocity, acceleration and replace with x, y, theta
+    return new SimpleMatrix(new double[][] { { getX() }, { getY() }, { getTheta() }});
   }
 
   // simulation methods
@@ -131,6 +137,6 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
    * Updates field simulation
    */
   private void updateFieldSim() {
-    fieldDisplay.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), navSub.getHeadingRotation2d());
+    fieldDisplayCommand.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), navSub.getHeadingRotation2d());
   }
 }

@@ -78,8 +78,8 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
    * Gets current DifferentialDriveOdometry.
    * @return Differential drive odometry.
    */
-  public DifferentialDriveOdometry getOdometry() {
-    return odometry;
+  public DifferentialDriveOdometry getOdometryCopy() {
+    return odometry; // TODO: Make it return a copy of the object in another object reference
   }
 
   /**

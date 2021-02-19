@@ -40,7 +40,13 @@ public class DifferentialDriveContainer implements RobotContainer {
         diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), simulated);
         navSub = new NavigationSubsystem(diffDriveSub);
 
-        // Initialize Commands
+        // Initialize Auto Commands
+
+        FieldDisplayCommand autoFieldDisplayCommand = new FieldDisplayCommand();
+        DifferentialDriveOdometryCommand autoOdometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, autoFieldDisplayCommand);
+        DifferentialDriveFilterCommand autoFilterCommand = new DifferentialDriveFilterCommand(autoOdometryCommand, navSub);
+
+        // Initialize Teleop Commands
 
         FieldDisplayCommand fieldDisplayCommand = new FieldDisplayCommand();
         DifferentialDriveOdometryCommand odometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, fieldDisplayCommand);
@@ -49,7 +55,7 @@ public class DifferentialDriveContainer implements RobotContainer {
 
         // Initialize Command Groups
 
-        autoGroup = new ParallelCommandGroup(fieldDisplayCommand, odometryCommand, filterCommand);
+        autoGroup = new ParallelCommandGroup(autoFieldDisplayCommand, autoOdometryCommand, autoFilterCommand);
         teleopGroup = new ParallelCommandGroup(fieldDisplayCommand, odometryCommand, filterCommand, manualDriveCommand);
 
         // Configure the button bindings

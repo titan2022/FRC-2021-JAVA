@@ -48,7 +48,7 @@ public class DifferentialDriveFilterCommand extends CommandBase {
 
     // TODO: add filter.predictFilter(input(velocity)), bringing input from Xbox controller
 
-    filter.updateFilter(odometryCommand.getOdometryVector());
+    filter.updateFilter(getFilterOdometryVector());
     filter.updateFilter(navSub.getGyroVector());
   }
 
@@ -92,7 +92,7 @@ public class DifferentialDriveFilterCommand extends CommandBase {
    * @return Current filtered pose.
    */
   public Pose2d getFilteredPose() {
-    return new Pose2d(getFilterStateElement(0, 0), getFilterStateElement(0, 3), new Rotation2d()); // TODO: add theta to filter
+    return new Pose2d(getFilterStateElement(0, 0), getFilterStateElement(0, 2), new Rotation2d()); // TODO: add theta to filter
   }
 
   /**
@@ -104,4 +104,14 @@ public class DifferentialDriveFilterCommand extends CommandBase {
   private double getFilterStateElement(int row, int column) {
     return getFilterState().get(row, column);
   }
+
+  /**
+   * Gets a formatted version of odometry's return vector for the filter.
+   * @return Formatted odometry vector.
+   */
+  private SimpleMatrix getFilterOdometryVector() {
+    return new SimpleMatrix(new double[][] { { odometryCommand.getOdometryVector().get(0, 0) }, { 0 }, { 0 },
+        { odometryCommand.getOdometryVector().get(1, 0) }, { 0 }, { 0 } });
+  }
+
 }

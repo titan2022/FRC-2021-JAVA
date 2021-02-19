@@ -2,6 +2,8 @@ package frc.robot.commands;
 
 import org.ejml.simple.SimpleMatrix;
 
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.motion.control.CustomKalmanFilter;
 import frc.robot.subsystems.NavigationSubsystem;
@@ -70,11 +72,11 @@ public class DifferentialDriveFilterCommand extends CommandBase {
   }
 
   /**
-   * Gets the Kalman filter.
+   * Gets a copy of the Kalman filter.
    * @return Kalman filter.
    */
   public CustomKalmanFilter getFilterCopy() {
-    return filter; // TODO: Return a copy
+    return new CustomKalmanFilter(filter);
   }
 
   /**
@@ -85,7 +87,13 @@ public class DifferentialDriveFilterCommand extends CommandBase {
     return filter.getState();
   }
 
-  // TODO: Add a get estimated position method that returns Pose2d object
+  /**
+   * Returns the Kalman filter's estimated robot pose.
+   * @return Current filtered pose.
+   */
+  public Pose2d getFilteredPose() {
+    return new Pose2d(getFilterStateElement(0, 0), getFilterStateElement(0, 3), new Rotation2d()); // TODO: add theta to filter
+  }
 
   /**
    * Returns an element from the Kalman filter's current state.
@@ -93,7 +101,7 @@ public class DifferentialDriveFilterCommand extends CommandBase {
    * @param column - Row of state.
    * @return Element from current filter state.
    */
-  public double getFilterStateElement(int row, int column) {
-    return filter.getState().get(row, column);
+  private double getFilterStateElement(int row, int column) {
+    return getFilterState().get(row, column);
   }
 }

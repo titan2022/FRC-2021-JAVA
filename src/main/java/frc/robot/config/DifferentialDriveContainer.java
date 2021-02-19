@@ -18,10 +18,6 @@ import frc.robot.subsystems.NavigationSubsystem;
  * commands, and button mappings) should be declared here.
  */
 public class DifferentialDriveContainer implements RobotContainer {
-      
-    // Simulation Variables
-
-    private Field2d fieldSim;
     
     // Subsystems
 
@@ -33,15 +29,10 @@ public class DifferentialDriveContainer implements RobotContainer {
     private final ParallelCommandGroup autoGroup;
     private final ParallelCommandGroup teleopGroup;
 
-
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public DifferentialDriveContainer(boolean simulated) {
-        
-        // Initialize Simulation Variables
-
-        if (simulated) fieldSim = new Field2d();
 
         // Initialize Subsystems
 

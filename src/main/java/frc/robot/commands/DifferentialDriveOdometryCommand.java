@@ -21,7 +21,7 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
   private final NavigationSubsystem navSub;
   private final DifferentialDriveOdometry odometry;
 
-  private Field2d fieldDisplay;
+  private FieldDisplayCommand fieldDisplay;
   private boolean useFieldDisplay;
 
   /**
@@ -40,15 +40,12 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
    * Creates a new OdometryCommand with a field simulation.
    * @param driveSub - Differential drive subsystem.
    * @param navSub   - Navigation subsystem.
-   * @param useFieldDisplay - Field2d to be simulated.
+   * @param fieldDisplay - Field display command.
    */
-  public DifferentialDriveOdometryCommand(DifferentialDriveSubsystem driveSub, NavigationSubsystem navSub, boolean useFieldDisplay) {
+  public DifferentialDriveOdometryCommand(DifferentialDriveSubsystem driveSub, NavigationSubsystem navSub, FieldDisplayCommand fieldDisplay) {
     this(driveSub, navSub);    
-    this.useFieldDisplay = useFieldDisplay;
-
-    if(useFieldDisplay) {
-      this.fieldDisplay = new Field2d();
-    }
+    this.fieldDisplay = fieldDisplay;
+    useFieldDisplay = true;
   }
 
   @Override
@@ -133,8 +130,7 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
   /**
    * Updates field simulation
    */
-  private void updateFieldSim() { // TODO: Move this out of here
-    fieldSim.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), navSub.getHeadingRotation2d());
-    SmartDashboard.putData("Field", fieldSim);
+  private void updateFieldSim() {
+    fieldDisplay.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), navSub.getHeadingRotation2d());
   }
 }

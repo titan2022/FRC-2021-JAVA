@@ -74,7 +74,7 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
    * @return Differential drive odometry.
    */
   public DifferentialDriveOdometry getOdometryCopy() {
-    return odometry; // TODO: Make it return a copy of the object in another object reference
+    return new DifferentialDriveOdometry(getPose().getRotation(), getPose()); // TODO: Make it return a TRUE deep copy of the object
   }
 
   /**

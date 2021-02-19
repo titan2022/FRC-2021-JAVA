@@ -7,15 +7,11 @@
 
 package frc.robot;
 
-import org.ejml.simple.SimpleMatrix;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.config.DifferentialDriveContainer;
 import frc.robot.config.RobotContainer;
-import frc.robot.path.dstar.DStarDemoCommand;
-import frc.robot.path.dstar.DStarTester;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to

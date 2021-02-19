@@ -10,7 +10,7 @@ import frc.robot.subsystems.NavigationSubsystem;
 import frc.robot.subsystems.sim.PhysicsSim;
 
 /**
- * 
+ * Kalman filter for differential drive robot.
  */
 public class DifferentialDriveFilterCommand extends CommandBase {
   private static final double STATE_STD_DEV = 0.1; // meters
@@ -19,7 +19,7 @@ public class DifferentialDriveFilterCommand extends CommandBase {
   private final CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc, thetapos, thetavel, thetaacc]
   private final DifferentialDriveOdometryCommand odometryCommand;
   private final NavigationSubsystem navSub;
-  private double prevT;
+  private double prevT = 0;
 
   /**
    * Creates a new DifferentialDriveFilterCommand with odometry and navigation.
@@ -27,12 +27,6 @@ public class DifferentialDriveFilterCommand extends CommandBase {
    * @param navSub - Navigation subsystem.
    */
   public DifferentialDriveFilterCommand(DifferentialDriveOdometryCommand odometryCommand, NavigationSubsystem navSub) {
-    // filter = new CustomKalmanFilter(new SimpleMatrix(6, 1), SimpleMatrix.identity(6),
-    //     SimpleMatrix.identity(6).scale(Math.pow(STATE_STD_DEV, 2)),
-    //     SimpleMatrix.identity(6).scale(Math.pow(MEAS_STD_DEV, 2)), updateA(0),
-    //     new SimpleMatrix(new double[][] { { 0, 0 }, { 1, 0 }, { 0, 0 }, { 0, 0 }, { 0, 1 }, { 0, 0 } }),
-    //     SimpleMatrix.identity(6));
-
     filter = new CustomKalmanFilter(new SimpleMatrix(9, 1), SimpleMatrix.identity(9),
         SimpleMatrix.identity(9).scale(Math.pow(STATE_STD_DEV, 2)),
         SimpleMatrix.identity(9).scale(Math.pow(MEAS_STD_DEV, 2)), updateA(0),
@@ -68,7 +62,7 @@ public class DifferentialDriveFilterCommand extends CommandBase {
   }
 
   /**
-   * Updates A matrix for specific time.
+   * Updates A matrix for a specific delta time.
    * 
    * @param dt - Time between filter runs.
    * @return Updated A matrix.
@@ -95,14 +89,13 @@ public class DifferentialDriveFilterCommand extends CommandBase {
     return filter.getState();
   }
 
-    /**
+  /**
    * Returns an element from the Kalman filter's current state.
-   * @param row    - Row of state.
-   * @param column - Row of state.
+   * @param row - Row of state vector: [xpos, xvel, xacc, ypos, yvel, yacc, thetapos, thetavel, thetaacc]
    * @return Element from current filter state.
    */
-  private double getFilterStateElement(int row, int column) {
-    return getFilterState().get(row, column);
+  public double getFilterStateElement(int row) {
+    return getFilterState().get(row, 0);
   }
 
   /**
@@ -110,7 +103,7 @@ public class DifferentialDriveFilterCommand extends CommandBase {
    * @return Current filtered pose.
    */
   public Pose2d getFilteredPose() {
-    return new Pose2d(getFilterStateElement(0, 0), getFilterStateElement(0, 3), Rotation2d.fromDegrees(getFilterStateElement(0, 6)));
+    return new Pose2d(getFilterStateElement(0), getFilterStateElement(3), Rotation2d.fromDegrees(getFilterStateElement(6)));
   }
 
   /**

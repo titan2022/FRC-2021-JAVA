@@ -83,7 +83,7 @@ public class DifferentialDriveSubsystem extends SubsystemBase implements DriveSu
 
   // Create the simulation model of our drivetrain.
   private DifferentialDrivetrainSim driveSim;
-  private boolean isSimulated;
+  private final boolean simulated;
 
   public DifferentialDriveSubsystem(TalonSRXConfiguration leftConfig, TalonSRXConfiguration rightConfig, boolean simulated)
   {
@@ -124,8 +124,8 @@ public class DifferentialDriveSubsystem extends SubsystemBase implements DriveSu
     Faults _faults_R = new Faults();
     */
 
-    this.isSimulated = simulated;
-    if (isSimulated) enableSimulation();
+    this.simulated = simulated;
+    if (simulated) enableSimulation();
   }
 
   /**
@@ -177,7 +177,7 @@ public class DifferentialDriveSubsystem extends SubsystemBase implements DriveSu
    */
   public boolean isSimulated()
   {
-    return isSimulated;
+    return simulated;
   }
 
   /**

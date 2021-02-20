@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
- * 
+ * Differential drive odometry command.
  */
 public class DifferentialDriveOdometryCommand extends CommandBase {
   // ALL ODOMETRY IS DONE IN METERS, NOT IMPERIAL!!!
@@ -74,7 +74,7 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
    * @return Differential drive odometry.
    */
   public DifferentialDriveOdometry getOdometryCopy() {
-    return new DifferentialDriveOdometry(getPose().getRotation(), getPose()); // TODO: Return a TRUE deep copy of the object
+    return new DifferentialDriveOdometry(getPose().getRotation(), getPose());
   }
 
   /**
@@ -86,6 +86,8 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
 
   /**
    * Resets differential drive odometry.
+   * @param poseMeters - Pose2d object with measurements in meters.
+   * @param gyroAngle - Rotation2d object.
    */
   public void resetOdometry(Pose2d poseMeters, Rotation2d gyroAngle) {
     odometry.resetPosition(poseMeters, gyroAngle);
@@ -109,11 +111,19 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
   }
 
   /**
+   * Gets odometry rotation.
+   * @return Rotation2d object.
+   */
+  public Rotation2d getRotation() {
+    return getPose().getRotation();
+  }
+
+  /**
    * Gets odometry theta measurement (degrees).
    * @return Theta (degrees).
    */
   public double getTheta() {
-    return getPose().getRotation().getDegrees();
+    return getRotation().getDegrees();
   }
 
   /**

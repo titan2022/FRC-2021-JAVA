@@ -269,6 +269,14 @@ public class DifferentialDriveSubsystem extends SubsystemBase implements DriveSu
   }
 
   /**
+   * Resets encoder counts
+   */
+  public void resetEncoderCounts() {
+    leftPrimary.setSelectedSensorPosition(0);
+    rightPrimary.setSelectedSensorPosition(0);
+  }
+
+  /**
    * Gets the distance from a primary motor.
    * @param useLeft - Whether to use the left primary motor.
    * @return Distance from specified primary motor.

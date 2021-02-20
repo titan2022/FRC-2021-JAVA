@@ -11,9 +11,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.motion.generation.rmpflow.demos.RMPDemoCommand;
-import frc.robot.path.dstar.DStarDemoCommand;
-import frc.robot.path.dstar.DStarTester;
+import frc.robot.config.DifferentialDriveContainer;
+import frc.robot.config.RobotContainer;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -22,11 +21,17 @@ import frc.robot.path.dstar.DStarTester;
  * project.
  */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
-  private Command rmpDemoRun;
+  private final RobotContainer robotContainer;
 
-  private RobotContainer m_robotContainer;
+  private final Command autoCommandEntryPoint, teleopCommandEntryPoint;
 
+  public Robot()
+  {
+    super(.02); // Default period is .02 seconds = 50 hz
+    robotContainer = new DifferentialDriveContainer(isSimulation());
+    autoCommandEntryPoint = robotContainer.getAutonomousCommand();
+    teleopCommandEntryPoint = robotContainer.getTeleopCommand();
+  }
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -35,7 +40,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    
   }
 
   /**
@@ -70,18 +75,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    if (autoCommandEntryPoint != null) {
+      autoCommandEntryPoint.schedule();
     }
-
-    //rmpDemoRun = m_robotContainer.getRMPDemoCommand();
-    //rmpDemoRun.schedule();
-    new RMPDemoCommand().schedule();
-    new DStarTester().schedule();
-    new DStarDemoCommand().schedule();
   }
 
   /**
@@ -97,9 +94,10 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    if (autoCommandEntryPoint != null) {
+      autoCommandEntryPoint.cancel(); //TODO: figure out how to cancel all commands that are recursive.
     }
+    teleopCommandEntryPoint.schedule();
   }
 
   /**
@@ -107,17 +105,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    
   }
 
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    //RMPFlowTester test = new RMPFlowTester();
-    new RMPDemoCommand().schedule();
-    rmpDemoRun.schedule();
-    //SmartDashboard.putNumber("Time (s)", 10);
-    System.out.println("Hello 2");
   }
 
   /**
@@ -125,12 +119,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    CommandScheduler.getInstance().run();
-    System.out.println("Hello");
+    
   }
 
   @Override
   public void simulationInit() {
+    
   }
 
   /**
@@ -138,6 +132,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void simulationPeriodic() {
-    //CommandScheduler.getInstance().run();
+
   }
 }

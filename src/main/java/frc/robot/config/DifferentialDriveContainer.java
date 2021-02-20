@@ -19,14 +19,11 @@ import frc.robot.subsystems.NavigationSubsystem;
  * commands, and button mappings) should be declared here.
  */
 public class DifferentialDriveContainer implements RobotContainer {
-    
     // Subsystems
-
     private final DifferentialDriveSubsystem diffDriveSub;
     private final NavigationSubsystem navSub;
 
     // Command Groups
-
     private final ParallelCommandGroup autoGroup;
     private final ParallelCommandGroup teleopGroup;
 
@@ -34,32 +31,26 @@ public class DifferentialDriveContainer implements RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public DifferentialDriveContainer(boolean simulated) {
-
         // Initialize Subsystems
-
         diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), simulated);
         navSub = new NavigationSubsystem(diffDriveSub);
 
         // Initialize Auto Commands
-
         FieldDisplayCommand autoFieldDisplayCommand = new FieldDisplayCommand("Auto Field");
         DifferentialDriveOdometryCommand autoOdometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, autoFieldDisplayCommand);
         DifferentialDriveFilterCommand autoFilterCommand = new DifferentialDriveFilterCommand(autoOdometryCommand, navSub);
 
         // Initialize Teleop Commands
-
         FieldDisplayCommand fieldDisplayCommand = new FieldDisplayCommand();
         DifferentialDriveOdometryCommand odometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, fieldDisplayCommand);
         DifferentialDriveFilterCommand filterCommand = new DifferentialDriveFilterCommand(odometryCommand, navSub);
         ManualDifferentialDriveCommand manualDriveCommand = new ManualDifferentialDriveCommand(diffDriveSub);
 
         // Initialize Command Groups
-
-        autoGroup = new ParallelCommandGroup(autoFieldDisplayCommand, autoOdometryCommand, autoFilterCommand);
+        autoGroup = new ParallelCommandGroup(autoFieldDisplayCommand, autoOdometryCommand, autoFilterCommand); // These don't actually run in parallel.
         teleopGroup = new ParallelCommandGroup(fieldDisplayCommand, odometryCommand, filterCommand, manualDriveCommand);
 
         // Configure the button bindings
-
         configureButtonBindings();
     }
 

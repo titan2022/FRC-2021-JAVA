@@ -7,7 +7,7 @@ package frc.robot.commands;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.XboxMap;
+import frc.robot.config.XboxMap;
 import frc.robot.subsystems.DifferentialDriveSubsystem;
 
 /**
@@ -33,7 +33,7 @@ public class ManualDifferentialDriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (XboxMap.toggleBrakes()) { brakeState = !brakeState; } // TODO: Change to ternary operator
+    brakeState = XboxMap.toggleBrakes() ? !brakeState : brakeState;
 
     if (brakeState) {
       DifferentialDriveSubsystem.enableBrakes();

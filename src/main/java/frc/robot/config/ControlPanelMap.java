@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.config;
 
 import edu.wpi.first.wpilibj.Joystick;
 
@@ -18,7 +18,7 @@ public class ControlPanelMap {
 
     private static final double JOYSTICK_DRIFT = 1e-2;
 
-    private static Joystick leftPanels = Robot.oi.xinmotek1, rightPanels = Robot.oi.xinmotek2;
+    private static Joystick leftPanels = OI.xinmotek1, rightPanels = OI.xinmotek2;
     
     // TODO: give names to methods
     public static double leftJoystick() 

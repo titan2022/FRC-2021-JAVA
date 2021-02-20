@@ -86,6 +86,19 @@ public class PhysicsSim {
         return random(0, max);
     }
 
+    // MANUALLY ADDED COMMAND
+
+    /**
+     * Gets FPGA time and converts it to seconds.
+     * 
+     * @return FPGA time in seconds.
+     */
+    public static double getFPGATime() {
+
+        return RobotController.getFPGATime() / 1e6;
+
+    }
+
     
     /**
      * Holds information about a simulated device.

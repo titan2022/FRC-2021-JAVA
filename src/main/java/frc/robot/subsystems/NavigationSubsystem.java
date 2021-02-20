@@ -35,10 +35,11 @@ public class NavigationSubsystem extends SubsystemBase {
   private CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc]
   private DifferentialDriveOdometry odometry;
   private Timer timer;
+  private boolean simulated;
 
   // Physical and Simulated Hardware
-  private AHRS gyro = new AHRS(SPI.Port.kMXP);
-  private DriveSubsystem drive;
+  private AHRS gyro = new AHRS(SPI.Port.kMXP, (byte) 50);
+  private DifferentialDriveSubsystem drive;
 
   // Simulated components
   // AHRS SimDoubles
@@ -52,11 +53,13 @@ public class NavigationSubsystem extends SubsystemBase {
 
   /**
    * Creates a new NavigationSubsystem.
-   * 
    * @param drive - Drive subsystem with primary motors.
    */
-  public NavigationSubsystem(DriveSubsystem drive) {
-    // TODO: Add switch to set navigation into simulation mode based on the drive subsystem
+  public NavigationSubsystem(DifferentialDriveSubsystem drive) {
+    this.simulated = drive.isSimulated();
+
+    if (simulated) enableSimulation();
+
     this.drive = drive;
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
@@ -68,12 +71,6 @@ public class NavigationSubsystem extends SubsystemBase {
 
     timer = new Timer();
     timer.start();
-  }
-
-  public NavigationSubsystem(DriveSubsystem drive, boolean simulated) {
-    this(drive);
-    if (simulated)
-      enableSimulation();
   }
 
   private void enableSimulation() {
@@ -104,7 +101,17 @@ public class NavigationSubsystem extends SubsystemBase {
    */
   public double getYaw() {
 
-    return gyro.getYaw();
+    // return gyro.getYaw();
+
+    if (simulated) {
+
+      return yaw.get();
+
+    } else {
+
+      return gyro.getYaw();
+
+    }
 
   }
 

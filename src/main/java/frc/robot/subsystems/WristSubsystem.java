@@ -17,8 +17,6 @@ public class WristSubsystem extends SubsystemBase {
     public static final boolean SECONARDY_WRIST_PORT_INVERTED = false;
 
     private static final boolean PRIMARY_WRIST_SENSOR_PHASE = false;
-
-    private static final int ENCODER_PORT = 0;
     
     private static final double ANGLE_LOWER_LIMIT = 10; // TODO: Get from DI Team
     private static final double ANGLE_UPPER_LIMIT = 60; // TODO: Get from DI Team

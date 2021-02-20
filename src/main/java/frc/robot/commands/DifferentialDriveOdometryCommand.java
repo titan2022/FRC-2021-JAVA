@@ -89,6 +89,7 @@ public class DifferentialDriveOdometryCommand extends CommandBase {
    */
   public void resetOdometry(Pose2d poseMeters, Rotation2d gyroAngle) {
     odometry.resetPosition(poseMeters, gyroAngle);
+    driveSub.resetEncoderCounts();
   }
 
   /**

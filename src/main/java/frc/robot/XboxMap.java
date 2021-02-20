@@ -31,15 +31,8 @@ public class XboxMap {
   }
 
   //wrist controls
-  public static boolean goWristUp() {
-    return controller.getYButtonPressed();
-  }
-  public static boolean goWristDown() {
-    return controller.getAButtonPressed();
-  }
-  public static double spinWrist() {
-    double value = -controller.getX(Hand.kLeft);
-    return applyDeadband(value, JOYSTICK_DRIFT);
+  public static boolean toggleWrist() {
+    return controller.getBumperPressed(Hand.kLeft);
   }
     
   public static void startRumble() {

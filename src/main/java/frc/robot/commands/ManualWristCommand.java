@@ -7,14 +7,15 @@ import frc.robot.XboxMap;
 /**
  * @author Irene
  */
-public class WristCommand extends CommandBase {
+public class ManualWristCommand extends CommandBase {
     private static WristSubsystem wristSubsystem; 
+    private boolean up = false;
   
     /**
      *
      * @param subsystem The subsystem used by this command.
      */
-    public WristCommand(WristSubsystem subsystem) {
+    public ManualWristCommand(WristSubsystem subsystem) {
       addRequirements(subsystem);
       wristSubsystem = subsystem;
     }
@@ -29,18 +30,15 @@ public class WristCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        wristSubsystem.setWristPosition(XboxMap.spinWrist());
+        //wristSubsystem.setWristPosition(XboxMap.spinWrist());
             
-        //if (XboxMap.goWristUp()) {
-            //wristSubsystem.setWristVel(90);
-            
-        //}
-        //else if (XboxMap.goWristDown()) {
-          // wristSubsystem.setWristVel(-90);
-        //}
-        //else {
-            // wristSubsystem.setWristVel(0);
-        //}
+        if (XboxMap.toggleWrist()) {up = !up;}
+        if(up) {
+          wristSubsystem.goUp();
+        }
+        else {
+          wristSubsystem.goDown();
+        }
         
     }
   

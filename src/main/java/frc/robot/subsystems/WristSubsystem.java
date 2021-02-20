@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 /**
  * @author Irene
  */
@@ -89,20 +88,23 @@ public class WristSubsystem extends SubsystemBase {
     }
 
     /**
-     * 
      * @param angle desired angle to turn (in degrees)
      */
     public void setWristPosition(double angle)
     {
-        wrist.set(ControlMode.MotionProfile, angle * ANGLE_TO_TICK);
+        wrist.set(ControlMode.MotionProfile, angle *  ANGLE_TO_TICK);
     }
     /**
-     * 
-     * @param Velocity desired velocity to turn at
+     * Moves wrist to 90 degrees
      */
-    public void setWristVel(double Velocity)
-    {
-        wrist.set(ControlMode.Velocity, Velocity * ANGLE_TO_TICK);
+    public void goUp() {
+        setWristPosition(90);
+    }
+    /**
+     * Moves wrist to 0 degrees
+     */
+    public void goDown() {
+        setWristPosition(0);
     }
     /**
      * 
@@ -120,7 +122,9 @@ public class WristSubsystem extends SubsystemBase {
     public double getWristAngle() {
         return wrist.getSelectedSensorPosition();
     }
-    
+    /**
+     * checks if the wrist is within angle limits, if not within limits, sets wrist to be within limits
+     */
     public void checkWristLimits() {
         if (getWristAngle() < ANGLE_LOWER_LIMIT) {
             setWristPosition(ANGLE_LOWER_LIMIT);
@@ -130,7 +134,11 @@ public class WristSubsystem extends SubsystemBase {
             setWristPosition(ANGLE_UPPER_LIMIT);
         }
     }
+    /**
+     * moves to neutral/down position, stops the wrist
+     */
     public void stop() {
+        setWristPosition(0);
         wrist.set(ControlMode.PercentOutput, 0);
     }
     @Override

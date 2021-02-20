@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.config.DifferentialDriveContainer;
 import frc.robot.config.RobotContainer;
-import frc.robot.path.dstar.DStarDemoCommand;
-import frc.robot.path.dstar.DStarTester;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -80,9 +78,6 @@ public class Robot extends TimedRobot {
     if (autoCommandEntryPoint != null) {
       autoCommandEntryPoint.schedule();
     }
-
-    new DStarTester().schedule();
-    new DStarDemoCommand().schedule();
   }
 
   /**
@@ -101,7 +96,6 @@ public class Robot extends TimedRobot {
     if (autoCommandEntryPoint != null) {
       autoCommandEntryPoint.cancel(); //TODO: figure out how to cancel all commands that are recursive.
     }
-
     teleopCommandEntryPoint.schedule();
   }
 

@@ -3,6 +3,10 @@ package frc.robot.config;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.commands.DifferentialDriveFilterCommand;
+import frc.robot.commands.DifferentialDriveOdometryCommand;
+import frc.robot.commands.FieldDisplayCommand;
 import frc.robot.commands.ManualDifferentialDriveCommand;
 import frc.robot.subsystems.DifferentialDriveSubsystem;
 import frc.robot.subsystems.NavigationSubsystem;
@@ -15,24 +19,47 @@ import frc.robot.subsystems.NavigationSubsystem;
  * commands, and button mappings) should be declared here.
  */
 public class DifferentialDriveContainer implements RobotContainer {
+    
     // Subsystems
-    private final DifferentialDriveSubsystem diffDriveSub;
-    private final NavigationSubsystem navigationSub;
 
-    // Commands
-    private final ManualDifferentialDriveCommand manualDrive;
+    private final DifferentialDriveSubsystem diffDriveSub;
+    private final NavigationSubsystem navSub;
+
+    // Command Groups
+
+    private final ParallelCommandGroup autoGroup;
+    private final ParallelCommandGroup teleopGroup;
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
-    public DifferentialDriveContainer(boolean isSimulated) {
-        // Initialize Subsystems
-        diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), isSimulated);
-        navigationSub = new NavigationSubsystem(diffDriveSub);
+    public DifferentialDriveContainer(boolean simulated) {
 
-        // Initialize Commands
-        manualDrive = new ManualDifferentialDriveCommand(diffDriveSub);
+        // Initialize Subsystems
+
+        diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), simulated);
+        navSub = new NavigationSubsystem(diffDriveSub);
+
+        // Initialize Auto Commands
+
+        FieldDisplayCommand autoFieldDisplayCommand = new FieldDisplayCommand("Auto Field");
+        DifferentialDriveOdometryCommand autoOdometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, autoFieldDisplayCommand);
+        DifferentialDriveFilterCommand autoFilterCommand = new DifferentialDriveFilterCommand(autoOdometryCommand, navSub);
+
+        // Initialize Teleop Commands
+
+        FieldDisplayCommand fieldDisplayCommand = new FieldDisplayCommand();
+        DifferentialDriveOdometryCommand odometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, fieldDisplayCommand);
+        DifferentialDriveFilterCommand filterCommand = new DifferentialDriveFilterCommand(odometryCommand, navSub);
+        ManualDifferentialDriveCommand manualDriveCommand = new ManualDifferentialDriveCommand(diffDriveSub);
+
+        // Initialize Command Groups
+
+        autoGroup = new ParallelCommandGroup(autoFieldDisplayCommand, autoOdometryCommand, autoFilterCommand);
+        teleopGroup = new ParallelCommandGroup(fieldDisplayCommand, odometryCommand, filterCommand, manualDriveCommand);
 
         // Configure the button bindings
+
         configureButtonBindings();
     }
 
@@ -48,12 +75,12 @@ public class DifferentialDriveContainer implements RobotContainer {
 
     @Override
     public Command getAutonomousCommand() {
-        return null;
+        return autoGroup;
     }
 
     @Override
     public Command getTeleopCommand() {
-        return manualDrive;
+        return teleopGroup;
     }
 
     /**

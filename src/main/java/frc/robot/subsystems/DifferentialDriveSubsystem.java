@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.lang.reflect.InaccessibleObjectException;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
@@ -291,10 +293,15 @@ public class DifferentialDriveSubsystem extends SubsystemBase implements DriveSu
     }
   }
 
-  // Simulation Methods
-  // TODO: throw exception when the DifferentialDriveSubsystem is not being simulated
-  public DifferentialDrivetrainSim getDriveSim() { 
-    return driveSim;
+// Simulation Methods
+
+  /**
+   * Gets the DifferentialDrivetrainSim
+   * @return Drivetrain sim
+   */
+  public DifferentialDrivetrainSim getDrivetrainSim() {
+    if (!simulated) throw new InaccessibleObjectException("Drive sim doesn't exist because it is not simulated.");
+    return driveSim; // TODO: Return a deep copy
   }
 
   /**

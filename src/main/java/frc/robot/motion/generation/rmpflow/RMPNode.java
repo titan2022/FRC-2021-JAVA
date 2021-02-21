@@ -74,7 +74,7 @@ public abstract class RMPNode {
 	public void linkToParent(RMPNode parent)
 	{
 		this.parent.removeChild(this);
-		this.parent.children.add(this);
+		parent.children.add(this);
 		this.parent = parent;
 	}
 
@@ -84,7 +84,7 @@ public abstract class RMPNode {
 	 */
 	public void unlinkToParent(RMPNode parent)
 	{
-		this.parent.removeChild(this);
+		parent.removeChild(this);
 		this.parent = null;
 	}
 

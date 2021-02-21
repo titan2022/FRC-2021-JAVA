@@ -28,7 +28,7 @@ public abstract class RMPNode {
 		this.name = name;
 		this.parent = parent;
 		if(parent != null) // TODO: Throw null pointer if parent doesn't exist
-			parent.linkToChild(this);
+			parent.linkChild(this);
 		this.x = null;
 		this.x_dot = null;
 		this.f = null;
@@ -71,7 +71,7 @@ public abstract class RMPNode {
 	 * Set the current node's parent and updates the old and current link.
 	 * @param parent A RMP node parent
 	 */
-	public void linkToParent(RMPNode parent)
+	public void linkParent(RMPNode parent)
 	{
 		this.parent.removeChild(this);
 		parent.children.add(this);
@@ -82,7 +82,7 @@ public abstract class RMPNode {
 	 * 
 	 * @param parent
 	 */
-	public void unlinkToParent(RMPNode parent)
+	public void unlinkParent(RMPNode parent)
 	{
 		parent.removeChild(this);
 		this.parent = null;
@@ -92,18 +92,18 @@ public abstract class RMPNode {
 	 * Adds a node as a child to the implicit node.
 	 * @param child A RMP node child
 	 */
-	public void linkToChild(RMPNode child)
+	public void linkChild(RMPNode child)
 	{
-		child.linkToParent(this);
+		child.linkParent(this);
 	}
 
 	/**
 	 * 
 	 * @param child
 	 */
-	public void unlinkToChild(RMPNode child)
+	public void unlinkChild(RMPNode child)
 	{
-		child.unlinkToParent(this);
+		child.unlinkParent(this);
 	}
 
 	/**

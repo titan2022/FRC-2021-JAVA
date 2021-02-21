@@ -23,12 +23,12 @@ public abstract class RMPNode {
 	 * @param name of RMP node
 	 * @param parent of RMP node
 	 */
-	protected RMPNode(String name, RMPNode parent)
+	public RMPNode(String name, RMPNode parent)
 	{
 		this.name = name;
 		this.parent = parent;
 		if(parent != null) // TODO: Throw null pointer if parent doesn't exist
-			parent.addChild(this);
+			parent.linkToChild(this);
 		this.x = null;
 		this.x_dot = null;
 		this.f = null;
@@ -68,12 +68,60 @@ public abstract class RMPNode {
 	}
 	
 	/**
+	 * Set the current node's parent and updates the old and current link.
+	 * @param parent A RMP node parent
+	 */
+	public void linkToParent(RMPNode parent)
+	{
+		this.parent.removeChild(this);
+		this.parent.children.add(this);
+		this.parent = parent;
+	}
+
+	/**
+	 * 
+	 * @param parent
+	 */
+	public void unlinkToParent(RMPNode parent)
+	{
+		this.parent.removeChild(this);
+		this.parent = null;
+	}
+
+	/**
 	 * Adds a node as a child to the implicit node.
 	 * @param child A RMP node child
 	 */
-	public void addChild(RMPNode child)
+	public void linkToChild(RMPNode child)
 	{
-		children.add(child);
+		child.linkToParent(this);
+	}
+
+	/**
+	 * 
+	 * @param child
+	 */
+	public void unlinkToChild(RMPNode child)
+	{
+		child.unlinkToParent(this);
+	}
+
+	/**
+	 * Remove the child node from implicit parent node
+	 * @implNote Does not update the child's parent connection
+	 * @param child The child to remove
+	 * @return The child that was removed, returns null if nothing was removed
+	 */
+	private RMPNode removeChild(RMPNode child)
+	{
+		for(int i = 0; i < children.size(); i++)
+		{
+			if(children.get(i) == child) // Object reference check
+			{
+				return children.remove(i);
+			}
+		}
+		return null;
 	}
 	
 	/**

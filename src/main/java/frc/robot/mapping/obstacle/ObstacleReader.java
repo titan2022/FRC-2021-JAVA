@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import edu.wpi.first.wpilibj.Filesystem;
+
 /** Add your docs here. */
 public class ObstacleReader {
 
@@ -16,7 +18,14 @@ public class ObstacleReader {
 
     public static void read() throws FileNotFoundException, IOException {
 
-        BufferedReader reader = new BufferedReader(new FileReader(OBSTACLE_FILE_NAME));
+        BufferedReader reader = new BufferedReader(new FileReader(Filesystem.getDeployDirectory().toPath() + OBSTACLE_FILE_NAME));
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+
+            System.out.println(line);
+
+        }
 
         reader.close();
 

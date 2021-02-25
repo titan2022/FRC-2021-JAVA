@@ -25,22 +25,27 @@ public class ObstacleReader {
 
     public static ObstacleMap read() throws FileNotFoundException, IOException {
 
-        ObstacleMap map = new ObstacleMap();
         Path csvPath = Filesystem.getDeployDirectory().toPath().resolve(OBSTACLE_FILE_NAME);
         BufferedReader reader = new BufferedReader(new FileReader(new File(csvPath.toString())));
-        String line;
+        
+        ObstacleMap map = new ObstacleMap();
         ArrayList<Point> points = new ArrayList<Point>();
+
+        String line;
+        Point[] pointsArray;
+        String[] coordStrings;
 
         while ((line = reader.readLine()) != null) {
 
             if (line == ",") {
 
-                Point[] pointsArray = points.toArray(new Point[points.size()]);
+                pointsArray = points.toArray(new Point[points.size()]);
                 map.addObstacle(new Polygon(pointsArray));
+                points.clear();
 
             } else {
 
-                String[] coordStrings = line.split(",");
+                coordStrings = line.split(",");
                 points.add(new Point(parseDouble(coordStrings[0]), parseDouble(coordStrings[1])));
 
             }
@@ -49,6 +54,26 @@ public class ObstacleReader {
 
         reader.close();
         return map;
+
+    }
+
+    public static ObstacleMap readWithoutExceptions() {
+
+        try {
+
+            return read();
+
+        } catch (FileNotFoundException fileNotFoundException) {
+
+            System.out.println("File not found (" + OBSTACLE_FILE_NAME + ").");
+            return new ObstacleMap();
+
+        } catch (IOException ioException) {
+
+            System.out.println("I/O exception");
+            return new ObstacleMap();
+
+        }
 
     }
 

@@ -1,0 +1,3 @@
+polygon 1: field
+polygons 2-3: color tables
+polygons 4-7: central structure support pylons

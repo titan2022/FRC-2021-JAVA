@@ -2,7 +2,7 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.WristSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.XboxMap;
+import frc.robot.config.XboxMap;
 
 /**
  * @author Irene

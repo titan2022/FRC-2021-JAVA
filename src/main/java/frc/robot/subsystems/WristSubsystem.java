@@ -53,14 +53,7 @@ public class WristSubsystem extends SubsystemBase {
         }
 
         // Motor configs
-        wrist.config_kP(0, WRIST_KP);
-        wrist.config_kI(0, WRIST_KI);
-        wrist.config_kD(0, WRIST_KD);
-        wrist.config_kF(0, WRIST_KF);
-        followingWrist.config_kP(0, WRIST_KP);
-        followingWrist.config_kI(0, WRIST_KI);
-        followingWrist.config_kD(0, WRIST_KD);
-        followingWrist.config_kF(0, WRIST_KF);
+        motorConfig.
         wrist.setSensorPhase(PRIMARY_WRIST_SENSOR_PHASE);
         followingWrist.setSensorPhase(PRIMARY_WRIST_SENSOR_PHASE);
 

@@ -10,6 +10,8 @@ import frc.robot.commands.FieldDisplayCommand;
 import frc.robot.commands.ManualDifferentialDriveCommand;
 import frc.robot.subsystems.DifferentialDriveSubsystem;
 import frc.robot.subsystems.NavigationSubsystem;
+import frc.robot.subsystems.WristSubsystem;
+import frc.robot.commands.ManualWristCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -22,6 +24,7 @@ public class DifferentialDriveContainer implements RobotContainer {
     // Subsystems
     private final DifferentialDriveSubsystem diffDriveSub;
     private final NavigationSubsystem navSub;
+    private final WristSubsystem wristSub;
 
     // Command Groups
     private final ParallelCommandGroup autoGroup;
@@ -34,6 +37,9 @@ public class DifferentialDriveContainer implements RobotContainer {
         // Initialize Subsystems
         diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), simulated);
         navSub = new NavigationSubsystem(diffDriveSub);
+        wristSub = new WristSubsystem(getWristTalonConfig());
+        
+
 
         // Initialize Auto Commands
         FieldDisplayCommand autoFieldDisplayCommand = new FieldDisplayCommand("Auto Field");
@@ -45,10 +51,11 @@ public class DifferentialDriveContainer implements RobotContainer {
         DifferentialDriveOdometryCommand odometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, fieldDisplayCommand);
         DifferentialDriveFilterCommand filterCommand = new DifferentialDriveFilterCommand(odometryCommand, navSub);
         ManualDifferentialDriveCommand manualDriveCommand = new ManualDifferentialDriveCommand(diffDriveSub);
-
+        ManualWristCommand manualWristCommand = new ManualWristCommand(wristSub);
+        
         // Initialize Command Groups
         autoGroup = new ParallelCommandGroup(autoFieldDisplayCommand, autoOdometryCommand, autoFilterCommand); // These don't actually run in parallel.
-        teleopGroup = new ParallelCommandGroup(fieldDisplayCommand, odometryCommand, filterCommand, manualDriveCommand);
+        teleopGroup = new ParallelCommandGroup(fieldDisplayCommand, odometryCommand, filterCommand, manualDriveCommand, manualWristCommand);
 
         // Configure the button bindings
         configureButtonBindings();
@@ -94,6 +101,19 @@ public class DifferentialDriveContainer implements RobotContainer {
     {
         TalonSRXConfiguration talon = new TalonSRXConfiguration();
         // Add configs here:
+
+        return talon;
+    }
+    /**
+     * @return
+     */
+    public TalonSRXConfiguration getWristTalonConfig() {
+        TalonSRXConfiguration talon = new TalonSRXConfiguration();
+        // Add configs here:
+        talon.SetP(0, 0);
+        talon.config_kI(0, 0.1);
+        talon.config_kD(0, 0.2);
+        talon.config_kF(0, 0.3);
 
         return talon;
     }

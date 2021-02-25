@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.config;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
@@ -12,8 +12,8 @@ public class XboxMap {
   private static final double RUMBLE_INTENSITY = 1; // [0,1]
 
   // Main Driver and Auxilliary Driver
-  private static final XboxController controller = Robot.oi.ps4;
-  private static final XboxController auxController = Robot.oi.xbox;
+  private static final XboxController controller = OI.ps4;
+  private static final XboxController auxController = OI.xbox;
 
   // Driving Controls 
 	public static double left() {

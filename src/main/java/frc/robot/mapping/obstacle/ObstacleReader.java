@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.io.File;
 
 import edu.wpi.first.wpilibj.Filesystem;
 
@@ -18,7 +20,8 @@ public class ObstacleReader {
 
     public static void read() throws FileNotFoundException, IOException {
 
-        BufferedReader reader = new BufferedReader(new FileReader(Filesystem.getDeployDirectory().toPath() + OBSTACLE_FILE_NAME));
+        Path csvPath = Filesystem.getDeployDirectory().toPath().resolve(OBSTACLE_FILE_NAME);
+        BufferedReader reader = new BufferedReader(new FileReader(new File(csvPath.toString())));
         String line;
 
         while ((line = reader.readLine()) != null) {

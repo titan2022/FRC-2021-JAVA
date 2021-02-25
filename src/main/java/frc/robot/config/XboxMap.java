@@ -39,6 +39,15 @@ public class XboxMap {
 		controller.setRumble(RumbleType.kLeftRumble, 0);
 		controller.setRumble(RumbleType.kRightRumble, 0);
   }
+
+  public static boolean pressA(){
+    return controller.getAButtonPressed();
+  }
+
+  public static boolean releaseA()
+  {
+    return controller.getAButtonReleased();
+  }
   
   /**
    * Returns 0.0 if the given value is within the specified range around zero. The remaining range

@@ -17,15 +17,14 @@ public class FollowPathCommand extends CommandBase {
     private final PathCommand planner;
     private final MotionGenerationCommand motion;
     public final DriveSubsystem drive;
+    public final double tolerance;
     private GoalAttractor attractor;
-    private double stall;
-    private boolean done = false;
 
-    public FollowPathCommand(PathCommand planner, MotionGenerationCommand motion, DriveSubsystem drive, double stall) {
+    public FollowPathCommand(PathCommand planner, MotionGenerationCommand motion, DriveSubsystem drive, double tolerance) {
         this.planner = planner;
         this.motion = motion;
         this.drive = drive;
-        this.stall = stall;
+        this.tolerance = tolerance;
         attractor = new GoalAttractor("Path goal", motion.root, toMatrix(motion.filter.getFilteredPose()), 10, 1, 10, 1, 2, 2, 0.005);
     }
 
@@ -56,12 +55,11 @@ public class FollowPathCommand extends CommandBase {
         attractor.updateGoal(firstEndpoint(planner.planner.getPath()));
         Translation2d vel = motion.getVelocity();
         double theta_dot = motion.getRotationalVelocity();
-        done = vel.getNorm() < stall;
         drive.setVelocities(new ChassisSpeeds(vel.getX(), vel.getY(), theta_dot));
     }
 
     @Override
     public boolean isFinished() {
-        return done;
+        return planner.planner.getPath().getLength() <= tolerance;
     }
 }

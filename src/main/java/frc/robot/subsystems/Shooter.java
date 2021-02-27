@@ -165,8 +165,18 @@ public class Shooter extends SubsystemBase{
     public double getShooterFinalVelocity()
     {
         Shooter shooter = new Shooter();
-        double finalVelocity = Math.sqrt(Math.pow(shooter.getShooterVelocityX(), 2), Math.pow(shooter.getShooterVelocityY(), 2));
+        double finalVelocity = Math.sqrt(Math.pow(shooter.getShooterVelocityX(), 2) + Math.pow(shooter.getShooterVelocityY(), 2));
         return finalVelocity;  
+    }
+
+    public void setMotorsSpeed()
+    {
+        Shooter shooter = new Shooter();
+        double speed = shooter.getShooterFinalVelocity();
+        leftPrimary.set(speed);
+        leftSecondary.set(speed);
+        rightPrimary.set(speed);
+        rightSecondary.set(speed);
     }
 
     

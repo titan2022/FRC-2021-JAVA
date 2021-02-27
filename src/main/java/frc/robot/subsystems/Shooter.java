@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 /**
  * @author Abhi
  * @author Deepu
- * @author Hari
  */
 public class Shooter extends SubsystemBase{
 
@@ -198,6 +197,8 @@ public class Shooter extends SubsystemBase{
         rightPrimary.set(speed);
         rightSecondary.set(speed);
     }
+
+    public void calcAngular
 
     
     

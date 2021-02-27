@@ -40,7 +40,16 @@ public class ObstacleAvoidance extends RMPNode {
 
         for (Obstacle obstacle : obstacles) {
 
-            path = obstacle.getBoundary();
+            Polygon polygon = (Polygon) obstacle; // NOT SUPER SAFE
+            Point[] vertexArray = polygon.getVertices();
+
+            for (Point vertex : vertexArray) {
+
+                linkChildFromPoint(vertex);
+
+            }
+
+            path = polygon.getBoundary(0);
             nodeCount = (int) (path.getLength() / RADIUS);
 
             for (i = 0; i < nodeCount; i++) {

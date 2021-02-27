@@ -1,6 +1,9 @@
-package frc.robot.motion.generation.rmpflow;
+package frc.robot.motion.generation.rmpflow.rmps;
 
 import org.ejml.simple.SimpleMatrix;
+
+import frc.robot.motion.generation.rmpflow.RMPLeaf;
+import frc.robot.motion.generation.rmpflow.RMPNode;
 
 public class Damper extends RMPLeaf{
     private double w;

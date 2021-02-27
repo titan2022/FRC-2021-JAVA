@@ -1,8 +1,10 @@
-package frc.robot.motion.generation.rmpflow;
+package frc.robot.motion.generation.rmpflow.rmps;
 
 import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import frc.robot.motion.generation.rmpflow.RMPLeaf;
+import frc.robot.motion.generation.rmpflow.RMPNode;
 
 /**
  * A 1-d distance subtask space collision avoidance between two points.

@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.VecBuilder;
 import frc.robot.subsystems.sim.PhysicsSim;
-
+import frc.robot.vision.LimelightMath;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
@@ -78,14 +78,21 @@ public class Shooter extends SubsystemBase{
     private TalonSRX talon;
     private VictorSPX victor;
     private double radius;
- 
-    public Shooter(TalonSRXConfiguration leftConfig, TalonSRXConfiguration rightConfig)
+   
+    //First set the speed of the motor and then calculate the rpm and acceleration of the wheel.
+    public double calcRPMBall()
     {
-        
+        double speed = 8.0;
+        leftPrimary.set(speed);
+        leftSecondary.set(speed);
+        rightPrimary.set(speed);
+        rightSecondary.set(speed);
+        rpm = speed / 60 / radius / (2 * Math.PI);
+        return rpm;
     }
 
     //First set the speed of the motor and then calculate the rpm and acceleration of the wheel.
-    public double calcRPM()
+    public double calcRPMTalon()
     {
         double speed = 8.0;
         leftPrimary.set(speed);
@@ -97,30 +104,72 @@ public class Shooter extends SubsystemBase{
     }
 
     //gets the angle of the hood
-    public void getHoodAngle()
+    public double getHoodXAngle()
     {
+        double angle = 45.0;
+        return angle;
+    }
+
+    //gets the angle of the hood
+    public double getAngleToTargetH()
+    {
+        LimelightMath vision = new LimelightMath();
+        return vision.calculateAngleToTargetH();
+    }
+
+    //gets the angle of the hood
+    public double getHoodYAngle()
+    {
+        double angle = 45.0;
+        return angle;
+    }
+
+    //gets the angle of the hood
+    public double getAngleToTargetY()
+    {
+        LimelightMath vision = new LimelightMath();
+        return vision.calculateAngleToTargetV();
+    }
+
+    //Calculates velocity of the shooter based on the hood angle.
+    public double getShooterVelocityX()
+    {
+        Shooter shooter = new Shooter();
+        double initialAngle = shooter.getHoodYAngle();
         
+       
+
+        LimelightMath vision = new LimelightMath();
+        double distanceToTargetX = vision.calculateDistance();
+        double desiredTime = 5.0;
+        double shooterVelocity = distanceToTargetX/(Math.cos(initialAngle) * desiredTime);
+        return shooterVelocity;
 
     }
 
-    //Finds the exitAngle of the ball based on the angle of the hood.
-    public double getExitAngle()
+    //Calculates velocity of the shooter based on the hood angle.
+    public double getShooterVelocityY()
     {
-        return 0;
+        Shooter shooter = new Shooter();
+        double initialAngle = shooter.getHoodYAngle();
+        double accelerationY = -9.8;
+        double desiredTime = 5.0;
+
+        LimelightMath vision = new LimelightMath();
+        double distanceY = vision.calculateDistance() * Math.tan(vision.calculateAngleToTargetV());
+        double shooterVelocity = (distanceY + 0.5 * accelerationY * desiredTime * desiredTime) / (Math.sin(initialAngle)* desiredTime);
+        return shooterVelocity;
     }
+
+    //Calculate Final Velocity relative to Angle of Hood.
+    public double getShooterFinalVelocity()
+    {
+        Shooter shooter = new Shooter();
+        double finalVelocity = Math.sqrt(Math.pow(shooter.getShooterVelocityX(), 2), Math.pow(shooter.getShooterVelocityY(), 2));
+        return finalVelocity;  
+    }
+
     
-    //Finds the targetCoords based on the positioning of the shooter. 
-    public void targetCoords()
-    {
-
-    }
-
-    //Find the trajectory of the ball based on the initial and final coords.
-    public void findTrajectory()
-    {
-
-    }
-
     
 
     

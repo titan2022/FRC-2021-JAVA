@@ -10,8 +10,7 @@ package frc.robot.commands;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import frc.robot.XboxMap;
+import frc.robot.config.XboxMap;
 
 /**
  * An example command that uses an example subsystem.

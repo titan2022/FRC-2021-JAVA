@@ -10,12 +10,13 @@ import frc.robot.mapping.Obstacle;
 import frc.robot.mapping.ObstacleMap;
 import frc.robot.mapping.Path;
 import frc.robot.mapping.Point;
+import frc.robot.mapping.Polygon;
 import frc.robot.motion.generation.rmpflow.RMPNode;
 
 /**
  * ObstacleNode works with field obstacles.
  */
-public class ObstacleNode extends RMPNode {
+public class ObstacleAvoidance extends RMPNode {
     private double radius;
     private double epsilon = 1e-1;
     private double alpha = 1e-5;
@@ -30,7 +31,7 @@ public class ObstacleNode extends RMPNode {
      * @param parent
      * @param radius
      */
-    public ObstacleNode(String name, ObstacleMap map, RMPNode parent, double radius) {
+    public ObstacleAvoidance(String name, ObstacleMap map, RMPNode parent, double radius) {
         super(name, parent);
         addObstacleChildren(map);
         this.radius = radius;

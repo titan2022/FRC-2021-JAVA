@@ -53,6 +53,8 @@ public class Shooter extends SubsystemBase{
   private static final double MAX_SPEED = 10; // meters/sec
   private static final int PEAK_CURRENT_LIMIT = 60;
   private static final int CONTINUOUS_CURRENT_LIMIT = 50;
+  private static final double ENCODER_TICKS = 5000; //temp value
+  private static final double ANGLE_TO_TICK =  1 / (360 * ENCODER_TICKS); //temp value
 
   // Phoenix Physics Sim Variables
   private static final double FULL_ACCEL_TIME = 0.75; // sec
@@ -120,8 +122,27 @@ public class Shooter extends SubsystemBase{
     //gets the angle of the hood
     public double getHoodYAngle()
     {
-        double angle = 45.0;
+        double angle = leftPrimary.getSelectedSensorPosition();
         return angle;
+    }
+
+    /*
+    public void checkHoodLimits() {
+        if (getHoodYAngle() < ANGLE_LOWER_LIMIT) {
+            setHoodYPosition(ANGLE_LOWER_LIMIT);
+        }
+                
+        if (getHoodYAngle() > ANGLE_UPPER_LIMIT) {
+            setHoodYPosition(ANGLE_UPPER_LIMIT);
+        }
+    } */
+
+    public void setHoodYAngle(double angle)
+    {
+        leftPrimary.set(ControlMode.MotionProfile, angle *  ANGLE_TO_TICK);
+        leftSecondary.set(ControlMode.MotionProfile, angle *  ANGLE_TO_TICK);
+        rightPrimary.set(ControlMode.MotionProfile, angle *  ANGLE_TO_TICK);
+        rightSecondary.set(ControlMode.MotionProfile, angle *  ANGLE_TO_TICK);
     }
 
     //gets the angle of the hood

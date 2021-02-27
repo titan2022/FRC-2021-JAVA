@@ -1,9 +1,11 @@
-package frc.robot.motion.generation.rmpflow;
+package frc.robot.motion.generation.rmpflow.rmps;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.ejml.simple.SimpleMatrix;
 import org.junit.jupiter.api.Test;
+
+import frc.robot.motion.generation.rmpflow.RMPRoot;
 
 public class CollisionAvoidanceTest {
     RMPRoot r = new RMPRoot("root");

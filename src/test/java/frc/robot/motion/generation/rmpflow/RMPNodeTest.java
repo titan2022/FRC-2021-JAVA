@@ -7,6 +7,8 @@ import org.ejml.simple.SimpleMatrix;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import frc.robot.motion.generation.rmpflow.rmps.CollisionAvoidance;
+
 public class RMPNodeTest {
     RMPNode parent1;
     RMPNode parent2;

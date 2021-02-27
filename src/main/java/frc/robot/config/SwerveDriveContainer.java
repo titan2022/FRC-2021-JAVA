@@ -30,7 +30,7 @@ public class SwerveDriveContainer implements RobotContainer {
      */
     public SwerveDriveContainer(boolean simulated) {
         // Initialize Subsystems
-        swerveDriveSub = new SwerveDriveSubsystem(getSwerveDriveTalonMotorConfig(), getSwerveDriveTalonRotaryConfig());
+        swerveDriveSub = new SwerveDriveSubsystem(getSwerveDriveTalonDirectionalConfig(), getSwerveDriveTalonRotaryConfig());
         navSub = new NavigationSubsystem();
 
         // Initialize Auto Commands
@@ -72,7 +72,7 @@ public class SwerveDriveContainer implements RobotContainer {
      * Method containing the talon configuration of the left side of the differential drive.
      * @return The talon configuration of the left side of the drive.
      */
-    public TalonFXConfiguration getSwerveDriveTalonMotorConfig()
+    public TalonFXConfiguration getSwerveDriveTalonDirectionalConfig()
     {
         TalonFXConfiguration talon = new TalonFXConfiguration();
         // Add configs here:

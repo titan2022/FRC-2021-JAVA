@@ -7,19 +7,19 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.mapping.Point;
-import frc.robot.subsystems.MotionGenerationSubsystem;
+import frc.robot.motion.generation.rmpflow.RMPRoot;
 
 public class MotionGenerationCommand extends CommandBase {
     public final DifferentialDriveFilterCommand filter;
-    public final MotionGenerationSubsystem motion;
+    public final RMPRoot root;
     private Pose2d prev;
     private long t0;
     private Point vel_translational = new Point(0, 0);
     private double vel_rotational = 0;
 
-    public MotionGenerationCommand(DifferentialDriveFilterCommand filter, MotionGenerationSubsystem motion) {
+    public MotionGenerationCommand(DifferentialDriveFilterCommand filter) {
         this.filter = filter;
-        this.motion = motion;
+        root = new RMPRoot("Motion Generation Root");
         prev = filter.getFilteredPose();
         t0 = RobotController.getFPGATime();
     }
@@ -31,7 +31,7 @@ public class MotionGenerationCommand extends CommandBase {
         double t_diff = (RobotController.getFPGATime() - t0) / 1000000.;
         SimpleMatrix x = new SimpleMatrix(new double[][]{{pos.getX()}, {pos.getY()}, {pos.getRotation().getRadians()}});
         SimpleMatrix x_dot = new SimpleMatrix(new double[][]{{vel.getX() / t_diff}, {vel.getY() / t_diff}, {vel.getRotation().getRadians() / t_diff}});
-        SimpleMatrix accel = motion.rootSolve(x, x_dot);
+        SimpleMatrix accel = root.solve(x, x_dot);
         long t1 = RobotController.getFPGATime();
         t_diff = (t1 - t0) / 1000000.;
         vel_translational = new Point(vel.getX() + accel.get(0) * t_diff, vel.getY() + accel.get(1) * t_diff);

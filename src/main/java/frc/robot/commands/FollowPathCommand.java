@@ -26,8 +26,7 @@ public class FollowPathCommand extends CommandBase {
         this.motion = motion;
         this.drive = drive;
         this.stall = stall;
-        attractor = new GoalAttractor("Path goal", motion.motion.getRoot(), toMatrix(motion.filter.getFilteredPose()), 10, 1, 10, 1, 2, 2, 0.005);
-        motion.motion.addGoalAttractor(attractor);
+        attractor = new GoalAttractor("Path goal", motion.root, toMatrix(motion.filter.getFilteredPose()), 10, 1, 10, 1, 2, 2, 0.005);
     }
 
     private SimpleMatrix toMatrix(Pose2d x) {

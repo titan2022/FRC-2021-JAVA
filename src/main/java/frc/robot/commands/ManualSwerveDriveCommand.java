@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.config.XboxMap;
+import frc.robot.motion.control.PIDConfig;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.NavigationSubsystem;
 
@@ -19,17 +20,22 @@ import frc.robot.subsystems.NavigationSubsystem;
 public class ManualSwerveDriveCommand extends CommandBase {
   private static SwerveDriveSubsystem swerveDriveSubsystem;
   private static NavigationSubsystem navigationSubsystem;
+  private PIDController pid;
   private boolean brakeState = false;
   private double kP = 0.2;
   private double kI = 0;
   private double kD = 0.1;
 
   /** Creates a new ManualDifferentialDriveCommand. */
-  public ManualSwerveDriveCommand(SwerveDriveSubsystem swerveDrive, NavigationSubsystem navigationSubsystem) {
+  public ManualSwerveDriveCommand(SwerveDriveSubsystem swerveDrive, NavigationSubsystem navigationSubsystem, PIDConfig pidConfig) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveDrive);
     swerveDriveSubsystem = swerveDrive;
     navigationSubsystem = navigationSubsystem;
+
+    pid = new PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD);
+    pid.enableContinuousInput(pidConfig.CONTINOUS_MINIMUM, pidConfig.CONTINOUS_MAXIMUM);
+    pid.setIntegratorRange(pidConfig.INTEGRATION_MIN, pidConfig.INTEGRATION_MAX);
   }
 
   // Called when the command is initially scheduled.
@@ -42,8 +48,7 @@ public class ManualSwerveDriveCommand extends CommandBase {
   @Override
   public void execute() {
     brakeState = XboxMap.toggleBrakes() ? !brakeState : brakeState;
-    PIDController pid = new PIDController(kP, kI, kD);
-    pid.enableContinuousInput(0, 2*Math.PI);
+
     if (brakeState) {
       swerveDriveSubsystem.enableBrakes();
     }

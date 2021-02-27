@@ -86,16 +86,12 @@ public class SwerveDriveSubsystem extends SubsystemBase
   private static final int MAIN_MOTOR_PID_IDX = 0;
 
   //Kinematics
+  //positions describe the position of each wheel relative to the center of the robot
   SwerveDriveKinematics kinematics;
-  Translation2d leftFrontPosition, leftBackPosition, rightFrontPosition, rightBackPosition;
-  private static final double LEFT_FRONT_X = 0.25;
-  private static final double LEFT_FRONT_Y = 0.25;
-  private static final double LEFT_BACK_X = 0.25;
-  private static final double LEFT_BACK_Y = 0.25;
-  private static final double RIGHT_FRONT_X = 0.25;
-  private static final double RIGHT_FRONT_Y = 0.25;
-  private static final double RIGHT_BACK_X = 0.25;
-  private static final double RIGHT_BACK_Y = 0.25;
+  private static final Translation2d leftFrontPosition = new Translation2d(-0.25, 0.25);
+  private static final Translation2d leftBackPosition = new Translation2d(-0.25, -0.25);
+  private static final Translation2d rightFrontPosition = new Translation2d(0.25, 0.25);
+  private static final Translation2d rightBackPosition = new Translation2d(0.25, -0.25);
 
   //Might need extra parameters for rotator motors
   //Make like differential drive subsystem constructor
@@ -182,10 +178,6 @@ public class SwerveDriveSubsystem extends SubsystemBase
 
     //Kinematics
     //order is leftfront, leftback, rightfront, rightback
-    leftFrontPosition = new Translation2d(LEFT_FRONT_X, LEFT_FRONT_Y);
-    leftBackPosition = new Translation2d(LEFT_BACK_X, LEFT_BACK_Y);
-    rightFrontPosition = new Translation2d(RIGHT_FRONT_X, RIGHT_FRONT_Y);
-    rightBackPosition = new Translation2d(RIGHT_BACK_X, RIGHT_BACK_Y);
     kinematics = new SwerveDriveKinematics(leftFrontPosition, leftBackPosition, rightFrontPosition, rightBackPosition);
   }
 

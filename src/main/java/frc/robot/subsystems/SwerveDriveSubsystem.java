@@ -5,9 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
@@ -80,22 +78,12 @@ public class SwerveDriveSubsystem extends SubsystemBase
 
   //PID for rotators
   // One slot and one PID_IDX
-  private static final int ROTATOR_TIMEOUT = 30; //ms
   private static final int ROTATOR_SLOT_IDX = 0;
   private static final int ROTATOR_PID_IDX = 0;
-  private static final double ROTATOR_KF = 0.5;
-  private static final double ROTATOR_KP = 0.02;
-  private static final double ROTATOR_KI = 0;
-  private static final double ROTATOR_KD = 0.01;
 
   //PID for main motors
-  private static final int MAIN_MOTOR_TIMEOUT = 30; //ms
   private static final int MAIN_MOTOR_SLOT_IDX = 0;
   private static final int MAIN_MOTOR_PID_IDX = 0;
-  private static final double MAIN_MOTOR_KF = 0.5;
-  private static final double MAIN_MOTOR_KP = 0.02;
-  private static final double MAIN_MOTOR_KI = 0;
-  private static final double MAIN_MOTOR_KD = 0.01;
 
   //Kinematics
   SwerveDriveKinematics kinematics;
@@ -109,18 +97,24 @@ public class SwerveDriveSubsystem extends SubsystemBase
   private static final double RIGHT_BACK_X = 0.25;
   private static final double RIGHT_BACK_Y = 0.25;
 
+  //Might need extra parameters for rotator motors
+  //Make like differential drive subsystem constructor
+  public SwerveDriveSubsystem(TalonFXConfiguration mainConfig, TalonFXConfiguration rotatorConfig)
+  {
+    setFactoryMotorConfig();
 
+    if(mainConfig != null && rotatorConfig != null)
+    {
+    leftFrontMotor.configAllSettings(mainConfig);
+    leftBackMotor.configAllSettings(mainConfig);
+    rightFrontMotor.configAllSettings(mainConfig);
+    rightBackMotor.configAllSettings(mainConfig);
 
-  private void SwerveDriveSubsystemSetup() {
-        // motor configuration block
-    leftFrontMotor.configFactoryDefault();
-    leftBackMotor.configFactoryDefault();
-    rightFrontMotor.configFactoryDefault();
-    rightBackMotor.configFactoryDefault();
-    leftFrontRotatorMotor.configFactoryDefault();
-    leftBackRotatorMotor.configFactoryDefault();
-    rightFrontRotatorMotor.configFactoryDefault();
-    rightBackRotatorMotor.configFactoryDefault();
+    leftFrontRotatorMotor.configAllSettings(rotatorConfig);
+    leftBackRotatorMotor.configAllSettings(rotatorConfig);
+    rightFrontRotatorMotor.configAllSettings(rotatorConfig);
+    rightBackRotatorMotor.configAllSettings(rotatorConfig);
+    }
 
     rightFrontMotor.setInverted(RIGHT_FRONT_MOTOR_INVERTED);
     rightBackMotor.setInverted(RIGHT_BACK_MOTOR_INVERTED);
@@ -135,6 +129,12 @@ public class SwerveDriveSubsystem extends SubsystemBase
     // Sets the direction that the talon will turn on the green LED when going 'forward'.
     leftFrontMotor.setSensorPhase(LEFT_FRONT_MOTOR_SENSOR_PHASE);
     rightFrontMotor.setSensorPhase(RIGHT_FRONT_MOTOR_SENSOR_PHASE);
+    leftBackMotor.setSensorPhase(LEFT_BACK_MOTOR_SENSOR_PHASE);
+    rightBackMotor.setSensorPhase(RIGHT_BACK_MOTOR_ROTATOR_SENSOR_PHASE);
+    leftFrontRotatorMotor.setSensorPhase(LEFT_FRONT_MOTOR_ROTATOR_SENSOR_PHASE);
+    rightFrontRotatorMotor.setSensorPhase(RIGHT_FRONT_MOTOR_ROTATOR_SENSOR_PHASE);
+    leftBackRotatorMotor.setSensorPhase(LEFT_BACK_MOTOR__ROTATOR_SENSOR_PHASE);
+    rightBackRotatorMotor.setSensorPhase(RIGHT_BACK_MOTOR_ROTATOR_SENSOR_PHASE);
     //Might need to add more for rotator motors. 
 
     // Current limits in amps
@@ -171,28 +171,14 @@ public class SwerveDriveSubsystem extends SubsystemBase
     */
 
     leftFrontRotatorMotor.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
-    leftFrontRotatorMotor.config_kF(ROTATOR_SLOT_IDX, ROTATOR_KF);
-    leftFrontRotatorMotor.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
-    leftFrontRotatorMotor.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
-    leftFrontRotatorMotor.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
-
     rightFrontRotatorMotor.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
-    rightFrontRotatorMotor.config_kF(ROTATOR_SLOT_IDX, ROTATOR_KF);
-    rightFrontRotatorMotor.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
-    rightFrontRotatorMotor.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
-    rightFrontRotatorMotor.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
-
     leftBackRotatorMotor.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
-    leftBackRotatorMotor.config_kF(ROTATOR_SLOT_IDX, ROTATOR_KF);
-    leftBackRotatorMotor.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
-    leftBackRotatorMotor.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
-    leftBackRotatorMotor.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
-
     rightBackRotatorMotor.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
-    rightBackRotatorMotor.config_kF(ROTATOR_SLOT_IDX, ROTATOR_KF);
-    rightBackRotatorMotor.config_kP(ROTATOR_SLOT_IDX, ROTATOR_KP);
-    rightBackRotatorMotor.config_kI(ROTATOR_SLOT_IDX, ROTATOR_KI);
-    rightBackRotatorMotor.config_kD(ROTATOR_SLOT_IDX, ROTATOR_KD);
+
+    leftFrontMotor.selectProfileSlot(MAIN_MOTOR_SLOT_IDX, MAIN_MOTOR_PID_IDX);
+    rightFrontMotor.selectProfileSlot(MAIN_MOTOR_SLOT_IDX, MAIN_MOTOR_PID_IDX);
+    leftBackMotor.selectProfileSlot(MAIN_MOTOR_SLOT_IDX, MAIN_MOTOR_PID_IDX);
+    rightBackMotor.selectProfileSlot(MAIN_MOTOR_SLOT_IDX, MAIN_MOTOR_PID_IDX);
 
     //Kinematics
     //order is leftfront, leftback, rightfront, rightback
@@ -202,29 +188,22 @@ public class SwerveDriveSubsystem extends SubsystemBase
     rightBackPosition = new Translation2d(RIGHT_BACK_X, RIGHT_BACK_Y);
     kinematics = new SwerveDriveKinematics(leftFrontPosition, leftBackPosition, rightFrontPosition, rightBackPosition);
   }
-  /**
-   * Creates a new SwerveSubsystem.
-   */
-  public SwerveDriveSubsystem() 
+
+  public SwerveDriveSubsystem()
   {
-    SwerveDriveSubsystemSetup();
+    this(null, null);
   }
 
-  //Might need extra parameters for rotator motors
-  //Make like differential drive subsystem constructor
-  public SwerveDriveSubsystem(TalonFXConfiguration mainConfig, TalonFXConfiguration rotatorConfig)
+  private void setFactoryMotorConfig()
   {
-    leftFrontMotor.configAllSettings(mainConfig);
-    leftBackMotor.configAllSettings(mainConfig);
-    rightFrontMotor.configAllSettings(mainConfig);
-    rightBackMotor.configAllSettings(mainConfig);
-
-    leftFrontRotatorMotor.configAllSettings(rotatorConfig);
-    leftBackRotatorMotor.configAllSettings(rotatorConfig);
-    rightFrontRotatorMotor.configAllSettings(rotatorConfig);
-    rightBackRotatorMotor.configAllSettings(rotatorConfig);
-
-    SwerveDriveSubsystemSetup();
+    leftFrontMotor.configFactoryDefault();
+    leftBackMotor.configFactoryDefault();
+    rightFrontMotor.configFactoryDefault();
+    rightBackMotor.configFactoryDefault();
+    leftFrontRotatorMotor.configFactoryDefault();
+    leftBackRotatorMotor.configFactoryDefault();
+    rightFrontRotatorMotor.configFactoryDefault();
+    rightBackRotatorMotor.configFactoryDefault();
   }
 
   /**

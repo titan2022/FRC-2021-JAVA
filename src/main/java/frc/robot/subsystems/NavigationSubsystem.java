@@ -95,6 +95,14 @@ public class NavigationSubsystem extends SubsystemBase {
   public Rotation2d getHeadingRotation2d() {
     return Rotation2d.fromDegrees(getHeadingDegrees());
   }
+/**
+ * Gets heading in traditional (0, 2pi) math coordinates.
+ * East is 0, West is pi.
+ * @return
+ */
+  public double getHeadingRadians() {
+    return (2*Math.PI*(1.0/360.0)*Math.IEEEremainder(getYaw()+180, 360))+(Math.PI/2);
+  }
 
   /**
    * Resets AHRS gyro.

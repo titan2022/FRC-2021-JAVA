@@ -6,23 +6,30 @@ package frc.robot.commands;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.config.XboxMap;
 import frc.robot.subsystems.SwerveDriveSubsystem;
+import frc.robot.subsystems.NavigationSubsystem;
 
 /**
  * 
  */
 public class ManualSwerveDriveCommand extends CommandBase {
   private static SwerveDriveSubsystem swerveDriveSubsystem;
+  private static NavigationSubsystem navigationSubsystem;
   private boolean brakeState = false;
+  private double kP = 0.2;
+  private double kI = 0;
+  private double kD = 0.1;
 
   /** Creates a new ManualDifferentialDriveCommand. */
-  public ManualSwerveDriveCommand(SwerveDriveSubsystem swerveDrive) {
+  public ManualSwerveDriveCommand(SwerveDriveSubsystem swerveDrive, NavigationSubsystem navigationSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveDrive);
     swerveDriveSubsystem = swerveDrive;
+    navigationSubsystem = navigationSubsystem;
   }
 
   // Called when the command is initially scheduled.
@@ -35,13 +42,13 @@ public class ManualSwerveDriveCommand extends CommandBase {
   @Override
   public void execute() {
     brakeState = XboxMap.toggleBrakes() ? !brakeState : brakeState;
-
+    PIDController pid = new PIDController(kP, kI, kD);
     if (brakeState) {
       swerveDriveSubsystem.enableBrakes();
     }
     else { 
       swerveDriveSubsystem.disableBrakes();
-      swerveDriveSubsystem.setOutput(new ChassisSpeeds(XboxMap.leftX(), XboxMap.leftY(), XboxMap.right()));
+      swerveDriveSubsystem.setOutput(new ChassisSpeeds(XboxMap.leftX(), XboxMap.leftY(), pid.calculate(navigationSubsystem.getHeadingRadians(), Math.atan2(XboxMap.rightY(), XboxMap.rightX()))));
     }
   }
 

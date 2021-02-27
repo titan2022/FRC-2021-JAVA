@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.config.XboxMap;
 import frc.robot.motion.generation.rmpflow.RMPRoot;
+import frc.robot.motion.generation.rmpflow.rmps.ObstacleAvoidance;
 import frc.robot.subsystems.DifferentialDriveSubsystem;
 
 public class AssistedDriveCommand extends CommandBase {
@@ -22,10 +23,11 @@ public class AssistedDriveCommand extends CommandBase {
     private final RMPRoot root = new RMPRoot("Assisted Driving");
     private long t0 = 0;
 
-    public AssistedDriveCommand(DifferentialDriveSubsystem drive, DifferentialDriveFilterCommand filter) {
+    public AssistedDriveCommand(DifferentialDriveSubsystem drive, DifferentialDriveFilterCommand filter, ObstacleAvoidance obstacleRMP) {
         this.filter = filter;
         this.drive = drive;
         t0 = RobotController.getFPGATime();
+        root.linkChild(obstacleRMP);
     }
 
     @Override

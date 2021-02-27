@@ -355,15 +355,25 @@ public class SwerveDriveSubsystem extends SubsystemBase
    * @param useLeft - Whether to use the left primary motor.
    * @return Encoder count for specified primary motor.
    */
-  public double getEncoderCount(boolean useLeft)
+  public double getEncoderCount(boolean useLeft, boolean useBack)
   {
     if (useLeft)
     {
-      return leftFrontMotor.getSelectedSensorPosition(ENCODER_PORT);
+      if (useBack){
+        return leftBackMotor.getSelectedSensorPosition(ENCODER_PORT);
+      }
+      else{
+        return leftFrontMotor.getSelectedSensorPosition(ENCODER_PORT);
+      }
     }
     else
     {
-      return rightFrontMotor.getSelectedSensorPosition(ENCODER_PORT);
+      if (useBack){
+        return rightBackMotor.getSelectedSensorPosition(ENCODER_PORT);
+      }
+      else{
+        return rightFrontMotor.getSelectedSensorPosition(ENCODER_PORT);
+      }
     }
   }
 
@@ -374,15 +384,25 @@ public class SwerveDriveSubsystem extends SubsystemBase
    * @param useLeft - Whether to use the left primary motor.
    * @return Encoder count for specified primary motor.
    */
-  public double getRotatorEncoderCount(boolean useLeft)
+  public double getRotatorEncoderCount(boolean useLeft, boolean useBack)
   {
     if (useLeft)
     {
-      return leftFrontRotatorMotor.getSelectedSensorPosition(ENCODER_PORT);
+      if (useBack){
+        return leftBackRotatorMotor.getSelectedSensorPosition(ENCODER_PORT);
+      }
+      else{
+        return leftFrontRotatorMotor.getSelectedSensorPosition(ENCODER_PORT);
+      }
     }
     else
     {
-      return rightFrontRotatorMotor.getSelectedSensorPosition(ENCODER_PORT);
+      if (useBack){
+        return rightBackRotatorMotor.getSelectedSensorPosition(ENCODER_PORT);
+      }
+      else{
+        return rightFrontRotatorMotor.getSelectedSensorPosition(ENCODER_PORT);
+      }
     }
   }
 
@@ -391,8 +411,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
    * @param useLeft - Whether to use the left primary motor.
    * @return Distance from specified primary motor.
    */
-  public double getEncoderDist(boolean useLeft) {
-    return getEncoderCount(useLeft) * METERS_PER_TICK;
+  public double getEncoderDist(boolean useLeft, boolean useBack) {
+    return getEncoderCount(useLeft, useBack) * METERS_PER_TICK;
   }
 
   /**
@@ -400,8 +420,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
    * @param useLeft - Whether to use the left primary motor.
    * @return Rotation of a specified primary motor.
    */
-  public double getRotatorEncoderDist(boolean useLeft) {
-    return getRotatorEncoderCount(useLeft) * METERS_PER_TICK / WHEEL_RADIUS;
+  public double getRotatorEncoderDist(boolean useLeft, boolean useBack) {
+    return getRotatorEncoderCount(useLeft, useBack) * METERS_PER_TICK / WHEEL_RADIUS;
   }
 
   /**

@@ -19,7 +19,11 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+/**
+ * @author Abhi
+ * @author Deepu
+ * @author Hari
+ */
 public class Shooter extends SubsystemBase{
 
      // Physical parameters
@@ -117,11 +121,7 @@ public class Shooter extends SubsystemBase{
 
     }
 
-    //Shoots the ball
-    public void shoot()
-    {
-
-    }
+    
 
     
 

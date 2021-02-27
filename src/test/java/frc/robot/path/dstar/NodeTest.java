@@ -54,12 +54,20 @@ public class NodeTest {
         Queue<Node> queue = new PriorityQueue<>();
         Node a = new Node(new Point(0, 0), queue);
         Node b = new Node(new Point(1, 0), queue, 0, 0);
+        Node c = new Node(new Point(0, 1), queue, 0, 1);
+        Node d = new Node(new Point(1, 1), queue, 1, 0);
         double aKey = a.key();
         double aTrueKey = Double.POSITIVE_INFINITY;
         assertEquals(aTrueKey, aKey);
         double bKey = b.key();
         double bTrueKey = 0;
         assertEquals(bTrueKey, bKey);
+        double cKey = c.key();
+        double cTrueKey = 0;
+        assertEquals(cTrueKey, cKey);
+        double dKey = d.key();
+        double dTrueKey = 0;
+        assertEquals(dTrueKey, dKey);
     }
     @Test
     void getGTest()

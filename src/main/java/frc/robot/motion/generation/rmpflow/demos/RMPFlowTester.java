@@ -12,6 +12,8 @@ import javax.swing.JPanel;
 import org.ejml.simple.SimpleMatrix;
 
 import frc.robot.motion.generation.rmpflow.*;
+import frc.robot.motion.generation.rmpflow.rmps.CollisionAvoidance;
+import frc.robot.motion.generation.rmpflow.rmps.GoalAttractor;
 
 public class RMPFlowTester{
 

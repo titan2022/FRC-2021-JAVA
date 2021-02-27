@@ -79,13 +79,13 @@ public class SwerveDriveContainer implements RobotContainer {
         // Add configs here:
         talon.slot0.kP = 504.000000;
         talon.slot0.kI = 5.600000;
-        talon.slot0.kD = 0.20000;        ;
+        talon.slot0.kD = 0.20000;        
         talon.slot0.kF = 19.300000;
         talon.slot0.integralZone = 900;
         talon.slot0.allowableClosedloopError = 217;
         talon.slot0.maxIntegralAccumulator = 254.000000;
-        talon.slot0.closedLoopPeakOutput = 0.869990;
-        talon.slot0.closedLoopPeriod = 33;
+        //talon.slot0.closedLoopPeakOutput = 0.869990;
+        //talon.slot0.closedLoopPeriod = 33;
         talon.neutralDeadband = 0.199413;
 
         return talon;
@@ -97,13 +97,13 @@ public class SwerveDriveContainer implements RobotContainer {
         // Add configs here:
         talon.slot0.kP = 504.000000;
         talon.slot0.kI = 5.600000;
-        talon.slot0.kD = 0.20000;        ;
+        talon.slot0.kD = 0.20000;        
         talon.slot0.kF = 19.300000;
         talon.slot0.integralZone = 900;
         talon.slot0.allowableClosedloopError = 217;
         talon.slot0.maxIntegralAccumulator = 254.000000;
-        talon.slot0.closedLoopPeakOutput = 0.869990;
-        talon.slot0.closedLoopPeriod = 33;
+        //talon.slot0.closedLoopPeakOutput = 0.869990;
+        //talon.slot0.closedLoopPeriod = 33;
         talon.neutralDeadband = 0.199413;
 
         return talon;

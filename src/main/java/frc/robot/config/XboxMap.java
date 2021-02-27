@@ -36,6 +36,15 @@ public class XboxMap {
     return applyDeadband(value, JOYSTICK_DRIFT);
   }
 
+  public static double rightX() {
+    double value = controller.getX(Hand.kRight);
+    return applyDeadband(value, JOYSTICK_DRIFT);
+  }
+
+  public static double rightY() {
+    return right();
+  }
+
   public static boolean toggleBrakes() {
     return controller.getBumperPressed(Hand.kRight);
   }

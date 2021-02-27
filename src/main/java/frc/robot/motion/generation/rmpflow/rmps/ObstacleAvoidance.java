@@ -8,7 +8,6 @@ import org.ejml.simple.SimpleMatrix;
 
 import frc.robot.mapping.Obstacle;
 import frc.robot.mapping.ObstacleMap;
-import frc.robot.mapping.Path;
 import frc.robot.mapping.Point;
 import frc.robot.mapping.Polygon;
 import frc.robot.motion.generation.rmpflow.RMPNode;
@@ -26,6 +25,7 @@ public class ObstacleAvoidance extends RMPNode {
      * An Obstacle avoidance RMP that places {@link CollisionAvoidance} RMPs at all
      * polygon vertices and regularly along the sides of the polygon with a distance
      * radius.
+     * 
      * @param name
      * @param map
      * @param parent
@@ -37,7 +37,8 @@ public class ObstacleAvoidance extends RMPNode {
         this.radius = radius;
     }
 
-    public ObstacleAvoidance(String name, ObstacleMap map, RMPNode parent, double radius, double epsilon, double alpha, double eta) {
+    public ObstacleAvoidance(String name, ObstacleMap map, RMPNode parent, double radius, double epsilon, double alpha,
+            double eta) {
         this(name, map, parent, radius);
         this.epsilon = epsilon;
         this.alpha = alpha;
@@ -45,9 +46,9 @@ public class ObstacleAvoidance extends RMPNode {
     }
 
     private void addObstacleChildren(ObstacleMap map) {
-        
+
         Iterable<Obstacle> obstacles = map.getObstacles();
-        
+
         for (Obstacle obstacle : obstacles) {
 
             placePolygonPoints(((Polygon) obstacle).getVertices());
@@ -56,8 +57,9 @@ public class ObstacleAvoidance extends RMPNode {
     }
 
     private void linkChildFromPoint(Point point) {
-        linkChild(new CollisionAvoidance("Child Obstacle Node", this,
-                new SimpleMatrix(new double[][] { { point.getX(), point.getY() } }), radius, epsilon, alpha, eta));
+        linkChild(new CollisionAvoidance("Child of Obstacle Avoidance Node", this,
+                new SimpleMatrix(1, 2, false, new double[] { point.getX(), point.getY() }), radius, epsilon, alpha,
+                eta));
     }
 
     private void placePolygonPoints(Point[] vertexArray) {
@@ -88,7 +90,6 @@ public class ObstacleAvoidance extends RMPNode {
             placeSegmentPoints(midpoint, point2);
 
         }
-
 
     }
 

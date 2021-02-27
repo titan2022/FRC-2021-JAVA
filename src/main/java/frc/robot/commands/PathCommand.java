@@ -6,15 +6,14 @@ import frc.robot.path.dstar.DStarLite;
 
 public class PathCommand extends CommandBase {
     public final DStarLite planner;
-    public final DifferentialDriveOdometryCommand odometry;
+    public final DifferentialDriveFilterCommand filter;
 
-    public PathCommand(DStarLite planner, DifferentialDriveOdometryCommand odometry) {
+    public PathCommand(DStarLite planner, DifferentialDriveFilterCommand filter) {
         this.planner  = planner;
-        this.odometry = odometry;
+        this.filter = filter;
     }
 
     public void execute() {
-        Point pos = new Point(odometry.getX(), odometry.getY());
-        planner.setStart(pos);
+        planner.setStart(new Point(filter.getFilteredPose().getTranslation()));
     }
 }

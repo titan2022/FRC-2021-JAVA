@@ -25,11 +25,9 @@ public class WristSubsystem extends SubsystemBase {
     public static final double ENCODER_TICKS = 4096; 
     public static final double ANGLE_TO_TICK =  1 / (360 * ENCODER_TICKS);
 
-    // PID Constants
-    private static final double WRIST_KP = 2;
-    private static final double WRIST_KI = .5;
-    private static final double WRIST_KD = 1;
-    private static final double WRIST_KF = 0;
+    // PID Slots and IDx
+    private static final int PID_SLOT = 0;
+    private static final int PID_X = 0;
 
     private static final WPI_TalonSRX wrist = new WPI_TalonSRX(PRIMARY_WRIST_PORT);;
     private static final WPI_TalonSRX followingWrist = new WPI_TalonSRX(SECONDARY_WRIST_PORT); //like a left wrist
@@ -46,6 +44,7 @@ public class WristSubsystem extends SubsystemBase {
      */
     public WristSubsystem(TalonSRXConfiguration motorConfig) {
         setMotorFactoryConfig();
+
         if(motorConfig != null)
         {
             wrist.configAllSettings(motorConfig);
@@ -53,7 +52,6 @@ public class WristSubsystem extends SubsystemBase {
         }
 
         // Motor configs
-        motorConfig.
         wrist.setSensorPhase(PRIMARY_WRIST_SENSOR_PHASE);
         followingWrist.setSensorPhase(PRIMARY_WRIST_SENSOR_PHASE);
 
@@ -67,10 +65,10 @@ public class WristSubsystem extends SubsystemBase {
 
         followingWrist.follow(wrist);
         
+        wrist.selectProfileSlot(PID_SLOT, PID_X);
 
         //Encoder configs
-        wrist.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
-        
+        wrist.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);        
     }
 
     public WristSubsystem()

@@ -22,19 +22,16 @@ public class ManualSwerveDriveCommand extends CommandBase {
   private static NavigationSubsystem navigationSubsystem;
   private PIDController pid;
   private boolean brakeState = false;
-  private double kP = 0.2;
-  private double kI = 0;
-  private double kD = 0.1;
 
   /** Creates a new ManualDifferentialDriveCommand. */
-  public ManualSwerveDriveCommand(SwerveDriveSubsystem swerveDrive, NavigationSubsystem navigationSubsystem, PIDConfig pidConfig) {
+  public ManualSwerveDriveCommand(SwerveDriveSubsystem swerveDriveSub, NavigationSubsystem navSub, PIDConfig pidConfig) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerveDrive);
-    swerveDriveSubsystem = swerveDrive;
-    navigationSubsystem = navigationSubsystem;
+    addRequirements(swerveDriveSub);
+    swerveDriveSubsystem = swerveDriveSub;
+    navigationSubsystem = navSub;
 
     pid = new PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD);
-    pid.enableContinuousInput(pidConfig.CONTINOUS_MINIMUM, pidConfig.CONTINOUS_MAXIMUM);
+    pid.enableContinuousInput(0, 2*Math.PI);
     pid.setIntegratorRange(pidConfig.INTEGRATION_MIN, pidConfig.INTEGRATION_MAX);
   }
 

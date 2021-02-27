@@ -1,4 +1,4 @@
-package frc.robot.motioncontrol;
+package frc.robot.motion.control;
 
 import org.ejml.simple.SimpleMatrix;
 
@@ -22,7 +22,7 @@ public class CustomKalmanFilter {
     private SimpleMatrix H; // relates current state to measurement (m x n)
 
     /**
-     * Creates a new KalmanFilter
+     * Creates a new CustomKalmanFilter.
      * 
      * @param x - Initial state vector (n x 1).
      * @param P - Initial state covariance (n x n).
@@ -43,6 +43,23 @@ public class CustomKalmanFilter {
         this.A = A;
         this.B = B;
         this.H = H;
+
+    }
+
+    /**
+     * Creates a copied CustomKalmanFilter.
+     * 
+     * @param filter - Kalman filter.
+     */
+    public CustomKalmanFilter(CustomKalmanFilter filter) {
+
+        this.x = filter.x;
+        this.P = filter.P;
+        this.Q = filter.Q;
+        this.R = filter.R;
+        this.A = filter.A;
+        this.B = filter.B;
+        this.H = filter.H;
 
     }
 

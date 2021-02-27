@@ -5,8 +5,6 @@ import static frc.robot.subsystems.sim.PhysicsSim.*; // random()
 
 import com.ctre.phoenix.motorcontrol.can.*;
 
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-
 /**
  * Holds information about a simulated TalonSRX.
  */

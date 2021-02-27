@@ -17,7 +17,7 @@ import frc.robot.motion.generation.rmpflow.RMPNode;
  * ObstacleNode works with field obstacles.
  */
 public class ObstacleAvoidance extends RMPNode {
-    private double radius;
+    private final double radius;
     private double epsilon = 1e-1;
     private double alpha = 1e-5;
     private double eta = 0;
@@ -37,16 +37,25 @@ public class ObstacleAvoidance extends RMPNode {
         this.radius = radius;
     }
 
+    public ObstacleAvoidance(String name, ObstacleMap map, RMPNode parent, double radius, double epsilon, double alpha, double eta) {
+        this(name, map, parent, radius);
+        this.epsilon = epsilon;
+        this.alpha = alpha;
+        this.eta = eta;
+    }
+
     private void addObstacleChildren(ObstacleMap map) {
         Iterable<Obstacle> obstacles = map.getObstacles();
         Path path;
+        Polygon polygon;
+        Point[] vertexArray;
         int nodeCount;
         int i;
 
         for (Obstacle obstacle : obstacles) {
 
-            Polygon polygon = (Polygon) obstacle; // NOT SUPER SAFE
-            Point[] vertexArray = polygon.getVertices();
+            polygon = (Polygon) obstacle; // NOT SUPER SAFE
+            vertexArray = polygon.getVertices();
 
             for (Point vertex : vertexArray) {
 
@@ -57,13 +66,12 @@ public class ObstacleAvoidance extends RMPNode {
             path = polygon.getBoundary(0);
             nodeCount = (int) (path.getLength() / radius);
 
-            for (i = 0; i < nodeCount; i++) {
+            for (i = 1; i < nodeCount; i++) {
 
                 linkChildFromPoint(path.getPos(i * radius));
 
             }
 
-            linkChildFromPoint(path.getEnd());
         }
     }
 
@@ -71,4 +79,5 @@ public class ObstacleAvoidance extends RMPNode {
         linkChild(new CollisionAvoidance("Child Obstacle Node", this,
                 new SimpleMatrix(new double[][] { { point.getX(), point.getY() } }), radius, epsilon, alpha, eta));
     }
+
 }

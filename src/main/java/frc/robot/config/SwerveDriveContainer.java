@@ -1,13 +1,11 @@
 package frc.robot.config;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.FieldDisplayCommand;
 import frc.robot.commands.ManualSwerveDriveCommand;
-import frc.robot.subsystems.DifferentialDriveSubsystem;
 import frc.robot.subsystems.NavigationSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 

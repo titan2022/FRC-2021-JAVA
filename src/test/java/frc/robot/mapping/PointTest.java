@@ -2,13 +2,14 @@ package frc.robot.mapping;
 
 import org.junit.jupiter.api.Test;
 
-import edu.wpi.first.wpilibj.geometry.Translation2d;
-
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-/* 
-@author Irene Liu
-*/
+
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+
+/**
+ * @author Irene Liu
+ */
 public class PointTest {
     @Test 
     public void getAngleTest() {

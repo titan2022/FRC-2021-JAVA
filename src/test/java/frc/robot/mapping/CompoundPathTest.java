@@ -2,10 +2,10 @@ package frc.robot.mapping;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @Author Abhi Vinnakota

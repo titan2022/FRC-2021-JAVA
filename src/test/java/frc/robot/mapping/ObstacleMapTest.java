@@ -1,11 +1,12 @@
 package frc.robot.mapping;
 
-
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-/* 
-@author Irene Liu
-*/
+
+/**
+ * @author Irene Liu
+ */
 public class ObstacleMapTest {
     @Test
     public void isClearTest() {

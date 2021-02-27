@@ -1,19 +1,18 @@
 package frc.robot.mapping;
 
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Set;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-/* 
-@author Irene Liu
-*/
+
+/**
+ * @author Irene Liu
+ */
 public class PolygonTest {
     @Test
     public void CompareTest() {
@@ -90,6 +89,5 @@ public class PolygonTest {
         Polygon poly = new Polygon(new Point(-1,-1), new Point (-1,0), new Point (0,0), new Point(0,-1));
         Path edgePath = poly.edgePath(new Point(-1,-2), new Point(0,2),0);
         assertEquals(edgePath.getLength(), 5);
-         
     }
 }

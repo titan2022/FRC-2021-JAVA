@@ -1,12 +1,12 @@
 package frc.robot.mapping;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+
 /**
  * @Author Abhi Vinnakota
  */
@@ -76,5 +76,4 @@ public class CircularArcTest {
         double trueDistance = 0;
         assertEquals(distance, trueDistance);
     }
-
 }

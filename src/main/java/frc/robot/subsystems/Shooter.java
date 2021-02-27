@@ -77,7 +77,7 @@ public class Shooter extends SubsystemBase{
  
     public Shooter(TalonSRXConfiguration leftConfig, TalonSRXConfiguration rightConfig)
     {
-        set();
+        
     }
 
     //First set the speed of the motor and then calculate the rpm and acceleration of the wheel.
@@ -95,7 +95,7 @@ public class Shooter extends SubsystemBase{
     //gets the angle of the hood
     public void getHoodAngle()
     {
-        leftPrimary;
+        
 
     }
 

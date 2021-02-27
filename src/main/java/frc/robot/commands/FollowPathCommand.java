@@ -4,6 +4,7 @@ import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.motion.generation.rmpflow.GoalAttractor;
 import frc.robot.subsystems.DriveSubsystem;
@@ -27,5 +28,18 @@ public class FollowPathCommand extends CommandBase {
 
     private SimpleMatrix toMatrix(Pose2d x) {
         return new SimpleMatrix(new double[][]{{x.getX()}, {x.getY()}, {x.getRotation().getRadians()}});
+    }
+
+    @Override
+    public void execute() {
+        Translation2d vel = motion.getVelocity();
+        double theta_dot = motion.getRotationalVelocity();
+        done = vel.getNorm() < stall;
+        drive.setVelocities(new ChassisSpeeds(vel.getX(), vel.getY(), theta_dot));
+    }
+
+    @Override
+    public boolean isFinished() {
+        return done;
     }
 }

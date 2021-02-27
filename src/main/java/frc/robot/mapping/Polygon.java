@@ -318,4 +318,13 @@ public class Polygon implements Obstacle {
     }
     return new CompoundPath(segments);
   } 
+
+  /**
+   * Gets the vertices of the Polygon.
+   * 
+   * @return Array of points representing vertices of polygon.
+   */
+  public Point[] getVertices() {
+    return verts;
+  }
 }

@@ -1,6 +1,9 @@
-package frc.robot.motion.generation.rmpflow;
+package frc.robot.motion.generation.rmpflow.rmps;
 
 import org.ejml.simple.SimpleMatrix;
+
+import frc.robot.motion.generation.rmpflow.RMPLeaf;
+import frc.robot.motion.generation.rmpflow.RMPNode;
 
 public class Damper extends RMPLeaf{
     private double w;
@@ -20,12 +23,12 @@ public class Damper extends RMPLeaf{
 	public SimpleMatrix j(SimpleMatrix q)
 	{
 		return SimpleMatrix.identity(2);
-	};
+	}
 
 	public SimpleMatrix j_dot(SimpleMatrix q, SimpleMatrix q_dot)
 	{
 		return new SimpleMatrix(2, 2);
-	};
+	}
 
 
     public SimpleMatrix solveF(SimpleMatrix x, SimpleMatrix x_dot){

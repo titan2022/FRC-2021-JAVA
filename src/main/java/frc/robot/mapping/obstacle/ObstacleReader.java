@@ -18,11 +18,19 @@ import static java.lang.Double.parseDouble;
 
 import edu.wpi.first.wpilibj.Filesystem;
 
-/** Add your docs here. */
+/**
+ * ObstacleReader reads from csv and puts into ObstacleMap.
+ */
 public class ObstacleReader {
 
-    public static String OBSTACLE_FILE_NAME = "obstacles.csv";
+    public final static String OBSTACLE_FILE_NAME = "obstacles.csv";
 
+    /**
+     * Reads from csv into ObstacleMap.
+     * @return Obstacle map.
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     public static ObstacleMap read() throws FileNotFoundException, IOException {
 
         Path csvPath = Filesystem.getDeployDirectory().toPath().resolve(OBSTACLE_FILE_NAME);
@@ -57,6 +65,10 @@ public class ObstacleReader {
 
     }
 
+    /**
+     * Reads from csv into ObstacleMap without exceptions
+     * @return Obstacle map.
+     */
     public static ObstacleMap readWithoutExceptions() {
 
         try {

@@ -4,7 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.XboxMap;
+import frc.robot.config.XboxMap;
 
 
 public class TurnMotorCommand extends CommandBase{

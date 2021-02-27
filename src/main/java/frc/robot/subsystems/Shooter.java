@@ -137,6 +137,13 @@ public class Shooter extends SubsystemBase{
         }
     } */
 
+    //gets the angle of the hood
+    public double getAngleToTargetY()
+    {
+        LimelightMath vision = new LimelightMath();
+        return vision.calculateAngleToTargetV();
+    }
+
     public void setHoodYAngle(double angle)
     {
         leftPrimary.set(ControlMode.MotionProfile, angle *  ANGLE_TO_TICK);
@@ -145,21 +152,13 @@ public class Shooter extends SubsystemBase{
         rightSecondary.set(ControlMode.MotionProfile, angle *  ANGLE_TO_TICK);
     }
 
-    //gets the angle of the hood
-    public double getAngleToTargetY()
-    {
-        LimelightMath vision = new LimelightMath();
-        return vision.calculateAngleToTargetV();
-    }
+    
 
     //Calculates velocity of the shooter based on the hood angle.
     public double getShooterVelocityX()
     {
         Shooter shooter = new Shooter();
         double initialAngle = shooter.getHoodYAngle();
-        
-       
-
         LimelightMath vision = new LimelightMath();
         double distanceToTargetX = vision.calculateDistance();
         double desiredTime = 5.0;

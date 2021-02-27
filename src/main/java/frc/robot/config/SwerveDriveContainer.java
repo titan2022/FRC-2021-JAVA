@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.FieldDisplayCommand;
 import frc.robot.commands.ManualSwerveDriveCommand;
+import frc.robot.motion.control.PIDConfig;
 import frc.robot.subsystems.NavigationSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
 
@@ -38,7 +39,7 @@ public class SwerveDriveContainer implements RobotContainer {
 
         // Initialize Teleop Commands
         FieldDisplayCommand fieldDisplayCommand = new FieldDisplayCommand();
-        ManualSwerveDriveCommand manualDriveCommand = new ManualSwerveDriveCommand(swerveDriveSub, navSub);
+        ManualSwerveDriveCommand manualDriveCommand = new ManualSwerveDriveCommand(swerveDriveSub, navSub, getPIDConfig());
 
         // Initialize Command Groups
         autoGroup = new ParallelCommandGroup(autoFieldDisplayCommand); // These don't actually run in parallel.
@@ -78,13 +79,13 @@ public class SwerveDriveContainer implements RobotContainer {
         // Add configs here:
         talon.slot0.kP = 504.000000;
         talon.slot0.kI = 5.600000;
-        talon.slot0.kD = 0.20000;        ;
+        talon.slot0.kD = 0.20000;        
         talon.slot0.kF = 19.300000;
         talon.slot0.integralZone = 900;
         talon.slot0.allowableClosedloopError = 217;
         talon.slot0.maxIntegralAccumulator = 254.000000;
-        talon.slot0.closedLoopPeakOutput = 0.869990;
-        talon.slot0.closedLoopPeriod = 33;
+        //talon.slot0.closedLoopPeakOutput = 0.869990;
+        //talon.slot0.closedLoopPeriod = 33;
         talon.neutralDeadband = 0.199413;
 
         return talon;
@@ -96,15 +97,31 @@ public class SwerveDriveContainer implements RobotContainer {
         // Add configs here:
         talon.slot0.kP = 504.000000;
         talon.slot0.kI = 5.600000;
-        talon.slot0.kD = 0.20000;        ;
+        talon.slot0.kD = 0.20000;        
         talon.slot0.kF = 19.300000;
         talon.slot0.integralZone = 900;
         talon.slot0.allowableClosedloopError = 217;
         talon.slot0.maxIntegralAccumulator = 254.000000;
-        talon.slot0.closedLoopPeakOutput = 0.869990;
-        talon.slot0.closedLoopPeriod = 33;
+        //talon.slot0.closedLoopPeakOutput = 0.869990;
+        //talon.slot0.closedLoopPeriod = 33;
         talon.neutralDeadband = 0.199413;
 
         return talon;
+    }
+
+    public PIDConfig getPIDConfig(){
+        PIDConfig pidConfig = new PIDConfig();
+
+        pidConfig.kP = 504.000000;
+        pidConfig.kI = 5.600000;
+        pidConfig.kD = 0.20000;
+        
+        pidConfig.CONTINOUS_MINIMUM = 0;
+        pidConfig.CONTINOUS_MAXIMUM = 2*Math.PI;
+
+        pidConfig.INTEGRATION_MIN = -0.5;
+        pidConfig.INTEGRATION_MAX = 0.5;
+
+        return pidConfig;
     }
 }

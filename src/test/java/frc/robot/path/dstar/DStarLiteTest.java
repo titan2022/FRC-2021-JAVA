@@ -1,17 +1,20 @@
 package frc.robot.path.dstar;
 
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.PriorityQueue;
 import java.util.Queue;
-
-import org.junit.jupiter.api.Test;
 
 import frc.robot.mapping.Obstacle;
 import frc.robot.mapping.ObstacleMap;
 import frc.robot.mapping.Point;
 import frc.robot.mapping.Polygon;
 
+/**
+ * @authors Cole Plepel, Gnandeep Chintala
+ */
 public class DStarLiteTest {
     @Test
     void sizeTest()
@@ -56,7 +59,6 @@ public class DStarLiteTest {
         trueSize = 0;
         assertEquals(trueSize, size);
     }
-
     @Test
     void getGTest()
     {
@@ -89,7 +91,6 @@ public class DStarLiteTest {
         double dTrueG = 0;
         assertEquals(dTrueG, dG);
     }
-
     @Test
     void getRHSTest()
     {
@@ -122,7 +123,6 @@ public class DStarLiteTest {
         double dTrueRHS = 0;
         assertEquals(dTrueRHS, dRHS);
     }
-
     @Test
     void getStartTest()
     {
@@ -132,7 +132,6 @@ public class DStarLiteTest {
         Point trueStart = new Point(0,0);
         assertEquals(trueStart, start);
     }
-
     @Test 
     void getGoalTest()
     {
@@ -142,8 +141,8 @@ public class DStarLiteTest {
         Point trueGoal = new Point(10,10);
         assertEquals(trueGoal, goal);   
     }
-
     @Test
+    @SuppressWarnings("unused")
     void getNodesTest()
     {
         ObstacleMap map = new ObstacleMap();
@@ -164,7 +163,6 @@ public class DStarLiteTest {
         }
         assertEquals(trueNodeCount, nodeCount);
     }
-
     @Test
     void setStartTest()
     {
@@ -175,7 +173,6 @@ public class DStarLiteTest {
         Point trueStart = new Point(1,1);
         assertEquals(trueStart, start);
     }
-
     @Test 
     void getDegreeTest()
     {
@@ -188,7 +185,6 @@ public class DStarLiteTest {
           assertEquals(trueDegree, degree);
         }
     }
-
     @Test 
     void obstacleDegreeTest()
     {
@@ -225,7 +221,6 @@ public class DStarLiteTest {
         trueGoalDegree = 1;
         assertEquals(trueGoalDegree, goalDegree);
     }
-    
     @Test
     void nextNodeTest()
     {
@@ -244,5 +239,4 @@ public class DStarLiteTest {
         trueNode = graph.getGoal();
         assertEquals(trueNode, nextNode);
     }
-
 }

@@ -1,15 +1,18 @@
 package frc.robot.path.dstar;
 
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-import org.junit.jupiter.api.Test;
-
 import frc.robot.mapping.LinearSegment;
 import frc.robot.mapping.Point;
 
+/**
+ * @authors Cole Plepel, Gnandeep Chintala
+ */
 public class NodeTest {
     @Test
     void getDegreeTest()
@@ -58,7 +61,6 @@ public class NodeTest {
         double bTrueKey = 0;
         assertEquals(bTrueKey, bKey);
     }
-
     @Test
     void getGTest()
     {
@@ -73,7 +75,6 @@ public class NodeTest {
         assertEquals(bTrueG, bG);
         
     }
-    
     @Test
     void getRHSTest()
     {
@@ -101,7 +102,6 @@ public class NodeTest {
         aTrueRHS = c.getG()+2;
         assertEquals(aTrueRHS, aRHS);
     }
-
     @Test
     void getNextTest()
     {
@@ -117,5 +117,4 @@ public class NodeTest {
         assertEquals(aTrueNext, aNext);
         assertEquals(bTrueNext, bNext);
     }
-
 }

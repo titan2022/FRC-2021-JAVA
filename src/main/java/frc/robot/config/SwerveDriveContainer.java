@@ -38,7 +38,7 @@ public class SwerveDriveContainer implements RobotContainer {
 
         // Initialize Teleop Commands
         FieldDisplayCommand fieldDisplayCommand = new FieldDisplayCommand();
-        ManualSwerveDriveCommand manualDriveCommand = new ManualSwerveDriveCommand(swerveDriveSub);
+        ManualSwerveDriveCommand manualDriveCommand = new ManualSwerveDriveCommand(swerveDriveSub, navSub);
 
         // Initialize Command Groups
         autoGroup = new ParallelCommandGroup(autoFieldDisplayCommand); // These don't actually run in parallel.

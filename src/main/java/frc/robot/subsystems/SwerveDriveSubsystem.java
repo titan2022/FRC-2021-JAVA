@@ -272,15 +272,15 @@ public class SwerveDriveSubsystem extends SubsystemBase
     SwerveModuleState[] modules = kinematics.toSwerveModuleStates(inputChassisSpeeds);
 
 
-    leftFrontMotor.set(ControlMode.Position, modules[0].speedMetersPerSecond/METERS_PER_TICK);
-    leftBackMotor.set(ControlMode.Position, modules[1].speedMetersPerSecond/METERS_PER_TICK);
-    rightFrontMotor.set(ControlMode.Position, modules[2].speedMetersPerSecond/METERS_PER_TICK);
-    rightBackMotor.set(ControlMode.Position, modules[3].speedMetersPerSecond/METERS_PER_TICK);
+    leftFrontMotor.set(ControlMode.Velocity, modules[0].speedMetersPerSecond/METERS_PER_TICK);
+    leftBackMotor.set(ControlMode.Velocity, modules[1].speedMetersPerSecond/METERS_PER_TICK);
+    rightFrontMotor.set(ControlMode.Velocity, modules[2].speedMetersPerSecond/METERS_PER_TICK);
+    rightBackMotor.set(ControlMode.Velocity, modules[3].speedMetersPerSecond/METERS_PER_TICK);
 
-    leftFrontRotatorMotor.set(ControlMode.MotionMagic, modules[0].angle.getDegrees()*(4096/360));
-    leftBackRotatorMotor.set(ControlMode.MotionMagic, modules[1].angle.getDegrees()*(4096/360));
-    rightFrontRotatorMotor.set(ControlMode.MotionMagic, modules[2].angle.getDegrees()*(4096/360));
-    rightBackRotatorMotor.set(ControlMode.MotionMagic, modules[3].angle.getDegrees()*(4096/360));
+    leftFrontRotatorMotor.set(ControlMode.Position, modules[0].angle.getDegrees()*(4096/360));
+    leftBackRotatorMotor.set(ControlMode.Position, modules[1].angle.getDegrees()*(4096/360));
+    rightFrontRotatorMotor.set(ControlMode.Position, modules[2].angle.getDegrees()*(4096/360));
+    rightBackRotatorMotor.set(ControlMode.Position, modules[3].angle.getDegrees()*(4096/360));
   } 
 
   public void setOutput(double omega, double XVelocity, double YVelocity)

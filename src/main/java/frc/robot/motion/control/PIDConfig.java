@@ -9,6 +9,8 @@ public class PIDConfig {
     public double INTEGRATION_MAX = 0;
     public double INTEGRATION_MIN = 0;
 
+    public PIDConfig(){}
+
     public PIDConfig(double kP, double kI, double kD, double CONTINOUS_MINIMUM, double CONTINOUS_MAXIMUM,
         double INTEGRATION_MIN, double INTEGRATION_MAX){
             kP = kP;

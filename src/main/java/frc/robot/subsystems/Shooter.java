@@ -30,6 +30,7 @@ public class Shooter extends SubsystemBase{
   public static final double ROBOT_TRACK_WIDTH = 26.75/39.37; // meter
   public static final double WHEEL_RADIUS = 6/39.37; // meters
   public static final double ENCODER_TICKS = 4096; // Ticks/rotation of CTREMagEncoder
+  private static final double ANGLE_TO_TICK =  1 / (360 * ENCODER_TICKS); //temp value
   public static final double METERS_PER_TICK = WHEEL_RADIUS * 2 * Math.PI / ENCODER_TICKS;
   public static final double GEARING_REDUCTION = 7.29; // TODO: Get the correct gearing ratio
 
@@ -53,8 +54,7 @@ public class Shooter extends SubsystemBase{
   private static final double MAX_SPEED = 10; // meters/sec
   private static final int PEAK_CURRENT_LIMIT = 60;
   private static final int CONTINUOUS_CURRENT_LIMIT = 50;
-  private static final double ENCODER_TICKS = 5000; //temp value
-  private static final double ANGLE_TO_TICK =  1 / (360 * ENCODER_TICKS); //temp value
+  
 
   // Phoenix Physics Sim Variables
   private static final double FULL_ACCEL_TIME = 0.75; // sec

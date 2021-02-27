@@ -4,6 +4,8 @@
 
 package frc.robot.motion.generation.rmpflow.rmps;
 
+import frc.robot.mapping.Obstacle;
+import frc.robot.mapping.ObstacleMap;
 import frc.robot.motion.generation.rmpflow.RMPNode;
 
 /**
@@ -11,6 +13,22 @@ import frc.robot.motion.generation.rmpflow.RMPNode;
  */
 public class ObstacleNode extends RMPNode {
 
+    public ObstacleNode(ObstacleMap map, RMPNode parent) {
 
+        super("Obstacle Node", parent);
+
+    }
+
+    private addObstacleChildren(ObstacleMap map) {
+
+        Iterable<Obstacle> obstacles = map.getObstacles();      
+
+        for (Obstacle obstacle : obstacles) {
+
+            
+
+        }
+
+    }
 
 }

@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-import frc.robot.motion.generation.rmpflow.*;
+import frc.robot.motion.generation.rmpflow.RMPRoot;
 import frc.robot.motion.generation.rmpflow.rmps.CollisionAvoidance;
 import frc.robot.motion.generation.rmpflow.rmps.GoalAttractor;
 

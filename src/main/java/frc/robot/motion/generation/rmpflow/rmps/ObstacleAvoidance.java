@@ -45,32 +45,12 @@ public class ObstacleAvoidance extends RMPNode {
     }
 
     private void addObstacleChildren(ObstacleMap map) {
+        
         Iterable<Obstacle> obstacles = map.getObstacles();
-        Path path;
-        Polygon polygon;
-        Point[] vertexArray;
-        int nodeCount;
-        int i;
-
+        
         for (Obstacle obstacle : obstacles) {
 
-            polygon = (Polygon) obstacle; // NOT SUPER SAFE
-            vertexArray = polygon.getVertices();
-
-            for (Point vertex : vertexArray) {
-
-                linkChildFromPoint(vertex);
-
-            }
-
-            path = polygon.getBoundary(0);
-            nodeCount = (int) (path.getLength() / radius);
-
-            for (i = 1; i < nodeCount; i++) {
-
-                linkChildFromPoint(path.getPos(i * radius));
-
-            }
+            placePolygonPoints(((Polygon) obstacle).getVertices());
 
         }
     }
@@ -78,6 +58,50 @@ public class ObstacleAvoidance extends RMPNode {
     private void linkChildFromPoint(Point point) {
         linkChild(new CollisionAvoidance("Child Obstacle Node", this,
                 new SimpleMatrix(new double[][] { { point.getX(), point.getY() } }), radius, epsilon, alpha, eta));
+    }
+
+    private void placePolygonPoints(Point[] vertexArray) {
+
+        for (int i = 0; i < vertexArray.length - 1; i++) {
+
+            linkChildFromPoint(vertexArray[i]);
+            placeSegmentPoints(vertexArray[i], vertexArray[i + 1]);
+
+        }
+
+        linkChildFromPoint(vertexArray[vertexArray.length - 1]);
+        placeSegmentPoints(vertexArray[vertexArray.length - 1], vertexArray[0]);
+
+    }
+
+    private void placeSegmentPoints(Point point1, Point point2) {
+
+        Point midpoint = midpoint(point1, point2);
+
+        if (distance(point1, point2) <= radius) {
+
+            linkChildFromPoint(midpoint);
+
+        } else {
+
+            placeSegmentPoints(point1, midpoint);
+            placeSegmentPoints(midpoint, point2);
+
+        }
+
+
+    }
+
+    private Point midpoint(Point point1, Point point2) {
+
+        return point1.plus(point2).div(2);
+
+    }
+
+    private double distance(Point point1, Point point2) {
+
+        return point1.minus(point2).getNorm();
+
     }
 
 }

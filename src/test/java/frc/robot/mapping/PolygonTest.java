@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class PolygonTest {
     @Test
+    @SuppressWarnings("unused")
     public void CompareTest() {
         
         int trueComp = 0;

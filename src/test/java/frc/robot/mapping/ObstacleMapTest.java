@@ -31,6 +31,7 @@ public class ObstacleMapTest {
         bool = true;
     }
     @Test
+    @SuppressWarnings("unused")
     public void onAdditionTest()
     {
         Obstacle poly = new Polygon(new Point(-2,-2), new Point (-2,2), new Point (2,2), new Point(2,-2));
@@ -45,6 +46,7 @@ public class ObstacleMapTest {
         bool2 = true;
     }
     @Test
+    @SuppressWarnings("unused")
     public void onRemovalTest()
     {
         Obstacle poly2 = new Polygon(new Point(-2,-2), new Point (-2,2), new Point (2,2), new Point(2,-2));

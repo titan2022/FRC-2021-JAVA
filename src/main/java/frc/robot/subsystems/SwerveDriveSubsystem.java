@@ -304,14 +304,16 @@ public class SwerveDriveSubsystem extends SubsystemBase
   public void disableBrakes() {
     leftFrontMotor.setNeutralMode(NeutralMode.Coast);
     rightFrontMotor.setNeutralMode(NeutralMode.Coast);
+    leftBackMotor.setNeutralMode(NeutralMode.Coast);
+    rightBackMotor.setNeutralMode(NeutralMode.Coast);
   }
 
   /**
    * Enables brake for rotator motors.
    */
   public void enableRotatorBrakes() {
-    leftBackRotatorMotor.setNeutralMode(NeutralMode.Brake);
-    rightBackRotatorMotor.setNeutralMode(NeutralMode.Brake);
+    leftFrontRotatorMotor.setNeutralMode(NeutralMode.Brake);
+    rightFrontRotatorMotor.setNeutralMode(NeutralMode.Brake);
     leftBackRotatorMotor.setNeutralMode(NeutralMode.Brake);
     rightBackRotatorMotor.setNeutralMode(NeutralMode.Brake);
   }
@@ -322,6 +324,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
   public void disableRotatorBrakes() {
     leftFrontRotatorMotor.setNeutralMode(NeutralMode.Coast);
     rightFrontRotatorMotor.setNeutralMode(NeutralMode.Coast);
+    leftBackRotatorMotor.setNeutralMode(NeutralMode.Coast);
+    rightBackRotatorMotor.setNeutralMode(NeutralMode.Coast);
   }
 
   /**
@@ -330,6 +334,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
   public void stop() {
     leftFrontMotor.set(ControlMode.PercentOutput, 0);
     rightFrontMotor.set(ControlMode.PercentOutput, 0);
+    leftBackMotor.set(ControlMode.PercentOutput, 0);
+    rightBackMotor.set(ControlMode.PercentOutput, 0);
   }
 
   /**
@@ -338,6 +344,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
   public void stopRotators() {
     leftFrontRotatorMotor.set(ControlMode.PercentOutput, 0);
     rightFrontRotatorMotor.set(ControlMode.PercentOutput, 0);
+    leftBackRotatorMotor.set(ControlMode.PercentOutput, 0);
+    rightBackRotatorMotor.set(ControlMode.PercentOutput, 0);
   }
 
   // encoder methods

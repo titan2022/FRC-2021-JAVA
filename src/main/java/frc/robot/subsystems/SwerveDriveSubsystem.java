@@ -61,6 +61,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
   private static final double MAX_SPEED = 10; // meters/sec
   private static final int PEAK_CURRENT_LIMIT = 60;
   private static final int CONTINUOUS_CURRENT_LIMIT = 50;
+  private static final StatorCurrentLimitConfiguration statorCurrentLimit = new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0);
+  private static final SupplyCurrentLimitConfiguration supplyCurrentLimit = new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0);
 
   // Physical limits of motors that rotate the wheel. Change to radians.
   private static final double MAX_ROTATIONAL_SPEED = 10; // radians/sec
@@ -76,16 +78,16 @@ public class SwerveDriveSubsystem extends SubsystemBase
     , rightFrontRotatorMotor = new WPI_TalonFX(RIGHT_FRONT_MOTOR_ROTATOR_PORT)
     , rightBackRotatorMotor = new WPI_TalonFX(RIGHT_BACK_MOTOR_ROTATOR_PORT);
 
-  //PID for rotators
+  // PID for rotators
   // One slot and one PID_IDX
   private static final int ROTATOR_SLOT_IDX = 0;
   private static final int ROTATOR_PID_IDX = 0;
 
-  //PID for main motors
+  // PID for main motors
   private static final int MAIN_MOTOR_SLOT_IDX = 0;
   private static final int MAIN_MOTOR_PID_IDX = 0;
 
-  //Kinematics
+  // Kinematics
   SwerveDriveKinematics kinematics;
   Translation2d leftFrontPosition, leftBackPosition, rightFrontPosition, rightBackPosition;
   private static final double LEFT_FRONT_X = 0.25;
@@ -135,33 +137,32 @@ public class SwerveDriveSubsystem extends SubsystemBase
     rightFrontRotatorMotor.setSensorPhase(RIGHT_FRONT_MOTOR_ROTATOR_SENSOR_PHASE);
     leftBackRotatorMotor.setSensorPhase(LEFT_BACK_MOTOR__ROTATOR_SENSOR_PHASE);
     rightBackRotatorMotor.setSensorPhase(RIGHT_BACK_MOTOR_ROTATOR_SENSOR_PHASE);
-    //Might need to add more for rotator motors. 
 
     // Current limits in amps
     // TODO: Find equivalent method names for FX stuff
-    leftFrontMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
-    leftFrontMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+    leftFrontMotor.configStatorCurrentLimit(statorCurrentLimit);
+    leftFrontMotor.configSupplyCurrentLimit(supplyCurrentLimit);
 
-    rightFrontMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
-    rightFrontMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+    rightFrontMotor.configStatorCurrentLimit(statorCurrentLimit);
+    rightFrontMotor.configSupplyCurrentLimit(supplyCurrentLimit);
 
-    leftFrontRotatorMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
-    leftFrontRotatorMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+    leftFrontRotatorMotor.configStatorCurrentLimit(statorCurrentLimit);
+    leftFrontRotatorMotor.configSupplyCurrentLimit(supplyCurrentLimit);
 
-    leftBackRotatorMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
-    leftBackRotatorMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+    leftBackRotatorMotor.configStatorCurrentLimit(statorCurrentLimit);
+    leftBackRotatorMotor.configSupplyCurrentLimit(supplyCurrentLimit);
 
-    leftBackMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
-    leftBackMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+    leftBackMotor.configStatorCurrentLimit(statorCurrentLimit);
+    leftBackMotor.configSupplyCurrentLimit(supplyCurrentLimit);
 
-    rightFrontRotatorMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
-    rightFrontRotatorMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+    rightFrontRotatorMotor.configStatorCurrentLimit(statorCurrentLimit);
+    rightFrontRotatorMotor.configSupplyCurrentLimit(supplyCurrentLimit);
 
-    rightBackMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
-    rightBackMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+    rightBackMotor.configStatorCurrentLimit(statorCurrentLimit);
+    rightBackMotor.configSupplyCurrentLimit(supplyCurrentLimit);
 
-    rightBackRotatorMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0));
-    rightBackRotatorMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0));
+    rightBackRotatorMotor.configStatorCurrentLimit(statorCurrentLimit);
+    rightBackRotatorMotor.configSupplyCurrentLimit(supplyCurrentLimit);
 
     // Might need more for rotator motors
 

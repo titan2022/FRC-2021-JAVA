@@ -43,6 +43,7 @@ public class ManualSwerveDriveCommand extends CommandBase {
   public void execute() {
     brakeState = XboxMap.toggleBrakes() ? !brakeState : brakeState;
     PIDController pid = new PIDController(kP, kI, kD);
+    pid.enableContinuousInput(0, 2*Math.PI);
     if (brakeState) {
       swerveDriveSubsystem.enableBrakes();
     }

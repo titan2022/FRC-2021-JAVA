@@ -29,8 +29,8 @@ public class ObstacleAvoidance extends RMPNode {
      */
     public ObstacleAvoidance(String name, ObstacleMap map, RMPNode parent, double radius) {
         super(name, parent);
-        addObstacleChildren(map);
         this.radius = radius;
+        addObstacleChildren(map);
     }
 
     public ObstacleAvoidance(String name, ObstacleMap map, RMPNode parent, double radius, double epsilon, double alpha,
@@ -101,4 +101,21 @@ public class ObstacleAvoidance extends RMPNode {
 
     }
 
+    @Override
+	public SimpleMatrix psi(SimpleMatrix q)
+	{
+		return new SimpleMatrix(2, 1, false, new double[] {q.get(0), q.get(1)});
+	}
+
+    @Override
+	public SimpleMatrix j(SimpleMatrix q)
+	{
+		return new SimpleMatrix(new double[][]{{1, 0, 0}, {0, 1, 0}}); //TODO: verify if this is the correct j_dot function
+	}
+
+    @Override
+	public SimpleMatrix j_dot(SimpleMatrix q, SimpleMatrix q_dot)
+	{
+		return new SimpleMatrix(2, 3); //TODO: verify if this is the correct j_dot function
+	}
 }

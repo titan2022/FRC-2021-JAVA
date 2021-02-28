@@ -2,12 +2,17 @@ package frc.robot.config;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.commands.AssistedDriveCommand;
 import frc.robot.commands.DifferentialDriveFilterCommand;
 import frc.robot.commands.DifferentialDriveOdometryCommand;
 import frc.robot.commands.FieldDisplayCommand;
 import frc.robot.commands.ManualDifferentialDriveCommand;
+import frc.robot.mapping.obstacle.ObstacleReader;
+import frc.robot.motion.generation.rmpflow.rmps.ObstacleAvoidance;
 import frc.robot.subsystems.DifferentialDriveSubsystem;
 import frc.robot.subsystems.NavigationSubsystem;
 
@@ -38,17 +43,28 @@ public class DifferentialDriveContainer implements RobotContainer {
         // Initialize Auto Commands
         FieldDisplayCommand autoFieldDisplayCommand = new FieldDisplayCommand("Auto Field");
         DifferentialDriveOdometryCommand autoOdometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, autoFieldDisplayCommand);
+        autoOdometryCommand.resetOdometry(new Pose2d(3, 3, new Rotation2d(0)), new Rotation2d(0)); // Starting Position
         DifferentialDriveFilterCommand autoFilterCommand = new DifferentialDriveFilterCommand(autoOdometryCommand, navSub);
 
         // Initialize Teleop Commands
         FieldDisplayCommand fieldDisplayCommand = new FieldDisplayCommand();
         DifferentialDriveOdometryCommand odometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, fieldDisplayCommand);
+        odometryCommand.resetOdometry(new Pose2d(3, 3, new Rotation2d(0)), new Rotation2d(0)); // Starting Position
         DifferentialDriveFilterCommand filterCommand = new DifferentialDriveFilterCommand(odometryCommand, navSub);
         ManualDifferentialDriveCommand manualDriveCommand = new ManualDifferentialDriveCommand(diffDriveSub);
+        AssistedDriveCommand assistDriveCommand = new AssistedDriveCommand(diffDriveSub, filterCommand, getObstacleMapRMP(diffDriveSub.ROBOT_TRACK_WIDTH));
 
         // Initialize Command Groups
-        autoGroup = new ParallelCommandGroup(autoFieldDisplayCommand, autoOdometryCommand, autoFilterCommand); // These don't actually run in parallel.
-        teleopGroup = new ParallelCommandGroup(fieldDisplayCommand, odometryCommand, filterCommand, manualDriveCommand);
+        autoGroup = new ParallelCommandGroup(autoFieldDisplayCommand
+                                            , autoOdometryCommand
+                                            , autoFilterCommand
+                                            ); // These don't actually run in parallel.
+        teleopGroup = new ParallelCommandGroup(fieldDisplayCommand
+                                            , odometryCommand
+                                            , filterCommand
+                                            //, manualDriveCommand
+                                            , assistDriveCommand
+                                            );
 
         // Configure the button bindings
         configureButtonBindings();
@@ -96,5 +112,15 @@ public class DifferentialDriveContainer implements RobotContainer {
         // Add configs here:
 
         return talon;
+    }
+
+    /**
+     * Infinite Recharge Field RMP for Field Avoidance
+     * @param obstacleGrowthRadius
+     * @return
+     */
+    public ObstacleAvoidance getObstacleMapRMP(double obstacleGrowthRadius)
+    {
+        return new ObstacleAvoidance("Infinite Recharge Field", ObstacleReader.readWithoutExceptions(), null, obstacleGrowthRadius);
     }
 }

@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.motion.generation.rmpflow.CollisionAvoidance;
-import frc.robot.motion.generation.rmpflow.GoalAttractor;
+import frc.robot.motion.generation.rmpflow.rmps.CollisionAvoidance;
+import frc.robot.motion.generation.rmpflow.rmps.GoalAttractor;
 import frc.robot.motion.generation.rmpflow.RMPRoot;
 
 public class MotionGenerationSubsystem extends SubsystemBase {

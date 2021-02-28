@@ -10,7 +10,7 @@ import frc.robot.mapping.CircularArc;
 import frc.robot.mapping.CompoundPath;
 import frc.robot.mapping.Path;
 import frc.robot.mapping.Point;
-import frc.robot.motion.generation.rmpflow.GoalAttractor;
+import frc.robot.motion.generation.rmpflow.rmps.GoalAttractor;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class FollowPathCommand extends CommandBase {

@@ -1,6 +1,7 @@
 package frc.robot.motion.generation.rmpflow;
 import java.util.ArrayList;
 
+import org.ejml.MatrixDimensionException;
 import org.ejml.simple.SimpleMatrix;
 
 /**
@@ -53,7 +54,7 @@ public abstract class RMPNode {
 	 */
 	public SimpleMatrix j(SimpleMatrix q)
 	{
-		return q;
+		return SimpleMatrix.identity(q.getNumElements());
 	}
 
 	/**
@@ -73,7 +74,10 @@ public abstract class RMPNode {
 	 */
 	public void linkParent(RMPNode parent)
 	{
+		if(this.parent != null)
+		{
 		this.parent.removeChild(this);
+		}
 		parent.children.add(this);
 		this.parent = parent;
 	}
@@ -134,13 +138,8 @@ public abstract class RMPNode {
 	}
 
 	/**
-<<<<<<< HEAD
-	 * Returns parent node.
-	 * @return Parent node.
-=======
 	 * Returns parent node
 	 * @return RMPNode parent
->>>>>>> 2c0f46ded5ce9f1f7a3a15c532044656cdbef649
 	 */
 	public RMPNode getParent()
 	{

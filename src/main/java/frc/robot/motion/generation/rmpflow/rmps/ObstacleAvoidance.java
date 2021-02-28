@@ -13,9 +13,9 @@ import frc.robot.motion.generation.rmpflow.RMPNode;
  */
 public class ObstacleAvoidance extends RMPNode {
     private final double radius;
-    private double epsilon = 1e-1;
+    private double epsilon = .2;
     private double alpha = 1e-5;
-    private double eta = 0;
+    private double eta = 2;
 
     /**
      * An Obstacle avoidance RMP that places {@link CollisionAvoidance} RMPs at all

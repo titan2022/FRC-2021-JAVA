@@ -1,7 +1,6 @@
 package frc.robot.motion.generation.rmpflow;
 import java.util.ArrayList;
 
-import org.ejml.MatrixDimensionException;
 import org.ejml.simple.SimpleMatrix;
 
 /**

@@ -75,12 +75,9 @@ public class ObstacleAvoidance extends RMPNode {
     private void placeSegmentPoints(Point point1, Point point2) {
 
         Point midpoint = midpoint(point1, point2);
+        linkChildFromPoint(midpoint);
 
-        if (distance(point1, point2) <= radius) {
-
-            linkChildFromPoint(midpoint);
-
-        } else {
+        if (distance(point1, point2) > radius) {
 
             placeSegmentPoints(point1, midpoint);
             placeSegmentPoints(midpoint, point2);

@@ -22,12 +22,17 @@ public class AssistedDriveCommand extends CommandBase {
         new DifferentialDriveKinematics(DifferentialDriveSubsystem.ROBOT_TRACK_WIDTH);
     private final RMPRoot root = new RMPRoot("Assisted Driving");
     private long t0 = 0;
+    private double lambda = 0;
 
-    public AssistedDriveCommand(DifferentialDriveSubsystem drive, DifferentialDriveFilterCommand filter, ObstacleAvoidance obstacleRMP) {
+    public AssistedDriveCommand(DifferentialDriveSubsystem drive, DifferentialDriveFilterCommand filter, ObstacleAvoidance obstacleRMP, double lambda) {
         this.filter = filter;
         this.drive = drive;
+        this.lambda = lambda;
         t0 = RobotController.getFPGATime();
         root.linkChild(obstacleRMP);
+    }
+    public AssistedDriveCommand(DifferentialDriveSubsystem drive, DifferentialDriveFilterCommand filter, ObstacleAvoidance obstacleRMP) {
+        this(drive, filter, obstacleRMP, 1);
     }
 
     @Override

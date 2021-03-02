@@ -55,10 +55,12 @@ public class AssistedDriveCommand extends CommandBase {
         if(max_spd > 1){
             right /= max_spd;
             left /= max_spd;
-            vel.scale(1/max_spd);
         }
         drive.setOutput(ControlMode.PercentOutput, left, right);
-        prev = vel;
+        prev = new SimpleMatrix(new double[][]{
+            {(left + right) * 5 * pose.getRotation().getCos()},
+            {(left + right) * 5 * pose.getRotation().getSin()},
+            {(right - left) * 10 / DifferentialDriveSubsystem.ROBOT_TRACK_WIDTH}});
         t0 = t1;
     }
 }

@@ -64,7 +64,7 @@ public abstract class RMPNode {
 	 */
 	public SimpleMatrix j_dot(SimpleMatrix q, SimpleMatrix q_dot)
 	{
-		return q_dot;// TODO decide if to implement like goal Attractor J_dot
+		return q_dot;// TODO: Write as zero matrice that is the same dimensions as q
 	}
 	
 	/**

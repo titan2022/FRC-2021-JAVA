@@ -234,6 +234,25 @@ public class Shooter extends SubsystemBase{
         return angularAcceleration;
         //convert the angular acceleration to ticks per minute^2 
     }
+
+    public void setOutput(ControlMode mode, double leftOutputValue, double rightOutputValue) {
+
+        if (mode == ControlMode.Velocity) {
+    
+          if (leftOutputValue > MAX_SPEED) {
+            leftOutputValue = MAX_SPEED;
+          }
+    
+          if (rightOutputValue > MAX_SPEED) {
+            rightOutputValue = MAX_SPEED;
+          }
+    
+        }
+    
+        // TODO: is check the current usage from Power Subsystem to restrict overcurrent
+        leftPrimary.set(mode, leftOutputValue);
+        rightPrimary.set(mode, rightOutputValue);
+      }
     
     public double getExitAngle()
     {

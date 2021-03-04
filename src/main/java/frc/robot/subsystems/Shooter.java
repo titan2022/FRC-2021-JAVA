@@ -19,6 +19,14 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import edu.wpi.first.wpilibj.controller.ArmFeedforward;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
+
+import edu.wpi.first.wpilibj.examples.armbotoffboard.Constants.ArmConstants;
+import edu.wpi.first.wpilibj.examples.armbotoffboard.ExampleSmartMotorController;
+
 /**
  * @author Abhi
  * @author Deepu
@@ -93,7 +101,7 @@ public class Shooter extends SubsystemBase{
     }
 
     //First set the speed of the motor and then calculate the rpm and acceleration of the wheel.
-    public double calcRPMTalon()
+    public double getRPMTalon()
     {
         double speed = 8.0;
         leftPrimary.set(speed);

@@ -19,6 +19,9 @@ public class RRTDemo extends JFrame{
     ;
     public RRTDemo()
     {
+    }
+    public static void main(String[] args) 
+    {
         JFrame f = new JFrame();
         f = new JFrame("map");
         f.setSize(600, 600); 

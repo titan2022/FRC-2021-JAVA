@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.config.DifferentialDriveContainer;
 import frc.robot.config.RobotContainer;
+import frc.robot.config.SwerveDriveContainer;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -27,7 +28,11 @@ public class Robot extends TimedRobot {
   public Robot()
   {
     super(.02); // Default period is .02 seconds = 50 hz
-    robotContainer = new DifferentialDriveContainer(isSimulation());
+    // robotContainer = new DifferentialDriveContainer(isSimulation());
+    // autoCommandEntryPoint = robotContainer.getAutonomousCommand();
+    // teleopCommandEntryPoint = robotContainer.getTeleopCommand();
+
+    robotContainer = new SwerveDriveContainer(isSimulation());
     autoCommandEntryPoint = robotContainer.getAutonomousCommand();
     teleopCommandEntryPoint = robotContainer.getTeleopCommand();
   }

@@ -186,6 +186,7 @@ public class Shooter extends SubsystemBase{
         Shooter shooter = new Shooter();
         double finalVelocity = Math.sqrt(Math.pow(shooter.getShooterVelocityX(), 2) + Math.pow(shooter.getShooterVelocityY(), 2));
         return finalVelocity;  
+        // covert velocity to ticks/ minute (i think)
     }
 
     public void setMotorsSpeed()
@@ -198,8 +199,12 @@ public class Shooter extends SubsystemBase{
         rightSecondary.set(speed);
     }
 
-    public void calcAngular
-
+    public double getMotorAngularAcceleration()
+    {
+        double angularAcceleration = getShooterFinalVelocity()/time;
+        return angularAcceleration;
+        //convert the angular acceleration to ticks per minute^2 
+    }
     
     
 

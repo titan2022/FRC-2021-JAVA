@@ -75,20 +75,17 @@ public class Shooter extends SubsystemBase{
     , rightSecondary = new WPI_TalonSRX(RIGHT_SECONDARY_PORT);
 
     private double time;
-    private double velocity;
-    private double rpm;
+    private double rpmBall;
+    private double rpmTalon;
     private double xCoord;
     private double yCoord;
     private double zCoord;
     private double targetXCoord;
     private double targetYCoord;
-    private double targetZCoord; 
-    private double exitAngle;
-    private TalonSRX talon;
-    private VictorSPX victor;
+    private double targetZCoord;
     private double radius;
    
-    //First set the speed of the motor and then calculate the rpm and acceleration of the wheel.
+    //First set the speed of the motor and then calculate the rpm and acceleration of the ball.
     public double calcRPMBall()
     {
         double speed = 8.0;
@@ -96,8 +93,8 @@ public class Shooter extends SubsystemBase{
         leftSecondary.set(speed);
         rightPrimary.set(speed);
         rightSecondary.set(speed);
-        rpm = speed / 60 / radius / (2 * Math.PI);
-        return rpm;
+        rpmBall = speed / 60 / radius / (2 * Math.PI);
+        return rpmBall;
     }
 
     //First set the speed of the motor and then calculate the rpm and acceleration of the wheel.
@@ -108,16 +105,40 @@ public class Shooter extends SubsystemBase{
         leftSecondary.set(speed);
         rightPrimary.set(speed);
         rightSecondary.set(speed);
-        rpm = speed / 60 / radius / (2 * Math.PI);
-        return rpm;
+        rpmTalon = speed / 60 / radius / (2 * Math.PI);
+        return rpmTalon;
     }
 
-    //gets the angle of the hood
-    public double getHoodXAngle()
+    public double getTargetXCoord()
     {
-        double angle = 45.0;
-        return angle;
+        return targetXCoord;
     }
+
+    public double getTargetYCoord()
+    {
+        return targetYCoord;
+    }
+
+    public double getTargetZCoord()
+    {
+        return targetZCoord;
+    }
+
+    public double getXCoord()
+    {
+        return xCoord;
+    }
+
+    public double getYCoord()
+    {
+        return yCoord;
+    }
+
+    public double getZCoord()
+    {
+        return zCoord;
+    }
+
 
     //gets the angle of the hood
     public double getAngleToTargetH()
@@ -127,24 +148,12 @@ public class Shooter extends SubsystemBase{
     }
 
     //gets the angle of the hood
-    public double getHoodYAngle()
+    public double getHoodAngle()
     {
         double angle = leftPrimary.getSelectedSensorPosition();
         return angle;
     }
 
-    /*
-    public void checkHoodLimits() {
-        if (getHoodYAngle() < ANGLE_LOWER_LIMIT) {
-            setHoodYPosition(ANGLE_LOWER_LIMIT);
-        }
-                
-        if (getHoodYAngle() > ANGLE_UPPER_LIMIT) {
-            setHoodYPosition(ANGLE_UPPER_LIMIT);
-        }
-    } */
-
-    //gets the angle of the hood
     public double getAngleToTargetY()
     {
         LimelightMath vision = new LimelightMath();
@@ -165,7 +174,7 @@ public class Shooter extends SubsystemBase{
     public double getShooterVelocityX()
     {
         Shooter shooter = new Shooter();
-        double initialAngle = shooter.getHoodYAngle();
+        double initialAngle = shooter.getHoodAngle();
         LimelightMath vision = new LimelightMath();
         double distanceToTargetX = vision.calculateDistance();
         double desiredTime = 5.0;
@@ -178,7 +187,7 @@ public class Shooter extends SubsystemBase{
     public double getShooterVelocityY()
     {
         Shooter shooter = new Shooter();
-        double initialAngle = shooter.getHoodYAngle();
+        double initialAngle = shooter.getHoodAngle();
         double accelerationY = -9.8;
         double desiredTime = 5.0;
 

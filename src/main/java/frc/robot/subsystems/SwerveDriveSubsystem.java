@@ -180,6 +180,17 @@ public class SwerveDriveSubsystem extends SubsystemBase
     //Kinematics
     //order is leftfront, leftback, rightfront, rightback
     kinematics = new SwerveDriveKinematics(leftFrontPosition, leftBackPosition, rightFrontPosition, rightBackPosition);
+
+    //neutral deadbands
+    leftFrontRotatorMotor.configNeutralDeadband(0.199413);
+    rightFrontRotatorMotor.configNeutralDeadband(0.199413);
+    leftBackRotatorMotor.configNeutralDeadband(0.199413);
+    rightBackRotatorMotor.configNeutralDeadband(0.199413);
+
+    leftFrontMotor.configNeutralDeadband(0.199413);
+    leftBackMotor.configNeutralDeadband(0.199413);
+    rightFrontMotor.configNeutralDeadband(0.199413);
+    rightBackMotor.configNeutralDeadband(0.199413);
   }
 
   public SwerveDriveSubsystem()
@@ -249,10 +260,10 @@ public class SwerveDriveSubsystem extends SubsystemBase
     rightFrontMotor.set(ControlMode.Velocity, modules[2].speedMetersPerSecond/METERS_PER_TICK);
     rightBackMotor.set(ControlMode.Velocity, modules[3].speedMetersPerSecond/METERS_PER_TICK);
 
-    leftFrontRotatorMotor.set(ControlMode.Position, modules[0].angle.getDegrees()*(4096/360));
-    leftBackRotatorMotor.set(ControlMode.Position, modules[1].angle.getDegrees()*(4096/360));
-    rightFrontRotatorMotor.set(ControlMode.Position, modules[2].angle.getDegrees()*(4096/360));
-    rightBackRotatorMotor.set(ControlMode.Position, modules[3].angle.getDegrees()*(4096/360));
+    leftFrontRotatorMotor.set(ControlMode.Position, modules[0].angle.getDegrees()*(ENCODER_TICKS/360));
+    leftBackRotatorMotor.set(ControlMode.Position, modules[1].angle.getDegrees()*(ENCODER_TICKS/360));
+    rightFrontRotatorMotor.set(ControlMode.Position, modules[2].angle.getDegrees()*(ENCODER_TICKS/360));
+    rightBackRotatorMotor.set(ControlMode.Position, modules[3].angle.getDegrees()*(ENCODER_TICKS/360));
   } 
 
   public void setOutput(double omega, double XVelocity, double YVelocity)

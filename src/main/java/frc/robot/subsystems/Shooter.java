@@ -84,6 +84,18 @@ public class Shooter extends SubsystemBase{
     private double targetYCoord;
     private double targetZCoord;
     private double radius;
+    private double g; 
+    private double t;
+    private double distance;
+    private double height;
+
+    public Shooter()
+    {   
+        g = -9.8;
+        t = 10;
+        distance = targetXCoord - xCoord;
+        height = targetYCoord - yCoord;
+    }
    
     //First set the speed of the motor and then calculate the rpm and acceleration of the ball.
     public double calcRPMBall()
@@ -223,7 +235,26 @@ public class Shooter extends SubsystemBase{
         //convert the angular acceleration to ticks per minute^2 
     }
     
-    
+    public double getExitAngle()
+    {
+        double exitAngle = 0;
+        exitAngle = Math.atan((height + (1/2 * g* t * t))/distance);
+        return exitAngle;
+    }
+
+    public double getInitialVelocity()
+    {
+        double initialVelocity = 0;
+        initialVelocity = (distance/Math.cos(getExitAngle())) * t;
+        return initialVelocity;
+    }
+
+    public void setTalonVelocity()
+    {
+        rightPrimary.set(getInitialVelocity());
+    }
+
+
 
     
 

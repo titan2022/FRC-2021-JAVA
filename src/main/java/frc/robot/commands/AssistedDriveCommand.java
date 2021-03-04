@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.config.XboxMap;
+import frc.robot.mapping.obstacle.ObstacleReader;
 import frc.robot.motion.generation.rmpflow.RMPRoot;
 import frc.robot.motion.generation.rmpflow.rmps.ObstacleAvoidance;
 import frc.robot.subsystems.DifferentialDriveSubsystem;
@@ -25,10 +26,18 @@ public class AssistedDriveCommand extends CommandBase {
         this.drive = drive;
         this.lambda = lambda;
         t0 = RobotController.getFPGATime();
-        root.linkChild(obstacleRMP);
+        //root.linkChild(obstacleRMP);
+        ObstacleAvoidance.ObstacleAvoidanceStatic.addRootObstacleChildren(ObstacleReader.readWithoutExceptions(), root, DifferentialDriveSubsystem.ROBOT_TRACK_WIDTH/2);
     }
     public AssistedDriveCommand(DifferentialDriveSubsystem drive, DifferentialDriveFilterCommand filter, ObstacleAvoidance obstacleRMP) {
         this(drive, filter, obstacleRMP, 1);
+    }
+
+    private SimpleMatrix reduce(SimpleMatrix xyz) {
+        return new SimpleMatrix(new double[][]{{xyz.get(0)}, {xyz.get(1)}});
+    }
+    private SimpleMatrix expand(SimpleMatrix xy) {
+        return new SimpleMatrix(new double[][]{{xy.get(0)}, {xy.get(1)}, {0}});
     }
 
     @Override
@@ -42,8 +51,9 @@ public class AssistedDriveCommand extends CommandBase {
             {speed * pose.getRotation().getSin()},
             {(target_right - target_left) / DifferentialDriveSubsystem.ROBOT_TRACK_WIDTH}});
         SimpleMatrix x = new SimpleMatrix(
-            new double[][]{{pose.getX()}, {pose.getY()}, {pose.getRotation().getRadians()}});
-        SimpleMatrix acc = target.minus(prev).scale(lambda).plus(root.solve(x, prev));
+            new double[][]{{pose.getX()}, {pose.getY()}});
+        SimpleMatrix acc2d = target.minus(prev).scale(lambda).plus(expand(root.solve(x, reduce(prev))));
+        SimpleMatrix acc = new SimpleMatrix(new double[][]{{acc2d.get(0)}, {acc2d.get(1)}, {0}});
         long t1 = RobotController.getFPGATime();
         double dt = (t1 - t0) / 1000000.;
         SimpleMatrix vel = acc.scale(dt).plus(prev);
@@ -60,7 +70,8 @@ public class AssistedDriveCommand extends CommandBase {
         prev = new SimpleMatrix(new double[][]{
             {(left + right) * 5 * pose.getRotation().getCos()},
             {(left + right) * 5 * pose.getRotation().getSin()},
-            {(right - left) * 10 / DifferentialDriveSubsystem.ROBOT_TRACK_WIDTH}});
+            {(right - left) * 10 / DifferentialDriveSubsystem.ROBOT_TRACK_WIDTH}
+        });
         t0 = t1;
     }
 }

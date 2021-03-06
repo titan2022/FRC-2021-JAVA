@@ -14,23 +14,22 @@ import frc.robot.subsystems.sim.PhysicsSim;
  */
 public class DifferentialDriveFilterCommand extends CommandBase {
   private static final double STATE_STD_DEV = 0.1; // meters
-  private static final double MEAS_STD_DEV = 0.01; // meters
+  private static final double MEAS_STD_DEV = 0.001; // meters
 
   private final CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc, thetapos, thetavel, thetaacc]
   private final DifferentialDriveOdometryCommand odometryCommand;
-  private final NavigationSubsystem navSub;
+  private NavigationSubsystem navSub;
   private final SimpleMatrix initialAdjust;
+  private boolean simulated = false;
   private double prevT = 0;
 
   /**
-   * Creates a new DifferentialDriveFilterCommand with odometry and navigation.
+   * Creates a new non-simulated DifferentialDriveFilterCommand with odometry.
    * 
    * @param odometryCommand - Odometry for robot.
-   * @param navSub          - Navigation subsystem.
    */
-  public DifferentialDriveFilterCommand(DifferentialDriveOdometryCommand odometryCommand, NavigationSubsystem navSub) {
-    this.odometryCommand = odometryCommand;
-    this.navSub = navSub;
+  public DifferentialDriveFilterCommand(DifferentialDriveOdometryCommand odometryCommand) {
+    this.odometryCommand = odometryCommand;    
     initialAdjust = getFilterOdometryVector();
     filter = new CustomKalmanFilter(initialAdjust, SimpleMatrix.identity(9),
         SimpleMatrix.identity(9).scale(Math.pow(STATE_STD_DEV, 2)),
@@ -38,6 +37,18 @@ public class DifferentialDriveFilterCommand extends CommandBase {
         new SimpleMatrix(new double[][] { { 0, 0, 0 }, { 0, 0, 0 }, { 1, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 1, 0 },
             { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 1 } }),
         SimpleMatrix.identity(9));
+  }
+
+  /**
+   * Creates a new simulated DifferentialDriveFilterCommand with odometry and navigation.
+   * 
+   * @param odometryCommand - Odometry for robot.
+   * @param navSub          - Navigation subsystem.
+   */
+  public DifferentialDriveFilterCommand(DifferentialDriveOdometryCommand odometryCommand, NavigationSubsystem navSub) {
+    this(odometryCommand);
+    this.navSub = navSub;
+    simulated = true;
   }
 
   @Override
@@ -54,7 +65,7 @@ public class DifferentialDriveFilterCommand extends CommandBase {
     // controller, format: [xacc, yacc, thetaacc]
 
     filter.updateFilter(getFilterOdometryVector());
-    filter.updateFilter(getFilterGyroVector());
+    if (simulated) filter.updateFilter(getFilterGyroVector());
   }
 
   @Override

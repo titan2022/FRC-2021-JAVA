@@ -15,26 +15,29 @@ import frc.robot.subsystems.sim.PhysicsSim;
 public class DifferentialDriveFilterCommand extends CommandBase {
   private static final double STATE_STD_DEV = 0.1; // meters
   private static final double MEAS_STD_DEV = 0.01; // meters
-  
+
   private final CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc, thetapos, thetavel, thetaacc]
   private final DifferentialDriveOdometryCommand odometryCommand;
   private final NavigationSubsystem navSub;
+  private final SimpleMatrix initialAdjust;
   private double prevT = 0;
 
   /**
    * Creates a new DifferentialDriveFilterCommand with odometry and navigation.
+   * 
    * @param odometryCommand - Odometry for robot.
-   * @param navSub - Navigation subsystem.
+   * @param navSub          - Navigation subsystem.
    */
   public DifferentialDriveFilterCommand(DifferentialDriveOdometryCommand odometryCommand, NavigationSubsystem navSub) {
-    filter = new CustomKalmanFilter(new SimpleMatrix(9, 1), SimpleMatrix.identity(9),
+    this.odometryCommand = odometryCommand;
+    this.navSub = navSub;
+    initialAdjust = getFilterOdometryVector();
+    filter = new CustomKalmanFilter(initialAdjust, SimpleMatrix.identity(9),
         SimpleMatrix.identity(9).scale(Math.pow(STATE_STD_DEV, 2)),
         SimpleMatrix.identity(9).scale(Math.pow(MEAS_STD_DEV, 2)), updateA(0),
         new SimpleMatrix(new double[][] { { 0, 0, 0 }, { 0, 0, 0 }, { 1, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 1, 0 },
             { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 1 } }),
         SimpleMatrix.identity(9));
-    this.odometryCommand = odometryCommand;
-    this.navSub = navSub;
   }
 
   @Override
@@ -47,14 +50,16 @@ public class DifferentialDriveFilterCommand extends CommandBase {
     filter.setA(updateA(PhysicsSim.getFPGATime() - prevT));
     prevT = PhysicsSim.getFPGATime();
 
-    // TODO: add filter.predictFilter(input(accel)), bringing input from Xbox controller, format: [xacc, yacc, thetaacc]
+    // TODO: add filter.predictFilter(input(accel)), bringing input from Xbox
+    // controller, format: [xacc, yacc, thetaacc]
 
     filter.updateFilter(getFilterOdometryVector());
-    filter.updateFilter(navSub.getGyroVector());
+    filter.updateFilter(getFilterGyroVector());
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   @Override
   public boolean isFinished() {
@@ -75,6 +80,7 @@ public class DifferentialDriveFilterCommand extends CommandBase {
 
   /**
    * Gets a copy of the Kalman filter.
+   * 
    * @return Kalman filter.
    */
   public CustomKalmanFilter getFilterCopy() {
@@ -83,6 +89,7 @@ public class DifferentialDriveFilterCommand extends CommandBase {
 
   /**
    * Returns the Kalman filter's current state.
+   * 
    * @return Current Kalman filter state.
    */
   public SimpleMatrix getFilterState() {
@@ -91,7 +98,9 @@ public class DifferentialDriveFilterCommand extends CommandBase {
 
   /**
    * Returns an element from the Kalman filter's current state.
-   * @param row - Row of state vector: [xpos, xvel, xacc, ypos, yvel, yacc, thetapos, thetavel, thetaacc]
+   * 
+   * @param row - Row of state vector: [xpos, xvel, xacc, ypos, yvel, yacc,
+   *            thetapos, thetavel, thetaacc]
    * @return Element from current filter state.
    */
   public double getFilterStateElement(int row) {
@@ -100,20 +109,35 @@ public class DifferentialDriveFilterCommand extends CommandBase {
 
   /**
    * Returns the Kalman filter's estimated robot pose.
+   * 
    * @return Current filtered pose.
    */
   public Pose2d getFilteredPose() {
-    return new Pose2d(getFilterStateElement(0), getFilterStateElement(3), Rotation2d.fromDegrees(getFilterStateElement(6)));
+    return new Pose2d(getFilterStateElement(0), getFilterStateElement(3),
+        Rotation2d.fromDegrees(getFilterStateElement(6)));
   }
 
   /**
    * Gets a formatted version of odometry's return vector for the filter.
+   * 
    * @return Formatted odometry vector.
    */
   private SimpleMatrix getFilterOdometryVector() {
     return new SimpleMatrix(new double[][] { { odometryCommand.getOdometryVector().get(0, 0) }, { 0 }, { 0 },
         { odometryCommand.getOdometryVector().get(1, 0) }, { 0 }, { 0 },
         { odometryCommand.getOdometryVector().get(2, 0) }, { 0 }, { 0 } });
+  }
+
+  /**
+   * Gets a formatted and adjusted version of navigation's return vector for the
+   * filter.
+   * 
+   * @return Formatted and adjusted gyro vector.
+   */
+  private SimpleMatrix getFilterGyroVector() {
+
+    return navSub.getGyroVector().plus(initialAdjust);
+
   }
 
 }

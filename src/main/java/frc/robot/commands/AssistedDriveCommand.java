@@ -6,6 +6,7 @@ import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.config.XboxMap;
 import frc.robot.mapping.obstacle.ObstacleReader;
@@ -14,14 +15,14 @@ import frc.robot.motion.generation.rmpflow.rmps.ObstacleAvoidance;
 import frc.robot.subsystems.DifferentialDriveSubsystem;
 
 public class AssistedDriveCommand extends CommandBase {
-    public final DifferentialDriveFilterCommand filter;
+    public final DifferentialDriveOdometryCommand filter;
     public final DifferentialDriveSubsystem drive;
     private final RMPRoot root = new RMPRoot("Assisted Driving");
     private long t0 = 0;
     private double lambda = 0;
     private SimpleMatrix prev = new SimpleMatrix(new double[][]{{0}, {0}, {0}});
 
-    public AssistedDriveCommand(DifferentialDriveSubsystem drive, DifferentialDriveFilterCommand filter, ObstacleAvoidance obstacleRMP, double lambda) {
+    public AssistedDriveCommand(DifferentialDriveSubsystem drive, DifferentialDriveOdometryCommand filter, ObstacleAvoidance obstacleRMP, double lambda) {
         this.filter = filter;
         this.drive = drive;
         this.lambda = lambda;
@@ -29,8 +30,8 @@ public class AssistedDriveCommand extends CommandBase {
         //root.linkChild(obstacleRMP);
         ObstacleAvoidance.ObstacleAvoidanceStatic.addRootObstacleChildren(ObstacleReader.readWithoutExceptions(), root, DifferentialDriveSubsystem.ROBOT_TRACK_WIDTH/2);
     }
-    public AssistedDriveCommand(DifferentialDriveSubsystem drive, DifferentialDriveFilterCommand filter, ObstacleAvoidance obstacleRMP) {
-        this(drive, filter, obstacleRMP, 1);
+    public AssistedDriveCommand(DifferentialDriveSubsystem drive, DifferentialDriveOdometryCommand filter, ObstacleAvoidance obstacleRMP) {
+        this(drive, filter, obstacleRMP, 1.25);
     }
 
     private SimpleMatrix reduce(SimpleMatrix xyz) {
@@ -45,15 +46,17 @@ public class AssistedDriveCommand extends CommandBase {
         double target_left = XboxMap.left()*10;
         double target_right = XboxMap.right()*10;
         double speed = (target_left + target_right) / 2;
-        Pose2d pose = filter.getFilteredPose();
+        //Pose2d pose = filter.getFilteredPose();
+        Pose2d pose = filter.getPose();
         SimpleMatrix target = new SimpleMatrix(new double[][]{
             {speed * pose.getRotation().getCos()},
             {speed * pose.getRotation().getSin()},
             {(target_right - target_left) / DifferentialDriveSubsystem.ROBOT_TRACK_WIDTH}});
         SimpleMatrix x = new SimpleMatrix(
             new double[][]{{pose.getX()}, {pose.getY()}});
-        SimpleMatrix acc2d = target.minus(prev).scale(lambda).plus(expand(root.solve(x, reduce(prev))));
-        SimpleMatrix acc = new SimpleMatrix(new double[][]{{acc2d.get(0)}, {acc2d.get(1)}, {0}});
+        SimpleMatrix acc = target.minus(prev).scale(lambda).plus(expand(root.solve(x, reduce(prev)))).scale(2);
+        SmartDashboard.putNumber("Accelerator", Math.sqrt(acc.get(0) * acc.get(0) + acc.get(1) * acc.get(1)));
+        //SimpleMatrix acc = new SimpleMatrix(new double[][]{{acc2d.get(0)}, {acc2d.get(1)}, {0}});
         long t1 = RobotController.getFPGATime();
         double dt = (t1 - t0) / 1000000.;
         SimpleMatrix vel = acc.scale(dt).plus(prev);

@@ -52,7 +52,7 @@ public class DifferentialDriveContainer implements RobotContainer {
         odometryCommand.resetOdometry(new Pose2d(3, 3, new Rotation2d(0)), new Rotation2d(0)); // Starting Position
         DifferentialDriveFilterCommand filterCommand = new DifferentialDriveFilterCommand(odometryCommand, navSub);
         ManualDifferentialDriveCommand manualDriveCommand = new ManualDifferentialDriveCommand(diffDriveSub);
-        AssistedDriveCommand assistDriveCommand = new AssistedDriveCommand(diffDriveSub, filterCommand, getObstacleMapRMP(diffDriveSub.ROBOT_TRACK_WIDTH));
+        AssistedDriveCommand assistDriveCommand = new AssistedDriveCommand(diffDriveSub, odometryCommand, getObstacleMapRMP(diffDriveSub.ROBOT_TRACK_WIDTH));
 
         // Initialize Command Groups
         autoGroup = new ParallelCommandGroup(autoFieldDisplayCommand
@@ -61,7 +61,7 @@ public class DifferentialDriveContainer implements RobotContainer {
                                             ); // These don't actually run in parallel.
         teleopGroup = new ParallelCommandGroup(fieldDisplayCommand
                                             , odometryCommand
-                                            , filterCommand
+                                            //, filterCommand
                                             //, manualDriveCommand
                                             , assistDriveCommand
                                             );

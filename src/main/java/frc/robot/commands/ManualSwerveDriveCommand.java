@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.config.XboxMap;
 import frc.robot.motion.control.PIDConfig;
@@ -53,6 +54,8 @@ public class ManualSwerveDriveCommand extends CommandBase {
       swerveDriveSubsystem.disableBrakes();
       swerveDriveSubsystem.setOutput(new ChassisSpeeds(XboxMap.leftX(), XboxMap.leftY(), pid.calculate(navigationSubsystem.getHeadingRadians(), Math.atan2(XboxMap.rightY(), XboxMap.rightX()))));
     }
+
+    SmartDashboard.putNumber("LeftShiftX", XboxMap.leftX());
   }
 
   // Called once the command ends or is interrupted.

@@ -13,15 +13,15 @@ import frc.robot.subsystems.sim.PhysicsSim;
  * Kalman filter for differential drive robot.
  */
 public class DifferentialDriveFilterCommand extends CommandBase {
-  private static final double STATE_STD_DEV = 0.1; // meters
-  private static final double MEAS_STD_DEV = 0.001; // meters
+  public static final double STATE_STD_DEV = 0.1; // meters
+  public static final double MEAS_STD_DEV = 0.001; // meters
 
   private final CustomKalmanFilter filter; // vector: [xpos, xvel, xacc, ypos, yvel, yacc, thetapos, thetavel, thetaacc]
   private final DifferentialDriveOdometryCommand odometryCommand;
   private NavigationSubsystem navSub;
   private final SimpleMatrix initialAdjust;
-  private boolean simulated = false;
-  private double prevT = 0;
+  private boolean useNavSub = false;
+  private double prevT;
 
   /**
    * Creates a new non-simulated DifferentialDriveFilterCommand with odometry.
@@ -48,7 +48,7 @@ public class DifferentialDriveFilterCommand extends CommandBase {
   public DifferentialDriveFilterCommand(DifferentialDriveOdometryCommand odometryCommand, NavigationSubsystem navSub) {
     this(odometryCommand);
     this.navSub = navSub;
-    simulated = true;
+    useNavSub = true;
   }
 
   @Override
@@ -65,7 +65,7 @@ public class DifferentialDriveFilterCommand extends CommandBase {
     // controller, format: [xacc, yacc, thetaacc]
 
     filter.updateFilter(getFilterOdometryVector());
-    if (simulated) filter.updateFilter(getFilterGyroVector());
+    if (useNavSub) filter.updateFilter(getFilterGyroVector());
   }
 
   @Override

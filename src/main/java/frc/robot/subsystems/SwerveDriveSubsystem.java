@@ -18,22 +18,22 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class SwerveDriveSubsystem extends SubsystemBase
 {
   // Physical parameters
-  public static final double ROBOT_TRACK_WIDTH = 26.75/39.37; // meter
-  public static final double ROBOT_LENGTH = 0.5; // meter 
-  public static final double WHEEL_RADIUS = 6/39.37; // meters
+  public static final double ROBOT_TRACK_WIDTH = 0.672; // meters (30 in)
+  public static final double ROBOT_LENGTH = 0.672; // meter 
+  public static final double WHEEL_RADIUS = 0.0508; // meters (2 in)
   public static final double ENCODER_TICKS = 4096; // Ticks/rotation of CTREMagEncoder
   public static final double METERS_PER_TICK = WHEEL_RADIUS * 2 * Math.PI / ENCODER_TICKS;
   
     
   // Port numbers to be added later
-  private static final int LEFT_FRONT_MOTOR_PORT = 1;
-  private static final int LEFT_BACK_MOTOR_PORT = 2;
-  private static final int RIGHT_FRONT_MOTOR_PORT = 3;
-  private static final int RIGHT_BACK_MOTOR_PORT = 4;
+  private static final int LEFT_FRONT_MOTOR_PORT = 2;
+  private static final int LEFT_BACK_MOTOR_PORT = 7;
+  private static final int RIGHT_FRONT_MOTOR_PORT = 4;
+  private static final int RIGHT_BACK_MOTOR_PORT = 3;
   private static final int LEFT_FRONT_MOTOR_ROTATOR_PORT = 5;
-  private static final int LEFT_BACK_MOTOR_ROTATOR_PORT = 6;
-  private static final int RIGHT_FRONT_MOTOR_ROTATOR_PORT = 7;
-  private static final int RIGHT_BACK_MOTOR_ROTATOR_PORT = 8;
+  private static final int LEFT_BACK_MOTOR_ROTATOR_PORT = 0;
+  private static final int RIGHT_FRONT_MOTOR_ROTATOR_PORT = 6;
+  private static final int RIGHT_BACK_MOTOR_ROTATOR_PORT = 1;
 
   private static final int ENCODER_PORT = 1;
 
@@ -91,10 +91,10 @@ public class SwerveDriveSubsystem extends SubsystemBase
   //Kinematics
   //positions describe the position of each wheel relative to the center of the robot
   SwerveDriveKinematics kinematics;
-  private static final Translation2d leftFrontPosition = new Translation2d(-0.25, 0.25);
-  private static final Translation2d leftBackPosition = new Translation2d(-0.25, -0.25);
-  private static final Translation2d rightFrontPosition = new Translation2d(0.25, 0.25);
-  private static final Translation2d rightBackPosition = new Translation2d(0.25, -0.25);
+  private static final Translation2d leftFrontPosition = new Translation2d(-ROBOT_TRACK_WIDTH/2, ROBOT_LENGTH/2);
+  private static final Translation2d leftBackPosition = new Translation2d(-ROBOT_TRACK_WIDTH/2, -ROBOT_LENGTH/2);
+  private static final Translation2d rightFrontPosition = new Translation2d(ROBOT_TRACK_WIDTH/2, ROBOT_LENGTH/2);
+  private static final Translation2d rightBackPosition = new Translation2d(ROBOT_TRACK_WIDTH/2, -ROBOT_LENGTH/2);
 
   //Might need extra parameters for rotator motors
   //Make like differential drive subsystem constructor

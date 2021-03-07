@@ -62,8 +62,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
 
   // Physical limits of motors that create translational motion
   private static final double MAX_SPEED = 10; // meters/sec
-  private static final int PEAK_CURRENT_LIMIT = 60;
-  private static final int CONTINUOUS_CURRENT_LIMIT = 50;
+  private static final int PEAK_CURRENT_LIMIT = 6;
+  private static final int CONTINUOUS_CURRENT_LIMIT = 5;
   private static final StatorCurrentLimitConfiguration statorCurrentLimit = new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0);
   private static final SupplyCurrentLimitConfiguration supplyCurrentLimit = new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0);
 

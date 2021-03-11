@@ -25,7 +25,7 @@ public class SwerveDriveSubsystem extends SubsystemBase
   public static final double ROBOT_TRACK_WIDTH = 0.672; // meters (30 in)
   public static final double ROBOT_LENGTH = 0.672; // meter 
   public static final double WHEEL_RADIUS = 0.0508; // meters (2 in)
-  public static final double ENCODER_TICKS = 4096; // Ticks/rotation of CTREMagEncoder
+  public static final double ENCODER_TICKS = 2048; // Ticks/rotation of CTREMagEncoder
   public static final double METERS_PER_TICK = WHEEL_RADIUS * 2 * Math.PI / ENCODER_TICKS;
   
     

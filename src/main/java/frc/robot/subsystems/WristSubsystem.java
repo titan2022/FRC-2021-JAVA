@@ -106,10 +106,10 @@ public class WristSubsystem extends SubsystemBase {
 
     /**
      * 
-     * @return current angle of wrist
+     * @return current angle of wrist in degrees
      */
     public double getWristAngle() {
-        return wrist.getSelectedSensorPosition();
+        return (wrist.getSelectedSensorPosition()/ENCODER_TICKS)*360;
     }
     /**
      * checks if the wrist is within angle limits, if not within limits, sets wrist to be within limits
@@ -127,7 +127,6 @@ public class WristSubsystem extends SubsystemBase {
      * moves to neutral/down position, stops the wrist
      */
     public void stop() {
-        setWristPosition(0);
         wrist.set(ControlMode.PercentOutput, 0);
     }
     @Override

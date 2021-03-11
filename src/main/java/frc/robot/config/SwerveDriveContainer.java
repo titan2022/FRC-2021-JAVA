@@ -104,7 +104,6 @@ public class SwerveDriveContainer implements RobotContainer {
         talon.slot0.maxIntegralAccumulator = 254.000000;
         //talon.slot0.closedLoopPeakOutput = 0.869990;
         //talon.slot0.closedLoopPeriod = 33;
-        talon.neutralDeadband = 0.199413;
 
         return talon;
     }

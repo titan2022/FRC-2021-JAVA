@@ -70,27 +70,19 @@ public class ShooterSubsystem extends SubsystemBase{
   // Physical and Simulated Hardware
   // These talon objects are also simulated
   private static final WPI_TalonSRX leftPrimary = new WPI_TalonSRX(LEFT_PRIMARY_PORT)
-    , leftSecondary = new WPI_TalonSRX(LEFT_SECONDARY_PORT)
-    , rightPrimary = new WPI_TalonSRX(RIGHT_PRIMARY_PORT)
-    , rightSecondary = new WPI_TalonSRX(RIGHT_SECONDARY_PORT);
+     , rightPrimary = new WPI_TalonSRX(RIGHT_PRIMARY_PORT);
 
-    private double time;
-    private double rpsBall;
-    private double rpsTalon;
     private double xCoord;
     private double yCoord;
-    private double zCoord;
     private double targetXCoord;
     private double targetYCoord;
-    private double targetZCoord;
-    private double radius;
     private double g; 
     private double t;
     private double distance;
     private double height;
     // measure the current linear velocity of the wheel, then assume that's starting velocity. plug it back in to find the least
     // amount of time, optimize time in respect to theta
-    public Shooter()
+    public ShooterSubsystem()
     {   
         g = -9.8;
         t = 10;
@@ -98,143 +90,9 @@ public class ShooterSubsystem extends SubsystemBase{
         height = targetYCoord - yCoord;
     }
    
-    //First set the speed of the motor and then calculate the rpm and acceleration of the ball.
-    public double calcRPSBall()
-    {
-        double speed = 8.0;
-        leftPrimary.set(speed);
-        leftSecondary.set(speed);
-        rightPrimary.set(speed);
-        rightSecondary.set(speed);
-        rpsBall = speed / radius / (2 * Math.PI);
-        return rpsBall;
-    }
-
-    //First set the speed of the motor and then calculate the rpm and acceleration of the wheel.
-    public double getRPSTalon()
-    {
-        double speed = 8.0;
-        leftPrimary.set(speed);
-        leftSecondary.set(speed);
-        rightPrimary.set(speed);
-        rightSecondary.set(speed);
-        rpsTalon = speed / radius / (2 * Math.PI);
-        return rpsTalon;
-    }
-
-    public double getTargetXCoord()
-    {
-        return targetXCoord;
-    }
-
-    public double getTargetYCoord()
-    {
-        return targetYCoord;
-    }
-
-    public double getTargetZCoord()
-    {
-        return targetZCoord;
-    }
-
-    public double getXCoord()
-    {
-        return xCoord;
-    }
-
-    public double getYCoord()
-    {
-        return yCoord;
-    }
-
-    public double getZCoord()
-    {
-        return zCoord;
-    }
 
 
-    //gets the angle of the hood
-    public double getAngleToTargetH()
-    {
-        LimelightMath vision = new LimelightMath();
-        return vision.calculateAngleToTargetH();
-    }
 
-    //gets the angle of the hood
-    public double getHoodAngle()
-    {
-        double angle = leftPrimary.getSelectedSensorPosition();
-        return angle;
-    }
-
-    public double getAngleToTargetY()
-    {
-        LimelightMath vision = new LimelightMath();
-        return vision.calculateAngleToTargetV();
-    }
-
-    public void setHoodYAngle(double angle)
-    {
-        leftPrimary.set(ControlMode.MotionProfile, angle *  ANGLE_TO_TICK);
-        leftSecondary.set(ControlMode.MotionProfile, angle *  ANGLE_TO_TICK);
-        rightPrimary.set(ControlMode.MotionProfile, angle *  ANGLE_TO_TICK);
-        rightSecondary.set(ControlMode.MotionProfile, angle *  ANGLE_TO_TICK);
-    }
-
-    
-
-    //Calculates velocity of the shooter based on the hood angle.
-    public double getShooterVelocityX()
-    {
-        Shooter shooter = new Shooter();
-        double initialAngle = shooter.getHoodAngle();
-        LimelightMath vision = new LimelightMath();
-        double distanceToTargetX = vision.calculateDistance();
-        double desiredTime = 5.0;
-        double shooterVelocity = distanceToTargetX/(Math.cos(initialAngle) * desiredTime);
-        return shooterVelocity;
-
-    }
-
-    //Calculates velocity of the shooter based on the hood angle.
-    public double getShooterVelocityY()
-    {
-        Shooter shooter = new Shooter();
-        double initialAngle = shooter.getHoodAngle();
-        double accelerationY = -9.8;
-        double desiredTime = 5.0;
-
-        LimelightMath vision = new LimelightMath();
-        double distanceY = vision.calculateDistance() * Math.tan(vision.calculateAngleToTargetV());
-        double shooterVelocity = (distanceY + 0.5 * accelerationY * desiredTime * desiredTime) / (Math.sin(initialAngle)* desiredTime);
-        return shooterVelocity;
-    }
-
-    //Calculate Final Velocity relative to Angle of Hood.
-    public double getShooterFinalVelocity()
-    {
-        Shooter shooter = new Shooter();
-        double finalVelocity = Math.sqrt(Math.pow(shooter.getShooterVelocityX(), 2) + Math.pow(shooter.getShooterVelocityY(), 2));
-        return finalVelocity;  
-        // covert velocity to ticks/ minute (i think)
-    }
-
-    public void setMotorsSpeed()
-    {
-        Shooter shooter = new Shooter();
-        double speed = shooter.getShooterFinalVelocity();
-        leftPrimary.set(speed);
-        leftSecondary.set(speed);
-        rightPrimary.set(speed);
-        rightSecondary.set(speed);
-    }
-
-    public double getMotorAngularAcceleration()
-    {
-        double angularAcceleration = getShooterFinalVelocity()/time;
-        return angularAcceleration;
-        //convert the angular acceleration to ticks per minute^2 
-    }
 
     public void setOutput(ControlMode mode, double leftOutputValue, double rightOutputValue) {
 

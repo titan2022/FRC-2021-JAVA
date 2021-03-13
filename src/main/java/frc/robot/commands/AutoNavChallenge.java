@@ -25,6 +25,9 @@ public class AutoNavChallenge extends CommandBase {
         waypoint = drive.filter.getFilteredPose().getTranslation();
         this.attractor = new GoalAttractor("Waypoint", this.coord, toVector(waypoint), 10, 1, 10, 1, 2, 2, 0.005);
     }
+    public AutoNavChallenge(RMPDrive drive, Translation2d... waypoints) {
+        this(drive, 0.1, waypoints);
+    }
 
     private SimpleMatrix toVector(Translation2d x) {
         return new SimpleMatrix(new double[][]{{x.getX()}, {x.getY()}});

@@ -289,10 +289,10 @@ public class SwerveDriveSubsystem extends SubsystemBase
     SwerveModuleState[] modules = kinematics.toSwerveModuleStates(inputChassisSpeeds);
 
 
-    leftFrontMotor.set(ControlMode.Velocity, modules[0].speedMetersPerSecond/METERS_PER_TICK);
-    leftBackMotor.set(ControlMode.Velocity, modules[1].speedMetersPerSecond/METERS_PER_TICK);
-    rightFrontMotor.set(ControlMode.Velocity, modules[2].speedMetersPerSecond/METERS_PER_TICK);
-    rightBackMotor.set(ControlMode.Velocity, modules[3].speedMetersPerSecond/METERS_PER_TICK);
+    leftFrontMotor.set(ControlMode.Velocity, modules[0].speedMetersPerSecond/(10 * METERS_PER_TICK));
+    leftBackMotor.set(ControlMode.Velocity, modules[1].speedMetersPerSecond/(10 * METERS_PER_TICK));
+    rightFrontMotor.set(ControlMode.Velocity, modules[2].speedMetersPerSecond/(10 * METERS_PER_TICK));
+    rightBackMotor.set(ControlMode.Velocity, modules[3].speedMetersPerSecond/(10 * METERS_PER_TICK));
 
     leftFrontRotatorMotor.set(ControlMode.Position, modules[0].angle.getDegrees()*(ENCODER_TICKS/360));
     leftBackRotatorMotor.set(ControlMode.Position, modules[1].angle.getDegrees()*(ENCODER_TICKS/360));

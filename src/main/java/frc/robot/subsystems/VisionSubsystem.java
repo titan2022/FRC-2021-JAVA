@@ -15,7 +15,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
-    camera = CameraServer.getInstance().startAutomaticCapture();
+    camera = CameraServer.getInstance().startAutomaticCapture(1);
+    CameraServer.getInstance().putVideo("Blur", 640, 480);
   }
 
   public VisionSubsystem(int imageWidth, int imageHeight) {

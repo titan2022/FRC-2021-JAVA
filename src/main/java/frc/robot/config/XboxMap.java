@@ -35,12 +35,12 @@ public class XboxMap {
     
 	public static double right() {
     double value = -controller.getY(Hand.kRight);
-    return applyDeadband(value, JOYSTICK_DRIFT);
+    return applyDeadband(value, 0.2);
   }
 
   public static double rightX() {
     double value = controller.getX(Hand.kRight);
-    return applyDeadband(value, JOYSTICK_DRIFT);
+    return applyDeadband(value, 0.2);
   }
 
   public static double rightY() {

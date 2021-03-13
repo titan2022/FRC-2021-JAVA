@@ -30,6 +30,7 @@ public class DriveToGoal extends CommandBase {
         this.filter = filter;
         t0 = RobotController.getFPGATime();
         x0 = toVector(filter.getFilteredPose());
+        addRequirements(drive);
     }
     public DriveToGoal(Point goal, RMPRoot root, DriveSubsystem drive, DifferentialDriveFilterCommand filter) {
         this(goal, root, drive, filter, "DriveToGoal");

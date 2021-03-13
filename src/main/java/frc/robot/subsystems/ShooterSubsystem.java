@@ -34,11 +34,8 @@ import edu.wpi.first.wpilibj.examples.armbotoffboard.ExampleSmartMotorController
 public class ShooterSubsystem extends SubsystemBase{
 
      // Physical parameters
-  public static final double ROBOT_TRACK_WIDTH = 26.75/39.37; // meter
-  public static final double WHEEL_RADIUS = 6/39.37; // meters
   public static final double ENCODER_TICKS = 4096; // Ticks/rotation of CTREMagEncoder
   private static final double ANGLE_TO_TICK =  1 / (360 * ENCODER_TICKS); //temp value
-  public static final double METERS_PER_TICK = WHEEL_RADIUS * 2 * Math.PI / ENCODER_TICKS;
   public static final double GEARING_REDUCTION = 7.29; // TODO: Get the correct gearing ratio
 
   // Port numbers to be added later

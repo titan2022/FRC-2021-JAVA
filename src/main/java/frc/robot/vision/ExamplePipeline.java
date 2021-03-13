@@ -3,14 +3,20 @@ package frc.robot.vision;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.HashMap;
 
-//import edu.wpi.first.wpilibj.vision.VisionPipeline;
 import edu.wpi.first.vision.VisionPipeline;
 
 import org.opencv.core.*;
+import org.opencv.core.Core.*;
 import org.opencv.features2d.FeatureDetector;
-import org.opencv.features2d.Features2d;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.*;
+import org.opencv.objdetect.*;
 
 /**
 * GripPipeline class.
@@ -27,6 +33,9 @@ public class ExamplePipeline implements VisionPipeline {
 	private Mat cvErodeOutput = new Mat();
 	private Mat maskOutput = new Mat();
 	private MatOfKeyPoint findBlobsOutput = new MatOfKeyPoint();
+	private Mat cvCannyOutput = new Mat();
+	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
+	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
 
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -39,8 +48,8 @@ public class ExamplePipeline implements VisionPipeline {
 		// Step CV_resize0:
 		Mat cvResizeSrc = source0;
 		Size cvResizeDsize = new Size(0, 0);
-		double cvResizeFx = 0.5;
-		double cvResizeFy = 0.5;
+		double cvResizeFx = 0.25;
+		double cvResizeFy = 0.25;
 		int cvResizeInterpolation = Imgproc.INTER_LINEAR;
 		cvResize(cvResizeSrc, cvResizeDsize, cvResizeFx, cvResizeFy, cvResizeInterpolation, cvResizeOutput);
 
@@ -67,10 +76,38 @@ public class ExamplePipeline implements VisionPipeline {
 
 		// Step Find_Blobs0:
 		Mat findBlobsInput = maskOutput;
-		double findBlobsMinArea = 7.0;
-		double[] findBlobsCircularity = {0.0, 0.9982579158502065};
+		double findBlobsMinArea = 4.0;
+		double[] findBlobsCircularity = {0.29676258992805754, 0.7610921501706485};
 		boolean findBlobsDarkBlobs = false;
 		findBlobs(findBlobsInput, findBlobsMinArea, findBlobsCircularity, findBlobsDarkBlobs, findBlobsOutput);
+
+		// Step CV_Canny0:
+		Mat cvCannyImage = cvErodeOutput;
+		double cvCannyThreshold1 = 3.0;
+		double cvCannyThreshold2 = 9.0;
+		double cvCannyAperturesize = 3;
+		boolean cvCannyL2gradient = false;
+		cvCanny(cvCannyImage, cvCannyThreshold1, cvCannyThreshold2, cvCannyAperturesize, cvCannyL2gradient, cvCannyOutput);
+
+		// Step Find_Contours0:
+		Mat findContoursInput = cvErodeOutput;
+		boolean findContoursExternalOnly = false;
+		findContours(findContoursInput, findContoursExternalOnly, findContoursOutput);
+
+		// Step Filter_Contours0:
+		ArrayList<MatOfPoint> filterContoursContours = findContoursOutput;
+		double filterContoursMinArea = 0;
+		double filterContoursMinPerimeter = 0;
+		double filterContoursMinWidth = 0;
+		double filterContoursMaxWidth = 1000;
+		double filterContoursMinHeight = 0;
+		double filterContoursMaxHeight = 1000;
+		double[] filterContoursSolidity = {0, 100};
+		double filterContoursMaxVertices = 1000000;
+		double filterContoursMinVertices = 0;
+		double filterContoursMinRatio = 0;
+		double filterContoursMaxRatio = 1000;
+		filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, filterContoursOutput);
 
 	}
 
@@ -112,6 +149,30 @@ public class ExamplePipeline implements VisionPipeline {
 	 */
 	public MatOfKeyPoint findBlobsOutput() {
 		return findBlobsOutput;
+	}
+
+	/**
+	 * This method is a generated getter for the output of a CV_Canny.
+	 * @return Mat output from CV_Canny.
+	 */
+	public Mat cvCannyOutput() {
+		return cvCannyOutput;
+	}
+
+	/**
+	 * This method is a generated getter for the output of a Find_Contours.
+	 * @return ArrayList<MatOfPoint> output from Find_Contours.
+	 */
+	public ArrayList<MatOfPoint> findContoursOutput() {
+		return findContoursOutput;
+	}
+
+	/**
+	 * This method is a generated getter for the output of a Filter_Contours.
+	 * @return ArrayList<MatOfPoint> output from Filter_Contours.
+	 */
+	public ArrayList<MatOfPoint> filterContoursOutput() {
+		return filterContoursOutput;
 	}
 
 
@@ -194,7 +255,6 @@ public class ExamplePipeline implements VisionPipeline {
 	 */
 	private void findBlobs(Mat input, double minArea, double[] circularity,
 		Boolean darkBlobs, MatOfKeyPoint blobList) {
-		//Features2d blobDet = new Features2d();
 		FeatureDetector blobDet = FeatureDetector.create(FeatureDetector.SIMPLEBLOB);
 		try {
 			File tempFile = File.createTempFile("config", ".xml");
@@ -243,6 +303,91 @@ public class ExamplePipeline implements VisionPipeline {
 		}
 
 		blobDet.detect(input, blobList);
+	}
+
+	/**
+	 * Applies a canny edge detection to the image.
+	 * @param image image to use.
+	 * @param thres1 first threshold for the canny algorithm.
+	 * @param thres2 second threshold for the canny algorithm.
+	 * @param apertureSize aperture size for the canny operation.
+	 * @param gradient if the L2 norm should be used.
+	 * @param edges output of the canny.
+	 */
+	private void cvCanny(Mat image, double thres1, double thres2,
+		double apertureSize, boolean gradient, Mat edges) {
+		Imgproc.Canny(image, edges, thres1, thres2, (int)apertureSize, gradient);
+	}
+
+	/**
+	 * Sets the values of pixels in a binary image to their distance to the nearest black pixel.
+	 * @param input The image on which to perform the Distance Transform.
+	 * @param type The Transform.
+	 * @param maskSize the size of the mask.
+	 * @param output The image in which to store the output.
+	 */
+	private void findContours(Mat input, boolean externalOnly,
+		List<MatOfPoint> contours) {
+		Mat hierarchy = new Mat();
+		contours.clear();
+		int mode;
+		if (externalOnly) {
+			mode = Imgproc.RETR_EXTERNAL;
+		}
+		else {
+			mode = Imgproc.RETR_LIST;
+		}
+		int method = Imgproc.CHAIN_APPROX_SIMPLE;
+		Imgproc.findContours(input, contours, hierarchy, mode, method);
+	}
+
+
+	/**
+	 * Filters out contours that do not meet certain criteria.
+	 * @param inputContours is the input list of contours
+	 * @param output is the the output list of contours
+	 * @param minArea is the minimum area of a contour that will be kept
+	 * @param minPerimeter is the minimum perimeter of a contour that will be kept
+	 * @param minWidth minimum width of a contour
+	 * @param maxWidth maximum width
+	 * @param minHeight minimum height
+	 * @param maxHeight maximimum height
+	 * @param Solidity the minimum and maximum solidity of a contour
+	 * @param minVertexCount minimum vertex Count of the contours
+	 * @param maxVertexCount maximum vertex Count
+	 * @param minRatio minimum ratio of width to height
+	 * @param maxRatio maximum ratio of width to height
+	 */
+	private void filterContours(List<MatOfPoint> inputContours, double minArea,
+		double minPerimeter, double minWidth, double maxWidth, double minHeight, double
+		maxHeight, double[] solidity, double maxVertexCount, double minVertexCount, double
+		minRatio, double maxRatio, List<MatOfPoint> output) {
+		final MatOfInt hull = new MatOfInt();
+		output.clear();
+		//operation
+		for (int i = 0; i < inputContours.size(); i++) {
+			final MatOfPoint contour = inputContours.get(i);
+			final Rect bb = Imgproc.boundingRect(contour);
+			if (bb.width < minWidth || bb.width > maxWidth) continue;
+			if (bb.height < minHeight || bb.height > maxHeight) continue;
+			final double area = Imgproc.contourArea(contour);
+			if (area < minArea) continue;
+			if (Imgproc.arcLength(new MatOfPoint2f(contour.toArray()), true) < minPerimeter) continue;
+			Imgproc.convexHull(contour, hull);
+			MatOfPoint mopHull = new MatOfPoint();
+			mopHull.create((int) hull.size().height, 1, CvType.CV_32SC2);
+			for (int j = 0; j < hull.size().height; j++) {
+				int index = (int)hull.get(j, 0)[0];
+				double[] point = new double[] { contour.get(index, 0)[0], contour.get(index, 0)[1]};
+				mopHull.put(j, 0, point);
+			}
+			final double solid = 100 * area / Imgproc.contourArea(mopHull);
+			if (solid < solidity[0] || solid > solidity[1]) continue;
+			if (contour.rows() < minVertexCount || contour.rows() > maxVertexCount)	continue;
+			final double ratio = bb.width / (double)bb.height;
+			if (ratio < minRatio || ratio > maxRatio) continue;
+			output.add(contour);
+		}
 	}
 
 

@@ -8,8 +8,10 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.vision.VisionPipeline;
 import edu.wpi.first.vision.VisionThread;
 import edu.wpi.first.vision.VisionRunner.Listener;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.vision.ExamplePipeline;
 
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
@@ -18,24 +20,29 @@ public class VisionProcessingCommand extends CommandBase {
 
   private final UsbCamera camera;
   private final VisionThread thread;
-  private final VisionPipeline pipeline;
+  private final ExamplePipeline pipeline;
   private final Object imageLocker = new Object();
-  private double centerX = 0.0;
+  private double centerX = 0.0, centerY = 0.0;
+
   /** Creates a new VisionProcessingCommand. */
-  public VisionProcessingCommand(VisionSubsystem vision, VisionPipeline pipeline) {
+  public VisionProcessingCommand(VisionSubsystem vision, ExamplePipeline pipeline) {
     // Use addRequirements() here to declare subsystem dependencies.
     camera = vision.getCamera();
     this.pipeline = pipeline;
     thread = new VisionThread(camera, pipeline, makeListener());
+    thread.start();
   }
 
-  private Listener<VisionPipeline> makeListener() {
+  private Listener<ExamplePipeline> makeListener() {
 
     return pipeline -> {
       if (!pipeline.filterContoursOutput().isEmpty()) {
         Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
         synchronized (imageLocker) {
             centerX = r.x + (r.width / 2);
+            centerY = r.y + (r.height / 2);
+            SmartDashboard.putNumber("center x", centerX);
+            SmartDashboard.putNumber("center y", centerY);
         }
       }
     };

@@ -40,11 +40,6 @@ public class ManualSwerveDriveCommand extends CommandBase {
   @Override
   public void initialize() {
     System.out.println("Manual Swerve Drive Command Started");
-
-    SmartDashboard.putNumber("Left Front Rotator Encoder Value", 0);
-    SmartDashboard.putNumber("Left Back Rotator Encoder Value", 0);
-    SmartDashboard.putNumber("Right Front Rotator Encoder Value", 0);
-    SmartDashboard.putNumber("Right Back Rotator Encoder Value", 0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -59,7 +54,7 @@ public class ManualSwerveDriveCommand extends CommandBase {
       swerveDriveSubsystem.disableBrakes();
       if (XboxMap.rightX() + XboxMap.rightY() == 0)
       {
-        swerveDriveSubsystem.setOutput(new ChassisSpeeds(XboxMap.leftX(), XboxMap.leftY(), pid.calculate(navigationSubsystem.getHeadingRadians(), XboxMap.rightY())));
+        swerveDriveSubsystem.setOutput(new ChassisSpeeds(XboxMap.leftX(), XboxMap.leftY(), pid.calculate(navigationSubsystem.getHeadingRadians(), 0)));
       }
       else
       {
@@ -68,10 +63,10 @@ public class ManualSwerveDriveCommand extends CommandBase {
     }
 
     SmartDashboard.putNumber("LeftShiftX", XboxMap.leftX());
-    SmartDashboard.getNumber("Left Front Rotator Encoder Value", 0);
-    SmartDashboard.getNumber("Left Back Rotator Encoder Value", 0);
-    SmartDashboard.getNumber("Right Front Rotator Encoder Value", 0);
-    SmartDashboard.getNumber("Right Back Rotator Encoder Value", 0);
+    SmartDashboard.putNumber("Left Front Rotator Encoder Value", swerveDriveSubsystem.getRotatorEncoderCount(true, false));
+    SmartDashboard.putNumber("Left Back Rotator Encoder Value", swerveDriveSubsystem.getRotatorEncoderCount(true, true));
+    SmartDashboard.putNumber("Right Front Rotator Encoder Value", swerveDriveSubsystem.getRotatorEncoderCount(false, false));
+    SmartDashboard.putNumber("Right Back Rotator Encoder Value", swerveDriveSubsystem.getRotatorEncoderCount(false, true));
   }
 
   // Called once the command ends or is interrupted.

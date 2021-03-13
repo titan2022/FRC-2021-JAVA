@@ -75,8 +75,8 @@ public class ShooterSubsystem extends SubsystemBase{
     , rightSecondary = new WPI_TalonSRX(RIGHT_SECONDARY_PORT);
 
     private double time;
-    private double rpmBall;
-    private double rpmTalon;
+    private double rpsBall;
+    private double rpsTalon;
     private double xCoord;
     private double yCoord;
     private double zCoord;
@@ -88,7 +88,8 @@ public class ShooterSubsystem extends SubsystemBase{
     private double t;
     private double distance;
     private double height;
-
+    // measure the current linear velocity of the wheel, then assume that's starting velocity. plug it back in to find the least
+    // amount of time, optimize time in respect to theta
     public Shooter()
     {   
         g = -9.8;
@@ -98,27 +99,27 @@ public class ShooterSubsystem extends SubsystemBase{
     }
    
     //First set the speed of the motor and then calculate the rpm and acceleration of the ball.
-    public double calcRPMBall()
+    public double calcRPSBall()
     {
         double speed = 8.0;
         leftPrimary.set(speed);
         leftSecondary.set(speed);
         rightPrimary.set(speed);
         rightSecondary.set(speed);
-        rpmBall = speed / 60 / radius / (2 * Math.PI);
-        return rpmBall;
+        rpsBall = speed / radius / (2 * Math.PI);
+        return rpsBall;
     }
 
     //First set the speed of the motor and then calculate the rpm and acceleration of the wheel.
-    public double getRPMTalon()
+    public double getRPSTalon()
     {
         double speed = 8.0;
         leftPrimary.set(speed);
         leftSecondary.set(speed);
         rightPrimary.set(speed);
         rightSecondary.set(speed);
-        rpmTalon = speed / 60 / radius / (2 * Math.PI);
-        return rpmTalon;
+        rpsTalon = speed / radius / (2 * Math.PI);
+        return rpsTalon;
     }
 
     public double getTargetXCoord()

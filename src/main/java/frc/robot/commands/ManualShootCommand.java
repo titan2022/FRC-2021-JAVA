@@ -6,6 +6,7 @@ import frc.robot.config.XboxMap;
 
 public class ManualShootCommand extends CommandBase {
     // Called when the command is initially scheduled.
+    //Has a random speed
   @Override
   public void initialize() {
     System.out.println("Manual Shoot Command Started");

@@ -89,8 +89,6 @@ public class ShooterSubsystem extends SubsystemBase{
    
 
 
-
-
     public void setOutput(ControlMode mode, double leftOutputValue, double rightOutputValue) {
 
         if (mode == ControlMode.Velocity) {
@@ -124,13 +122,17 @@ public class ShooterSubsystem extends SubsystemBase{
         return initialVelocity;
     }
 
+    public double optimizeAngle()
+    {
+        double initialAngleMax = 0.0;
+        initialAngleMax = Math.atan(height/distance);
+        return initialAngleMax;
+    }
+
     public void setTalonVelocity()
     {
         rightPrimary.set(getInitialVelocity());
     }
-
-
-
-    
+   
 
 }

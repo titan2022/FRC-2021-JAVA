@@ -31,7 +31,7 @@ import edu.wpi.first.wpilibj.examples.armbotoffboard.ExampleSmartMotorController
  * @author Abhi
  * @author Deepu
  */
-public class Shooter extends SubsystemBase{
+public class ShooterSubsystem extends SubsystemBase{
 
      // Physical parameters
   public static final double ROBOT_TRACK_WIDTH = 26.75/39.37; // meter

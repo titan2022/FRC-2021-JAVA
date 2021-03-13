@@ -52,7 +52,14 @@ public class ManualSwerveDriveCommand extends CommandBase {
     }
     else { 
       swerveDriveSubsystem.disableBrakes();
-      swerveDriveSubsystem.setOutput(new ChassisSpeeds(XboxMap.leftX(), XboxMap.leftY(), pid.calculate(navigationSubsystem.getHeadingRadians(), Math.atan2(XboxMap.rightY(), XboxMap.rightX()))));
+      if (XboxMap.rightX() + XboxMap.rightY() == 0)
+      {
+        swerveDriveSubsystem.setOutput(new ChassisSpeeds(XboxMap.leftX(), XboxMap.leftY(), pid.calculate(navigationSubsystem.getHeadingRadians(), XboxMap.rightY())));
+      }
+      else
+      {
+        swerveDriveSubsystem.setOutput(new ChassisSpeeds(XboxMap.leftX(), XboxMap.leftY(), pid.calculate(navigationSubsystem.getHeadingRadians(), Math.atan2(XboxMap.rightY(), XboxMap.rightX()))));
+      }
     }
 
     SmartDashboard.putNumber("LeftShiftX", XboxMap.leftX());

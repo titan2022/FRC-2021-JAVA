@@ -5,13 +5,12 @@
 package frc.robot.commands;
 
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.vision.VisionPipeline;
 import edu.wpi.first.vision.VisionThread;
 import edu.wpi.first.vision.VisionRunner.Listener;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.vision.ExamplePipeline;
+import frc.robot.vision.ContourPipeline;
 
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
@@ -20,20 +19,18 @@ public class VisionProcessingCommand extends CommandBase {
 
   private final UsbCamera camera;
   private final VisionThread thread;
-  private final ExamplePipeline pipeline;
   private final Object imageLocker = new Object();
   private double centerX = 0.0, centerY = 0.0;
 
   /** Creates a new VisionProcessingCommand. */
-  public VisionProcessingCommand(VisionSubsystem vision, ExamplePipeline pipeline) {
+  public VisionProcessingCommand(VisionSubsystem vision, ContourPipeline pipeline) {
     // Use addRequirements() here to declare subsystem dependencies.
     camera = vision.getCamera();
-    this.pipeline = pipeline;
     thread = new VisionThread(camera, pipeline, makeListener());
     thread.start();
   }
 
-  private Listener<ExamplePipeline> makeListener() {
+  private Listener<ContourPipeline> makeListener() {
 
     return pipeline -> {
       if (!pipeline.filterContoursOutput().isEmpty()) {

@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.VisionProcessingCommand;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.vision.ExamplePipeline;
+import frc.robot.vision.RedShirtPipeline;
 
 /** Add your docs here. */
 public class GalacticSearchContainer implements RobotContainer {
@@ -18,9 +18,9 @@ public class GalacticSearchContainer implements RobotContainer {
     autoGroup = new ParallelCommandGroup(); // These don't actually run in parallel.
     teleopGroup = new ParallelCommandGroup();
 
-    VisionProcessingCommand ballDetector = new VisionProcessingCommand(visionSub, new ExamplePipeline());
+    VisionProcessingCommand processingCommand = new VisionProcessingCommand(visionSub, new RedShirtPipeline());
 
-    teleopGroup.addCommands(ballDetector);
+    teleopGroup.addCommands(processingCommand);
   }
 
   public Command getAutonomousCommand() {

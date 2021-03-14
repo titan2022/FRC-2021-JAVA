@@ -17,7 +17,7 @@ import org.opencv.imgproc.*;
 *
 * @author GRIP
 */
-public class ExamplePipeline implements ContourPipeline {
+public class YellowBallPipeline implements ContourPipeline {
 
 	//Outputs
 	private Mat cvResizeOutput = new Mat();
@@ -155,6 +155,7 @@ public class ExamplePipeline implements ContourPipeline {
 	 * This method is a generated getter for the output of a Find_Contours.
 	 * @return ArrayList<MatOfPoint> output from Find_Contours.
 	 */
+	@Override
 	public ArrayList<MatOfPoint> findContoursOutput() {
 		return findContoursOutput;
 	}
@@ -163,6 +164,7 @@ public class ExamplePipeline implements ContourPipeline {
 	 * This method is a generated getter for the output of a Filter_Contours.
 	 * @return ArrayList<MatOfPoint> output from Filter_Contours.
 	 */
+	@Override
 	public ArrayList<MatOfPoint> filterContoursOutput() {
 		return filterContoursOutput;
 	}

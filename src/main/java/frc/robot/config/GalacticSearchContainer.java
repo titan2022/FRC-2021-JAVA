@@ -13,7 +13,7 @@ public class GalacticSearchContainer implements RobotContainer {
   private final ParallelCommandGroup autoGroup, teleopGroup;
 
   public GalacticSearchContainer() {
-    visionSub = new VisionSubsystem();
+    visionSub = new VisionSubsystem(0, 640, 480);
 
     autoGroup = new ParallelCommandGroup(); // These don't actually run in parallel.
     teleopGroup = new ParallelCommandGroup();
@@ -27,12 +27,12 @@ public class GalacticSearchContainer implements RobotContainer {
 
     return autoGroup;
 
-  };
+  }
 
   public Command getTeleopCommand() {
 
     return teleopGroup;
 
-  };
+  }
 
 }

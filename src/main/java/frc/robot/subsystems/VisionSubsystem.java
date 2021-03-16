@@ -14,21 +14,17 @@ public class VisionSubsystem extends SubsystemBase {
   private final UsbCamera camera;
 
   /** Creates a new VisionSubsystem. */
-  public VisionSubsystem() {
-    camera = CameraServer.getInstance().startAutomaticCapture(1);
-    CameraServer.getInstance().putVideo("Blur", 640, 480);
-  }
+  public VisionSubsystem(int deviceNum, int imageWidth, int imageHeight) {
 
-  public VisionSubsystem(int imageWidth, int imageHeight) {
-
-    this();
+    CameraServer server = CameraServer.getInstance();
+    camera = server.startAutomaticCapture(deviceNum);
     setResolution(imageWidth, imageHeight);
 
   }
 
-  public VisionSubsystem(int imageWidth, int imageHeight, int brightness) {
+  public VisionSubsystem(int deviceNum, int imageWidth, int imageHeight, int brightness) {
 
-    this(imageWidth, imageHeight);
+    this(deviceNum, imageWidth, imageHeight);
     setBrightness(brightness);
 
   }

@@ -158,9 +158,10 @@ public class DStarLite {
      */
     public CompoundPath getPath() {
         List<Path> parts = new LinkedList<>();
-        Node node = start;
+        parts.add(getSegment());
+        Node node = start.getNext();
         while(node != goal){
-            parts.add(node.getEdge(node.getNext()));
+            parts.add(node.getPath());
             node = node.getNext();
         }
         return new CompoundPath(parts.toArray(new Path[0]));

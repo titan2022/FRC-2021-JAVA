@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.config.AutonavContainer;
 import frc.robot.config.DifferentialDriveContainer;
 import frc.robot.config.RobotContainer;
 
@@ -27,7 +28,8 @@ public class Robot extends TimedRobot {
   public Robot()
   {
     super(.02); // Default period is .02 seconds = 50 hz
-    robotContainer = new DifferentialDriveContainer(isSimulation());
+    robotContainer = new AutonavContainer("barrel");
+    // robotContainer = new DifferentialDriveContainer(isSimulation());
     autoCommandEntryPoint = robotContainer.getAutonomousCommand();
     teleopCommandEntryPoint = robotContainer.getTeleopCommand();
   }

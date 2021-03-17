@@ -4,6 +4,8 @@
 
 package frc.robot.config;
 
+import java.util.ArrayList;
+
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
@@ -13,6 +15,7 @@ import frc.robot.commands.AutoNavChallenge;
 import frc.robot.commands.DifferentialDriveFilterCommand;
 import frc.robot.commands.DifferentialDriveOdometryCommand;
 import frc.robot.commands.FieldDisplayCommand;
+import frc.robot.commands.ManualDifferentialDriveCommand;
 import frc.robot.commands.RMPDrive;
 import frc.robot.motion.generation.rmpflow.RMPRoot;
 import frc.robot.subsystems.DifferentialDriveSubsystem;
@@ -25,6 +28,7 @@ public class AutonavContainer implements RobotContainer
     private final ParallelCommandGroup teleopGroup;
     private final DifferentialDriveSubsystem diffDriveSub;
     private final NavigationSubsystem navSub;
+    private final static double INCH_TO_METER = 0.0254;
 
     public AutonavContainer(Translation2d... waypoints) {
         diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), true);
@@ -33,12 +37,36 @@ public class AutonavContainer implements RobotContainer
         DifferentialDriveFilterCommand diffDriveFilter = new DifferentialDriveFilterCommand(odometryCommand, navSub);
         RMPRoot root = new RMPRoot("root");
         RMPDrive rmpDrive = new RMPDrive(root, diffDriveSub, diffDriveFilter);
-        FieldDisplayCommand fieldDisplayCommand = new FieldDisplayCommand("Auto Nav Challenge");
+        FieldDisplayCommand fieldDisplayCommand = new FieldDisplayCommand("Autonav Challenge");
         AutoNavChallenge autoNav = new AutoNavChallenge(rmpDrive, waypoints);
 
-        autoGroup = new ParallelCommandGroup(fieldDisplayCommand, autoNav, odometryCommand, diffDriveFilter);
-        teleopGroup = new ParallelCommandGroup();
+        teleopGroup = new ParallelCommandGroup(fieldDisplayCommand, autoNav, odometryCommand, diffDriveFilter);
+        autoGroup = new ParallelCommandGroup();
     }
+
+    public AutonavContainer(String challengeName) {
+        this(getWaypoints(challengeName));
+    }
+
+    private static Translation2d[] getWaypoints(String challengeName) {
+        ArrayList<Translation2d> waypoints = new ArrayList<Translation2d>();
+        switch (challengeName) {
+            case "barrel":
+                waypoints.add(new Translation2d(150, 60));
+                waypoints.add(new Translation2d(240, 120));
+                waypoints.add(new Translation2d(300, 60));
+                waypoints.add(new Translation2d(60, 100));
+                break;
+            default:
+                waypoints.add(new Translation2d(150, 60));
+                break;
+        }
+        for (Translation2d waypoint : waypoints) {
+            waypoint.times(INCH_TO_METER);
+        }
+        return waypoints.toArray(new Translation2d[waypoints.size()]);
+    }
+
 
     @Override
     public Command getAutonomousCommand() {

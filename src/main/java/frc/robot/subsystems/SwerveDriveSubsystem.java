@@ -13,11 +13,9 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.config.XboxMap;
 
 public class SwerveDriveSubsystem extends SubsystemBase
 {
@@ -106,17 +104,18 @@ public class SwerveDriveSubsystem extends SubsystemBase
   {
     setFactoryMotorConfig();
 
-    if(mainConfig != null && rotatorConfig != null)
+    if(mainConfig != null)
     {
-    leftFrontMotor.configAllSettings(mainConfig);
-    leftBackMotor.configAllSettings(mainConfig);
-    rightFrontMotor.configAllSettings(mainConfig);
-    rightBackMotor.configAllSettings(mainConfig);
-
-    leftFrontRotatorMotor.configAllSettings(rotatorConfig);
-    leftBackRotatorMotor.configAllSettings(rotatorConfig);
-    rightFrontRotatorMotor.configAllSettings(rotatorConfig);
-    rightBackRotatorMotor.configAllSettings(rotatorConfig);
+      leftFrontMotor.configAllSettings(mainConfig);
+      leftBackMotor.configAllSettings(mainConfig);
+      rightFrontMotor.configAllSettings(mainConfig);
+      rightBackMotor.configAllSettings(mainConfig);
+    }
+    if(rotatorConfig != null){
+      leftFrontRotatorMotor.configAllSettings(rotatorConfig);
+      leftBackRotatorMotor.configAllSettings(rotatorConfig);
+      rightFrontRotatorMotor.configAllSettings(rotatorConfig);
+      rightBackRotatorMotor.configAllSettings(rotatorConfig);
     }
 
     rightFrontMotor.setInverted(RIGHT_FRONT_MOTOR_INVERTED);

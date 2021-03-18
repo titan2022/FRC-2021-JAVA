@@ -43,20 +43,26 @@ public class FieldDisplayCommand extends CommandBase {
     fieldDisplay.setRobotPose(xMeters, yMeters, Rotation2d.fromDegrees(degrees));
   }
 
+  public void putSmartDashboardData() {
+    SmartDashboard.putData(fieldDisplayName, fieldDisplay);
+  }
+
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    putSmartDashboardData();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putData(fieldDisplayName, fieldDisplay);
+    putSmartDashboardData();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SmartDashboard.putData(fieldDisplayName, fieldDisplay);
+    putSmartDashboardData();
   }
 
   // Returns true when the command should end.

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -33,14 +35,15 @@ public class AutonavContainer implements RobotContainer
     public AutonavContainer(Translation2d... waypoints) {
         diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), true);
         navSub = new NavigationSubsystem(diffDriveSub);
-        DifferentialDriveOdometryCommand odometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub);
-        DifferentialDriveFilterCommand diffDriveFilter = new DifferentialDriveFilterCommand(odometryCommand, navSub);
-        RMPRoot root = new RMPRoot("root");
-        RMPDrive rmpDrive = new RMPDrive(root, diffDriveSub, diffDriveFilter);
         FieldDisplayCommand fieldDisplayCommand = new FieldDisplayCommand("Autonav Challenge");
+        DifferentialDriveOdometryCommand odometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, fieldDisplayCommand);
+        odometryCommand.resetOdometry(new Pose2d(3, 3, new Rotation2d(0)), new Rotation2d(0));
+        DifferentialDriveFilterCommand diffDriveFilter = new DifferentialDriveFilterCommand(odometryCommand, navSub);
+        RMPRoot root = new RMPRoot("Autonav Challenge");
+        RMPDrive rmpDrive = new RMPDrive(root, diffDriveSub, diffDriveFilter);
         AutoNavChallenge autoNav = new AutoNavChallenge(rmpDrive, waypoints);
 
-        teleopGroup = new ParallelCommandGroup(fieldDisplayCommand, autoNav, odometryCommand, diffDriveFilter);
+        teleopGroup = new ParallelCommandGroup(fieldDisplayCommand, odometryCommand, diffDriveFilter, autoNav);
         autoGroup = new ParallelCommandGroup();
     }
 

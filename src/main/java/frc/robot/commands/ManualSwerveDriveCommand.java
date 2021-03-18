@@ -52,17 +52,18 @@ public class ManualSwerveDriveCommand extends CommandBase {
     }
     else { 
       swerveDriveSubsystem.disableBrakes();
-      if (XboxMap.rightX() + XboxMap.rightY() == 0)
+      if (XboxMap.rightX() == 0 && XboxMap.rightY() == 0)
       {
-        swerveDriveSubsystem.setOutput(new ChassisSpeeds(XboxMap.leftX(), XboxMap.leftY(), pid.calculate(navigationSubsystem.getHeadingRadians(), 0)));
+        swerveDriveSubsystem.setOutput(new ChassisSpeeds(XboxMap.leftY(), XboxMap.leftX(), pid.calculate(navigationSubsystem.getHeadingRadians(), 0)));
       }
       else
       {
-        swerveDriveSubsystem.setOutput(new ChassisSpeeds(XboxMap.leftX(), XboxMap.leftY(), pid.calculate(navigationSubsystem.getHeadingRadians(), Math.atan2(XboxMap.rightY(), XboxMap.rightX()))));
+        swerveDriveSubsystem.setOutput(new ChassisSpeeds(XboxMap.leftY(), XboxMap.leftX(), pid.calculate(navigationSubsystem.getHeadingRadians(), Math.max(0, Math.min(28, Math.atan2(XboxMap.rightY(), XboxMap.rightX()))) * 2 * Math.PI / 360)));
       }
     }
 
-    SmartDashboard.putNumber("LeftShiftX", XboxMap.leftX());
+    SmartDashboard.putNumber("LeftY", XboxMap.leftY());
+    SmartDashboard.putNumber("LeftX", XboxMap.leftX());
     SmartDashboard.putNumber("Left Front Rotator Encoder Value", swerveDriveSubsystem.getRotatorEncoderCount(true, false));
     SmartDashboard.putNumber("Left Back Rotator Encoder Value", swerveDriveSubsystem.getRotatorEncoderCount(true, true));
     SmartDashboard.putNumber("Right Front Rotator Encoder Value", swerveDriveSubsystem.getRotatorEncoderCount(false, false));

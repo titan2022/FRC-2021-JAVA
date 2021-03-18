@@ -23,8 +23,10 @@ public class SwerveDriveSubsystem extends SubsystemBase
   public static final double ROBOT_TRACK_WIDTH = 0.672; // meters (30 in)
   public static final double ROBOT_LENGTH = 0.672; // meter 
   public static final double WHEEL_RADIUS = 0.0508; // meters (2 in)
-  public static final double ENCODER_TICKS = 2048; // Ticks/rotation of CTREMagEncoder
+  public static final double ENCODER_TICKS = 2048; // Ticks/rotation of Integrated encoder
+  public static final double ANGLES_PER_TICK = 360 / ENCODER_TICKS;
   public static final double METERS_PER_TICK = WHEEL_RADIUS * 2 * Math.PI / ENCODER_TICKS;
+  public static final double GEAR_REDUCTION = 1 / 12.8;
   
     
   // Port numbers to be added later
@@ -37,7 +39,7 @@ public class SwerveDriveSubsystem extends SubsystemBase
   private static final int RIGHT_FRONT_MOTOR_ROTATOR_PORT = 6;
   private static final int RIGHT_BACK_MOTOR_ROTATOR_PORT = 1;
 
-  private static final int ENCODER_PORT = 1;
+  private static final int ENCODER_PORT = 0;
 
   // Motor and sensor inversions
   // TODO: Rename primary and secondary to front and back. Need inversion variable for ever single motor.
@@ -92,11 +94,11 @@ public class SwerveDriveSubsystem extends SubsystemBase
 
   //Kinematics
   //positions describe the position of each wheel relative to the center of the robot
-  SwerveDriveKinematics kinematics;
   private static final Translation2d leftFrontPosition = new Translation2d(-ROBOT_TRACK_WIDTH/2, ROBOT_LENGTH/2);
   private static final Translation2d leftBackPosition = new Translation2d(-ROBOT_TRACK_WIDTH/2, -ROBOT_LENGTH/2);
   private static final Translation2d rightFrontPosition = new Translation2d(ROBOT_TRACK_WIDTH/2, ROBOT_LENGTH/2);
   private static final Translation2d rightBackPosition = new Translation2d(ROBOT_TRACK_WIDTH/2, -ROBOT_LENGTH/2);
+  private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFrontPosition, leftBackPosition, rightFrontPosition, rightBackPosition);
 
   //Might need extra parameters for rotator motors
   //Make like differential drive subsystem constructor
@@ -210,9 +212,6 @@ public class SwerveDriveSubsystem extends SubsystemBase
     leftBackRotatorMotor.configIntegratedSensorAbsoluteRange(AbsoluteSensorRange.Unsigned_0_to_360);
     rightBackRotatorMotor.configIntegratedSensorAbsoluteRange(AbsoluteSensorRange.Unsigned_0_to_360);
     rightFrontRotatorMotor.configIntegratedSensorAbsoluteRange(AbsoluteSensorRange.Unsigned_0_to_360);
-    //Kinematics
-    //order is leftfront, leftback, rightfront, rightback
-    kinematics = new SwerveDriveKinematics(leftFrontPosition, leftBackPosition, rightFrontPosition, rightBackPosition);
 
     //neutral deadbands
     leftFrontRotatorMotor.configNeutralDeadband(0.199413);
@@ -293,10 +292,10 @@ public class SwerveDriveSubsystem extends SubsystemBase
     rightFrontMotor.set(ControlMode.Velocity, modules[2].speedMetersPerSecond/(10 * METERS_PER_TICK));
     rightBackMotor.set(ControlMode.Velocity, modules[3].speedMetersPerSecond/(10 * METERS_PER_TICK));
 
-    leftFrontRotatorMotor.set(ControlMode.Position, modules[0].angle.getDegrees()*(ENCODER_TICKS/360));
-    leftBackRotatorMotor.set(ControlMode.Position, modules[1].angle.getDegrees()*(ENCODER_TICKS/360));
-    rightFrontRotatorMotor.set(ControlMode.Position, modules[2].angle.getDegrees()*(ENCODER_TICKS/360));
-    rightBackRotatorMotor.set(ControlMode.Position, modules[3].angle.getDegrees()*(ENCODER_TICKS/360));
+    leftFrontRotatorMotor.set(ControlMode.Position, modules[0].angle.getDegrees()/(ANGLES_PER_TICK));
+    leftBackRotatorMotor.set(ControlMode.Position, modules[1].angle.getDegrees()/(ANGLES_PER_TICK));
+    rightFrontRotatorMotor.set(ControlMode.Position, modules[2].angle.getDegrees()/(ANGLES_PER_TICK));
+    rightBackRotatorMotor.set(ControlMode.Position, modules[3].angle.getDegrees()/(ANGLES_PER_TICK));
   } 
 
   public void setOutput(double omega, double XVelocity, double YVelocity)
@@ -308,6 +307,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
    * Enables brake.
    */
   public void enableBrakes() {
+    stop();
+    stopRotators();
     leftFrontMotor.setNeutralMode(NeutralMode.Brake);
     rightFrontMotor.setNeutralMode(NeutralMode.Brake);
     leftBackMotor.setNeutralMode(NeutralMode.Brake);
@@ -437,7 +438,7 @@ public class SwerveDriveSubsystem extends SubsystemBase
    * @return Rotation of a specified primary motor.
    */
   public double getRotatorEncoderDist(boolean useLeft, boolean useBack) {
-    return getRotatorEncoderCount(useLeft, useBack) * METERS_PER_TICK / WHEEL_RADIUS;
+    return getRotatorEncoderCount(useLeft, useBack) * GEAR_REDUCTION;
   }
 
   /**
@@ -464,11 +465,11 @@ public class SwerveDriveSubsystem extends SubsystemBase
   public double getRotatorEncoderVelocity(boolean useLeft) {
     if (useLeft)
     {
-      return leftFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK / WHEEL_RADIUS;
+      return leftFrontRotatorMotor.getSelectedSensorVelocity(ENCODER_PORT) * ANGLES_PER_TICK * 2 * Math.PI / 360 * GEAR_REDUCTION;
     }
     else
     {
-      return rightFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK / WHEEL_RADIUS;
+      return rightFrontRotatorMotor.getSelectedSensorVelocity(ENCODER_PORT) * ANGLES_PER_TICK * 2 * Math.PI / 360 * GEAR_REDUCTION;
     }
   }
 

@@ -38,12 +38,11 @@ public class SwerveDriveContainer implements RobotContainer {
         FieldDisplayCommand autoFieldDisplayCommand = new FieldDisplayCommand("Auto Field");
 
         // Initialize Teleop Commands
-        FieldDisplayCommand fieldDisplayCommand = new FieldDisplayCommand();
         ManualSwerveDriveCommand manualDriveCommand = new ManualSwerveDriveCommand(swerveDriveSub, navSub, getPIDConfig());
 
         // Initialize Command Groups
         autoGroup = new ParallelCommandGroup(autoFieldDisplayCommand); // These don't actually run in parallel.
-        teleopGroup = new ParallelCommandGroup(fieldDisplayCommand, manualDriveCommand);
+        teleopGroup = new ParallelCommandGroup(manualDriveCommand);
 
         // Configure the button bindings
         configureButtonBindings();
@@ -111,9 +110,9 @@ public class SwerveDriveContainer implements RobotContainer {
     public PIDConfig getPIDConfig(){
         PIDConfig pidConfig = new PIDConfig();
 
-        pidConfig.kP = 504.000000;
-        pidConfig.kI = 5.600000;
-        pidConfig.kD = 0.20000;
+        pidConfig.kP = 2;//504.000000;
+        pidConfig.kI = 0;//5.600000;
+        pidConfig.kD = 0;//0.20000;
         
         pidConfig.CONTINOUS_MINIMUM = 0;
         pidConfig.CONTINOUS_MAXIMUM = 2*Math.PI;

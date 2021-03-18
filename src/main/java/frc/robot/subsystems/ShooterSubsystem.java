@@ -76,13 +76,18 @@ public class ShooterSubsystem extends SubsystemBase{
     // measure the current linear velocity of the wheel, then assume that's starting velocity. plug it back in to find the least
     // amount of time, optimize time in respect to theta
     public ShooterSubsystem(double targetXCoord, double xCoord, double targetYCoord, double yCoord)
-    {   
+    {      
         g = -9.8;
         t = 10;
         distance = targetXCoord - xCoord;
         height = targetYCoord - yCoord;
     }
-   
+    
+    public void setFactoryMotorConfig()
+    {
+      leftPrimary.configFactoryDefault();
+      rightPrimary.configFactoryDefault();
+    }
 
 
     public void setOutput(ControlMode mode, double leftOutputValue, double rightOutputValue) {

@@ -1,10 +1,13 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 /**
  * @author Irene
  */
@@ -23,8 +26,11 @@ public class WristSubsystem extends SubsystemBase {
     private static final int PEAK_CURRENT_LIMIT = 60;
     private static final int CONTINUOUS_CURRENT_LIMIT = 50;
     public static final double ENCODER_TICKS = 4096; 
-    public static final double ANGLE_TO_TICK =  1 / (360 * ENCODER_TICKS);
+    public static final double ANGLE_TO_TICK =  (1 / 360) * ENCODER_TICKS;
 
+    public double goalAngle;
+
+    private final DoubleSolenoid doubleSol = new DoubleSolenoid(1,2);
     // PID Slots and IDx
     private static final int PID_SLOT = 0;
     private static final int PID_X = 0;
@@ -82,6 +88,7 @@ public class WristSubsystem extends SubsystemBase {
     public void setWristPosition(double angle)
     {
         wrist.set(ControlMode.MotionProfile, angle *  ANGLE_TO_TICK);
+        goalAngle=angle;
     }
     /**
      * Moves wrist to 90 degrees
@@ -94,6 +101,10 @@ public class WristSubsystem extends SubsystemBase {
      */
     public void goDown() {
         setWristPosition(0);
+    }
+    public void toggle() {
+        doubleSol.toggle();
+
     }
     /**
      * 
@@ -123,6 +134,12 @@ public class WristSubsystem extends SubsystemBase {
             setWristPosition(ANGLE_UPPER_LIMIT);
         }
     }
+    public void extend() {
+
+    }
+    public void retract() {
+
+    }
     /**
      * moves to neutral/down position, stops the wrist
      */
@@ -133,5 +150,8 @@ public class WristSubsystem extends SubsystemBase {
     public void periodic()
     {
         checkWristLimits();
+        if (getWristAngle()==goalAngle) {
+            wrist.setNeutralMode(NeutralMode.Brake);
+        }
     }
 }

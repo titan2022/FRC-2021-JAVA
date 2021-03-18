@@ -69,17 +69,13 @@ public class ShooterSubsystem extends SubsystemBase{
   private static final WPI_TalonSRX leftPrimary = new WPI_TalonSRX(LEFT_PRIMARY_PORT)
      , rightPrimary = new WPI_TalonSRX(RIGHT_PRIMARY_PORT);
 
-    private double xCoord;
-    private double yCoord;
-    private double targetXCoord;
-    private double targetYCoord;
     private double g; 
     private double t;
     private double distance;
     private double height;
     // measure the current linear velocity of the wheel, then assume that's starting velocity. plug it back in to find the least
     // amount of time, optimize time in respect to theta
-    public ShooterSubsystem()
+    public ShooterSubsystem(double targetXCoord, double xCoord, double targetYCoord, double yCoord)
     {   
         g = -9.8;
         t = 10;

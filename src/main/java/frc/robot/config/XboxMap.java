@@ -24,7 +24,6 @@ public class XboxMap {
 
   public static double leftX() {
     double value = controller.getX(Hand.kLeft);
-    SmartDashboard.putNumber("LeftStickX", value);
     return applyDeadband(value, JOYSTICK_DRIFT);
   }
 

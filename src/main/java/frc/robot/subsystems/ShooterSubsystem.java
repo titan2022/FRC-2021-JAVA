@@ -140,7 +140,9 @@ public class ShooterSubsystem extends SubsystemBase{
     public void setTalonVelocity()
     {
         rightPrimary.set(getInitialVelocity());
-    }
+    } 
+
+    
    
 
 }

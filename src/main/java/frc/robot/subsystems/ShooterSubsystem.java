@@ -129,6 +129,13 @@ public class ShooterSubsystem extends SubsystemBase{
         return initialAngleMax;
     }
 
+    public double optimizeVelocity()
+    {
+      double initialVelocityMax = 0.0;
+      initialVelocityMax = distance/Math.cos(optimizeAngle());
+      return initialVelocityMax;
+    }
+
     public void setTalonVelocity()
     {
         rightPrimary.set(getInitialVelocity());

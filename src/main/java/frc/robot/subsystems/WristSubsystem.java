@@ -72,6 +72,7 @@ public class WristSubsystem extends SubsystemBase {
         followingWrist.follow(wrist);
         
         wrist.selectProfileSlot(PID_SLOT, PID_X);
+        doubleSol.set(kOff);
 
         //Encoder configs
         wrist.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);        
@@ -93,18 +94,27 @@ public class WristSubsystem extends SubsystemBase {
     /**
      * Moves wrist to 90 degrees
      */
-    public void goUp() {
-        setWristPosition(90);
-    }
+    //public void goUp() {
+      //  setWristPosition(90);
+    //}
     /**
      * Moves wrist to 0 degrees
      */
-    public void goDown() {
-        setWristPosition(0);
-    }
-    public void toggle() {
-        doubleSol.toggle();
+    //public void goDown() {
+      //  setWristPosition(0);
+    //}
+    /**
+     * Turns on the solenoid
+     */
+    public void turnOn() {
+        doubleSol.set(kForward);
 
+    }
+    /**
+     * turns off the solenoid
+     */
+    public void turnOff() {
+        doubleSol.set(kReverse);
     }
     /**
      * 

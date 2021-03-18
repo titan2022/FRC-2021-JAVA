@@ -34,10 +34,10 @@ public class ManualWristCommand extends CommandBase {
             
         if (XboxMap.toggleWrist()) {up = !up;}
         if(up) {
-          wristSubsystem.goUp();
+          wristSubsystem.turnOn();
         }
         else {
-          wristSubsystem.goDown();
+          wristSubsystem.turnOff();
         }
         
     }

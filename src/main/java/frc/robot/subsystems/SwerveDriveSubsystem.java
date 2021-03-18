@@ -13,6 +13,7 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -285,6 +286,14 @@ public class SwerveDriveSubsystem extends SubsystemBase
     // rightSecondaryRotatorSetpoint = Math.atan2(A, C)*(ENCODER_TICKS/(2*Math.PI));
 
     SwerveModuleState[] modules = kinematics.toSwerveModuleStates(inputChassisSpeeds);
+    SmartDashboard.putNumber("S_Front_Left", modules[0].speedMetersPerSecond);
+    SmartDashboard.putNumber("S_Back_Left", modules[1].speedMetersPerSecond);
+    SmartDashboard.putNumber("S_Front_Right", modules[2].speedMetersPerSecond);
+    SmartDashboard.putNumber("S_Back_Right", modules[3].speedMetersPerSecond);
+    SmartDashboard.putNumber("O_Front_Left", modules[0].angle.getDegrees());
+    SmartDashboard.putNumber("O_Back_Left", modules[1].angle.getDegrees());
+    SmartDashboard.putNumber("O_Front_Right", modules[2].angle.getDegrees());
+    SmartDashboard.putNumber("O_Back_Right", modules[3].angle.getDegrees());
 
 
     leftFrontMotor.set(ControlMode.Velocity, modules[0].speedMetersPerSecond/(10 * METERS_PER_TICK));
@@ -377,18 +386,22 @@ public class SwerveDriveSubsystem extends SubsystemBase
     if (useLeft)
     {
       if (useBack){
+        SmartDashboard.putNumber("T_Back_Left", leftBackMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICK);
         return leftBackMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
       else{
+        SmartDashboard.putNumber("T_Front_Left", leftFrontMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICK);
         return leftFrontMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
     }
     else
     {
       if (useBack){
+        SmartDashboard.putNumber("_Back_Right", rightBackMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICK);
         return rightBackMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
       else{
+        SmartDashboard.putNumber("T_Front_Right", rightFrontMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICK);
         return rightFrontMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
     }
@@ -406,18 +419,22 @@ public class SwerveDriveSubsystem extends SubsystemBase
     if (useLeft)
     {
       if (useBack){
+        SmartDashboard.putNumber("T_Rot_Back_Left", leftBackRotatorMotor.getSelectedSensorPosition(ENCODER_PORT)*360/ENCODER_TICKS);
         return leftBackRotatorMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
       else{
+        SmartDashboard.putNumber("T_Rot_Front_Left", leftFrontRotatorMotor.getSelectedSensorPosition(ENCODER_PORT)*360/ENCODER_TICKS);
         return leftFrontRotatorMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
     }
     else
     {
       if (useBack){
+        SmartDashboard.putNumber("T_Rot_Back_Right", rightBackRotatorMotor.getSelectedSensorPosition(ENCODER_PORT)*360/ENCODER_TICKS);
         return rightBackRotatorMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
       else{
+        SmartDashboard.putNumber("T_Rot_Front_Right", rightFrontRotatorMotor.getSelectedSensorPosition(ENCODER_PORT)*360/ENCODER_TICKS);
         return rightFrontRotatorMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
     }

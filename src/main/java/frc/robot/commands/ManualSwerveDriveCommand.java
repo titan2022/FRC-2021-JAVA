@@ -68,6 +68,9 @@ public class ManualSwerveDriveCommand extends CommandBase {
     SmartDashboard.putNumber("Left Back Rotator Encoder Value", swerveDriveSubsystem.getRotatorEncoderCount(true, true));
     SmartDashboard.putNumber("Right Front Rotator Encoder Value", swerveDriveSubsystem.getRotatorEncoderCount(false, false));
     SmartDashboard.putNumber("Right Back Rotator Encoder Value", swerveDriveSubsystem.getRotatorEncoderCount(false, true));
+    SmartDashboard.putNumber("AHRS", navigationSubsystem.getHeadingRadians());
+    SmartDashboard.putNumber("target angle", Math.max(0, Math.min(28, Math.atan2(XboxMap.rightY(), XboxMap.rightX()))) * 2 * Math.PI / 360);
+    SmartDashboard.putNumber("Yaw", navigationSubsystem.getYaw());
   }
 
   // Called once the command ends or is interrupted.

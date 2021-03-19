@@ -25,7 +25,7 @@ public class SwerveDriveSubsystem extends SubsystemBase
   public static final double ROBOT_LENGTH = 0.672; // meter 
   public static final double WHEEL_RADIUS = 0.0508; // meters (2 in)
   public static final double ENCODER_TICKS = 2048; // Ticks/rotation of Integrated encoder
-  public static final double ANGLES_PER_TICK = 360 / ENCODER_TICKS;
+  public static final double RADIANS_PER_TICK = 2 * Math.PI / ENCODER_TICKS;
   public static final double METERS_PER_TICK = WHEEL_RADIUS * 2 * Math.PI / ENCODER_TICKS;
   public static final double GEAR_REDUCTION = 1 / 12.8;
   
@@ -301,10 +301,10 @@ public class SwerveDriveSubsystem extends SubsystemBase
     rightFrontMotor.set(ControlMode.Velocity, modules[2].speedMetersPerSecond/(10 * METERS_PER_TICK));
     rightBackMotor.set(ControlMode.Velocity, modules[3].speedMetersPerSecond/(10 * METERS_PER_TICK));
 
-    leftFrontRotatorMotor.set(ControlMode.Position, modules[0].angle.getDegrees()/(ANGLES_PER_TICK));
-    leftBackRotatorMotor.set(ControlMode.Position, modules[1].angle.getDegrees()/(ANGLES_PER_TICK));
-    rightFrontRotatorMotor.set(ControlMode.Position, modules[2].angle.getDegrees()/(ANGLES_PER_TICK));
-    rightBackRotatorMotor.set(ControlMode.Position, modules[3].angle.getDegrees()/(ANGLES_PER_TICK));
+    leftFrontRotatorMotor.set(ControlMode.Position, modules[0].angle.getRadians()/(RADIANS_PER_TICK));
+    leftBackRotatorMotor.set(ControlMode.Position, modules[1].angle.getRadians()/(RADIANS_PER_TICK));
+    rightFrontRotatorMotor.set(ControlMode.Position, modules[2].angle.getRadians()/(RADIANS_PER_TICK));
+    rightBackRotatorMotor.set(ControlMode.Position, modules[3].angle.getRadians()/(RADIANS_PER_TICK));
   } 
 
   public void setOutput(double omega, double XVelocity, double YVelocity)
@@ -455,7 +455,7 @@ public class SwerveDriveSubsystem extends SubsystemBase
    * @return Rotation of a specified primary motor.
    */
   public double getRotatorEncoderDist(boolean useLeft, boolean useBack) {
-    return getRotatorEncoderCount(useLeft, useBack) * GEAR_REDUCTION;
+    return getRotatorEncoderCount(useLeft, useBack) * RADIANS_PER_TICK;
   }
 
   /**
@@ -482,11 +482,11 @@ public class SwerveDriveSubsystem extends SubsystemBase
   public double getRotatorEncoderVelocity(boolean useLeft) {
     if (useLeft)
     {
-      return leftFrontRotatorMotor.getSelectedSensorVelocity(ENCODER_PORT) * ANGLES_PER_TICK * 2 * Math.PI / 360 * GEAR_REDUCTION;
+      return leftFrontRotatorMotor.getSelectedSensorVelocity(ENCODER_PORT) * RADIANS_PER_TICK * GEAR_REDUCTION;
     }
     else
     {
-      return rightFrontRotatorMotor.getSelectedSensorVelocity(ENCODER_PORT) * ANGLES_PER_TICK * 2 * Math.PI / 360 * GEAR_REDUCTION;
+      return rightFrontRotatorMotor.getSelectedSensorVelocity(ENCODER_PORT) * RADIANS_PER_TICK * GEAR_REDUCTION;
     }
   }
 

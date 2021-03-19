@@ -455,7 +455,7 @@ public class SwerveDriveSubsystem extends SubsystemBase
    * @return Rotation of a specified primary motor.
    */
   public double getRotatorEncoderDist(boolean useLeft, boolean useBack) {
-    return getRotatorEncoderCount(useLeft, useBack) * RADIANS_PER_TICK;
+    return getRotatorEncoderCount(useLeft, useBack) * RADIANS_PER_TICK * GEAR_REDUCTION;
   }
 
   /**

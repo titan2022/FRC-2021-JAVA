@@ -10,7 +10,34 @@ public class AssisstedShooterCommand extends CommandBase{
     public void initialize() {
       System.out.println("Assisted Shoot Command Started");
     }
-  
+    public double getExitAngle()
+    {
+        double exitAngle = 0;
+        exitAngle = Math.atan((height + (1/2 * g* t * t))/distance);
+        return exitAngle;
+    }
+
+    public double getInitialVelocity()
+    {
+        double initialVelocity = 0;
+        initialVelocity = (distance/Math.cos(getExitAngle())) * t;
+        return initialVelocity;
+    }
+
+    public double optimizeAngle()
+    {
+        double initialAngleMax = 0.0;
+        initialAngleMax = Math.atan(height/distance);
+        return initialAngleMax;
+    }
+
+    public double optimizeVelocity()
+    {
+      double initialVelocityMax = 0.0;
+      initialVelocityMax = distance/Math.cos(optimizeAngle());
+      return initialVelocityMax;
+    }
+
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {

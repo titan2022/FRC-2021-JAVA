@@ -70,21 +70,10 @@ public class ShooterSubsystem extends SubsystemBase{
   private static final WPI_TalonSRX rotator = new WPI_TalonSRX(LEFT_PRIMARY_PORT)
      , shooter = new WPI_TalonSRX(RIGHT_PRIMARY_PORT);
 
-    private double xCoord;
-    private double yCoord;
-    private double targetXCoord;
-    private double targetYCoord;
-    private double g; 
-    private double t;
-    private double distance;
-    private double height;
     // measure the current linear velocity of the wheel, then assume that's starting velocity. plug it back in to find the least
     // amount of time, optimize time in respect to theta
     public ShooterSubsystem()
     {   
-        g = -9.8;
-        distance = targetXCoord - xCoord;
-        height = targetYCoord - yCoord;
     }
    
     public void setOutput(ControlMode position, ControlMode velocity, double angle, double speed) {
@@ -108,27 +97,6 @@ public class ShooterSubsystem extends SubsystemBase{
         // TODO: is check the current usage from Power Subsystem to restrict overcurrent
         rotator.set(position, angle);
         shooter.set(velocity, speed);
-      }
-<<<<<<< HEAD
-    
-    
-    public void setTalonVelocity()
-    {
-        rightPrimary.set(getInitialVelocity());
-    } 
-
-
-   
-=======
-
-    //add get encoder method for position
-    
-    /*
-    public void setTalonVelocity()
-    {
-        shooter.set(getInitialVelocity());
-    }
-   */
->>>>>>> 6aa417de3f96d615f65cf8c12fd2ef1dcfa23d65
+      }  
 
 }

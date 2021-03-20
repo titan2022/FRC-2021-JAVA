@@ -6,9 +6,23 @@ import frc.robot.config.XboxMap;
 public class AssisstedShooterCommand extends CommandBase{
     // Called when the command is initially scheduled.
     //Has a random speed
+    private double height;
+    private double distance;
+    private double g = 9.8;
+    private double t;
     @Override
     public void initialize() {
       System.out.println("Assisted Shoot Command Started");
+    }
+    /*public double getDistance(double xCoord, double targetXCoord)
+    {
+      distance = Math.abs(targetXCoord-xCoord);
+      return distance;
+    }
+    public double getHeight(double yCoord, double targetYCoord)
+    {
+      height = Math.abs(targetYCoord - yCoord);
+      return height;
     }
     public double getExitAngle()
     {
@@ -36,7 +50,7 @@ public class AssisstedShooterCommand extends CommandBase{
       double initialVelocityMax = 0.0;
       initialVelocityMax = distance/Math.cos(optimizeAngle());
       return initialVelocityMax;
-    }
+    }*/
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override

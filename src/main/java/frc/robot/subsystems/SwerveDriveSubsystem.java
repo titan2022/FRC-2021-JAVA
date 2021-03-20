@@ -15,10 +15,10 @@ import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class SwerveDriveSubsystem extends SubsystemBase
+public class SwerveDriveSubsystem implements DriveSubsystem
 {
   // Physical parameters
   public static final double ROBOT_TRACK_WIDTH = 0.672; // meters (30 in)
@@ -27,7 +27,6 @@ public class SwerveDriveSubsystem extends SubsystemBase
   public static final double ENCODER_TICKS = 2048; // Ticks/rotation of Integrated encoder
   public static final double RADIANS_PER_TICK = 2 * Math.PI / ENCODER_TICKS;
   public static final double METERS_PER_TICK = WHEEL_RADIUS * 2 * Math.PI / ENCODER_TICKS;
-  public static final double GEAR_REDUCTION = 1 / 12.8;
   
     
   // Port numbers to be added later
@@ -262,7 +261,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
    * @param leftOutputValue  left side output value for ControlMode
    * @param rightOutputValue right side output value for ControlMode
    */
-  public void setOutput(ChassisSpeeds inputChassisSpeeds) {
+  @Override
+  public void setVelocities(ChassisSpeeds inputChassisSpeeds) {
     // TODO: if check the current usage from Power Subsystem to restrict overcurrent
     // TODO: make this not fucking suck lol
     // TODO: make the controlmode output correspond to actual wheel velocity in m/s
@@ -295,6 +295,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
     SmartDashboard.putNumber("O_Front_Right", modules[2].angle.getDegrees());
     SmartDashboard.putNumber("O_Back_Right", modules[3].angle.getDegrees());
 
+    for(int i=0; i<4; i++)
+      modules[i] = SwerveModuleState.optimize(modules[i], new Rotation2d(getRotatorEncoderPosition((i&1)==0, i>1)));
 
     leftFrontMotor.set(ControlMode.Velocity, modules[0].speedMetersPerSecond/(10 * METERS_PER_TICK));
     leftBackMotor.set(ControlMode.Velocity, modules[1].speedMetersPerSecond/(10 * METERS_PER_TICK));
@@ -309,7 +311,7 @@ public class SwerveDriveSubsystem extends SubsystemBase
 
   public void setOutput(double omega, double XVelocity, double YVelocity)
   {
-    setOutput(new ChassisSpeeds(XVelocity, YVelocity, omega));
+    setVelocities(new ChassisSpeeds(XVelocity, YVelocity, omega));
   }
 
   // TODO: Fix all the brake logic and semantics because disabling brakes into coast mode is not about disabling brakes.
@@ -456,40 +458,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
    * @param useLeft - Whether to use the left primary motor.
    * @return Rotation of a specified primary motor.
    */
-  public double getRotatorEncoderDist(boolean useLeft, boolean useBack) {
-    return getRotatorEncoderCount(useLeft, useBack) * RADIANS_PER_TICK * GEAR_REDUCTION;
-  }
-
-  /**
-   * Gets current velocity of a primary motor.
-   * @param useLeft - Whether to use the left primary motor.
-   * @return Current velocity of a specified primary motor.
-   */
-  public double getEncoderVelocity(boolean useLeft) {
-    if (useLeft)
-    {
-      return leftFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK;
-    }
-    else
-    {
-      return rightFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK;
-    }
-  }
-
-  /**
-   * Gets current rotational velocity of a primary motor.
-   * @param useLeft - Whether to use the left primary motor.
-   * @return Current rotational velocity of a specified primary motor.
-   */
-  public double getRotatorEncoderVelocity(boolean useLeft) {
-    if (useLeft)
-    {
-      return leftFrontRotatorMotor.getSelectedSensorVelocity(ENCODER_PORT) * RADIANS_PER_TICK * GEAR_REDUCTION;
-    }
-    else
-    {
-      return rightFrontRotatorMotor.getSelectedSensorVelocity(ENCODER_PORT) * RADIANS_PER_TICK * GEAR_REDUCTION;
-    }
+  public double getRotatorEncoderPosition(boolean useLeft, boolean useBack) {
+    return getRotatorEncoderCount(useLeft, useBack) * RADIANS_PER_TICK;
   }
 
   /**
@@ -501,10 +471,5 @@ public class SwerveDriveSubsystem extends SubsystemBase
 
     return RobotController.getFPGATime() / 1e6;
 
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
   }
 }

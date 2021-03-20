@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
   public Robot()
   {
     super(.02); // Default period is .02 seconds = 50 hz
-    robotContainer = new AutonavContainer("barrel");
+    robotContainer = new AutonavContainer(isSimulation(), "barrel");
     // robotContainer = new DifferentialDriveContainer(isSimulation());
     autoCommandEntryPoint = robotContainer.getAutonomousCommand();
     teleopCommandEntryPoint = robotContainer.getTeleopCommand();

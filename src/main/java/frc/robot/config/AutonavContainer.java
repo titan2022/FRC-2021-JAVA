@@ -17,7 +17,6 @@ import frc.robot.commands.AutoNavChallenge;
 import frc.robot.commands.DifferentialDriveFilterCommand;
 import frc.robot.commands.DifferentialDriveOdometryCommand;
 import frc.robot.commands.FieldDisplayCommand;
-import frc.robot.commands.ManualDifferentialDriveCommand;
 import frc.robot.commands.RMPDrive;
 import frc.robot.motion.generation.rmpflow.RMPRoot;
 import frc.robot.subsystems.DifferentialDriveSubsystem;
@@ -32,23 +31,32 @@ public class AutonavContainer implements RobotContainer
     private final NavigationSubsystem navSub;
     private final static double INCH_TO_METER = 0.0254;
 
-    public AutonavContainer(Translation2d... waypoints) {
-        diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), true);
+    public AutonavContainer(boolean simulated, Translation2d... waypoints) {
+        
+        diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), simulated);
         navSub = new NavigationSubsystem(diffDriveSub);
-        FieldDisplayCommand fieldDisplayCommand = new FieldDisplayCommand("Autonav Challenge");
-        DifferentialDriveOdometryCommand odometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, fieldDisplayCommand);
-        odometryCommand.resetOdometry(new Pose2d(3, 3, new Rotation2d(0)), new Rotation2d(0));
-        DifferentialDriveFilterCommand diffDriveFilter = new DifferentialDriveFilterCommand(odometryCommand, navSub);
-        RMPRoot root = new RMPRoot("Autonav Challenge");
-        RMPDrive rmpDrive = new RMPDrive(root, diffDriveSub, diffDriveFilter);
-        AutoNavChallenge autoNav = new AutoNavChallenge(rmpDrive, waypoints);
 
-        teleopGroup = new ParallelCommandGroup(fieldDisplayCommand, odometryCommand, diffDriveFilter, autoNav);
-        autoGroup = new ParallelCommandGroup();
+        FieldDisplayCommand fieldDisplayCommand = new FieldDisplayCommand();
+        DifferentialDriveOdometryCommand odometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, fieldDisplayCommand);
+        odometryCommand.resetOdometry(new Pose2d(0.8, 2.3, new Rotation2d(0)), new Rotation2d(0));
+        DifferentialDriveFilterCommand filterCommand = new DifferentialDriveFilterCommand(odometryCommand, navSub);
+        RMPRoot root = new RMPRoot("Autonav Challenge");
+        RMPDrive rmpDrive = new RMPDrive(root, diffDriveSub, filterCommand);
+        AutoNavChallenge autoNavChallenge = new AutoNavChallenge(rmpDrive, waypoints);
+
+        autoGroup = new ParallelCommandGroup(fieldDisplayCommand, odometryCommand, filterCommand, autoNavChallenge);
+
+        FieldDisplayCommand debugFieldDisplayCommand = new FieldDisplayCommand();
+        DifferentialDriveOdometryCommand debugOdometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, debugFieldDisplayCommand);
+        odometryCommand.resetOdometry(new Pose2d(0.8, 2.3, new Rotation2d(0)), new Rotation2d(0));
+        DifferentialDriveFilterCommand debugFilterCommand = new DifferentialDriveFilterCommand(debugOdometryCommand, navSub);
+
+        teleopGroup = new ParallelCommandGroup(debugFieldDisplayCommand, debugOdometryCommand, debugFilterCommand);
+        configureButtonBindings();
     }
 
-    public AutonavContainer(String challengeName) {
-        this(getWaypoints(challengeName));
+    public AutonavContainer(boolean simulated, String challengeName) {
+        this(simulated, getWaypoints(challengeName));
     }
 
     private static Translation2d[] getWaypoints(String challengeName) {
@@ -65,7 +73,7 @@ public class AutonavContainer implements RobotContainer
                 break;
         }
         for (Translation2d waypoint : waypoints) {
-            waypoint.times(INCH_TO_METER);
+            waypoint = waypoint.times(INCH_TO_METER);
         }
         return waypoints.toArray(new Translation2d[waypoints.size()]);
     }
@@ -104,5 +112,13 @@ public class AutonavContainer implements RobotContainer
 
         return talon;
     }
+
+    /**
+     * Use this method to define your button->command mappings. Buttons can be
+     * created by instantiating a {@link GenericHID} or one of its subclasses
+     * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
+     * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     */
+    private void configureButtonBindings() {}
 
 }

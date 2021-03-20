@@ -510,15 +510,4 @@ public class SwerveDriveSubsystem implements DriveSubsystem
       }
     }
   }
-
-  /**
-   * Gets FPGA time from robot and converts it to seconds.
-   * 
-   * @return FPGA time in seconds.
-   */
-  public double getRobotTime() {
-
-    return RobotController.getFPGATime() / 1e6;
-
-  }
 }

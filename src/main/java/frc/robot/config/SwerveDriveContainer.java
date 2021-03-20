@@ -69,8 +69,8 @@ public class SwerveDriveContainer implements RobotContainer {
     }
 
     /**
-     * Method containing the talon configuration of the left side of the differential drive.
-     * @return The talon configuration of the left side of the drive.
+     * Contains a velocity based PID configuration.
+     * @return
      */
     public TalonFXConfiguration getSwerveDriveTalonDirectionalConfig()
     {
@@ -90,6 +90,10 @@ public class SwerveDriveContainer implements RobotContainer {
         return talon;
     }
 
+    /**
+     * Contains a position based PID configuration
+     * @return
+     */
     public TalonFXConfiguration getSwerveDriveTalonRotaryConfig()
     {
         TalonFXConfiguration talon = new TalonFXConfiguration();

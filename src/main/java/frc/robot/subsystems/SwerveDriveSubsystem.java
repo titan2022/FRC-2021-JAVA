@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -294,6 +295,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
     SmartDashboard.putNumber("O_Front_Right", modules[2].angle.getDegrees());
     SmartDashboard.putNumber("O_Back_Right", modules[3].angle.getDegrees());
 
+    for(int i=0; i<4; i++)
+      modules[i] = SwerveModuleState.optimize(modules[i], new Rotation2d(getRotatorEncoderDist((i&1)==0, i>1)));
 
     leftFrontMotor.set(ControlMode.Velocity, modules[0].speedMetersPerSecond/(10 * METERS_PER_TICK));
     leftBackMotor.set(ControlMode.Velocity, modules[1].speedMetersPerSecond/(10 * METERS_PER_TICK));

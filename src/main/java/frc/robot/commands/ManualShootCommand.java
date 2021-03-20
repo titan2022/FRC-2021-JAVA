@@ -29,4 +29,33 @@ public class ManualShootCommand extends CommandBase {
   public boolean isFinished() {
     return false;
   }
+  /*
+  public double getExitAngle()
+    {
+        double exitAngle = 0;
+        exitAngle = Math.atan((height + (1/2 * g* t * t))/distance);
+        return exitAngle;
+    }
+
+    public double getInitialVelocity()
+    {
+        double initialVelocity = 0;
+        initialVelocity = (distance/Math.cos(getExitAngle())) * t;
+        return initialVelocity;
+    }
+
+    public double optimizeAngle()
+    {
+        double initialAngleMax = 0.0;
+        initialAngleMax = Math.atan(height/distance);
+        return initialAngleMax;
+    }
+
+    public double optimizeVelocity()
+    {
+      double initialVelocityMax = 0.0;
+      initialVelocityMax = distance/Math.cos(optimizeAngle());
+      return initialVelocityMax;
+    }
+    */
 }

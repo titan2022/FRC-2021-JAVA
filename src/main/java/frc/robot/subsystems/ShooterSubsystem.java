@@ -27,6 +27,8 @@ import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 import edu.wpi.first.wpilibj.examples.armbotoffboard.Constants.ArmConstants;
 import edu.wpi.first.wpilibj.examples.armbotoffboard.ExampleSmartMotorController;
 
+import frc.robot.commands.ManualShootCommand;
+
 /**
  * @author Abhi
  * @author Deepu
@@ -40,9 +42,7 @@ public class ShooterSubsystem extends SubsystemBase{
 
   // Port numbers to be added later
   private static final int LEFT_PRIMARY_PORT = 1;
-  private static final int LEFT_SECONDARY_PORT = 2;
   private static final int RIGHT_PRIMARY_PORT = 3;
-  private static final int RIGHT_SECONDARY_PORT = 4;
 
   private static final int ENCODER_PORT = 0;
 
@@ -58,6 +58,7 @@ public class ShooterSubsystem extends SubsystemBase{
   private static final double MAX_SPEED = 10; // meters/sec
   private static final int PEAK_CURRENT_LIMIT = 60;
   private static final int CONTINUOUS_CURRENT_LIMIT = 50;
+  private static final double MAX_ANGLE = 25;
   
 
   // Phoenix Physics Sim Variables
@@ -66,48 +67,49 @@ public class ShooterSubsystem extends SubsystemBase{
 
   // Physical and Simulated Hardware
   // These talon objects are also simulated
-  private static final WPI_TalonSRX leftPrimary = new WPI_TalonSRX(LEFT_PRIMARY_PORT)
-     , rightPrimary = new WPI_TalonSRX(RIGHT_PRIMARY_PORT);
+  private static final WPI_TalonSRX rotator = new WPI_TalonSRX(LEFT_PRIMARY_PORT)
+     , shooter = new WPI_TalonSRX(RIGHT_PRIMARY_PORT);
 
+    private double xCoord;
+    private double yCoord;
+    private double targetXCoord;
+    private double targetYCoord;
     private double g; 
     private double t;
     private double distance;
     private double height;
     // measure the current linear velocity of the wheel, then assume that's starting velocity. plug it back in to find the least
     // amount of time, optimize time in respect to theta
-    public ShooterSubsystem(double targetXCoord, double xCoord, double targetYCoord, double yCoord)
-    {      
+    public ShooterSubsystem()
+    {   
         g = -9.8;
-        t = 10;
         distance = targetXCoord - xCoord;
         height = targetYCoord - yCoord;
     }
+   
+    public void setOutput(ControlMode position, ControlMode velocity, double angle, double speed) {
+
+        if (position == ControlMode.Position) {
     
-    public void setFactoryMotorConfig()
-    {
-      leftPrimary.configFactoryDefault();
-      rightPrimary.configFactoryDefault();
-    }
-
-
-    public void setOutput(ControlMode mode, double leftOutputValue, double rightOutputValue) {
-
-        if (mode == ControlMode.Velocity) {
-    
-          if (leftOutputValue > MAX_SPEED) {
-            leftOutputValue = MAX_SPEED;
+          if (angle > MAX_ANGLE) {
+            angle = MAX_ANGLE;
           }
     
-          if (rightOutputValue > MAX_SPEED) {
-            rightOutputValue = MAX_SPEED;
+        }
+
+        if (velocity == ControlMode.Velocity) {
+    
+          if (speed > MAX_SPEED) {
+            speed = MAX_SPEED;
           }
     
         }
     
         // TODO: is check the current usage from Power Subsystem to restrict overcurrent
-        leftPrimary.set(mode, leftOutputValue);
-        rightPrimary.set(mode, rightOutputValue);
+        rotator.set(position, angle);
+        shooter.set(velocity, speed);
       }
+<<<<<<< HEAD
     
     
     public void setTalonVelocity()
@@ -117,5 +119,16 @@ public class ShooterSubsystem extends SubsystemBase{
 
 
    
+=======
+
+    //add get encoder method for position
+    
+    /*
+    public void setTalonVelocity()
+    {
+        shooter.set(getInitialVelocity());
+    }
+   */
+>>>>>>> 6aa417de3f96d615f65cf8c12fd2ef1dcfa23d65
 
 }

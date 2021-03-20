@@ -17,9 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class SwerveDriveSubsystem extends SubsystemBase
+public class SwerveDriveSubsystem implements DriveSubsystem
 {
   // Physical parameters
   public static final double ROBOT_TRACK_WIDTH = 0.672; // meters (30 in)
@@ -262,7 +261,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
    * @param leftOutputValue  left side output value for ControlMode
    * @param rightOutputValue right side output value for ControlMode
    */
-  public void setOutput(ChassisSpeeds inputChassisSpeeds) {
+  @Override
+  public void setVelocities(ChassisSpeeds inputChassisSpeeds) {
     // TODO: if check the current usage from Power Subsystem to restrict overcurrent
     // TODO: make this not fucking suck lol
     // TODO: make the controlmode output correspond to actual wheel velocity in m/s
@@ -311,7 +311,7 @@ public class SwerveDriveSubsystem extends SubsystemBase
 
   public void setOutput(double omega, double XVelocity, double YVelocity)
   {
-    setOutput(new ChassisSpeeds(XVelocity, YVelocity, omega));
+    setVelocities(new ChassisSpeeds(XVelocity, YVelocity, omega));
   }
 
   /**
@@ -469,10 +469,5 @@ public class SwerveDriveSubsystem extends SubsystemBase
 
     return RobotController.getFPGATime() / 1e6;
 
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
   }
 }

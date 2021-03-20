@@ -114,7 +114,7 @@ public class SwerveDriveContainer implements RobotContainer {
     public PIDConfig getPIDConfig(){
         PIDConfig pidConfig = new PIDConfig();
 
-        pidConfig.kP = 2;//504.000000;
+        pidConfig.kP = 1;//504.000000;
         pidConfig.kI = 0;//5.600000;
         pidConfig.kD = 0;//0.20000;
         

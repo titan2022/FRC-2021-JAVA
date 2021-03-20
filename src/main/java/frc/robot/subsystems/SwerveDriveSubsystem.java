@@ -312,6 +312,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
     setOutput(new ChassisSpeeds(XVelocity, YVelocity, omega));
   }
 
+  // TODO: Fix all the brake logic and semantics because disabling brakes into coast mode is not about disabling brakes.
+
   /**
    * Enables brake.
    */

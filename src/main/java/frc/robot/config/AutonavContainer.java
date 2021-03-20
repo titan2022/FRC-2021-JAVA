@@ -17,6 +17,7 @@ import frc.robot.commands.AutoNavChallenge;
 import frc.robot.commands.DifferentialDriveFilterCommand;
 import frc.robot.commands.DifferentialDriveOdometryCommand;
 import frc.robot.commands.FieldDisplayCommand;
+import frc.robot.commands.ManualDifferentialDriveCommand;
 import frc.robot.commands.RMPDrive;
 import frc.robot.motion.generation.rmpflow.RMPRoot;
 import frc.robot.subsystems.DifferentialDriveSubsystem;
@@ -48,10 +49,11 @@ public class AutonavContainer implements RobotContainer
 
         FieldDisplayCommand debugFieldDisplayCommand = new FieldDisplayCommand();
         DifferentialDriveOdometryCommand debugOdometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, debugFieldDisplayCommand);
-        odometryCommand.resetOdometry(new Pose2d(0.8, 2.3, new Rotation2d(0)), new Rotation2d(0));
+        debugOdometryCommand.resetOdometry(new Pose2d(0.8, 2.3, new Rotation2d(0)), new Rotation2d(0));
         DifferentialDriveFilterCommand debugFilterCommand = new DifferentialDriveFilterCommand(debugOdometryCommand, navSub);
+        ManualDifferentialDriveCommand debugManualDriveCommand = new ManualDifferentialDriveCommand(diffDriveSub);
 
-        teleopGroup = new ParallelCommandGroup(debugFieldDisplayCommand, debugOdometryCommand, debugFilterCommand);
+        teleopGroup = new ParallelCommandGroup(debugFieldDisplayCommand, debugOdometryCommand, debugFilterCommand, debugManualDriveCommand);
         configureButtonBindings();
     }
 
@@ -72,10 +74,11 @@ public class AutonavContainer implements RobotContainer
                 waypoints.add(new Translation2d(150, 60));
                 break;
         }
-        for (Translation2d waypoint : waypoints) {
-            waypoint = waypoint.times(INCH_TO_METER);
+        int waypointListSize = waypoints.size();
+        for (int i = 0; i < waypointListSize; i++) {
+            waypoints.set(i, waypoints.get(i).times(INCH_TO_METER));
         }
-        return waypoints.toArray(new Translation2d[waypoints.size()]);
+        return waypoints.toArray(new Translation2d[waypointListSize]);
     }
 
 

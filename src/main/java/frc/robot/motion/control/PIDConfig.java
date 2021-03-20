@@ -11,14 +11,14 @@ public class PIDConfig {
 
     public PIDConfig(){}
 
-    public PIDConfig(double kP, double kI, double kD, double CONTINOUS_MINIMUM, double CONTINOUS_MAXIMUM,
-        double INTEGRATION_MIN, double INTEGRATION_MAX){
-            kP = kP;
-            kI = kI;
-            kD = kD;
-            CONTINOUS_MINIMUM = CONTINOUS_MINIMUM;
-            CONTINOUS_MAXIMUM = CONTINOUS_MAXIMUM;
-            INTEGRATION_MAX = INTEGRATION_MAX;
-            INTEGRATION_MIN = INTEGRATION_MIN;
+    public PIDConfig(double kP, double kI, double kD, double continousMinimum, double continousMaximum,
+        double integrationMax, double integrationMin){
+            this.kP = kP;
+            this.kI = kI;
+            this.kD = kD;
+            this.CONTINOUS_MINIMUM = continousMinimum;
+            this.CONTINOUS_MAXIMUM = continousMaximum;
+            this.INTEGRATION_MAX = integrationMax;
+            this.INTEGRATION_MIN = integrationMin;
     }
 }

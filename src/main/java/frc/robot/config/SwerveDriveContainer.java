@@ -115,7 +115,7 @@ public class SwerveDriveContainer implements RobotContainer {
         pidConfig.kD = 0;//0.20000;
         
         pidConfig.CONTINOUS_MINIMUM = 0;
-        pidConfig.CONTINOUS_MAXIMUM = 2*Math.PI;
+        pidConfig.CONTINOUS_MAXIMUM = 2 * Math.PI;
 
         pidConfig.INTEGRATION_MIN = -0.5;
         pidConfig.INTEGRATION_MAX = 0.5;

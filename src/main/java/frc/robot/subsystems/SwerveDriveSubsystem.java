@@ -296,7 +296,7 @@ public class SwerveDriveSubsystem extends SubsystemBase
     SmartDashboard.putNumber("O_Back_Right", modules[3].angle.getDegrees());
 
     for(int i=0; i<4; i++)
-      modules[i] = SwerveModuleState.optimize(modules[i], new Rotation2d(getRotatorEncoderDist((i&1)==0, i>1)));
+      modules[i] = SwerveModuleState.optimize(modules[i], new Rotation2d(getRotatorEncoderPosition((i&1)==0, i>1)));
 
     leftFrontMotor.set(ControlMode.Velocity, modules[0].speedMetersPerSecond/(10 * METERS_PER_TICK));
     leftBackMotor.set(ControlMode.Velocity, modules[1].speedMetersPerSecond/(10 * METERS_PER_TICK));
@@ -456,40 +456,8 @@ public class SwerveDriveSubsystem extends SubsystemBase
    * @param useLeft - Whether to use the left primary motor.
    * @return Rotation of a specified primary motor.
    */
-  public double getRotatorEncoderDist(boolean useLeft, boolean useBack) {
+  public double getRotatorEncoderPosition(boolean useLeft, boolean useBack) {
     return getRotatorEncoderCount(useLeft, useBack) * RADIANS_PER_TICK;
-  }
-
-  /**
-   * Gets current velocity of a primary motor.
-   * @param useLeft - Whether to use the left primary motor.
-   * @return Current velocity of a specified primary motor.
-   */
-  public double getEncoderVelocity(boolean useLeft) {
-    if (useLeft)
-    {
-      return leftFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK;
-    }
-    else
-    {
-      return rightFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICK;
-    }
-  }
-
-  /**
-   * Gets current rotational velocity of a primary motor.
-   * @param useLeft - Whether to use the left primary motor.
-   * @return Current rotational velocity of a specified primary motor.
-   */
-  public double getRotatorEncoderVelocity(boolean useLeft) {
-    if (useLeft)
-    {
-      return leftFrontRotatorMotor.getSelectedSensorVelocity(ENCODER_PORT) * RADIANS_PER_TICK;
-    }
-    else
-    {
-      return rightFrontRotatorMotor.getSelectedSensorVelocity(ENCODER_PORT) * RADIANS_PER_TICK;
-    }
   }
 
   /**

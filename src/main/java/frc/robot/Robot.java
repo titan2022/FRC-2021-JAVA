@@ -7,7 +7,6 @@ import frc.robot.config.RobotContainer;
 import frc.robot.config.DifferentialDriveContainer;
 import frc.robot.config.SwerveDriveContainer;
 
-
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -22,8 +21,11 @@ public class Robot extends TimedRobot {
   public Robot()
   {
     super(.02); // Default period is .02 seconds = 50 hz
+
+    // Declare robot containers here:
     // robotContainer = new DifferentialDriveContainer(isSimulation());
     robotContainer = new SwerveDriveContainer(isSimulation());
+
     autoCommandEntryPoint = robotContainer.getAutonomousCommand();
     teleopCommandEntryPoint = robotContainer.getTeleopCommand();
   }
@@ -35,7 +37,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    
   }
 
   /**
@@ -100,7 +101,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    
   }
 
   @Override
@@ -126,6 +126,5 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void simulationPeriodic() {
-
   }
 }

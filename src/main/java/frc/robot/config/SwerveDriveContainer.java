@@ -38,7 +38,7 @@ public class SwerveDriveContainer implements RobotContainer {
         FieldDisplayCommand autoFieldDisplayCommand = new FieldDisplayCommand("Auto Field");
 
         // Initialize Teleop Commands
-        ManualSwerveDriveCommand manualDriveCommand = new ManualSwerveDriveCommand(swerveDriveSub, navSub, getPIDConfig());
+        ManualSwerveDriveCommand manualDriveCommand = new ManualSwerveDriveCommand(swerveDriveSub, navSub, getSwerveHeadingPIDConfig());
 
         // Initialize Command Groups
         autoGroup = new ParallelCommandGroup(autoFieldDisplayCommand); // These don't actually run in parallel.
@@ -70,48 +70,51 @@ public class SwerveDriveContainer implements RobotContainer {
 
     /**
      * Contains a velocity based PID configuration.
-     * @return
+     * @return TalonFX Configuration Object
      */
     public TalonFXConfiguration getSwerveDriveTalonDirectionalConfig()
     {
         TalonFXConfiguration talon = new TalonFXConfiguration();
         // Add configs here:
-        talon.slot0.kP = 100;
-        talon.slot0.kI = 0;
-        talon.slot0.kD = 0.0;        
-        talon.slot0.kF = 0;
-        talon.slot0.integralZone = 900;
-        talon.slot0.allowableClosedloopError = 217;
-        talon.slot0.maxIntegralAccumulator = 254.000000;
-        //talon.slot0.closedLoopPeakOutput = 0.869990;
-        //talon.slot0.closedLoopPeriod = 33;
-        
-
-        return talon;
-    }
-
-    /**
-     * Contains a position based PID configuration
-     * @return
-     */
-    public TalonFXConfiguration getSwerveDriveTalonRotaryConfig()
-    {
-        TalonFXConfiguration talon = new TalonFXConfiguration();
-        // Add configs here:
-        talon.slot0.kP = 100;
+        talon.slot0.kP = 1;
         talon.slot0.kI = 0;
         talon.slot0.kD = 0;        
         talon.slot0.kF = 0;
         talon.slot0.integralZone = 900;
         talon.slot0.allowableClosedloopError = 217;
         talon.slot0.maxIntegralAccumulator = 254.000000;
-        //talon.slot0.closedLoopPeakOutput = 0.869990;
-        //talon.slot0.closedLoopPeriod = 33;
+        //talon.slot0.closedLoopPeakOutput = 0.869990; // Sets maximum output of the PID controller
+        //talon.slot0.closedLoopPeriod = 33; // Sets the hardware update rate of the PID controller
+        
+        return talon;
+    }
+
+    /**
+     * Contains a position based PID configuration
+     * @return TalonFX Configuration Object
+     */
+    public TalonFXConfiguration getSwerveDriveTalonRotaryConfig()
+    {
+        TalonFXConfiguration talon = new TalonFXConfiguration();
+        // Add configs here:
+        talon.slot0.kP = 1;
+        talon.slot0.kI = 0;
+        talon.slot0.kD = 0;        
+        talon.slot0.kF = 0;
+        talon.slot0.integralZone = 900;
+        talon.slot0.allowableClosedloopError = 217;
+        talon.slot0.maxIntegralAccumulator = 254.000000;
+        //talon.slot0.closedLoopPeakOutput = 0.869990; // Sets maximum output of the PID controller
+        //talon.slot0.closedLoopPeriod = 33; // Sets the hardware update rate of the PID controller
 
         return talon;
     }
 
-    public PIDConfig getPIDConfig(){
+    /**
+     * The swerve field oriented heading PID configuration
+     * @return PID configuration for {@link PIDController}
+     */
+    public PIDConfig getSwerveHeadingPIDConfig(){
         PIDConfig pidConfig = new PIDConfig();
 
         pidConfig.kP = 1;//504.000000;

@@ -1,64 +1,50 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
-import edu.wpi.first.wpilibj.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.system.plant.LinearSystemId;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpiutil.math.VecBuilder;
-import frc.robot.subsystems.sim.PhysicsSim;
-import frc.robot.vision.LimelightMath;
-import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.trajectory.Trajectory.State;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import edu.wpi.first.wpilibj.controller.ArmFeedforward;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
-
-import edu.wpi.first.wpilibj.examples.armbotoffboard.Constants.ArmConstants;
-import edu.wpi.first.wpilibj.examples.armbotoffboard.ExampleSmartMotorController;
-
-import frc.robot.commands.ManualShootCommand;
 
 /**
- * @author Abhi
+ * @author Archan
  * @author Deepu
+ * @author Abhi
  */
 public class ShooterSubsystem extends SubsystemBase{
 
      // Physical parameters
   public static final double ENCODER_TICKS = 4096; // Ticks/rotation of CTREMagEncoder
-  private static final double ANGLE_TO_TICK =  1 / (360 * ENCODER_TICKS); //temp value
-  public static final double GEARING_REDUCTION = 7.29; // TODO: Get the correct gearing ratio
+  public static final double WHEEL_RADIUS_METERS = 0.1016;
+  public static final double TICKS_PER_METER = ENCODER_TICKS/(Math.PI*WHEEL_RADIUS_METERS*WHEEL_RADIUS_METERS);
 
   // Port numbers to be added later
-  private static final int LEFT_PRIMARY_PORT = 1;
-  private static final int RIGHT_PRIMARY_PORT = 3;
+  //private static final int ROTATOR_PORT = 1;
+  private static final int PROPELLOR_PORT = 2;
 
-  private static final int ENCODER_PORT = 0;
+  //PID Slots
+ // private static final int ROTATOR_SLOT_IDX = 0;
+  //private static final int ROTATOR_PID_IDX = 0;
+  private static final int PROPELLOR_PID_IDX = 0;
+  private static final int PROPELLOR_SLOT_IDX = 0;
 
-  // Motor and sensor inversions
-  private static final boolean LEFT_PRIMARY_INVERTED = false;
-  private static final boolean LEFT_SECONDARY_INVERTED = false;
-  private static final boolean RIGHT_PRIMARY_INVERTED = false;
-  private static final boolean RIGHT_SECONDARY_INVERTED = false;
-  private static final boolean LEFT_PRIMARY_MOTOR_SENSOR_PHASE = false;
-  private static final boolean RIGHT_PRIMARY_MOTOR_SENSOR_PHASE = false;
+  private static final double PROPELLOR_KP = 1;
+  private static final double PROPELLOR_KI = 0;
+  private static final double PROPELLOR_KD = 0;
+  private static final double PROPELLOR_KF = 0;
 
   // Physical limits
   private static final double MAX_SPEED = 10; // meters/sec
   private static final int PEAK_CURRENT_LIMIT = 60;
   private static final int CONTINUOUS_CURRENT_LIMIT = 50;
-  private static final double MAX_ANGLE = 25;
+
+  private static final SupplyCurrentLimitConfiguration supplyCurrentLimit = new SupplyCurrentLimitConfiguration(true,
+  CONTINUOUS_CURRENT_LIMIT, 0, 0);
   
 
   // Phoenix Physics Sim Variables
@@ -67,36 +53,37 @@ public class ShooterSubsystem extends SubsystemBase{
 
   // Physical and Simulated Hardware
   // These talon objects are also simulated
-  private static final WPI_TalonSRX rotator = new WPI_TalonSRX(LEFT_PRIMARY_PORT)
-     , shooter = new WPI_TalonSRX(RIGHT_PRIMARY_PORT);
+  //private static final WPI_TalonSRX rotator = new WPI_TalonSRX(ROTATOR_PORT)
+    private static final WPI_TalonSRX propellor = new WPI_TalonSRX(PROPELLOR_PORT);
 
-    // measure the current linear velocity of the wheel, then assume that's starting velocity. plug it back in to find the least
-    // amount of time, optimize time in respect to theta
-    public ShooterSubsystem()
-    {   
+    public ShooterSubsystem(TalonSRXConfiguration rotatorConfig, TalonSRXConfiguration propellorConfig)
+    {  
+     //rotator.configAllSettings(rotatorConfig);
+      propellor.configAllSettings(propellorConfig);
+
+      //rotator.selectProfileSlot(ROTATOR_SLOT_IDX, ROTATOR_PID_IDX);
+      propellor.selectProfileSlot(PROPELLOR_SLOT_IDX, PROPELLOR_PID_IDX);
+
+      propellor.config_kP(PROPELLOR_SLOT_IDX, PROPELLOR_KP);
+      propellor.config_kI(PROPELLOR_SLOT_IDX, PROPELLOR_KI);
+      propellor.config_kD(PROPELLOR_SLOT_IDX, PROPELLOR_KD);
+      propellor.config_kF(PROPELLOR_SLOT_IDX, PROPELLOR_KF);
+
+      propellor.configSupplyCurrentLimit(supplyCurrentLimit);
+
+
     }
+    
+    public void setFactoryMotorConfig()
+    {
+      //rotator.configFactoryDefault();
+      propellor.configFactoryDefault();
+    }
+
+
+    public void setOutput(double desiredVelocity){
+      propellor.set(ControlMode.Velocity, desiredVelocity*TICKS_PER_METER);
+    }   
    
-    public void setOutput(ControlMode position, ControlMode velocity, double angle, double speed) {
-
-        if (position == ControlMode.Position) {
-    
-          if (angle > MAX_ANGLE) {
-            angle = MAX_ANGLE;
-          }
-    
-        }
-
-        if (velocity == ControlMode.Velocity) {
-    
-          if (speed > MAX_SPEED) {
-            speed = MAX_SPEED;
-          }
-    
-        }
-    
-        // TODO: is check the current usage from Power Subsystem to restrict overcurrent
-        rotator.set(position, angle);
-        shooter.set(velocity, speed);
-      }  
 
 }

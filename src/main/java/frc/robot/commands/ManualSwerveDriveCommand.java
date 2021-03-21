@@ -10,7 +10,8 @@ import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.NavigationSubsystem;
 
 /**
- * 
+ * Manual field oriented velocity and orientation swerve drive manual control command.
+ * Left joystick for translation and right joystick for orientation heading.
  */
 public class ManualSwerveDriveCommand extends CommandBase {
   private SwerveDriveSubsystem swerveDriveSub;
@@ -21,7 +22,7 @@ public class ManualSwerveDriveCommand extends CommandBase {
 
   /** Creates a new ManualDifferentialDriveCommand. 
    *  Joystick inputs are calculated in 0 to 360
-  */
+   */
   public ManualSwerveDriveCommand(SwerveDriveSubsystem swerveDriveSub, NavigationSubsystem navSub, PIDConfig pidConfig) { // TODO: Maybe consider changing from PIDConfigs to {@link PIDController}
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerveDriveSub);
@@ -50,26 +51,28 @@ public class ManualSwerveDriveCommand extends CommandBase {
     else { 
       swerveDriveSub.disableBrakes();
 
-      double headingRadians = navSub.getHeadingRadians(); // 0 to 2PI clockwise
-      double xHeading = Math.cos(headingRadians);
-      double yHeading = Math.sin(headingRadians);
-
       // Convert into Y is forward and X is sideways
       double xFieldVelocity = XboxMap.leftX(); // For chassis speeds forward back is x and left right is y
       double yFieldVelocity = XboxMap.leftY();
-      double deltaTheta = 0 - headingRadians; // Difference from heading zero
+
+      double headingRadians = navSub.getHeadingRadians(); // 0 to 2PI clockwise    
       
-      /* Trigonometric interpretation, not yet completed though
-      double xVelocity = xFieldVelocity * Math.cos(deltaTheta) - yFieldVelocity * Math.sin(deltaTheta);
-      double yVelocity = xFieldVelocity * Math.sin(deltaTheta) + yFieldVelocity * Math.cos(deltaTheta);
+      //Trigonometric interpretation, not yet completed though
+      // double xHeading = Math.cos(headingRadians);
+      // double yHeading = Math.sin(headingRadians);
 
-      double velRelativeDotHeading = xHeading * xVelocity + yHeading * yVelocity;
-      double forwardVelocity = Math.sqrt(Math.pow(velRelativeDotHeading * xHeading, 2) + Math.pow(velRelativeDotHeading * yHeading, 2));
-      */
+      // double deltaTheta = 0 - headingRadians; // Difference from heading zero
 
+      // double xVelocity = xFieldVelocity * Math.cos(deltaTheta) - yFieldVelocity * Math.sin(deltaTheta);
+      // double yVelocity = xFieldVelocity * Math.sin(deltaTheta) + yFieldVelocity * Math.cos(deltaTheta);
+
+      // double velRelativeDotHeading = xHeading * xVelocity + yHeading * yVelocity;
+      // double forwardVelocity = Math.sqrt(Math.pow(velRelativeDotHeading * xHeading, 2) + Math.pow(velRelativeDotHeading * yHeading, 2));
+
+
+      // Coordinate transformation interpretation
       double xVelocity = Math.cos(headingRadians) * yFieldVelocity + Math.sin(headingRadians) * xFieldVelocity;
       double yVelocity = Math.cos(headingRadians) * xFieldVelocity + Math.sin(headingRadians) * yFieldVelocity;
-
       
       // Direction vector
       double xDirection = XboxMap.rightX();
@@ -93,7 +96,7 @@ public class ManualSwerveDriveCommand extends CommandBase {
       SmartDashboard.putNumber("Right Front Rotator Encoder Value", swerveDriveSub.getRotatorEncoderCount(false, false));
       SmartDashboard.putNumber("Right Back Rotator Encoder Value", swerveDriveSub.getRotatorEncoderCount(false, true));
       SmartDashboard.putNumber("AHRS", Math.toDegrees(headingRadians));
-      SmartDashboard.putNumber("target angle", Math.toDegrees(targetAngleRadians));
+      SmartDashboard.putNumber("Target angle", Math.toDegrees(targetAngleRadians));
       SmartDashboard.putNumber("Yaw", navSub.getYaw());
     }
   }

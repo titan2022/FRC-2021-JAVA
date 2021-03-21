@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 
@@ -34,8 +33,8 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   private static final double RIGHT_BACK_ENCODER_DEGREES_OFFSET = 0;
 
   // Deadbands
-  private static final double WHEEL_DEADBAND = 0;
-  private static final double ROTATOR_DEADBAND = 0;
+  private static final double WHEEL_DEADBAND = 0.01;
+  private static final double ROTATOR_DEADBAND = 0.01;
     
   // Port numbers to be added later
   private static final int LEFT_FRONT_MOTOR_PORT = 2;
@@ -47,7 +46,7 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   private static final int RIGHT_FRONT_MOTOR_ROTATOR_PORT = 6;
   private static final int RIGHT_BACK_MOTOR_ROTATOR_PORT = 1;
 
-  private static final int LEFT_FRONT_ENCODER_PORT = 0;
+  private static final int LEFT_FRONT_ENCODER_PORT = 0; // TODO: get CANCoder ports
   private static final int LEFT_BACK_ENCODER_PORT = 0;
   private static final int RIGHT_FRONT_ENCODER_PORT = 0;
   private static final int RIGHT_BACK_ENCODER_PORT = 0;
@@ -59,7 +58,6 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   private static final int ENCODER_PORT = 0;
 
   // Motor and sensor inversions
-  // TODO: Rename primary and secondary to front and back. Need inversion variable for ever single motor.
   private static final boolean LEFT_FRONT_MOTOR_INVERTED = false;
   private static final boolean LEFT_BACK_MOTOR_INVERTED = false;
   private static final boolean LEFT_FRONT_MOTOR_ROTATOR_INVERTED = false;
@@ -68,15 +66,14 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   private static final boolean RIGHT_BACK_MOTOR_INVERTED = false;
   private static final boolean RIGHT_FRONT_MOTOR_ROTATOR_INVERTED = false;
   private static final boolean RIGHT_BACK_MOTOR_ROTATOR_INVERTED = false;
-
-  // TODO: Need variables for all the sensor phases. Rename primary and secondary to front and back. 
+ 
   private static final boolean LEFT_FRONT_MOTOR_SENSOR_PHASE = false;
   private static final boolean RIGHT_FRONT_MOTOR_SENSOR_PHASE = false;
   private static final boolean LEFT_BACK_MOTOR_SENSOR_PHASE = false;
   private static final boolean RIGHT_BACK_MOTOR_SENSOR_PHASE = false;
   private static final boolean LEFT_FRONT_MOTOR_ROTATOR_SENSOR_PHASE = false;
   private static final boolean RIGHT_FRONT_MOTOR_ROTATOR_SENSOR_PHASE = false;
-  private static final boolean LEFT_BACK_MOTOR__ROTATOR_SENSOR_PHASE = false;
+  private static final boolean LEFT_BACK_MOTOR_ROTATOR_SENSOR_PHASE = false;
   private static final boolean RIGHT_BACK_MOTOR_ROTATOR_SENSOR_PHASE = false;
 
   // Physical limits of motors that create translational motion
@@ -86,10 +83,9 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   private static final StatorCurrentLimitConfiguration statorCurrentLimit = new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0);
   private static final SupplyCurrentLimitConfiguration supplyCurrentLimit = new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0);
 
-  // Physical limits of motors that rotate the wheel. Change to radians.
+  // Physical limits of motors that rotate the wheel. Use radians.
   
-  // Physical and Simulated Hardware
-  // These talon objects are also simulated
+  // Physical Hardware
   private static final WPI_TalonFX leftFrontMotor = new WPI_TalonFX(LEFT_FRONT_MOTOR_PORT)
     , leftBackMotor = new WPI_TalonFX(LEFT_BACK_MOTOR_PORT)
     , rightFrontMotor = new WPI_TalonFX(RIGHT_FRONT_MOTOR_PORT)
@@ -117,16 +113,19 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   private static final int MAIN_MOTOR_SLOT_IDX = 0;
   private static final int MAIN_MOTOR_PID_IDX = 0;
 
-  //Kinematics
-  //positions describe the position of each wheel relative to the center of the robot
+  // Kinematics
+  // Positions describe the position of each wheel relative to the center of the robot
   private static final Translation2d leftFrontPosition = new Translation2d(-ROBOT_TRACK_WIDTH/2, ROBOT_LENGTH/2);
   private static final Translation2d leftBackPosition = new Translation2d(-ROBOT_TRACK_WIDTH/2, -ROBOT_LENGTH/2);
   private static final Translation2d rightFrontPosition = new Translation2d(ROBOT_TRACK_WIDTH/2, ROBOT_LENGTH/2);
   private static final Translation2d rightBackPosition = new Translation2d(ROBOT_TRACK_WIDTH/2, -ROBOT_LENGTH/2);
   private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFrontPosition, leftBackPosition, rightFrontPosition, rightBackPosition);
 
-  //Might need extra parameters for rotator motors
-  //Make like differential drive subsystem constructor
+  /**
+   * Creates the swerve drive subsystem
+   * @param mainConfig Requires PID configuration in slot 0
+   * @param rotatorConfig Requires PID configuration in slot 0
+   */
   public SwerveDriveSubsystem(TalonFXConfiguration mainConfig, TalonFXConfiguration rotatorConfig)
   {
     setFactoryMotorConfig();
@@ -145,16 +144,7 @@ public class SwerveDriveSubsystem implements DriveSubsystem
       rightBackRotatorMotor.configAllSettings(rotatorConfig);
     }
 
-    rightFrontMotor.setInverted(RIGHT_FRONT_MOTOR_INVERTED);
-    rightBackMotor.setInverted(RIGHT_BACK_MOTOR_INVERTED);
-    rightFrontRotatorMotor.setInverted(RIGHT_FRONT_MOTOR_ROTATOR_INVERTED);
-    rightBackRotatorMotor.setInverted(RIGHT_BACK_MOTOR_ROTATOR_INVERTED);
-
-    leftFrontMotor.setInverted(LEFT_FRONT_MOTOR_INVERTED);
-    leftBackMotor.setInverted(LEFT_BACK_MOTOR_INVERTED);
-    leftFrontRotatorMotor.setInverted(LEFT_FRONT_MOTOR_ROTATOR_INVERTED);
-    leftBackRotatorMotor.setInverted(LEFT_BACK_MOTOR_ROTATOR_INVERTED);
-
+    // CANCoder Configuration
     leftFrontRotatorEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
     leftBackRotatorEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
     rightFrontRotatorEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
@@ -170,6 +160,17 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     rightFrontEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     rightBackEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
 
+    // TalonFX configuration
+    rightFrontMotor.setInverted(RIGHT_FRONT_MOTOR_INVERTED);
+    rightBackMotor.setInverted(RIGHT_BACK_MOTOR_INVERTED);
+    rightFrontRotatorMotor.setInverted(RIGHT_FRONT_MOTOR_ROTATOR_INVERTED);
+    rightBackRotatorMotor.setInverted(RIGHT_BACK_MOTOR_ROTATOR_INVERTED);
+
+    leftFrontMotor.setInverted(LEFT_FRONT_MOTOR_INVERTED);
+    leftBackMotor.setInverted(LEFT_BACK_MOTOR_INVERTED);
+    leftFrontRotatorMotor.setInverted(LEFT_FRONT_MOTOR_ROTATOR_INVERTED);
+    leftBackRotatorMotor.setInverted(LEFT_BACK_MOTOR_ROTATOR_INVERTED);
+
     // Sets the direction that the talon will turn on the green LED when going 'forward'.
     leftFrontMotor.setSensorPhase(LEFT_FRONT_MOTOR_SENSOR_PHASE);
     rightFrontMotor.setSensorPhase(RIGHT_FRONT_MOTOR_SENSOR_PHASE);
@@ -177,38 +178,40 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     rightBackMotor.setSensorPhase(RIGHT_BACK_MOTOR_SENSOR_PHASE);
     leftFrontRotatorMotor.setSensorPhase(LEFT_FRONT_MOTOR_ROTATOR_SENSOR_PHASE);
     rightFrontRotatorMotor.setSensorPhase(RIGHT_FRONT_MOTOR_ROTATOR_SENSOR_PHASE);
-    leftBackRotatorMotor.setSensorPhase(LEFT_BACK_MOTOR__ROTATOR_SENSOR_PHASE);
+    leftBackRotatorMotor.setSensorPhase(LEFT_BACK_MOTOR_ROTATOR_SENSOR_PHASE);
     rightBackRotatorMotor.setSensorPhase(RIGHT_BACK_MOTOR_ROTATOR_SENSOR_PHASE);
 
-    // Current limits in amps
-    // TODO: Find equivalent method names for FX stuff
+    // Current limits
     leftFrontMotor.configStatorCurrentLimit(statorCurrentLimit);
     leftFrontMotor.configSupplyCurrentLimit(supplyCurrentLimit);
-
     rightFrontMotor.configStatorCurrentLimit(statorCurrentLimit);
     rightFrontMotor.configSupplyCurrentLimit(supplyCurrentLimit);
-
-    leftFrontRotatorMotor.configStatorCurrentLimit(statorCurrentLimit);
-    leftFrontRotatorMotor.configSupplyCurrentLimit(supplyCurrentLimit);
-
-    leftBackRotatorMotor.configStatorCurrentLimit(statorCurrentLimit);
-    leftBackRotatorMotor.configSupplyCurrentLimit(supplyCurrentLimit);
-
     leftBackMotor.configStatorCurrentLimit(statorCurrentLimit);
     leftBackMotor.configSupplyCurrentLimit(supplyCurrentLimit);
-
-    rightFrontRotatorMotor.configStatorCurrentLimit(statorCurrentLimit);
-    rightFrontRotatorMotor.configSupplyCurrentLimit(supplyCurrentLimit);
-
     rightBackMotor.configStatorCurrentLimit(statorCurrentLimit);
     rightBackMotor.configSupplyCurrentLimit(supplyCurrentLimit);
 
+    leftFrontRotatorMotor.configStatorCurrentLimit(statorCurrentLimit);
+    leftFrontRotatorMotor.configSupplyCurrentLimit(supplyCurrentLimit);
+    rightFrontRotatorMotor.configStatorCurrentLimit(statorCurrentLimit);
+    rightFrontRotatorMotor.configSupplyCurrentLimit(supplyCurrentLimit);
+    leftBackRotatorMotor.configStatorCurrentLimit(statorCurrentLimit);
+    leftBackRotatorMotor.configSupplyCurrentLimit(supplyCurrentLimit);
     rightBackRotatorMotor.configStatorCurrentLimit(statorCurrentLimit);
     rightBackRotatorMotor.configSupplyCurrentLimit(supplyCurrentLimit);
 
-    // Might need more for rotator motors
+    //neutral deadbands
+    leftFrontRotatorMotor.configNeutralDeadband(ROTATOR_DEADBAND);
+    rightFrontRotatorMotor.configNeutralDeadband(ROTATOR_DEADBAND);
+    leftBackRotatorMotor.configNeutralDeadband(ROTATOR_DEADBAND);
+    rightBackRotatorMotor.configNeutralDeadband(ROTATOR_DEADBAND);
 
-    /* TODO: Deal with motor controller faults once a physical robot is available for testing
+    leftFrontMotor.configNeutralDeadband(WHEEL_DEADBAND);
+    leftBackMotor.configNeutralDeadband(WHEEL_DEADBAND);
+    rightFrontMotor.configNeutralDeadband(WHEEL_DEADBAND);
+    rightBackMotor.configNeutralDeadband(WHEEL_DEADBAND);
+
+    /* TODO: Implement logic in the future to deal with motor faults to add robustness
     Faults _faults_L = new Faults();
     Faults _faults_R = new Faults();
     */
@@ -242,17 +245,6 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     leftBackRotatorMotor.configRemoteFeedbackFilter(leftBackRotatorEncoder, 0);
     rightFrontRotatorMotor.configRemoteFeedbackFilter(rightFrontRotatorEncoder, 0);
     rightBackRotatorMotor.configRemoteFeedbackFilter(rightBackRotatorEncoder, 0);
-
-    //neutral deadbands
-    leftFrontRotatorMotor.configNeutralDeadband(ROTATOR_DEADBAND);
-    rightFrontRotatorMotor.configNeutralDeadband(ROTATOR_DEADBAND);
-    leftBackRotatorMotor.configNeutralDeadband(ROTATOR_DEADBAND);
-    rightBackRotatorMotor.configNeutralDeadband(ROTATOR_DEADBAND);
-
-    leftFrontMotor.configNeutralDeadband(WHEEL_DEADBAND);
-    leftBackMotor.configNeutralDeadband(WHEEL_DEADBAND);
-    rightFrontMotor.configNeutralDeadband(WHEEL_DEADBAND);
-    rightBackMotor.configNeutralDeadband(WHEEL_DEADBAND);
   }
 
   public SwerveDriveSubsystem()
@@ -293,28 +285,6 @@ public class SwerveDriveSubsystem implements DriveSubsystem
    */
   @Override
   public void setVelocities(ChassisSpeeds inputChassisSpeeds) {
-    // TODO: if check the current usage from Power Subsystem to restrict overcurrent
-    // TODO: make this not fucking suck lol
-    // TODO: make the controlmode output correspond to actual wheel velocity in m/s
-
-    // double A, B, C, D;
-
-    // A=XVelocity-(omega * (ROBOT_LENGTH/2));
-    // B=XVelocity+(omega * (ROBOT_LENGTH/2));
-    // C=XVelocity-(omega * (ROBOT_TRACK_WIDTH/2));
-    // D=XVelocity+(omega * (ROBOT_TRACK_WIDTH/2));
-
-    // leftPrimaryOutput = Math.sqrt((B*B)+(D*D));
-    // rightPrimaryOutput = Math.sqrt((B*B)+(C*C));
-    // leftSecondaryOutput = Math.sqrt((A*A)+(D*D));
-    // rightSecondaryOutput = Math.sqrt((A*A)+(C*C));
-
-    // //outputs angles, 0 is dead ahead, values go from -180 to 180
-    // leftPrimaryRotatorSetpoint = Math.atan2(B, D)*(ENCODER_TICKS/(2*Math.PI));
-    // rightPrimaryRotatorSetpoint = Math.atan2(B, C)*(ENCODER_TICKS/(2*Math.PI));
-    // leftSecondaryRotatorSetpoint = Math.atan2(A, D)*(ENCODER_TICKS/(2*Math.PI));
-    // rightSecondaryRotatorSetpoint = Math.atan2(A, C)*(ENCODER_TICKS/(2*Math.PI));
-
     SwerveModuleState[] modules = kinematics.toSwerveModuleStates(inputChassisSpeeds);
     SmartDashboard.putNumber("S_Front_Left", modules[0].speedMetersPerSecond);
     SmartDashboard.putNumber("S_Back_Left", modules[1].speedMetersPerSecond);

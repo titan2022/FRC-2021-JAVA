@@ -101,7 +101,7 @@ public class NavigationSubsystem extends SubsystemBase {
  * @return
  */
   public double getHeadingRadians() {
-    return (2 * Math.PI / 360.0) * getHeadingDegrees();
+    return Math.toRadians(getHeadingDegrees());
   }
 
   /**

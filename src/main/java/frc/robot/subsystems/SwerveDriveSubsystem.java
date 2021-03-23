@@ -15,15 +15,16 @@ import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 
 public class SwerveDriveSubsystem implements DriveSubsystem
 {
   // Physical parameters
-  public static final double ROBOT_TRACK_WIDTH = 0.672; // meters (30 in)
-  public static final double ROBOT_LENGTH = 0.672; // meter 
-  public static final double WHEEL_RADIUS = 0.0508; // meters (2 in)
+  public static final double ROBOT_TRACK_WIDTH = Units.inchesToMeters(23.5); // 0.672; // meters (30 in)
+  public static final double ROBOT_LENGTH = Units.inchesToMeters(23.5); // 0.672; // meter 
+  public static final double WHEEL_RADIUS = Units.inchesToMeters(2); // 0.0508; // meters (2 in)
   public static final double METERS_PER_DEGREE = WHEEL_RADIUS * 2 * Math.PI / 360;
 
   // Rotator Encoder Offsets

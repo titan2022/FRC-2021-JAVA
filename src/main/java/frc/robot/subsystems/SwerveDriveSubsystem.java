@@ -25,8 +25,10 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   public static final double ROBOT_TRACK_WIDTH = Units.inchesToMeters(23.5); // 0.672; // meters (30 in)
   public static final double ROBOT_LENGTH = Units.inchesToMeters(23.5); // 0.672; // meter 
   public static final double WHEEL_RADIUS = Units.inchesToMeters(2); // 0.0508; // meters (2 in)
+  public static final int INTEGRATED_ENCODER_TICKS = 2048;
   public static final double GEAR_RATIO = 6.86;
   public static final double METERS_PER_DEGREE = WHEEL_RADIUS * 2 * Math.PI / 360 / GEAR_RATIO;
+  public static final double METERS_PER_TICKS = WHEEL_RADIUS * 2 * Math.PI / INTEGRATED_ENCODER_TICKS / GEAR_RATIO;
 
   // Rotator Encoder Offsets
   private static final double LEFT_FRONT_ENCODER_DEGREES_OFFSET = 0;
@@ -294,10 +296,10 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     for(int i=0; i<4; i++)
       modules[i] = SwerveModuleState.optimize(modules[i], new Rotation2d(getRotatorEncoderPosition((i&1)==0, i>1)));
 
-    leftFrontMotor.set(ControlMode.Velocity, modules[0].speedMetersPerSecond/(10 * METERS_PER_DEGREE));
-    leftBackMotor.set(ControlMode.Velocity, modules[1].speedMetersPerSecond/(10 * METERS_PER_DEGREE));
-    rightFrontMotor.set(ControlMode.Velocity, modules[2].speedMetersPerSecond/(10 * METERS_PER_DEGREE));
-    rightBackMotor.set(ControlMode.Velocity, modules[3].speedMetersPerSecond/(10 * METERS_PER_DEGREE));
+    leftFrontMotor.set(ControlMode.Velocity, modules[0].speedMetersPerSecond/(10 * METERS_PER_TICKS));
+    leftBackMotor.set(ControlMode.Velocity, modules[1].speedMetersPerSecond/(10 * METERS_PER_TICKS));
+    rightFrontMotor.set(ControlMode.Velocity, modules[2].speedMetersPerSecond/(10 * METERS_PER_TICKS));
+    rightBackMotor.set(ControlMode.Velocity, modules[3].speedMetersPerSecond/(10 * METERS_PER_TICKS));
 
     leftFrontRotatorMotor.set(ControlMode.Position, modules[0].angle.getDegrees());
     leftBackRotatorMotor.set(ControlMode.Position, modules[1].angle.getDegrees());
@@ -454,23 +456,23 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     if (useLeft)
     {
       if (useBack){
-        SmartDashboard.putNumber("V_Back_Left", leftBackMotor.getSelectedSensorVelocity(ENCODER_PORT)*METERS_PER_DEGREE);
-        return leftBackMotor.getSelectedSensorVelocity(ENCODER_PORT)*METERS_PER_DEGREE;
+        SmartDashboard.putNumber("V_Back_Left", leftBackMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS);
+        return leftBackMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS;
       }
       else{
-        SmartDashboard.putNumber("V_Front_Left", leftFrontMotor.getSelectedSensorVelocity(ENCODER_PORT)*METERS_PER_DEGREE);
-        return leftFrontMotor.getSelectedSensorVelocity(ENCODER_PORT)*METERS_PER_DEGREE;
+        SmartDashboard.putNumber("V_Front_Left", leftFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS);
+        return leftFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS;
       }
     }
     else
     {
       if (useBack){
-        SmartDashboard.putNumber("V_Back_Right", rightBackMotor.getSelectedSensorVelocity(ENCODER_PORT)*METERS_PER_DEGREE);
-        return rightBackMotor.getSelectedSensorVelocity(ENCODER_PORT)*METERS_PER_DEGREE;
+        SmartDashboard.putNumber("V_Back_Right", rightBackMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS);
+        return rightBackMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS;
       }
       else{
-        SmartDashboard.putNumber("V_Front_Right", rightFrontMotor.getSelectedSensorVelocity(ENCODER_PORT)*METERS_PER_DEGREE);
-        return rightFrontMotor.getSelectedSensorVelocity(ENCODER_PORT)*METERS_PER_DEGREE;
+        SmartDashboard.putNumber("V_Front_Right", rightFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS);
+        return rightFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS;
       }
     }
   }

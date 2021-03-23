@@ -48,11 +48,7 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   private static final int RIGHT_FRONT_MOTOR_ROTATOR_PORT = 6;
   private static final int RIGHT_BACK_MOTOR_ROTATOR_PORT = 1;
 
-  private static final int LEFT_FRONT_ENCODER_PORT = 0; // TODO: get CANCoder ports
-  private static final int LEFT_BACK_ENCODER_PORT = 0;
-  private static final int RIGHT_FRONT_ENCODER_PORT = 0;
-  private static final int RIGHT_BACK_ENCODER_PORT = 0;
-  private static final int LEFT_FRONT_ENCODER_ROTATOR_PORT = 0;
+  private static final int LEFT_FRONT_ENCODER_ROTATOR_PORT = 0; // TODO: Get CANCoder ports
   private static final int LEFT_BACK_ENCODER_ROTATOR_PORT = 0;
   private static final int RIGHT_FRONT_ENCODER_ROTATOR_PORT = 0;
   private static final int RIGHT_BACK_ENCODER_ROTATOR_PORT = 0;
@@ -69,7 +65,7 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   private static final boolean RIGHT_FRONT_MOTOR_ROTATOR_INVERTED = false;
   private static final boolean RIGHT_BACK_MOTOR_ROTATOR_INVERTED = false;
  
-  private static final boolean LEFT_FRONT_MOTOR_SENSOR_PHASE = false;
+  private static final boolean LEFT_FRONT_MOTOR_SENSOR_PHASE = false; // TODO: Remove if sensor phase is correct
   private static final boolean RIGHT_FRONT_MOTOR_SENSOR_PHASE = false;
   private static final boolean LEFT_BACK_MOTOR_SENSOR_PHASE = false;
   private static final boolean RIGHT_BACK_MOTOR_SENSOR_PHASE = false;
@@ -97,11 +93,7 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     , rightFrontRotatorMotor = new WPI_TalonFX(RIGHT_FRONT_MOTOR_ROTATOR_PORT)
     , rightBackRotatorMotor = new WPI_TalonFX(RIGHT_BACK_MOTOR_ROTATOR_PORT);
   
-    private static final CANCoder leftFrontEncoder = new CANCoder(LEFT_FRONT_ENCODER_PORT)
-      , leftBackEncoder = new CANCoder(LEFT_BACK_ENCODER_PORT)
-      , rightFrontEncoder = new CANCoder(RIGHT_FRONT_ENCODER_PORT)
-      , rightBackEncoder = new CANCoder(RIGHT_BACK_ENCODER_PORT)
-      , leftFrontRotatorEncoder = new CANCoder(LEFT_FRONT_ENCODER_ROTATOR_PORT)
+    private static final CANCoder leftFrontRotatorEncoder = new CANCoder(LEFT_FRONT_ENCODER_ROTATOR_PORT)
       , leftBackRotatorEncoder = new CANCoder(LEFT_BACK_ENCODER_ROTATOR_PORT)
       , rightFrontRotatorEncoder = new CANCoder(RIGHT_FRONT_ENCODER_ROTATOR_PORT)
       , rightBackRotatorEncoder = new CANCoder(RIGHT_BACK_ENCODER_ROTATOR_PORT);
@@ -157,10 +149,10 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     rightFrontRotatorEncoder.configMagnetOffset(RIGHT_FRONT_ENCODER_DEGREES_OFFSET);
     rightBackRotatorEncoder.configMagnetOffset(RIGHT_BACK_ENCODER_DEGREES_OFFSET);
 
-    leftFrontEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
-    leftBackEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
-    rightFrontEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
-    rightBackEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+    leftFrontRotatorEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+    leftBackRotatorEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+    rightFrontRotatorEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+    rightBackRotatorEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
 
     // TalonFX configuration
     rightFrontMotor.setInverted(RIGHT_FRONT_MOTOR_INVERTED);
@@ -228,25 +220,25 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     leftBackMotor.selectProfileSlot(MAIN_MOTOR_SLOT_IDX, MAIN_MOTOR_PID_IDX);
     rightBackMotor.selectProfileSlot(MAIN_MOTOR_SLOT_IDX, MAIN_MOTOR_PID_IDX);
 
-    leftFrontMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
-    rightFrontMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
-    leftBackMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
-    rightBackMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
-
     leftFrontRotatorMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
     leftBackRotatorMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
     rightBackRotatorMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
     rightFrontRotatorMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
-
-    leftFrontMotor.configRemoteFeedbackFilter(leftFrontEncoder, 0);
-    leftBackMotor.configRemoteFeedbackFilter(leftBackEncoder, 0);
-    rightFrontMotor.configRemoteFeedbackFilter(rightFrontEncoder, 0);
-    rightBackMotor.configRemoteFeedbackFilter(rightBackEncoder, 0);
     
     leftFrontRotatorMotor.configRemoteFeedbackFilter(leftFrontRotatorEncoder, 0);
     leftBackRotatorMotor.configRemoteFeedbackFilter(leftBackRotatorEncoder, 0);
     rightFrontRotatorMotor.configRemoteFeedbackFilter(rightFrontRotatorEncoder, 0);
     rightBackRotatorMotor.configRemoteFeedbackFilter(rightBackRotatorEncoder, 0);
+
+    leftFrontMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+    rightFrontMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+    leftBackMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+    rightBackMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+
+    leftFrontMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
+    leftBackMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
+    rightFrontMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
+    rightBackMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
   }
 
   public SwerveDriveSubsystem()

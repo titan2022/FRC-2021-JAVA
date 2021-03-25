@@ -27,7 +27,6 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   public static final double WHEEL_RADIUS = Units.inchesToMeters(2); // 0.0508; // meters (2 in)
   public static final int INTEGRATED_ENCODER_TICKS = 2048;
   public static final double GEAR_RATIO = 6.86;
-  public static final double METERS_PER_DEGREE = WHEEL_RADIUS * 2 * Math.PI / 360 / GEAR_RATIO;
   public static final double METERS_PER_TICKS = WHEEL_RADIUS * 2 * Math.PI / INTEGRATED_ENCODER_TICKS / GEAR_RATIO;
 
   // Rotator Encoder Offsets
@@ -388,22 +387,22 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     if (useLeft)
     {
       if (useBack){
-        SmartDashboard.putNumber("T_Back_Left", leftBackMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_DEGREE);
+        SmartDashboard.putNumber("T_Back_Left", leftBackMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICKS);
         return leftBackMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
       else{
-        SmartDashboard.putNumber("T_Front_Left", leftFrontMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_DEGREE);
+        SmartDashboard.putNumber("T_Front_Left", leftFrontMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICKS);
         return leftFrontMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
     }
     else
     {
       if (useBack){
-        SmartDashboard.putNumber("_Back_Right", rightBackMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_DEGREE);
+        SmartDashboard.putNumber("_Back_Right", rightBackMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICKS);
         return rightBackMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
       else{
-        SmartDashboard.putNumber("T_Front_Right", rightFrontMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_DEGREE);
+        SmartDashboard.putNumber("T_Front_Right", rightFrontMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICKS);
         return rightFrontMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
     }

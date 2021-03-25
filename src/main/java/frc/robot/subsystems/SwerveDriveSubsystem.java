@@ -50,10 +50,10 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   private static final int RIGHT_FRONT_MOTOR_ROTATOR_PORT = 6;
   private static final int RIGHT_BACK_MOTOR_ROTATOR_PORT = 1;
 
-  private static final int LEFT_FRONT_ENCODER_ROTATOR_PORT = 0; // TODO: Get CANCoder ports
-  private static final int LEFT_BACK_ENCODER_ROTATOR_PORT = 0;
-  private static final int RIGHT_FRONT_ENCODER_ROTATOR_PORT = 0;
-  private static final int RIGHT_BACK_ENCODER_ROTATOR_PORT = 0;
+  private static final int LEFT_FRONT_ENCODER_ROTATOR_PORT = 11; // TODO: Get CANCoder ports
+  private static final int LEFT_BACK_ENCODER_ROTATOR_PORT = 8;
+  private static final int RIGHT_FRONT_ENCODER_ROTATOR_PORT = 10;
+  private static final int RIGHT_BACK_ENCODER_ROTATOR_PORT = 9;
 
   private static final int ENCODER_PORT = 0;
 

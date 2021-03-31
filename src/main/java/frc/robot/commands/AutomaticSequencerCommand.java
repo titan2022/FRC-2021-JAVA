@@ -13,5 +13,11 @@ public class AutomaticSequencerCommand extends CommandBase{
         
     }
     
-    
+    public void end(boolean interrupted){
+
+    }
+
+    public boolean isFinished(){
+        return true;
+    }
 }

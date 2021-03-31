@@ -1,8 +1,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.SequencerSubsystem;
 
 public class AutomaticSequencerCommand extends CommandBase{
+    private static SequencerSubsystem SequencerSubsystem;
+    public AutomaticSequencerCommand(SequencerSubsystem sequencerSubsystem){
+        addRequirements(sequencerSubsystem);
+        SequencerSubsystem = sequencerSubsystem;
+    }
+
+
 
     public void initialize()
     {
@@ -17,7 +25,8 @@ public class AutomaticSequencerCommand extends CommandBase{
 
     }
 
+    @Override
     public boolean isFinished(){
-        return true;
+        return false;
     }
 }

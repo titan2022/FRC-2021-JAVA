@@ -10,11 +10,16 @@ public class AutomaticSequencerCommand extends CommandBase{
         SequencerSubsystem = sequencerSubsystem;
     }
 
+    public void sequencerLimit(int numBalls){
+
+    }
+
     
 
 
     public void initialize()
     {
+        System.out.println("Automatic Sequencer Command Started")
 
     }
 

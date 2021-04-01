@@ -10,6 +10,7 @@ public class AutomaticSequencerCommand extends CommandBase{
         SequencerSubsystem = sequencerSubsystem;
     }
 
+    
 
 
     public void initialize()

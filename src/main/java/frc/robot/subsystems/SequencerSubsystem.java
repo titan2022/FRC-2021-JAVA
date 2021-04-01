@@ -60,13 +60,12 @@ public class SequencerSubsystem extends SubsystemBase{
 
   public void setFactoryMotorConfig()
   {
-    //rotator.configFactoryDefault();
     sequencer.configFactoryDefault();
   }
 
-  public void setOutput()
+  public void setOutput(double velocity)
   {
-      
+   sequencer.set(ControlMode.Velocity,velocity*TICKS_PER_METER);   
   }
 
 }

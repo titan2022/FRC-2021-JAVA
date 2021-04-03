@@ -44,6 +44,9 @@ public class VHopperSubsystem extends SubsystemBase {
 
   
   public VHopperSubsystem() {
+    MotorB.configFactoryDefault();
+    MotorTL.configFactoryDefault();
+    MotorTR.configFactoryDefault();
     MotorTL.follow(MotorTR);
   }
 

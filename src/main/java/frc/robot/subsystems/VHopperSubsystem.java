@@ -84,6 +84,9 @@ public class VHopperSubsystem extends SubsystemBase {
     MotorB.selectProfileSlot(SLOT_IDX, PID_IDX);
     MotorTL.selectProfileSlot(SLOT_IDX, PID_IDX);
     MotorTR.selectProfileSlot(SLOT_IDX, PID_IDX);
+    MotorB.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+    MotorTL.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+    MotorTR.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
 
     MotorTL.follow(MotorTR);
   }

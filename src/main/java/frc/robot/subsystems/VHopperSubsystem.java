@@ -25,6 +25,9 @@ public class VHopperSubsystem extends SubsystemBase {
 
   public static final int MAX_OUTPUT = 0; //TODO determine MAX_OUTPUT
   
+  public static final boolean MOTOR_B_INVERTED = false;
+  public static final boolean MOTOR_TL_INVERTED = false;
+  public static final boolean MOTOR_TR_INVERTED = false;
 
   public static final double BELT_LENGTH = 0.0;
   public static final double INCLINE_ANGLE = 0.0;
@@ -52,6 +55,11 @@ public class VHopperSubsystem extends SubsystemBase {
       MotorTL.configAllSettings(userConfig);
       MotorTR.configAllSettings(userConfig);
     }
+
+    MotorB.setInverted(MOTOR_B_INVERTED);
+    MotorTL.setInverted(MOTOR_TL_INVERTED);
+    MotorTR.setInverted(MOTOR_TR_INVERTED);
+
     MotorTL.follow(MotorTR);
   }
   public VHopperSubsystem(){

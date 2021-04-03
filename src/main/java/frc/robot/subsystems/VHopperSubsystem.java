@@ -12,7 +12,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 
@@ -43,11 +43,19 @@ public class VHopperSubsystem extends SubsystemBase {
   , MotorTR = new WPI_TalonSRX(MOTOR_TR_PORT);
 
   
-  public VHopperSubsystem() {
+  public VHopperSubsystem(TalonSRXConfiguration userConfig) {
     MotorB.configFactoryDefault();
     MotorTL.configFactoryDefault();
     MotorTR.configFactoryDefault();
+    if(userConfig != null){
+      MotorB.configAllSettings(userConfig);
+      MotorTL.configAllSettings(userConfig);
+      MotorTR.configAllSettings(userConfig);
+    }
     MotorTL.follow(MotorTR);
+  }
+  public VHopperSubsystem(){
+    this(null);
   }
 
 

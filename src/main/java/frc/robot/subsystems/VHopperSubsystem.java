@@ -29,22 +29,22 @@ public class VHopperSubsystem extends SubsystemBase {
   public static final int MOTOR_TL_PORT = 6; //Motor 2: top left of conveyor
   public static final int MOTOR_TR_PORT = 7; //Motor 3: top right of conveyor
 
-  public static final double WHEEL_RADIUS = 0.01;  // meters
+  public static final double WHEEL_RADIUS = 0.01;  // TODO: get correct value in meters
   public static final double TICKS_PER_METER = 2048 / (WHEEL_RADIUS * 2 * Math.PI);
 
-  public static final int MAX_OUTPUT = 0; //TODO determine MAX_OUTPUT
+  public static final int MAX_OUTPUT = 0; //TODO determine MAX_OUTPUT or remove
   private static final int CONTINUOUS_CURRENT_LIMIT = 0;
   private static final int PEAK_CURRENT_LIMIT = 0;
   private static final SupplyCurrentLimitConfiguration supplyCurrentLimit = new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0);
   private static final StatorCurrentLimitConfiguration statorCurrentLimit = new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0);
   
-  public static final boolean MOTOR_B_INVERTED = false;
-  public static final boolean MOTOR_TL_INVERTED = false;
-  public static final boolean MOTOR_TR_INVERTED = false;
+  private static final boolean MOTOR_B_INVERTED = false;
+  private static final boolean MOTOR_TL_INVERTED = false;
+  private static final boolean MOTOR_TR_INVERTED = false;
   
-  public static final boolean MOTOR_B_SENSOR_PHASE = false;
-  public static final boolean MOTOR_TL_SENSOR_PHASE = false;
-  public static final boolean MOTOR_TR_SENSOR_PHASE = false;
+  private static final boolean MOTOR_B_SENSOR_PHASE = false;
+  private static final boolean MOTOR_TL_SENSOR_PHASE = false;
+  private static final boolean MOTOR_TR_SENSOR_PHASE = false;
 
   private static final int SLOT_IDX = 0;
   private static final int PID_IDX = 0;
@@ -78,9 +78,9 @@ public class VHopperSubsystem extends SubsystemBase {
     MotorB.setInverted(MOTOR_B_INVERTED);
     MotorTL.setInverted(MOTOR_TL_INVERTED);
     MotorTR.setInverted(MOTOR_TR_INVERTED);
-    MotorB.setSensorPhase(MOTOR_B_INVERTED);
-    MotorTL.setSensorPhase(MOTOR_TL_INVERTED);
-    MotorTR.setSensorPhase(MOTOR_TR_INVERTED);
+    MotorB.setSensorPhase(MOTOR_B_SENSOR_PHASE);
+    MotorTL.setSensorPhase(MOTOR_TL_SENSOR_PHASE);
+    MotorTR.setSensorPhase(MOTOR_TR_SENSOR_PHASE);
     MotorB.configSupplyCurrentLimit(supplyCurrentLimit);
     MotorTL.configSupplyCurrentLimit(supplyCurrentLimit);
     MotorTR.configSupplyCurrentLimit(supplyCurrentLimit);

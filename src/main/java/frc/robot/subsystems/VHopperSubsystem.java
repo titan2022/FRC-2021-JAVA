@@ -12,6 +12,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -24,6 +26,10 @@ public class VHopperSubsystem extends SubsystemBase {
   public static final int MOTOR_TR_PORT = 7; //Motor 3: top right of conveyor
 
   public static final int MAX_OUTPUT = 0; //TODO determine MAX_OUTPUT
+  private static final int CONTINUOUS_CURRENT_LIMIT = 0;
+  private static final int PEAK_CURRENT_LIMIT = 0;
+  private static final SupplyCurrentLimitConfiguration supplyCurrentLimit = new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0);
+  private static final StatorCurrentLimitConfiguration statorCurrentLimit = new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0);
   
   public static final boolean MOTOR_B_INVERTED = false;
   public static final boolean MOTOR_TL_INVERTED = false;
@@ -65,6 +71,12 @@ public class VHopperSubsystem extends SubsystemBase {
     MotorB.setSensorPhase(MOTOR_B_INVERTED);
     MotorTL.setSensorPhase(MOTOR_TL_INVERTED);
     MotorTR.setSensorPhase(MOTOR_TR_INVERTED);
+    MotorB.configSupplyCurrentLimit(supplyCurrentLimit);
+    MotorTL.configSupplyCurrentLimit(supplyCurrentLimit);
+    MotorTR.configSupplyCurrentLimit(supplyCurrentLimit);
+    MotorB.configStatorCurrentLimit(statorCurrentLimit);
+    MotorTL.configStatorCurrentLimit(statorCurrentLimit);
+    MotorTR.configStatorCurrentLimit(statorCurrentLimit);
 
     MotorTL.follow(MotorTR);
   }

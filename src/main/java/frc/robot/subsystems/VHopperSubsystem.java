@@ -10,6 +10,9 @@ package frc.robot.subsystems;
 //import frc.robot.subsystems.sim.PhysicsSim;
 //import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.ResourceBundle.Control;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
@@ -25,6 +28,9 @@ public class VHopperSubsystem extends SubsystemBase {
   public static final int MOTOR_B_PORT = 5; //Motor 1: bottom of conveyor
   public static final int MOTOR_TL_PORT = 6; //Motor 2: top left of conveyor
   public static final int MOTOR_TR_PORT = 7; //Motor 3: top right of conveyor
+
+  public static final double WHEEL_RADIUS = 0.01;  // meters
+  public static final double TICKS_PER_METER = 2048 / (WHEEL_RADIUS * 2 * Math.PI);
 
   public static final int MAX_OUTPUT = 0; //TODO determine MAX_OUTPUT
   private static final int CONTINUOUS_CURRENT_LIMIT = 0;
@@ -95,18 +101,17 @@ public class VHopperSubsystem extends SubsystemBase {
   }
 
 
-    /**
-   * Sets each of the motor outputs
-   * 
+  /**
+   * Sets each of the motor speeds
    *
-   * @param bottomOutput  bottom motor output value 
-   * @param topOutput  top motors' output value
+   * @param bottomOutput  bottom motor speed in meters per second.
+   * @param topOutput  top motors' speed in meters per second.
    */
-  public void setMotorOutputs(double bottomOutput, double topOutput) {
+  public void setOutputs(double bottomSpeed, double topSpeed) {
     //TODO: determine MAX_OUTPUT & how the power distribution will work
-    
-    if (bottomOutput < MAX_OUTPUT) MotorB.set(bottomOutput);
-    if (topOutput < MAX_OUTPUT) MotorTR.set(topOutput);
+    //TODO: add any required checks
+    MotorB.set(ControlMode.Velocity, bottomSpeed*TICKS_PER_METER/10);
+    MotorTR.set(ControlMode.Velocity, topSpeed*TICKS_PER_METER/10);
     
   }
 

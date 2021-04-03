@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -38,6 +39,9 @@ public class VHopperSubsystem extends SubsystemBase {
   public static final boolean MOTOR_B_SENSOR_PHASE = false;
   public static final boolean MOTOR_TL_SENSOR_PHASE = false;
   public static final boolean MOTOR_TR_SENSOR_PHASE = false;
+
+  private static final int SLOT_IDX = 0;
+  private static final int PID_IDX = 0;
 
   public static final double BELT_LENGTH = 0.0;
   public static final double INCLINE_ANGLE = 0.0;
@@ -77,6 +81,9 @@ public class VHopperSubsystem extends SubsystemBase {
     MotorB.configStatorCurrentLimit(statorCurrentLimit);
     MotorTL.configStatorCurrentLimit(statorCurrentLimit);
     MotorTR.configStatorCurrentLimit(statorCurrentLimit);
+    MotorB.selectProfileSlot(SLOT_IDX, PID_IDX);
+    MotorTL.selectProfileSlot(SLOT_IDX, PID_IDX);
+    MotorTR.selectProfileSlot(SLOT_IDX, PID_IDX);
 
     MotorTL.follow(MotorTR);
   }

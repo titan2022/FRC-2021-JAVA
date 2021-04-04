@@ -37,7 +37,7 @@ public class DifferentialDriveContainer implements RobotContainer {
         // Initialize Subsystems
         diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), simulated);
         navSub = new NavigationSubsystem(diffDriveSub);
-        wristSub = new WristSubsystem(getWristTalonConfig());
+        wristSub = new WristSubsystem();
         
 
 
@@ -101,36 +101,6 @@ public class DifferentialDriveContainer implements RobotContainer {
     {
         TalonSRXConfiguration talon = new TalonSRXConfiguration();
         // Add configs here:
-
-        return talon;
-    }
-    /**
-     * @return
-     */
-    public TalonSRXConfiguration getWristTalonConfig() {
-        TalonSRXConfiguration talon = new TalonSRXConfiguration();
-        // Add configs here:
-        // Position Control PID slot
-        talon.slot0.kP = 504.000000;
-        talon.slot0.kI = 5.600000;
-        talon.slot0.kD = 0.200000;
-        talon.slot0.kF = 19.300000;
-        talon.slot0.integralZone = 900;
-        talon.slot0.allowableClosedloopError = 217;
-        talon.slot0.maxIntegralAccumulator = 254.000000;
-        talon.slot0.closedLoopPeakOutput = 0.869990;
-        talon.slot0.closedLoopPeriod = 33;
-
-        // Motion Control PID slot
-        talon.slot1.kP = 504.000000;
-        talon.slot1.kI = 5.600000;
-        talon.slot1.kD = 0.200000;
-        talon.slot1.kF = 19.300000;
-        talon.slot1.integralZone = 900;
-        talon.slot1.allowableClosedloopError = 217;
-        talon.slot1.maxIntegralAccumulator = 254.000000;
-        talon.slot1.closedLoopPeakOutput = 0.869990;
-        talon.slot1.closedLoopPeriod = 33;
 
         return talon;
     }

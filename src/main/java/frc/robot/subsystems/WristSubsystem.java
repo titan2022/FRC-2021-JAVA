@@ -7,161 +7,45 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
+
 /**
  * @author Irene
  */
 public class WristSubsystem extends SubsystemBase {
-    
-    public static final int PRIMARY_WRIST_PORT = 3;
-    public static final int SECONDARY_WRIST_PORT = 1;
+    private final int PCM_PORT = 62;
 
-    public static final boolean PRIMARY_WRIST_PORT_INVERTED = false;
-    public static final boolean SECONARDY_WRIST_PORT_INVERTED = false;
-
-    private static final boolean PRIMARY_WRIST_SENSOR_PHASE = false;
-    
-    private static final double ANGLE_LOWER_LIMIT = 10; // TODO: Get from DI Team
-    private static final double ANGLE_UPPER_LIMIT = 60; // TODO: Get from DI Team
-    private static final int PEAK_CURRENT_LIMIT = 60;
-    private static final int CONTINUOUS_CURRENT_LIMIT = 50;
-    public static final double ENCODER_TICKS = 4096; 
-    public static final double ANGLE_TO_TICK =  (1 / 360) * ENCODER_TICKS;
-
-    public double goalAngle;
-
-    private final DoubleSolenoid doubleSol = new DoubleSolenoid(1,2);
-    // PID Slots and IDx
-    private static final int PID_SLOT = 0;
-    private static final int PID_X = 0;
-
-    private static final WPI_TalonSRX wrist = new WPI_TalonSRX(PRIMARY_WRIST_PORT);;
-    private static final WPI_TalonSRX followingWrist = new WPI_TalonSRX(SECONDARY_WRIST_PORT); //like a left wrist
-
-    
-    public void setMotorFactoryConfig()
-    {
-        wrist.configFactoryDefault();
-        followingWrist.configFactoryDefault();
-    }
+    private final DoubleSolenoid doubleSol = new DoubleSolenoid(PCM_PORT, 1,2); // TODO: figure out the PCM port and channels 
 
     /**
      * @param motorConfig - specific configurations for wrist 
      */
-    public WristSubsystem(TalonSRXConfiguration motorConfig) {
-        setMotorFactoryConfig();
-
-        if(motorConfig != null)
-        {
-            wrist.configAllSettings(motorConfig);
-            followingWrist.configAllSettings(motorConfig);
-        }
-
-        // Motor configs
-        wrist.setSensorPhase(PRIMARY_WRIST_SENSOR_PHASE);
-        followingWrist.setSensorPhase(PRIMARY_WRIST_SENSOR_PHASE);
-
-        wrist.setInverted(PRIMARY_WRIST_PORT_INVERTED);
-        followingWrist.setInverted(PRIMARY_WRIST_PORT_INVERTED);
-
-        wrist.configContinuousCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
-        wrist.configPeakCurrentLimit(PEAK_CURRENT_LIMIT);
-        wrist.configPeakCurrentDuration(10); 
-        wrist.enableCurrentLimit(true);
-
-        followingWrist.follow(wrist);
-        
-        wrist.selectProfileSlot(PID_SLOT, PID_X);
-        doubleSol.set(kOff);
-
-        //Encoder configs
-        wrist.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);        
+    public WristSubsystem() {
+        doubleSol.set(DoubleSolenoid.Value.kOff);       
     }
-
-    public WristSubsystem()
-    {
-        this(null);
-    }
-
+    
     /**
-     * @param angle desired angle to turn (in degrees)
+     * Extends scissor intake
      */
-    public void setWristPosition(double angle)
-    {
-        wrist.set(ControlMode.MotionProfile, angle *  ANGLE_TO_TICK);
-        goalAngle=angle;
-    }
-    /**
-     * Moves wrist to 90 degrees
-     */
-    //public void goUp() {
-      //  setWristPosition(90);
-    //}
-    /**
-     * Moves wrist to 0 degrees
-     */
-    //public void goDown() {
-      //  setWristPosition(0);
-    //}
-    /**
-     * Turns on the solenoid
-     */
-    public void turnOn() {
-        doubleSol.set(kForward);
-
-    }
-    /**
-     * turns off the solenoid
-     */
-    public void turnOff() {
-        doubleSol.set(kReverse);
-    }
-    /**
-     * 
-     * @param percentOut desired percent output (between -1 and 1)
-     */
-    public void setPercentOutput(double percentOut) {
-        
-        wrist.set(ControlMode.PercentOutput, percentOut);
-    }
-
-    /**
-     * 
-     * @return current angle of wrist in degrees
-     */
-    public double getWristAngle() {
-        return (wrist.getSelectedSensorPosition()/ENCODER_TICKS)*360;
-    }
-    /**
-     * checks if the wrist is within angle limits, if not within limits, sets wrist to be within limits
-     */
-    public void checkWristLimits() {
-        if (getWristAngle() < ANGLE_LOWER_LIMIT) {
-            setWristPosition(ANGLE_LOWER_LIMIT);
-        }
-                
-        if (getWristAngle() > ANGLE_UPPER_LIMIT) {
-            setWristPosition(ANGLE_UPPER_LIMIT);
-        }
-    }
     public void extend() {
-
+        doubleSol.set(DoubleSolenoid.Value.kForward);
     }
-    public void retract() {
 
+    /**
+     * Retracts the scissor intake
+     */
+    public void retract() {
+        doubleSol.set(DoubleSolenoid.Value.kReverse);
     }
     /**
-     * moves to neutral/down position, stops the wrist
+     * Releases the pressure from the pistons
      */
     public void stop() {
-        wrist.set(ControlMode.PercentOutput, 0);
+        doubleSol.set(DoubleSolenoid.Value.kOff);
     }
+
     @Override
     public void periodic()
     {
-        checkWristLimits();
-        if (getWristAngle()==goalAngle) {
-            wrist.setNeutralMode(NeutralMode.Brake);
-        }
+
     }
 }

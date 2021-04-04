@@ -29,6 +29,15 @@ public class XboxMap {
   public static boolean toggleBrakes() {
     return controller.getBumperPressed(Hand.kRight);
   }
+
+  //wrist controls
+  public static boolean toggleWrist() {
+    return controller.getBumperPressed(Hand.kLeft);
+  }
+
+  public static double scissorSpeed() {
+    return controller.getTriggerAxis(Hand.kRight);
+  }
     
   public static void startRumble() {
 	  controller.setRumble(RumbleType.kLeftRumble, RUMBLE_INTENSITY);

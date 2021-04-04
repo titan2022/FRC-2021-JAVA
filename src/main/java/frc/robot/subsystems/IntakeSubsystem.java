@@ -6,7 +6,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 /**
- * @author Irene
+ * 
  */
 public class IntakeSubsystem extends SubsystemBase {
     private final int PCM_PORT = 62;

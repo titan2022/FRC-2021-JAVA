@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.config.XboxMap;
 
 /**
- * @author Irene
+ * 
  */
 public class ManualWristCommand extends CommandBase {
     private IntakeSubsystem intakeSub; 

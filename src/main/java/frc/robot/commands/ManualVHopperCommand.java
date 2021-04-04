@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.XboxMap;
+import frc.robot.config.XboxMap;
 import frc.robot.subsystems.VHopperSubsystem;
 
 public class ManualVHopperCommand extends CommandBase {

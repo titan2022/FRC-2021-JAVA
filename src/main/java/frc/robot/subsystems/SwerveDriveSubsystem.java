@@ -117,7 +117,7 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   private static final Translation2d leftBackPosition = new Translation2d(-ROBOT_TRACK_WIDTH/2, -ROBOT_LENGTH/2);
   private static final Translation2d rightFrontPosition = new Translation2d(ROBOT_TRACK_WIDTH/2, ROBOT_LENGTH/2);
   private static final Translation2d rightBackPosition = new Translation2d(ROBOT_TRACK_WIDTH/2, -ROBOT_LENGTH/2);
-  private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFrontPosition, leftBackPosition, rightFrontPosition, rightBackPosition);
+  public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFrontPosition, leftBackPosition, rightFrontPosition, rightBackPosition);
 
   /**
    * Creates the swerve drive subsystem
@@ -502,10 +502,5 @@ public class SwerveDriveSubsystem implements DriveSubsystem
         new Rotation2d(getRotatorEncoderPosition(false, false)));
     
     return new SwerveModuleState[]{leftFront, leftBack, rightFront, rightBack};
-  }
-
-  public SwerveDriveKinematics getKinematics()
-  {
-    return kinematics;
   }
 }

@@ -31,8 +31,7 @@ public class SwerveDriveOdometryCommand extends CommandBase {
   public SwerveDriveOdometryCommand(SwerveDriveSubsystem driveSub, NavigationSubsystem navSub) {
     this.driveSub = driveSub;
     this.navSub = navSub;
-    SwerveDriveKinematics kinematics = new SwerveDriveKinematics();
-    odometry = new SwerveDriveOdometry(driveSub.getKinematics(), navSub.getHeadingRotation2d());
+    odometry = new SwerveDriveOdometry(SwerveDriveSubsystem.kinematics, navSub.getHeadingRotation2d());
     useFieldDisplay = false;
   }
 

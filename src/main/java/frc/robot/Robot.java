@@ -1,22 +1,11 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2019 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.NavigationSubsystem;
-import frc.robot.path.dstar.DStarDemoCommand;
-import frc.robot.path.dstar.DStarTester;
+
+import frc.robot.config.DifferentialDriveContainer;
+import frc.robot.config.RobotContainer;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -25,15 +14,17 @@ import frc.robot.path.dstar.DStarTester;
  * project.
  */
 public class Robot extends TimedRobot {
-  public static OI oi;
-  private Command m_autonomousCommand;
+  private final RobotContainer robotContainer;
 
-  private final XboxController m_controller = new XboxController(0);
-  private final DriveSubsystem driveSub = new DriveSubsystem(true);
-  private final NavigationSubsystem nav = new NavigationSubsystem(driveSub);
-  
-  private RobotContainer m_robotContainer;
+  private final Command autoCommandEntryPoint, teleopCommandEntryPoint;
 
+  public Robot()
+  {
+    super(.02); // Default period is .02 seconds = 50 hz
+    robotContainer = new DifferentialDriveContainer(isSimulation());
+    autoCommandEntryPoint = robotContainer.getAutonomousCommand();
+    teleopCommandEntryPoint = robotContainer.getTeleopCommand();
+  }
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -42,7 +33,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    
   }
 
   /**
@@ -58,8 +49,6 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    driveSub.periodic();
-    nav.periodic();
     CommandScheduler.getInstance().run();
   }
 
@@ -79,14 +68,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    if (autoCommandEntryPoint != null) {
+      autoCommandEntryPoint.schedule();
     }
-    new DStarTester().schedule();
-    new DStarDemoCommand().schedule();
   }
 
   /**
@@ -102,9 +87,10 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    if (autoCommandEntryPoint != null) {
+      autoCommandEntryPoint.cancel(); //TODO: figure out how to cancel all commands that are recursive.
     }
+    teleopCommandEntryPoint.schedule();
   }
 
   /**
@@ -112,7 +98,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    driveSub.setOutput(ControlMode.PercentOutput, m_controller.getRawAxis(0), m_controller.getRawAxis(1));
+    
   }
 
   @Override
@@ -126,6 +112,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    
   }
 
   @Override
@@ -138,7 +125,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void simulationPeriodic() {
-    nav.simulationPeriodic();
-    driveSub.simulationPeriodic();
+
   }
 }

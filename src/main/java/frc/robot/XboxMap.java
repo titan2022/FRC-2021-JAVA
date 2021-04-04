@@ -27,6 +27,10 @@ public class XboxMap {
   public static boolean toggleBrakes() {
     return controller.getBumperPressed(Hand.kRight);
   }
+
+  public static double hopperPct() {
+    return controller.getTriggerAxis(Hand.kLeft);
+  }
     
   public static void startRumble() {
 	  controller.setRumble(RumbleType.kLeftRumble, RUMBLE_INTENSITY);

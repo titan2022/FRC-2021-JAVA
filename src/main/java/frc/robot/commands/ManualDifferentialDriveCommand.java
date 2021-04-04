@@ -40,7 +40,7 @@ public class ManualDifferentialDriveCommand extends CommandBase {
     }
     else { 
       DifferentialDriveSubsystem.disableBrakes();
-      DifferentialDriveSubsystem.setOutput(ControlMode.PercentOutput, XboxMap.left(), XboxMap.right());
+      DifferentialDriveSubsystem.setOutput(ControlMode.PercentOutput, XboxMap.leftWheel(), XboxMap.rightWheel());
     }
   }
 

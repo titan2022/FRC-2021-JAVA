@@ -13,8 +13,7 @@ public class ManualVHopperCommand extends CommandBase {
 
     @Override
     public void execute() {
-        double targetSpeed = XboxMap.hopperPct();
-        vhopper.setOutputs(targetSpeed);
+        vhopper.setOutputs(XboxMap.hopperPct());
     }
 
     @Override

@@ -6,19 +6,19 @@ import frc.robot.subsystems.VHopperSubsystem;
 
 public class ManualVHopperCommand extends CommandBase {
     public final VHopperSubsystem vhopper;
-    public final double fullSpeed;
 
-    public ManualVHopperCommand(VHopperSubsystem vhopper, double fullSpeed) {
-        this.vhopper = vhopper;
-        this.fullSpeed = fullSpeed;
-    }
     public ManualVHopperCommand(VHopperSubsystem vhopper) {
-        this(vhopper, 1.0);  // TODO: Replace with appropriate default value.
+        this.vhopper = vhopper;
     }
 
     @Override
     public void execute() {
         double targetSpeed = XboxMap.hopperPct();
         vhopper.setOutputs(targetSpeed);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        vhopper.stop();
     }
 }

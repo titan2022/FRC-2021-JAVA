@@ -20,8 +20,7 @@ public class XboxMap {
 
   // Driving Controls 
 	public static double left() {
-    double value = -controller.getY(Hand.kLeft);
-    return applyDeadband(value, JOYSTICK_DRIFT);
+    return leftY();
   }
 
   public static double leftX() {
@@ -30,13 +29,13 @@ public class XboxMap {
   }
 
   public static double leftY() { // TODO: fix this confusing mess of a controller configuration
-    return left();
+    double value = -controller.getY(Hand.kLeft);
+    return applyDeadband(value, JOYSTICK_DRIFT);
   }
 
     
 	public static double right() {
-    double value = -controller.getY(Hand.kRight);
-    return applyDeadband(value, ORIENTATION_LOWER_RADIUS);
+    return rightY();
   }
 
   public static double rightX() {
@@ -45,7 +44,8 @@ public class XboxMap {
   }
 
   public static double rightY() {
-    return right();
+    double value = -controller.getY(Hand.kRight);
+    return applyDeadband(value, ORIENTATION_LOWER_RADIUS);
   }
 
   public static boolean toggleBrakes() {

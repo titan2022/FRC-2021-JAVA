@@ -41,13 +41,19 @@ public class XboxMap {
   }
 
   public static double orientationX() {
-    double value = controller.getX(Hand.kRight);
-    return applyDeadband(value, ORIENTATION_LOWER_RADIUS);
+    double y = -controller.getY(Hand.kRight);
+    double x = controller.getX(Hand.kRight);
+    if(x*x + y*y < ORIENTATION_LOWER_RADIUS*ORIENTATION_LOWER_RADIUS)
+      return 0;
+    return x;
   }
 
   public static double orientationY() {
-    double value = -controller.getY(Hand.kRight);
-    return applyDeadband(value, ORIENTATION_LOWER_RADIUS);
+    double y = -controller.getY(Hand.kRight);
+    double x = controller.getX(Hand.kRight);
+    if(x*x + y*y < ORIENTATION_LOWER_RADIUS*ORIENTATION_LOWER_RADIUS)
+      return 0;
+    return x;
   }
 
   public static boolean toggleBrakes() {

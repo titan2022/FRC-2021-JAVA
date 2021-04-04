@@ -96,12 +96,12 @@ public class NavigationSubsystem extends SubsystemBase {
     return Rotation2d.fromDegrees(getHeadingDegrees());
   }
 /**
- * Gets heading in traditional (0, 2pi) math coordinates.
- * East is 0, West is pi.
+ * Gets heading in traditional (0, 2pi) math coordinates clockwise
+ * North is 0
  * @return
  */
   public double getHeadingRadians() {
-    return (2*Math.PI*(1.0/360.0)*Math.IEEEremainder(getYaw()+180, 360))+(Math.PI/2);
+    return Math.toRadians(getHeadingDegrees());
   }
 
   /**

@@ -38,12 +38,11 @@ public class SwerveDriveContainer implements RobotContainer {
         FieldDisplayCommand autoFieldDisplayCommand = new FieldDisplayCommand("Auto Field");
 
         // Initialize Teleop Commands
-        FieldDisplayCommand fieldDisplayCommand = new FieldDisplayCommand();
-        ManualSwerveDriveCommand manualDriveCommand = new ManualSwerveDriveCommand(swerveDriveSub, navSub, getPIDConfig());
+        ManualSwerveDriveCommand manualDriveCommand = new ManualSwerveDriveCommand(swerveDriveSub, navSub, getSwerveHeadingPIDConfig());
 
         // Initialize Command Groups
         autoGroup = new ParallelCommandGroup(autoFieldDisplayCommand); // These don't actually run in parallel.
-        teleopGroup = new ParallelCommandGroup(fieldDisplayCommand, manualDriveCommand);
+        teleopGroup = new ParallelCommandGroup(manualDriveCommand);
 
         // Configure the button bindings
         configureButtonBindings();
@@ -70,53 +69,60 @@ public class SwerveDriveContainer implements RobotContainer {
     }
 
     /**
-     * Method containing the talon configuration of the left side of the differential drive.
-     * @return The talon configuration of the left side of the drive.
+     * Contains a velocity based PID configuration.
+     * @return TalonFX Configuration Object
      */
     public TalonFXConfiguration getSwerveDriveTalonDirectionalConfig()
     {
         TalonFXConfiguration talon = new TalonFXConfiguration();
         // Add configs here:
-        talon.slot0.kP = 100;
-        talon.slot0.kI = 0;
-        talon.slot0.kD = 0.0;        
-        talon.slot0.kF = 0;
-        talon.slot0.integralZone = 900;
-        talon.slot0.allowableClosedloopError = 217;
-        talon.slot0.maxIntegralAccumulator = 254.000000;
-        //talon.slot0.closedLoopPeakOutput = 0.869990;
-        //talon.slot0.closedLoopPeriod = 33;
-        
-
-        return talon;
-    }
-
-    public TalonFXConfiguration getSwerveDriveTalonRotaryConfig()
-    {
-        TalonFXConfiguration talon = new TalonFXConfiguration();
-        // Add configs here:
-        talon.slot0.kP = 100;
+        talon.slot0.kP = 1;
         talon.slot0.kI = 0;
         talon.slot0.kD = 0;        
         talon.slot0.kF = 0;
         talon.slot0.integralZone = 900;
         talon.slot0.allowableClosedloopError = 217;
         talon.slot0.maxIntegralAccumulator = 254.000000;
-        //talon.slot0.closedLoopPeakOutput = 0.869990;
-        //talon.slot0.closedLoopPeriod = 33;
+        //talon.slot0.closedLoopPeakOutput = 0.869990; // Sets maximum output of the PID controller
+        //talon.slot0.closedLoopPeriod = 33; // Sets the hardware update rate of the PID controller
+        
+        return talon;
+    }
+
+    /**
+     * Contains a position based PID configuration
+     * @return TalonFX Configuration Object
+     */
+    public TalonFXConfiguration getSwerveDriveTalonRotaryConfig()
+    {
+        TalonFXConfiguration talon = new TalonFXConfiguration();
+        // Add configs here:
+        talon.slot0.kP = 1;
+        talon.slot0.kI = 0;
+        talon.slot0.kD = 0;        
+        talon.slot0.kF = 0;
+        talon.slot0.integralZone = 900;
+        talon.slot0.allowableClosedloopError = 217;
+        talon.slot0.maxIntegralAccumulator = 254.000000;
+        //talon.slot0.closedLoopPeakOutput = 0.869990; // Sets maximum output of the PID controller
+        //talon.slot0.closedLoopPeriod = 33; // Sets the hardware update rate of the PID controller
 
         return talon;
     }
 
-    public PIDConfig getPIDConfig(){
+    /**
+     * The swerve field oriented heading PID configuration
+     * @return PID configuration for {@link PIDController}
+     */
+    public PIDConfig getSwerveHeadingPIDConfig(){
         PIDConfig pidConfig = new PIDConfig();
 
-        pidConfig.kP = 504.000000;
-        pidConfig.kI = 5.600000;
-        pidConfig.kD = 0.20000;
+        pidConfig.kP = 1;//504.000000;
+        pidConfig.kI = 0;//5.600000;
+        pidConfig.kD = 0;//0.20000;
         
         pidConfig.CONTINOUS_MINIMUM = 0;
-        pidConfig.CONTINOUS_MAXIMUM = 2*Math.PI;
+        pidConfig.CONTINOUS_MAXIMUM = 2 * Math.PI;
 
         pidConfig.INTEGRATION_MIN = -0.5;
         pidConfig.INTEGRATION_MAX = 0.5;

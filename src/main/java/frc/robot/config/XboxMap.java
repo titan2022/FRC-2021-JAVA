@@ -3,14 +3,16 @@ package frc.robot.config;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  * Xbox button logic definitions
  */
 public class XboxMap {
   private static final double JOYSTICK_DRIFT = .09;
   private static final double RUMBLE_INTENSITY = 1; // [0,1]
+  
+  // Orientation Area of Effects
+  private static final double ORIENTATION_LOWER_RADIUS = .5;
 
   // Main Driver and Auxilliary Driver
   private static final XboxController controller = OI.ps4;
@@ -24,23 +26,22 @@ public class XboxMap {
 
   public static double leftX() {
     double value = controller.getX(Hand.kLeft);
-    SmartDashboard.putNumber("LeftStickX", value);
     return applyDeadband(value, JOYSTICK_DRIFT);
   }
 
-  public static double leftY() {
+  public static double leftY() { // TODO: fix this confusing mess of a controller configuration
     return left();
   }
 
     
 	public static double right() {
     double value = -controller.getY(Hand.kRight);
-    return applyDeadband(value, 0.2);
+    return applyDeadband(value, ORIENTATION_LOWER_RADIUS);
   }
 
   public static double rightX() {
     double value = controller.getX(Hand.kRight);
-    return applyDeadband(value, 0.2);
+    return applyDeadband(value, ORIENTATION_LOWER_RADIUS);
   }
 
   public static double rightY() {

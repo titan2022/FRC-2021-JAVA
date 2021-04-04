@@ -70,14 +70,6 @@ public class SwerveDriveOdometryCommand extends CommandBase {
   // Odometry Methods
 
   /**
-   * Gets current swerveDriveOdometry.
-   * @return swerve drive odometry.
-   */
-  // public SwerveDriveOdometry getOdometryCopy() {
-  //   return new SwerveDriveOdometry(getPose().getRotation(), getPose());
-  // }
-
-  /**
    * Updates swerve drive odometry.
    */
   private void updateOdometry() {

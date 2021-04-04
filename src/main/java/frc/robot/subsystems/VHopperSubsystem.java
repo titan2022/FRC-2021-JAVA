@@ -73,12 +73,12 @@ public class VHopperSubsystem extends SubsystemBase {
   /**
    * Sets each of the motor speeds
    *
-   * @param speed  The target speed in meters per second.
+   * @param speed  The target speed as a percent of the max speed.
    */
   public void setOutputs(double speed) {
     //TODO: determine MAX_OUTPUT & how the power distribution will work
     //TODO: add any required checks
-    motor.set(ControlMode.Velocity, speed*TICKS_PER_METER/10);
+    motor.set(ControlMode.PercentOutput, speed);
     
   }
 

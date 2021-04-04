@@ -39,6 +39,7 @@ public class ManualWristCommand extends CommandBase {
         else {
           wristSubsystem.retract();
         }
+        wristSubsystem.setMotorSpeed(XboxMap.scissorSpeed());
         
     }
   

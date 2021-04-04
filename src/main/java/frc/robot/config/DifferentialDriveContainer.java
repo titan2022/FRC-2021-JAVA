@@ -10,7 +10,7 @@ import frc.robot.commands.FieldDisplayCommand;
 import frc.robot.commands.ManualDifferentialDriveCommand;
 import frc.robot.subsystems.DifferentialDriveSubsystem;
 import frc.robot.subsystems.NavigationSubsystem;
-import frc.robot.subsystems.WristSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.commands.ManualWristCommand;
 
 /**
@@ -24,7 +24,7 @@ public class DifferentialDriveContainer implements RobotContainer {
     // Subsystems
     private final DifferentialDriveSubsystem diffDriveSub;
     private final NavigationSubsystem navSub;
-    private final WristSubsystem wristSub;
+    private final IntakeSubsystem intakeSub;
 
     // Command Groups
     private final ParallelCommandGroup autoGroup;
@@ -37,9 +37,7 @@ public class DifferentialDriveContainer implements RobotContainer {
         // Initialize Subsystems
         diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), simulated);
         navSub = new NavigationSubsystem(diffDriveSub);
-        wristSub = new WristSubsystem();
-        
-
+        intakeSub = new IntakeSubsystem();
 
         // Initialize Auto Commands
         FieldDisplayCommand autoFieldDisplayCommand = new FieldDisplayCommand("Auto Field");
@@ -51,7 +49,7 @@ public class DifferentialDriveContainer implements RobotContainer {
         DifferentialDriveOdometryCommand odometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, fieldDisplayCommand);
         DifferentialDriveFilterCommand filterCommand = new DifferentialDriveFilterCommand(odometryCommand, navSub);
         ManualDifferentialDriveCommand manualDriveCommand = new ManualDifferentialDriveCommand(diffDriveSub);
-        ManualWristCommand manualWristCommand = new ManualWristCommand(wristSub);
+        ManualWristCommand manualWristCommand = new ManualWristCommand(intakeSub);
         
         // Initialize Command Groups
         autoGroup = new ParallelCommandGroup(autoFieldDisplayCommand, autoOdometryCommand, autoFilterCommand); // These don't actually run in parallel.

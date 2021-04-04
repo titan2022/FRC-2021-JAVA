@@ -8,17 +8,17 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 /**
  * @author Irene
  */
-public class WristSubsystem extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase {
     private final int PCM_PORT = 62;
     private final int MOTOR_PORT = 0;
 
-    private final DoubleSolenoid doubleSol = new DoubleSolenoid(PCM_PORT, 1,2); // TODO: figure out the PCM port and channels
-    private final WPI_TalonFX motor = new WPI_TalonFX(MOTOR_PORT);
+    private final DoubleSolenoid doubleSol = new DoubleSolenoid(PCM_PORT, 1, 2); // TODO: figure out the PCM port and channels
+    private final WPI_TalonFX motor = new WPI_TalonFX(MOTOR_PORT); // TODO: Get port
 
     /**
      * @param motorConfig - specific configurations for wrist 
      */
-    public WristSubsystem() {
+    public IntakeSubsystem() {
         doubleSol.set(DoubleSolenoid.Value.kOff);
     }
     

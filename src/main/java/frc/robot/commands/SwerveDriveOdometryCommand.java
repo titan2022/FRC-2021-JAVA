@@ -7,7 +7,6 @@ import org.ejml.simple.SimpleMatrix;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -92,7 +91,6 @@ public class SwerveDriveOdometryCommand extends CommandBase {
    */
   public void resetOdometry(Pose2d poseMeters, Rotation2d gyroAngle) {
     odometry.resetPosition(poseMeters, gyroAngle);
-    driveSub.resetEncoderCounts();
   }
 
   /**

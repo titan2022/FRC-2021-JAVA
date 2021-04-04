@@ -445,13 +445,6 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     }
   }
 
-  public void resetEncoderCounts() {
-    leftBackMotor.setSelectedSensorPosition(0);
-    leftFrontMotor.setSelectedSensorPosition(0);
-    rightFrontMotor.setSelectedSensorPosition(0);
-    rightBackMotor.setSelectedSensorPosition(0);
-  }
-
   /**
    * Gets the amount of rotation from a primary motor.
    * 

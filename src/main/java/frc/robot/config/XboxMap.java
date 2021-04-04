@@ -48,6 +48,11 @@ public class XboxMap {
 		controller.setRumble(RumbleType.kLeftRumble, 0);
 		controller.setRumble(RumbleType.kRightRumble, 0);
   }
+
+  // V-Hopper
+  public static double hopperPct() {
+    return controller.getTriggerAxis(Hand.kLeft);
+  }
   
   /**
    * Returns 0.0 if the given value is within the specified range around zero. The remaining range

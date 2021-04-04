@@ -11,23 +11,18 @@ package frc.robot.subsystems;
 //import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import java.util.ResourceBundle.Control;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 
 
 public class VHopperSubsystem extends SubsystemBase {
 
-  public static final int MOTOR_B_PORT = 5; //Motor 1: bottom of conveyor
-  public static final int MOTOR_TL_PORT = 6; //Motor 2: top left of conveyor
-  public static final int MOTOR_TR_PORT = 7; //Motor 3: top right of conveyor
+  public static final int MOTOR_PORT = 5; //Motor 1: bottom of conveyor
 
   public static final double WHEEL_RADIUS = 0.01;  // TODO: get correct value in meters
   public static final double TICKS_PER_METER = 2048 / (WHEEL_RADIUS * 2 * Math.PI);
@@ -38,13 +33,8 @@ public class VHopperSubsystem extends SubsystemBase {
   private static final SupplyCurrentLimitConfiguration supplyCurrentLimit = new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0);
   private static final StatorCurrentLimitConfiguration statorCurrentLimit = new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0);
   
-  private static final boolean MOTOR_B_INVERTED = false;
-  private static final boolean MOTOR_TL_INVERTED = false;
-  private static final boolean MOTOR_TR_INVERTED = false;
-  
-  private static final boolean MOTOR_B_SENSOR_PHASE = false;
-  private static final boolean MOTOR_TL_SENSOR_PHASE = false;
-  private static final boolean MOTOR_TR_SENSOR_PHASE = false;
+  private static final boolean MOTOR_INVERTED = false;
+  private static final boolean MOTOR_SENSOR_PHASE = false;
 
   private static final int SLOT_IDX = 0;
   private static final int PID_IDX = 0;
@@ -61,40 +51,19 @@ public class VHopperSubsystem extends SubsystemBase {
   public static final double BELT_VELOCITY = 0.0; 
 
 
-  public static final WPI_TalonFX MotorB =new WPI_TalonFX(MOTOR_B_PORT)
-  , MotorTL = new WPI_TalonFX(MOTOR_TL_PORT)
-  , MotorTR = new WPI_TalonFX(MOTOR_TR_PORT);
+  public static final WPI_TalonSRX motor =new WPI_TalonSRX(MOTOR_PORT);
 
   
-  public VHopperSubsystem(TalonFXConfiguration userConfig) {
-    MotorB.configFactoryDefault();
-    MotorTL.configFactoryDefault();
-    MotorTR.configFactoryDefault();
-    if(userConfig != null){
-      MotorB.configAllSettings(userConfig);
-      MotorTL.configAllSettings(userConfig);
-      MotorTR.configAllSettings(userConfig);
-    }
-    MotorB.setInverted(MOTOR_B_INVERTED);
-    MotorTL.setInverted(MOTOR_TL_INVERTED);
-    MotorTR.setInverted(MOTOR_TR_INVERTED);
-    MotorB.setSensorPhase(MOTOR_B_SENSOR_PHASE);
-    MotorTL.setSensorPhase(MOTOR_TL_SENSOR_PHASE);
-    MotorTR.setSensorPhase(MOTOR_TR_SENSOR_PHASE);
-    MotorB.configSupplyCurrentLimit(supplyCurrentLimit);
-    MotorTL.configSupplyCurrentLimit(supplyCurrentLimit);
-    MotorTR.configSupplyCurrentLimit(supplyCurrentLimit);
-    MotorB.configStatorCurrentLimit(statorCurrentLimit);
-    MotorTL.configStatorCurrentLimit(statorCurrentLimit);
-    MotorTR.configStatorCurrentLimit(statorCurrentLimit);
-    MotorB.selectProfileSlot(SLOT_IDX, PID_IDX);
-    MotorTL.selectProfileSlot(SLOT_IDX, PID_IDX);
-    MotorTR.selectProfileSlot(SLOT_IDX, PID_IDX);
-    MotorB.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
-    MotorTL.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
-    MotorTR.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
-
-    MotorTL.follow(MotorTR);
+  public VHopperSubsystem(TalonSRXConfiguration userConfig) {
+    motor.configFactoryDefault();
+    if(userConfig != null)
+      motor.configAllSettings(userConfig);
+    motor.setInverted(MOTOR_INVERTED);
+    motor.setSensorPhase(MOTOR_SENSOR_PHASE);
+    motor.configSupplyCurrentLimit(supplyCurrentLimit);
+    //motor.configStatorCurrentLimit(statorCurrentLimit);
+    motor.selectProfileSlot(SLOT_IDX, PID_IDX);
+    //motor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
   }
   public VHopperSubsystem(){
     this(null);
@@ -104,14 +73,12 @@ public class VHopperSubsystem extends SubsystemBase {
   /**
    * Sets each of the motor speeds
    *
-   * @param bottomOutput  bottom motor speed in meters per second.
-   * @param topOutput  top motors' speed in meters per second.
+   * @param speed  The target speed in meters per second.
    */
-  public void setOutputs(double bottomSpeed, double topSpeed) {
+  public void setOutputs(double speed) {
     //TODO: determine MAX_OUTPUT & how the power distribution will work
     //TODO: add any required checks
-    MotorB.set(ControlMode.Velocity, bottomSpeed*TICKS_PER_METER/10);
-    MotorTR.set(ControlMode.Velocity, topSpeed*TICKS_PER_METER/10);
+    motor.set(ControlMode.Velocity, speed*TICKS_PER_METER/10);
     
   }
 
@@ -151,8 +118,7 @@ public class VHopperSubsystem extends SubsystemBase {
    * Stops the motors.
    */
   public void stop() {
-    MotorB.set(ControlMode.PercentOutput, 0);
-    MotorTR.set(ControlMode.PercentOutput, 0);
+    motor.set(ControlMode.PercentOutput, 0);
 
   }
 
@@ -161,8 +127,7 @@ public class VHopperSubsystem extends SubsystemBase {
    * Enables brake.
    */
   public void enableBrakes() {
-    MotorB.setNeutralMode(NeutralMode.Brake);
-    MotorTR.setNeutralMode(NeutralMode.Brake);
+    motor.setNeutralMode(NeutralMode.Brake);
 
   }
 
@@ -170,8 +135,7 @@ public class VHopperSubsystem extends SubsystemBase {
    * Disables brake.
    */
   public void disableBrakes() {
-    MotorB.setNeutralMode(NeutralMode.Coast);
-    MotorTR.setNeutralMode(NeutralMode.Coast);
+    motor.setNeutralMode(NeutralMode.Coast);
   }
 
   @Override

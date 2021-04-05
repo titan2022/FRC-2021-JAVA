@@ -30,6 +30,8 @@ public class RMPDrive extends CommandBase {
         return new SimpleMatrix(new double[][]{{x.getX()}, {x.getY()}, {x.getRotation().getRadians()}});
     }
     private ChassisSpeeds toIntrinsic(SimpleMatrix v, Rotation2d theta) {
+        System.out.println(v);
+        System.out.println(theta);
         return new ChassisSpeeds(v.get(0) * theta.getCos() + v.get(1) * theta.getSin(),
             v.get(0) * theta.getSin() + v.get(1) * theta.getCos(),
             v.get(2));

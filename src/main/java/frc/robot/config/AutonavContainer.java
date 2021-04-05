@@ -45,7 +45,7 @@ public class AutonavContainer implements RobotContainer
         RMPDrive rmpDrive = new RMPDrive(root, diffDriveSub, filterCommand);
         AutoNavChallenge autoNavChallenge = new AutoNavChallenge(rmpDrive, waypoints);
 
-        autoGroup = new ParallelCommandGroup(fieldDisplayCommand, odometryCommand, filterCommand, autoNavChallenge);
+        autoGroup = new ParallelCommandGroup(fieldDisplayCommand, odometryCommand, filterCommand, rmpDrive, autoNavChallenge);
 
         FieldDisplayCommand debugFieldDisplayCommand = new FieldDisplayCommand();
         DifferentialDriveOdometryCommand debugOdometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, debugFieldDisplayCommand);

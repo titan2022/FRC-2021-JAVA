@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.config;
 
 import java.util.ArrayList;
@@ -24,16 +20,17 @@ import frc.robot.subsystems.DifferentialDriveSubsystem;
 import frc.robot.subsystems.NavigationSubsystem;
 
 /** Add your docs here. */
-public class AutonavContainer implements RobotContainer
-{
-    private final ParallelCommandGroup autoGroup;
-    private final ParallelCommandGroup teleopGroup;
+public class AutonavContainer implements RobotContainer {
+    // Subsystems
     private final DifferentialDriveSubsystem diffDriveSub;
     private final NavigationSubsystem navSub;
     private final static double INCH_TO_METER = 0.0254;
 
+    // Command Groups
+    private final ParallelCommandGroup autoGroup;
+    private final ParallelCommandGroup teleopGroup;
+
     public AutonavContainer(boolean simulated, Translation2d... waypoints) {
-        
         diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), simulated);
         navSub = new NavigationSubsystem(diffDriveSub);
 
@@ -100,6 +97,15 @@ public class AutonavContainer implements RobotContainer
     {
         TalonSRXConfiguration talon = new TalonSRXConfiguration();
         // Add configs here:
+        talon.slot0.kP = 1;
+        talon.slot0.kI = 0;
+        talon.slot0.kD = 0;        
+        talon.slot0.kF = 0;
+        talon.slot0.integralZone = 900;
+        talon.slot0.allowableClosedloopError = 217;
+        talon.slot0.maxIntegralAccumulator = 254.000000;
+        //talon.slot0.closedLoopPeakOutput = 0.869990; // Sets maximum output of the PID controller
+        //talon.slot0.closedLoopPeriod = 33; // Sets the hardware update rate of the PID controller
 
         return talon;
     }
@@ -112,6 +118,15 @@ public class AutonavContainer implements RobotContainer
     {
         TalonSRXConfiguration talon = new TalonSRXConfiguration();
         // Add configs here:
+        talon.slot0.kP = 1;
+        talon.slot0.kI = 0;
+        talon.slot0.kD = 0;        
+        talon.slot0.kF = 0;
+        talon.slot0.integralZone = 900;
+        talon.slot0.allowableClosedloopError = 217;
+        talon.slot0.maxIntegralAccumulator = 254.000000;
+        //talon.slot0.closedLoopPeakOutput = 0.869990; // Sets maximum output of the PID controller
+        //talon.slot0.closedLoopPeriod = 33; // Sets the hardware update rate of the PID controller
 
         return talon;
     }
@@ -122,6 +137,8 @@ public class AutonavContainer implements RobotContainer
      * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
      * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
-    private void configureButtonBindings() {}
+    private void configureButtonBindings()
+    {
 
+    }
 }

@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -40,7 +36,7 @@ public class ManualDifferentialDriveCommand extends CommandBase {
     }
     else { 
       DifferentialDriveSubsystem.disableBrakes();
-      DifferentialDriveSubsystem.setOutput(ControlMode.PercentOutput, XboxMap.left(), XboxMap.right());
+      DifferentialDriveSubsystem.setOutput(ControlMode.PercentOutput, XboxMap.leftWheel(), XboxMap.rightWheel());
     }
   }
 

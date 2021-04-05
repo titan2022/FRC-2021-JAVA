@@ -1,10 +1,11 @@
-package frc.robot.path.dstar;
+package frc.robot.path.dstar.demos;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import frc.robot.path.dstar.DStarLite;
 import frc.robot.mapping.Point;
 import frc.robot.mapping.Polygon;
 import frc.robot.mapping.ObstacleMap;

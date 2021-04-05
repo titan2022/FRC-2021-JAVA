@@ -11,10 +11,14 @@ import frc.robot.commands.DifferentialDriveFilterCommand;
 import frc.robot.commands.DifferentialDriveOdometryCommand;
 import frc.robot.commands.FieldDisplayCommand;
 import frc.robot.commands.ManualDifferentialDriveCommand;
+import frc.robot.commands.ManualVHopperCommand;
 import frc.robot.mapping.obstacle.ObstacleReader;
 import frc.robot.motion.generation.rmpflow.rmps.ObstacleAvoidance;
 import frc.robot.subsystems.DifferentialDriveSubsystem;
 import frc.robot.subsystems.NavigationSubsystem;
+import frc.robot.subsystems.VHopperSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.commands.ManualWristCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -27,6 +31,8 @@ public class DifferentialDriveContainer implements RobotContainer {
     // Subsystems
     private final DifferentialDriveSubsystem diffDriveSub;
     private final NavigationSubsystem navSub;
+    private final IntakeSubsystem intakeSub;
+    private final VHopperSubsystem vHopSub;
 
     // Command Groups
     private final ParallelCommandGroup autoGroup;
@@ -39,6 +45,8 @@ public class DifferentialDriveContainer implements RobotContainer {
         // Initialize Subsystems
         diffDriveSub = new DifferentialDriveSubsystem(getLeftDiffDriveTalonConfig(), getRightDiffDriveTalonConfig(), simulated);
         navSub = new NavigationSubsystem(diffDriveSub);
+        intakeSub = new IntakeSubsystem();
+        vHopSub = new VHopperSubsystem();
 
         // Initialize Auto Commands
         FieldDisplayCommand autoFieldDisplayCommand = new FieldDisplayCommand("Auto Field");
@@ -51,7 +59,9 @@ public class DifferentialDriveContainer implements RobotContainer {
         DifferentialDriveOdometryCommand odometryCommand = new DifferentialDriveOdometryCommand(diffDriveSub, navSub, fieldDisplayCommand);
         odometryCommand.resetOdometry(new Pose2d(3, 3, new Rotation2d(0)), new Rotation2d(0)); // Starting Position
         DifferentialDriveFilterCommand filterCommand = new DifferentialDriveFilterCommand(odometryCommand, navSub);
-        // ManualDifferentialDriveCommand manualDriveCommand = new ManualDifferentialDriveCommand(diffDriveSub);
+        ManualDifferentialDriveCommand manualDriveCommand = new ManualDifferentialDriveCommand(diffDriveSub);
+        ManualWristCommand manualWristCommand = new ManualWristCommand(intakeSub);
+        ManualVHopperCommand manualVHopCommand = new ManualVHopperCommand(vHopSub);
         AssistedDriveCommand assistDriveCommand = new AssistedDriveCommand(diffDriveSub, filterCommand, getObstacleMapRMP(diffDriveSub.ROBOT_TRACK_WIDTH));
 
         // Initialize Command Groups
@@ -62,8 +72,10 @@ public class DifferentialDriveContainer implements RobotContainer {
         teleopGroup = new ParallelCommandGroup(fieldDisplayCommand
                                             , odometryCommand
                                             , filterCommand
-                                            // , manualDriveCommand
-                                            , assistDriveCommand
+                                            , manualDriveCommand
+                                            , manualWristCommand
+                                            , manualVHopCommand
+                                            //, assistDriveCommand
                                             );
 
         // Configure the button bindings

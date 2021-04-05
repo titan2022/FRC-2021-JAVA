@@ -33,8 +33,8 @@ public class AssistedDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        double target_left = XboxMap.left()*10;
-        double target_right = XboxMap.right()*10;
+        double target_left = XboxMap.leftWheel()*10;
+        double target_right = XboxMap.rightWheel()*10;
         double speed = (target_left + target_right) / 2;
         Pose2d pose = filter.getFilteredPose();
         SimpleMatrix target = new SimpleMatrix(new double[][]{

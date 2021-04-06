@@ -52,8 +52,8 @@ public class ManualSwerveDriveCommand extends CommandBase {
       swerveDriveSub.disableBrakes();
 
       // Convert into Y is forward and X is sideways
-      double xFieldVelocity = XboxMap.leftX(); // For chassis speeds forward back is x and left right is y
-      double yFieldVelocity = XboxMap.leftY();
+      double xFieldVelocity = XboxMap.translationX(); // For chassis speeds forward back is x and left right is y
+      double yFieldVelocity = XboxMap.translationY();
 
       double headingRadians = navSub.getHeadingRadians(); // 0 to 2PI clockwise    
       
@@ -75,13 +75,13 @@ public class ManualSwerveDriveCommand extends CommandBase {
       double yVelocity = Math.cos(headingRadians) * xFieldVelocity + Math.sin(headingRadians) * yFieldVelocity;
       
       // Direction vector
-      double xDirection = XboxMap.rightX();
-      double yDirection = XboxMap.rightY();
+      double xDirection = XboxMap.orientationX();
+      double yDirection = XboxMap.orientationY();
 
       if (xDirection != 0 && yDirection != 0)
       {
         // atan2 returns -pi to pi where positive is counter clockwise
-        targetAngleRadians = Math.atan2(XboxMap.rightY(), XboxMap.rightX());
+        targetAngleRadians = Math.atan2(yDirection, xDirection);
         // Convert from -pi to pi to 0 to 2pi with 0 being positive y axis
         targetAngleRadians = (-targetAngleRadians + 2 * Math.PI + Math.PI / 2) % (2 * Math.PI);
         //targetAngleRadians = Math.max(0, Math.min(Math.toRadians(28), targetAngleRadians)); // Limit if needed

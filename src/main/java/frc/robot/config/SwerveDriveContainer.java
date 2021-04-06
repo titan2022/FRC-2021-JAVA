@@ -6,9 +6,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.FieldDisplayCommand;
 import frc.robot.commands.ManualSwerveDriveCommand;
+import frc.robot.commands.ManualVHopperCommand;
+import frc.robot.commands.ManualWristCommand;
 import frc.robot.motion.control.PIDConfig;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.NavigationSubsystem;
 import frc.robot.subsystems.SwerveDriveSubsystem;
+import frc.robot.subsystems.VHopperSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -21,6 +25,8 @@ public class SwerveDriveContainer implements RobotContainer {
     // Subsystems
     private final SwerveDriveSubsystem swerveDriveSub;
     private final NavigationSubsystem navSub;
+    private final VHopperSubsystem vhopperSub;
+    private final IntakeSubsystem intakeSub;
 
     // Command Groups
     private final ParallelCommandGroup autoGroup;
@@ -33,16 +39,20 @@ public class SwerveDriveContainer implements RobotContainer {
         // Initialize Subsystems
         swerveDriveSub = new SwerveDriveSubsystem(getSwerveDriveTalonDirectionalConfig(), getSwerveDriveTalonRotaryConfig());
         navSub = new NavigationSubsystem();
+        vhopperSub = new VHopperSubsystem();
+        intakeSub = new IntakeSubsystem();
 
         // Initialize Auto Commands
         FieldDisplayCommand autoFieldDisplayCommand = new FieldDisplayCommand("Auto Field");
 
         // Initialize Teleop Commands
         ManualSwerveDriveCommand manualDriveCommand = new ManualSwerveDriveCommand(swerveDriveSub, navSub, getSwerveHeadingPIDConfig());
+        ManualVHopperCommand vhopperCommand = new ManualVHopperCommand(vhopperSub);
+        ManualWristCommand intakeCommand = new ManualWristCommand(intakeSub);
 
         // Initialize Command Groups
         autoGroup = new ParallelCommandGroup(autoFieldDisplayCommand); // These don't actually run in parallel.
-        teleopGroup = new ParallelCommandGroup(manualDriveCommand);
+        teleopGroup = new ParallelCommandGroup(manualDriveCommand, vhopperCommand, intakeCommand);
 
         // Configure the button bindings
         configureButtonBindings();

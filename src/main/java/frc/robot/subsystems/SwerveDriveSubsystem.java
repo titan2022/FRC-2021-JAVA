@@ -27,7 +27,6 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   public static final double WHEEL_RADIUS = Units.inchesToMeters(2); // 0.0508; // meters (2 in)
   public static final int INTEGRATED_ENCODER_TICKS = 2048;
   public static final double GEAR_RATIO = 6.86;
-  public static final double METERS_PER_DEGREE = WHEEL_RADIUS * 2 * Math.PI / 360 / GEAR_RATIO;
   public static final double METERS_PER_TICKS = WHEEL_RADIUS * 2 * Math.PI / INTEGRATED_ENCODER_TICKS / GEAR_RATIO;
 
   // Rotator Encoder Offsets
@@ -80,8 +79,10 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   private static final double MAX_WHEEL_SPEED = 10; // meters/sec
   private static final int PEAK_CURRENT_LIMIT = 6;
   private static final int CONTINUOUS_CURRENT_LIMIT = 5;
-  private static final StatorCurrentLimitConfiguration statorCurrentLimit = new StatorCurrentLimitConfiguration(true, PEAK_CURRENT_LIMIT, 0, 0);
-  private static final SupplyCurrentLimitConfiguration supplyCurrentLimit = new SupplyCurrentLimitConfiguration(true, CONTINUOUS_CURRENT_LIMIT, 0, 0);
+  private static final StatorCurrentLimitConfiguration statorCurrentLimit = new StatorCurrentLimitConfiguration(true,
+      PEAK_CURRENT_LIMIT, 0, 0);
+  private static final SupplyCurrentLimitConfiguration supplyCurrentLimit = new SupplyCurrentLimitConfiguration(true,
+      CONTINUOUS_CURRENT_LIMIT, 0, 0);
 
   // Physical limits of motors that rotate the wheel. Use radians.
   
@@ -115,7 +116,7 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   private static final Translation2d leftBackPosition = new Translation2d(-ROBOT_TRACK_WIDTH/2, -ROBOT_LENGTH/2);
   private static final Translation2d rightFrontPosition = new Translation2d(ROBOT_TRACK_WIDTH/2, ROBOT_LENGTH/2);
   private static final Translation2d rightBackPosition = new Translation2d(ROBOT_TRACK_WIDTH/2, -ROBOT_LENGTH/2);
-  private static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFrontPosition, leftBackPosition, rightFrontPosition, rightBackPosition);
+  public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(leftFrontPosition, leftBackPosition, rightFrontPosition, rightBackPosition);
 
   /**
    * Creates the swerve drive subsystem
@@ -167,7 +168,8 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     leftFrontRotatorMotor.setInverted(LEFT_FRONT_MOTOR_ROTATOR_INVERTED);
     leftBackRotatorMotor.setInverted(LEFT_BACK_MOTOR_ROTATOR_INVERTED);
 
-    // Sets the direction that the talon will turn on the green LED when going 'forward'.
+    // Sets the direction that the talon will turn on the green LED when going
+    // 'forward'.
     leftFrontMotor.setSensorPhase(LEFT_FRONT_MOTOR_SENSOR_PHASE);
     rightFrontMotor.setSensorPhase(RIGHT_FRONT_MOTOR_SENSOR_PHASE);
     leftBackMotor.setSensorPhase(LEFT_BACK_MOTOR_SENSOR_PHASE);
@@ -243,13 +245,11 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     rightBackMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
   }
 
-  public SwerveDriveSubsystem()
-  {
+  public SwerveDriveSubsystem() {
     this(null, null);
   }
 
-  private void setFactoryMotorConfig()
-  {
+  private void setFactoryMotorConfig() {
     leftFrontMotor.configFactoryDefault();
     leftBackMotor.configFactoryDefault();
     rightFrontMotor.configFactoryDefault();
@@ -380,6 +380,7 @@ public class SwerveDriveSubsystem implements DriveSubsystem
 
   /**
    * Gets the encoder count for a primary motor.
+   * 
    * @param useLeft - Whether to use the left primary motor.
    * @return Encoder count for specified primary motor.
    */
@@ -388,22 +389,22 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     if (useLeft)
     {
       if (useBack){
-        SmartDashboard.putNumber("T_Back_Left", leftBackMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_DEGREE);
+        SmartDashboard.putNumber("T_Back_Left", leftBackMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICKS);
         return leftBackMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
       else{
-        SmartDashboard.putNumber("T_Front_Left", leftFrontMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_DEGREE);
+        SmartDashboard.putNumber("T_Front_Left", leftFrontMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICKS);
         return leftFrontMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
     }
     else
     {
       if (useBack){
-        SmartDashboard.putNumber("_Back_Right", rightBackMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_DEGREE);
+        SmartDashboard.putNumber("_Back_Right", rightBackMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICKS);
         return rightBackMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
       else{
-        SmartDashboard.putNumber("T_Front_Right", rightFrontMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_DEGREE);
+        SmartDashboard.putNumber("T_Front_Right", rightFrontMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICKS);
         return rightFrontMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
     }
@@ -413,6 +414,7 @@ public class SwerveDriveSubsystem implements DriveSubsystem
 
   /**
    * Gets the encoder count for a primary motor.
+   * 
    * @param useLeft - Whether to use the left primary motor.
    * @return Encoder count for specified primary motor.
    */
@@ -444,8 +446,9 @@ public class SwerveDriveSubsystem implements DriveSubsystem
 
   /**
    * Gets the amount of rotation from a primary motor.
+   * 
    * @param useLeft - Whether to use the left primary motor.
-   * @return Rotation of a specified primary motor.
+   * @return Angle of rotator motor in radians
    */
   public double getRotatorEncoderPosition(boolean useLeft, boolean useBack) {
     return Math.toRadians(getRotatorEncoderCount(useLeft, useBack));
@@ -475,5 +478,21 @@ public class SwerveDriveSubsystem implements DriveSubsystem
         return rightFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS;
       }
     }
+  }
+
+  public SwerveModuleState[] getSwerveModuleStates() {
+    SwerveModuleState leftBack = new SwerveModuleState(getEncoderVelocity(true, true),
+        new Rotation2d(getRotatorEncoderPosition(true, true)));
+
+    SwerveModuleState leftFront = new SwerveModuleState(getEncoderVelocity(true, false),
+        new Rotation2d(getRotatorEncoderPosition(true, false)));
+
+    SwerveModuleState rightBack = new SwerveModuleState(getEncoderVelocity(false, true),
+        new Rotation2d(getRotatorEncoderPosition(false, true)));
+
+    SwerveModuleState rightFront = new SwerveModuleState(getEncoderVelocity(false, false),
+        new Rotation2d(getRotatorEncoderPosition(false, false)));
+    
+    return new SwerveModuleState[]{leftFront, leftBack, rightFront, rightBack};
   }
 }

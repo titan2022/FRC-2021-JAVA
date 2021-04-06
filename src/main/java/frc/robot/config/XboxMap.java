@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
  */
 public class XboxMap {
   private static final double JOYSTICK_DRIFT = .09;
-  private static final double RUMBLE_INTENSITY = 1; // [0,1]
+  private static final double MAX_RUMBLE_INTENSITY = 1; // [0,1]
   
   // Orientation Area of Effects
   private static final double ORIENTATION_LOWER_RADIUS = .5;
@@ -18,43 +18,80 @@ public class XboxMap {
   private static final XboxController controller = OI.ps4;
   private static final XboxController auxController = OI.xbox;
 
-  // Driving Controls 
-	public static double left() {
+  // Differential Driving Controls
+  public static double leftWheel() { // TODO: fix this confusing mess of a controller configuration
     double value = -controller.getY(Hand.kLeft);
     return applyDeadband(value, JOYSTICK_DRIFT);
   }
 
-  public static double leftX() {
+  public static double rightWheel() {
+    double value = -controller.getY(Hand.kRight);
+    return applyDeadband(value, JOYSTICK_DRIFT);
+  }
+
+  // Swerve Driving Controls
+  public static double translationX() {
     double value = controller.getX(Hand.kLeft);
     return applyDeadband(value, JOYSTICK_DRIFT);
   }
 
-  public static double leftY() { // TODO: fix this confusing mess of a controller configuration
-    return left();
+  public static double translationY() { // TODO: fix this confusing mess of a controller configuration
+    double value = -controller.getY(Hand.kLeft);
+    return applyDeadband(value, JOYSTICK_DRIFT);
   }
 
-    
-	public static double right() {
-    double value = -controller.getY(Hand.kRight);
-    return applyDeadband(value, ORIENTATION_LOWER_RADIUS);
+  public static double orientationX() {
+    double y = -controller.getY(Hand.kRight);
+    double x = controller.getX(Hand.kRight);
+    if(x*x + y*y < ORIENTATION_LOWER_RADIUS*ORIENTATION_LOWER_RADIUS)
+      return 0;
+    return x;
   }
 
-  public static double rightX() {
-    double value = controller.getX(Hand.kRight);
-    return applyDeadband(value, ORIENTATION_LOWER_RADIUS);
-  }
-
-  public static double rightY() {
-    return right();
+  public static double orientationY() {
+    double y = -controller.getY(Hand.kRight);
+    double x = controller.getX(Hand.kRight);
+    if(x*x + y*y < ORIENTATION_LOWER_RADIUS*ORIENTATION_LOWER_RADIUS)
+      return 0;
+    return x;
   }
 
   public static boolean toggleBrakes() {
     return controller.getBumperPressed(Hand.kRight);
   }
-    
+
+  // V-Hopper Controls
+
+  public static double hopperPct() {
+    return controller.getTriggerAxis(Hand.kLeft);
+  }
+
+  public static double scissorSpeed() {
+    return controller.getTriggerAxis(Hand.kRight);
+  }
+
+  // Intake Controls
+
+  public static boolean toggleWrist() {
+    return controller.getBumperPressed(Hand.kLeft);
+  }
+  
+
+  // General controls
+
+  /**
+   * Sets controller rumble
+   * @param intensity [0,1]
+   */
+  public static void setRumble(double intensity)
+  {
+    controller.setRumble(RumbleType.kLeftRumble, intensity);
+		controller.setRumble(RumbleType.kRightRumble, intensity);
+  }
+
   public static void startRumble() {
-	  controller.setRumble(RumbleType.kLeftRumble, RUMBLE_INTENSITY);
-		controller.setRumble(RumbleType.kRightRumble, RUMBLE_INTENSITY);
+	  controller.setRumble(RumbleType.kLeftRumble, MAX_RUMBLE_INTENSITY);
+		controller.setRumble(RumbleType.kRightRumble, MAX_RUMBLE_INTENSITY);
   }
     
 	public static void stopRumble() {

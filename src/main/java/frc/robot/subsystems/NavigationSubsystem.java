@@ -53,6 +53,7 @@ public class NavigationSubsystem extends SubsystemBase {
     }
     else {
       calibrateGyro();
+      resetGyro();
     }
   }
 

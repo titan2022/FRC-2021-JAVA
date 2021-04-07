@@ -25,8 +25,8 @@ public class SwerveDriveContainer implements RobotContainer {
     // Subsystems
     private final SwerveDriveSubsystem swerveDriveSub;
     private final NavigationSubsystem navSub;
-    private final VHopperSubsystem vhopperSub;
-    private final IntakeSubsystem intakeSub;
+    // private final VHopperSubsystem vhopperSub;
+    // private final IntakeSubsystem intakeSub;
 
     // Command Groups
     private final ParallelCommandGroup autoGroup;
@@ -39,20 +39,20 @@ public class SwerveDriveContainer implements RobotContainer {
         // Initialize Subsystems
         swerveDriveSub = new SwerveDriveSubsystem(getSwerveDriveTalonDirectionalConfig(), getSwerveDriveTalonRotaryConfig());
         navSub = new NavigationSubsystem();
-        vhopperSub = new VHopperSubsystem();
-        intakeSub = new IntakeSubsystem();
+        //vhopperSub = new VHopperSubsystem();
+        //intakeSub = new IntakeSubsystem();
 
         // Initialize Auto Commands
         FieldDisplayCommand autoFieldDisplayCommand = new FieldDisplayCommand("Auto Field");
 
         // Initialize Teleop Commands
         ManualSwerveDriveCommand manualDriveCommand = new ManualSwerveDriveCommand(swerveDriveSub, navSub, getSwerveHeadingPIDConfig());
-        ManualVHopperCommand vhopperCommand = new ManualVHopperCommand(vhopperSub);
-        ManualWristCommand intakeCommand = new ManualWristCommand(intakeSub);
+        // ManualVHopperCommand vhopperCommand = new ManualVHopperCommand(vhopperSub);
+        // ManualWristCommand intakeCommand = new ManualWristCommand(intakeSub);
 
         // Initialize Command Groups
         autoGroup = new ParallelCommandGroup(autoFieldDisplayCommand); // These don't actually run in parallel.
-        teleopGroup = new ParallelCommandGroup(manualDriveCommand, vhopperCommand, intakeCommand);
+        teleopGroup = new ParallelCommandGroup(manualDriveCommand); //, vhopperCommand, intakeCommand);
 
         // Configure the button bindings
         configureButtonBindings();
@@ -86,7 +86,7 @@ public class SwerveDriveContainer implements RobotContainer {
     {
         TalonFXConfiguration talon = new TalonFXConfiguration();
         // Add configs here:
-        talon.slot0.kP = 1;
+        talon.slot0.kP = 500;
         talon.slot0.kI = 0;
         talon.slot0.kD = 0;        
         talon.slot0.kF = 0;
@@ -107,7 +107,7 @@ public class SwerveDriveContainer implements RobotContainer {
     {
         TalonFXConfiguration talon = new TalonFXConfiguration();
         // Add configs here:
-        talon.slot0.kP = 1;
+        talon.slot0.kP = 500;
         talon.slot0.kI = 0;
         talon.slot0.kD = 0;        
         talon.slot0.kF = 0;

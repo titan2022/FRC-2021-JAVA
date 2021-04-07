@@ -67,6 +67,5 @@ public class SequencerSubsystem extends SubsystemBase{
   {
    sequencer.set(ControlMode.Velocity,velocity*TICKS_PER_METER);   
   }
-
 }
 

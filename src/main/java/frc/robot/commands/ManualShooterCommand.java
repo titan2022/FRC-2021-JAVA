@@ -1,13 +1,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.config.ControlPanelMap;
+import frc.robot.config.OI;
 import frc.robot.config.XboxMap;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class InterstellarAccuracyCommand extends CommandBase{
-    // Called when the command is initially scheduled.
-    //Has a random speed
+public class ManualShooterCommand {
     private double g = 9.8;
     private double SHOOTER_ANGLE_RADIANS = Math.PI/4;
     private double HEIGHT_METERS = 3;
@@ -16,25 +17,14 @@ public class InterstellarAccuracyCommand extends CommandBase{
     private ShooterSubsystem shooterSubsystem;
     private SwerveDriveOdometryCommand swerveDriveOdometryCommand;
 
-    public InterstellarAccuracyCommand(ShooterSubsystem shooterSubsystem, SwerveDriveOdometryCommand swerveDriveOdometryCommand){
+    public ManualShooterCommand(ShooterSubsystem shooterSubsystem, SwerveDriveOdometryCommand swerveDriveOdometryCommand){
       addRequirements(shooterSubsystem);
       this.shooterSubsystem = shooterSubsystem;
       this.swerveDriveOdometryCommand = swerveDriveOdometryCommand;
     }
     @Override
     public void initialize() {
-      System.out.println("Assisted Shoot Command Started");
-    }
-
-    // public double optimizeVelocity()
-    // {
-    //   double initialVelocityMax = 0.0;
-    //   initialVelocityMax = getDistance()/Math.cos(optimizeAngle());
-    //   return initialVelocityMax;
-    // }
-
-    public double getVelocity(double x, double y, double shooterAngle){
-      return Math.sqrt((g*x*x)/(2*Math.cos(shooterAngle)*(x*Math.tan(shooterAngle)-y)));
+      System.out.println("Manual Shoot Command Started");
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -42,14 +32,15 @@ public class InterstellarAccuracyCommand extends CommandBase{
     public void execute() {
       if(XboxMap.shoot())
       {
-        shooterSubsystem.setOutput(getVelocity(INITIAL_DISTANCE_TO_TARGET_METERS-swerveDriveOdometryCommand.getY(), HEIGHT_METERS, SHOOTER_ANGLE_RADIANS));
+        double velocityOfBall = OI.xinmotek1.getY();
+        shooterSubsystem.setOutput(velocityOfBall);
       }
     }
   
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-  
+      
     }
   
     // Returns true when the command should end.
@@ -57,5 +48,4 @@ public class InterstellarAccuracyCommand extends CommandBase{
     public boolean isFinished() {
       return false;
     }
-  }
-  
+}

@@ -86,8 +86,8 @@ public class SwerveDriveContainer implements RobotContainer {
     {
         TalonFXConfiguration talon = new TalonFXConfiguration();
         // Add configs here:
-        talon.slot0.kP = 500;
-        talon.slot0.kI = 0;
+        talon.slot0.kP = 1500;
+        talon.slot0.kI = 250;
         talon.slot0.kD = 0;        
         talon.slot0.kF = 0;
         talon.slot0.integralZone = 900;
@@ -107,12 +107,12 @@ public class SwerveDriveContainer implements RobotContainer {
     {
         TalonFXConfiguration talon = new TalonFXConfiguration();
         // Add configs here:
-        talon.slot0.kP = 500;
+        talon.slot0.kP = 2;
         talon.slot0.kI = 0;
         talon.slot0.kD = 0;        
         talon.slot0.kF = 0;
         talon.slot0.integralZone = 900;
-        talon.slot0.allowableClosedloopError = 217;
+        talon.slot0.allowableClosedloopError = 20;//217;
         talon.slot0.maxIntegralAccumulator = 254.000000;
         //talon.slot0.closedLoopPeakOutput = 0.869990; // Sets maximum output of the PID controller
         //talon.slot0.closedLoopPeriod = 33; // Sets the hardware update rate of the PID controller

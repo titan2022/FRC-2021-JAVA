@@ -5,6 +5,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
+import com.ctre.phoenix.motorcontrol.can.SlotConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
@@ -25,17 +27,17 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   public static final double ROBOT_TRACK_WIDTH = Units.inchesToMeters(23.5); // 0.672; // meters (30 in)
   public static final double ROBOT_LENGTH = Units.inchesToMeters(23.5); // 0.672; // meter 
   public static final double WHEEL_RADIUS = Units.inchesToMeters(2); // 0.0508; // meters (2 in)
-  public static final double INTEGRATED_ENCODER_TICKS = 2048;
+  public static final double INTEGRATED_ENCODER_TICKS = 4096;//2048;
   public static final double CANCODER_TICKS = 4096;
   public static final double RADIANS_PER_TICK = 2 * Math.PI / CANCODER_TICKS;
   public static final double GEAR_RATIO = 6.86;
   public static final double METERS_PER_TICKS = WHEEL_RADIUS * 2 * Math.PI / INTEGRATED_ENCODER_TICKS / GEAR_RATIO;
 
   // Rotator Encoder Offsets
-  private static final double LEFT_FRONT_ENCODER_DEGREES_OFFSET = 77;
-  private static final double LEFT_BACK_ENCODER_DEGREES_OFFSET = 68.4;
-  private static final double RIGHT_FRONT_ENCODER_DEGREES_OFFSET = -130;
-  private static final double RIGHT_BACK_ENCODER_DEGREES_OFFSET = 16;
+  private static final double LEFT_FRONT_ENCODER_DEGREES_OFFSET = 74.88*0;//77;  852
+  private static final double LEFT_BACK_ENCODER_DEGREES_OFFSET = 70.22*0;//68.4;  799
+  private static final double RIGHT_FRONT_ENCODER_DEGREES_OFFSET = -151.17*0;//-130;  -1720
+  private static final double RIGHT_BACK_ENCODER_DEGREES_OFFSET = 18.46*0;//16;  210
 
   // Deadbands
   private static final double WHEEL_DEADBAND = 0.01;
@@ -129,6 +131,22 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   {
     setFactoryMotorConfig();
 
+    mainConfig = mainConfig == null ? new TalonFXConfiguration() : mainConfig;
+    rotatorConfig = rotatorConfig == null ? new TalonFXConfiguration() : rotatorConfig;
+
+    mainConfig.initializationStrategy = SensorInitializationStrategy.BootToZero;
+    
+    rotatorConfig.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
+    rotatorConfig.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
+
+    mainConfig.statorCurrLimit = statorCurrentLimit;
+    mainConfig.supplyCurrLimit = supplyCurrentLimit;
+    rotatorConfig.statorCurrLimit = statorCurrentLimit;
+    rotatorConfig.supplyCurrLimit = supplyCurrentLimit;
+
+    rotatorConfig.neutralDeadband = ROTATOR_DEADBAND;
+    mainConfig.neutralDeadband = WHEEL_DEADBAND;
+
     if(mainConfig != null)
     {
       leftFrontMotor.configAllSettings(mainConfig);
@@ -158,26 +176,31 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     leftBackMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
     rightBackMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
 
+    /* Moved to config object
     leftFrontMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
     leftBackMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
     rightFrontMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
-    rightBackMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);
+    rightBackMotor.configIntegratedSensorInitializationStrategy(SensorInitializationStrategy.BootToZero);*/
 
     // CANCoder Configuration
+    /* Moved to config object
     leftFrontRotatorEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
     leftBackRotatorEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
     rightFrontRotatorEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
     rightBackRotatorEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
+    */
 
     leftFrontRotatorEncoder.configMagnetOffset(LEFT_FRONT_ENCODER_DEGREES_OFFSET);
     leftBackRotatorEncoder.configMagnetOffset(LEFT_BACK_ENCODER_DEGREES_OFFSET);
     rightFrontRotatorEncoder.configMagnetOffset(RIGHT_FRONT_ENCODER_DEGREES_OFFSET);
     rightBackRotatorEncoder.configMagnetOffset(RIGHT_BACK_ENCODER_DEGREES_OFFSET);
 
+    /* Moved to config object
     leftFrontRotatorEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     leftBackRotatorEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     rightFrontRotatorEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     rightBackRotatorEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+    */
 
     // TalonFX configuration
     rightFrontMotor.setInverted(RIGHT_FRONT_MOTOR_INVERTED);
@@ -202,6 +225,7 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     rightBackRotatorMotor.setSensorPhase(RIGHT_BACK_MOTOR_ROTATOR_SENSOR_PHASE);
 
     // Current limits
+    /* Moved to config object
     leftFrontMotor.configStatorCurrentLimit(statorCurrentLimit);
     leftFrontMotor.configSupplyCurrentLimit(supplyCurrentLimit);
     rightFrontMotor.configStatorCurrentLimit(statorCurrentLimit);
@@ -219,8 +243,10 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     leftBackRotatorMotor.configSupplyCurrentLimit(supplyCurrentLimit);
     rightBackRotatorMotor.configStatorCurrentLimit(statorCurrentLimit);
     rightBackRotatorMotor.configSupplyCurrentLimit(supplyCurrentLimit);
+    */
 
     //neutral deadbands
+    /* Moved to config object
     leftFrontRotatorMotor.configNeutralDeadband(ROTATOR_DEADBAND);
     rightFrontRotatorMotor.configNeutralDeadband(ROTATOR_DEADBAND);
     leftBackRotatorMotor.configNeutralDeadband(ROTATOR_DEADBAND);
@@ -230,6 +256,7 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     leftBackMotor.configNeutralDeadband(WHEEL_DEADBAND);
     rightFrontMotor.configNeutralDeadband(WHEEL_DEADBAND);
     rightBackMotor.configNeutralDeadband(WHEEL_DEADBAND);
+    */
 
     /* TODO: Implement logic in the future to deal with motor faults to add robustness
     Faults _faults_L = new Faults();
@@ -284,16 +311,28 @@ public class SwerveDriveSubsystem implements DriveSubsystem
   @Override
   public void setVelocities(ChassisSpeeds inputChassisSpeeds) {
     SwerveModuleState[] modules = kinematics.toSwerveModuleStates(inputChassisSpeeds);
-    SmartDashboard.putNumber("S_Front_Left", modules[0].speedMetersPerSecond);
-    SmartDashboard.putNumber("S_Back_Left", modules[1].speedMetersPerSecond);
-    SmartDashboard.putNumber("S_Front_Right", modules[2].speedMetersPerSecond);
-    SmartDashboard.putNumber("S_Back_Right", modules[3].speedMetersPerSecond);
-    SmartDashboard.putNumber("O_Front_Left", modules[0].angle.getDegrees());
-    SmartDashboard.putNumber("O_Back_Left", modules[1].angle.getDegrees());
-    SmartDashboard.putNumber("O_Front_Right", modules[2].angle.getDegrees());
-    SmartDashboard.putNumber("O_Back_Right", modules[3].angle.getDegrees());
+    SmartDashboard.putNumber("State FL vel", modules[0].speedMetersPerSecond);
+    SmartDashboard.putNumber("State BL vel", modules[1].speedMetersPerSecond);
+    SmartDashboard.putNumber("State FR vel", modules[2].speedMetersPerSecond);
+    SmartDashboard.putNumber("State BR vel", modules[3].speedMetersPerSecond);
+    SmartDashboard.putNumber("State FL deg", modules[0].angle.getDegrees());
+    SmartDashboard.putNumber("State BL deg", modules[1].angle.getDegrees());
+    SmartDashboard.putNumber("State FR deg", modules[2].angle.getDegrees());
+    SmartDashboard.putNumber("State BR deg", modules[3].angle.getDegrees());
 
     SwerveDriveKinematics.normalizeWheelSpeeds(modules, MAX_WHEEL_SPEED);
+    SmartDashboard.putNumber("Norm FL vel", modules[0].speedMetersPerSecond);
+    SmartDashboard.putNumber("Norm BL vel", modules[1].speedMetersPerSecond);
+    SmartDashboard.putNumber("Norm FR vel", modules[2].speedMetersPerSecond);
+    SmartDashboard.putNumber("Norm BR vel", modules[3].speedMetersPerSecond);
+    SmartDashboard.putNumber("Norm FL deg", modules[0].angle.getDegrees());
+    SmartDashboard.putNumber("Norm BL deg", modules[1].angle.getDegrees());
+    SmartDashboard.putNumber("Norm FR deg", modules[2].angle.getDegrees());
+    SmartDashboard.putNumber("Norm BR deg", modules[3].angle.getDegrees());
+    SmartDashboard.putNumber("Norm FL tgt", modules[0].angle.getRadians() / RADIANS_PER_TICK);
+    SmartDashboard.putNumber("Norm BL tgt", modules[1].angle.getRadians() / RADIANS_PER_TICK);
+    SmartDashboard.putNumber("Norm FR tgt", modules[2].angle.getRadians() / RADIANS_PER_TICK);
+    SmartDashboard.putNumber("Norm BR tgt", modules[3].angle.getRadians() / RADIANS_PER_TICK);
     
     // for(int i=0; i<4; i++)
     //   modules[i] = SwerveModuleState.optimize(modules[i], new Rotation2d(getRotatorEncoderPosition((i&1)==0, i>1)));
@@ -303,10 +342,12 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     rightFrontMotor.set(ControlMode.Velocity, modules[2].speedMetersPerSecond/(10 * METERS_PER_TICKS));
     rightBackMotor.set(ControlMode.Velocity, modules[3].speedMetersPerSecond/(10 * METERS_PER_TICKS));
 
-    leftFrontRotatorMotor.set(ControlMode.Position, modules[0].angle.getRadians() / RADIANS_PER_TICK);
-    leftBackRotatorMotor.set(ControlMode.Position, modules[1].angle.getRadians() / RADIANS_PER_TICK);
-    rightFrontRotatorMotor.set(ControlMode.Position, modules[2].angle.getRadians() / RADIANS_PER_TICK);
-    rightBackRotatorMotor.set(ControlMode.Position, modules[3].angle.getRadians() / RADIANS_PER_TICK);
+    
+    leftFrontRotatorMotor.set(ControlMode.Position, modules[0].angle.getRadians() / RADIANS_PER_TICK + 908);
+    leftBackRotatorMotor.set(ControlMode.Position, modules[1].angle.getRadians() / RADIANS_PER_TICK + 773);
+    rightFrontRotatorMotor.set(ControlMode.Position, modules[2].angle.getRadians() / RADIANS_PER_TICK - 1783);
+    rightBackRotatorMotor.set(ControlMode.Position, modules[3].angle.getRadians() / RADIANS_PER_TICK + 231);
+    
 
     getSwerveModuleStates();
   } 
@@ -393,22 +434,22 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     if (useLeft)
     {
       if (useBack){
-        SmartDashboard.putNumber("T_Back_Left", leftBackMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICKS);
+        SmartDashboard.putNumber("read BL m", leftBackMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICKS);
         return leftBackMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
       else{
-        SmartDashboard.putNumber("T_Front_Left", leftFrontMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICKS);
+        SmartDashboard.putNumber("read FL m", leftFrontMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICKS);
         return leftFrontMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
     }
     else
     {
       if (useBack){
-        SmartDashboard.putNumber("_Back_Right", rightBackMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICKS);
+        SmartDashboard.putNumber("read BR m", rightBackMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICKS);
         return rightBackMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
       else{
-        SmartDashboard.putNumber("T_Front_Right", rightFrontMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICKS);
+        SmartDashboard.putNumber("read FR m", rightFrontMotor.getSelectedSensorPosition(ENCODER_PORT)*METERS_PER_TICKS);
         return rightFrontMotor.getSelectedSensorPosition(ENCODER_PORT);
       }
     }
@@ -427,22 +468,22 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     if (useLeft)
     {
       if (useBack){
-        SmartDashboard.putNumber("T_Rot_Back_Left", leftBackRotatorMotor.getSelectedSensorPosition(ENCODER_PORT) * RADIANS_PER_TICK);
+        SmartDashboard.putNumber("raw BL rot", leftBackRotatorMotor.getSelectedSensorPosition(ENCODER_PORT));
         return leftBackRotatorMotor.getSelectedSensorPosition(ENCODER_PORT) * RADIANS_PER_TICK;
       }
       else{
-        SmartDashboard.putNumber("T_Rot_Front_Left", leftFrontRotatorMotor.getSelectedSensorPosition(ENCODER_PORT) * RADIANS_PER_TICK);
+        SmartDashboard.putNumber("raw FL rot", leftFrontRotatorMotor.getSelectedSensorPosition(ENCODER_PORT));
         return leftFrontRotatorMotor.getSelectedSensorPosition(ENCODER_PORT) * RADIANS_PER_TICK;
       }
     }
     else
     {
       if (useBack){
-        SmartDashboard.putNumber("T_Rot_Back_Right", rightBackRotatorMotor.getSelectedSensorPosition(ENCODER_PORT) * RADIANS_PER_TICK);
+        SmartDashboard.putNumber("raw BR rot", rightBackRotatorMotor.getSelectedSensorPosition(ENCODER_PORT));
         return rightBackRotatorMotor.getSelectedSensorPosition(ENCODER_PORT) * RADIANS_PER_TICK;
       }
       else{
-        SmartDashboard.putNumber("T_Rot_Front_Right", rightFrontRotatorMotor.getSelectedSensorPosition(ENCODER_PORT) * RADIANS_PER_TICK);
+        SmartDashboard.putNumber("raw FR rot", rightFrontRotatorMotor.getSelectedSensorPosition(ENCODER_PORT));
         return rightFrontRotatorMotor.getSelectedSensorPosition(ENCODER_PORT) * RADIANS_PER_TICK;
       }
     }
@@ -463,23 +504,23 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     if (useLeft)
     {
       if (useBack){
-        SmartDashboard.putNumber("V_Back_Left", leftBackMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS);
-        return leftBackMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS;
+        SmartDashboard.putNumber("read BL m/s", leftBackMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS * 10);
+        return leftBackMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS * 10;
       }
       else{
-        SmartDashboard.putNumber("V_Front_Left", leftFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS);
-        return leftFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS;
+        SmartDashboard.putNumber("read FL m/s", leftFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS * 10);
+        return leftFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS * 10;
       }
     }
     else
     {
       if (useBack){
-        SmartDashboard.putNumber("V_Back_Right", rightBackMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS);
-        return rightBackMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS;
+        SmartDashboard.putNumber("read BR m/s", rightBackMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS * 10);
+        return rightBackMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS * 10;
       }
       else{
-        SmartDashboard.putNumber("V_Front_Right", rightFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS);
-        return rightFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS;
+        SmartDashboard.putNumber("read FR m/s", rightFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS * 10);
+        return rightFrontMotor.getSelectedSensorVelocity(ENCODER_PORT) * METERS_PER_TICKS * 10;
       }
     }
   }

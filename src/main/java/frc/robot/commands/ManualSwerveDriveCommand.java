@@ -55,7 +55,7 @@ public class ManualSwerveDriveCommand extends CommandBase {
       double xFieldVelocity = XboxMap.translationX(); // For chassis speeds forward back is x and left right is y
       double yFieldVelocity = XboxMap.translationY();
 
-      double headingRadians = navSub.getHeadingRadians(); // 0 to 2PI clockwise    
+      double headingRadians = 0;//navSub.getHeadingRadians(); // 0 to 2PI clockwise    
       
       //Trigonometric interpretation, not yet completed though
       // double xHeading = Math.cos(headingRadians);
@@ -78,7 +78,7 @@ public class ManualSwerveDriveCommand extends CommandBase {
       double xDirection = XboxMap.orientationX();
       double yDirection = XboxMap.orientationY();
 
-      if (xDirection != 0 && yDirection != 0)
+      if (xDirection != 0 || yDirection != 0)
       {
         // atan2 returns -pi to pi where positive is counter clockwise
         targetAngleRadians = Math.atan2(yDirection, xDirection);
@@ -89,14 +89,16 @@ public class ManualSwerveDriveCommand extends CommandBase {
 
       swerveDriveSub.setVelocities(new ChassisSpeeds(xVelocity, yVelocity, 0)); //pid.calculate(headingRadians, targetAngleRadians)));
 
-      SmartDashboard.putNumber("xFieldVelocity", xFieldVelocity);
-      SmartDashboard.putNumber("yFieldVelocity", yFieldVelocity);
-      SmartDashboard.putNumber("Left Front Rotator Encoder Value", swerveDriveSub.getRotatorEncoderCount(true, false));
-      SmartDashboard.putNumber("Left Back Rotator Encoder Value", swerveDriveSub.getRotatorEncoderCount(true, true));
-      SmartDashboard.putNumber("Right Front Rotator Encoder Value", swerveDriveSub.getRotatorEncoderCount(false, false));
-      SmartDashboard.putNumber("Right Back Rotator Encoder Value", swerveDriveSub.getRotatorEncoderCount(false, true));
+      SmartDashboard.putNumber("xFieldVel", xFieldVelocity);
+      SmartDashboard.putNumber("yFieldVel", yFieldVelocity);
+      SmartDashboard.putNumber("ipt x vel", xFieldVelocity);
+      SmartDashboard.putNumber("ipt y vel", yFieldVelocity);
+      SmartDashboard.putNumber("LF Rot Enc", swerveDriveSub.getRotatorEncoderCount(true, false));
+      SmartDashboard.putNumber("LB Rot Enc", swerveDriveSub.getRotatorEncoderCount(true, true));
+      SmartDashboard.putNumber("RF Rot Enc", swerveDriveSub.getRotatorEncoderCount(false, false));
+      SmartDashboard.putNumber("RB Rot Enc", swerveDriveSub.getRotatorEncoderCount(false, true));
       SmartDashboard.putNumber("AHRS", Math.toDegrees(headingRadians));
-      SmartDashboard.putNumber("Target angle", Math.toDegrees(targetAngleRadians));
+      SmartDashboard.putNumber("ipt angle", Math.toDegrees(targetAngleRadians));
       SmartDashboard.putNumber("Yaw", navSub.getYaw());
     }
   }

@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.XboxController;
  */
 public final class OI {
     // Controller OI
-    private static final int PS4_PORT = 0, XBOX_PORT = 1; // Drive station ports will be different from simulator ports
+    private static final int PS4_PORT = 1, XBOX_PORT = 0; // Drive station ports will be different from simulator ports
     public static final XboxController ps4 = new XboxController(PS4_PORT), xbox = new XboxController(XBOX_PORT);
 
     // Control Panel OI

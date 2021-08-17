@@ -30,7 +30,7 @@ public class ManualSwerveDriveCommand extends CommandBase {
     this.navSub = navSub;
 
     pid = new PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD);
-    pid.enableContinuousInput(0, 2 * Math.PI + 1e-22); // PID controller should not account for gear reductions
+    pid.enableContinuousInput(-Math.PI, Math.PI); // PID controller should not account for gear reductions
     pid.setIntegratorRange(pidConfig.INTEGRATION_MIN, pidConfig.INTEGRATION_MAX);
   }
 
@@ -55,7 +55,7 @@ public class ManualSwerveDriveCommand extends CommandBase {
       double xFieldVelocity = XboxMap.translationX(); // For chassis speeds forward back is x and left right is y
       double yFieldVelocity = XboxMap.translationY();
 
-      double headingRadians = 0;//navSub.getHeadingRadians(); // 0 to 2PI clockwise    
+      double headingRadians = navSub.getHeadingRadians();//navSub.getHeadingRadians(); // 0 to 2PI clockwise    
       
       //Trigonometric interpretation, not yet completed though
       // double xHeading = Math.cos(headingRadians);
@@ -72,7 +72,7 @@ public class ManualSwerveDriveCommand extends CommandBase {
 
       // Coordinate transformation interpretation
       double xVelocity = Math.cos(headingRadians) * yFieldVelocity + Math.sin(headingRadians) * xFieldVelocity;
-      double yVelocity = Math.cos(headingRadians) * xFieldVelocity + Math.sin(headingRadians) * yFieldVelocity;
+      double yVelocity = -Math.cos(headingRadians) * xFieldVelocity + Math.sin(headingRadians) * yFieldVelocity;
       
       // Direction vector
       double xDirection = XboxMap.orientationX();
@@ -86,13 +86,13 @@ public class ManualSwerveDriveCommand extends CommandBase {
         targetAngleRadians = (-targetAngleRadians + 2 * Math.PI + Math.PI / 2) % (2 * Math.PI);
         //targetAngleRadians = Math.max(0, Math.min(Math.toRadians(28), targetAngleRadians)); // Limit if needed
       }
-
-      swerveDriveSub.setVelocities(new ChassisSpeeds(xVelocity, yVelocity, 0)); //pid.calculate(headingRadians, targetAngleRadians)));
+      double thetaSpeed = pid.calculate(headingRadians, targetAngleRadians);
+      swerveDriveSub.setVelocities(new ChassisSpeeds(xVelocity, yVelocity, 0 /* thetaSpeed */));
 
       SmartDashboard.putNumber("xFieldVel", xFieldVelocity);
       SmartDashboard.putNumber("yFieldVel", yFieldVelocity);
-      SmartDashboard.putNumber("ipt x vel", xFieldVelocity);
-      SmartDashboard.putNumber("ipt y vel", yFieldVelocity);
+      SmartDashboard.putNumber("ipt x vel", xVelocity);
+      SmartDashboard.putNumber("ipt y vel", yVelocity);
       SmartDashboard.putNumber("LF Rot Enc", swerveDriveSub.getRotatorEncoderCount(true, false));
       SmartDashboard.putNumber("LB Rot Enc", swerveDriveSub.getRotatorEncoderCount(true, true));
       SmartDashboard.putNumber("RF Rot Enc", swerveDriveSub.getRotatorEncoderCount(false, false));
@@ -100,6 +100,10 @@ public class ManualSwerveDriveCommand extends CommandBase {
       SmartDashboard.putNumber("AHRS", Math.toDegrees(headingRadians));
       SmartDashboard.putNumber("ipt angle", Math.toDegrees(targetAngleRadians));
       SmartDashboard.putNumber("Yaw", navSub.getYaw());
+      SmartDashboard.putNumber("ThetaSpeed", thetaSpeed);
+      SmartDashboard.putNumber("OrientX", xDirection);
+      SmartDashboard.putNumber("OrientY", yDirection);
+      SmartDashboard.putNumber("posErr", Math.toDegrees(pid.getPositionError()));
     }
   }
 

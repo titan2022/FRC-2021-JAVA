@@ -53,7 +53,7 @@ public class XboxMap {
     double x = controller.getX(Hand.kRight);
     if(x*x + y*y < ORIENTATION_LOWER_RADIUS*ORIENTATION_LOWER_RADIUS)
       return 0;
-    return x;
+    return y;
   }
 
   public static boolean toggleBrakes() {

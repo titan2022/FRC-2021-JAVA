@@ -334,8 +334,8 @@ public class SwerveDriveSubsystem implements DriveSubsystem
     SmartDashboard.putNumber("Norm FR tgt", modules[2].angle.getRadians() / RADIANS_PER_TICK);
     SmartDashboard.putNumber("Norm BR tgt", modules[3].angle.getRadians() / RADIANS_PER_TICK);
     
-    // for(int i=0; i<4; i++)
-    //   modules[i] = SwerveModuleState.optimize(modules[i], new Rotation2d(getRotatorEncoderPosition((i&1)==0, i>1)));
+    for(int i=0; i<4; i++)
+      modules[i] = SwerveModuleState.optimize(modules[i], new Rotation2d(getRotatorEncoderPosition((i&1)==0, i>1)));
 
     leftFrontMotor.set(ControlMode.Velocity, modules[0].speedMetersPerSecond/(10 * METERS_PER_TICKS));
     leftBackMotor.set(ControlMode.Velocity, modules[1].speedMetersPerSecond/(10 * METERS_PER_TICKS));
